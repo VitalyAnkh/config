@@ -2,6 +2,9 @@ echo "Copy config files..."
 cp ~/.zshrc ~/.config/
 cp ~/.profile ~/.config/
 cp ~/.bashrc ~/.config/ 
+cp ~/.bashrc ~/projects/config
+cp ~/.zshrc ~/projects/config
+cp ~/.profile ~/projects/config
 echo "Exchange CapsLock and Ctrl in X11..."
 setxkbmap -option "ctrl:swapcaps"
 echo "modprobe nvidia..."
