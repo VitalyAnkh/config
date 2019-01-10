@@ -64,6 +64,7 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
+  zsh-autosuggestions
 )
 
 
@@ -108,6 +109,7 @@ eval $(thefuck --alias)
 
 . $HOME/projects/shell/z/z.sh
 
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # place this after nvm initialization!
 autoload -U add-zsh-hook
