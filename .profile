@@ -12,3 +12,4 @@ export PATH=$HOME/anaconda3/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
+export WINIT_HIDPI_FACTOR=2.5
