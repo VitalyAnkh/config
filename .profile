@@ -8,7 +8,7 @@ export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
 export PATH=$HOME/.cargo/bin:$HOME/go/bin:$PATH
 export PATH=$HOME/anaconda3/bin:$PATH
-# export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go

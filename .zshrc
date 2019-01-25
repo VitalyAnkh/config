@@ -149,3 +149,5 @@ export PATH=$HOME/projects/dart/flutter/bin:$PATH
 
 export PATH=/home/vitalyr/.deno/bin:$PATH
 export WINIT_HIDPI_FACTOR=2.5
+
+nvm use stable
