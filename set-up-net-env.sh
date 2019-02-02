@@ -1,7 +1,7 @@
 echo "Make dirs..."
 mkdir -p ~/projects/web/hosts
 mkdir -p ~/projects/rust
-git clone
+cd ~/projects && git clone git@github.com:VitalyAnkh/config.git
 
 echo "Copy config files..."
 cp ~/projects/config/.bashrc ~/
@@ -12,9 +12,9 @@ echo "Change shell to zsh"
 chsh -s /bin/zsh
 
 echo "Configure directory jump..."
-mkdir /home/vitalyr/projects
-mkdir /home/vitalyr/projects/shell
+mkdir -p /home/vitalyr/projects/shell
 git clone git@github.com:rupa/z.git
+chmod u+x ~/projects/shell/z/z.sh
 ./home/projects/shell/z/z.sh
 
 echo "Config hosts"
