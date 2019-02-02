@@ -28,6 +28,11 @@ echo "modprobe bluetooth..."
 modprobe bluetooth
 echo "modprobe nvidia..."
 sudo modprobe nvidia
+echo "Update rbenv..."
+cd ~/.rbenv
+git pull
+echo "Update ruby build..."
+cd "$(rbenv root)"/plugins/ruby-build && git pull
 echo "Navigat GPU status..."
 nvidia-smi
 echo "Update flutter..."

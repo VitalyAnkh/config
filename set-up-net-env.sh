@@ -3,6 +3,16 @@ mkdir -p ~/projects/web/hosts
 mkdir -p ~/projects/rust
 cd ~/projects && git clone git@github.com:VitalyAnkh/config.git
 
+echo "Setting up rbenv..."
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+cd ~/.rbenv && src/configure && make -C src
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >>~/.zshrc
+~/.rbenv/bin/rbenv init
+
+echo "Setting up ruby-build..."
+mkdir -p ~/projects/ruby && cd ~/projects/ruby && git clone https://github.com/rbenv/ruby-build.git
+PREFIX=/usr/local ./ruby-build/install.sh
+
 echo "Copy config files..."
 cp ~/projects/config/.bashrc ~/
 cp ~/projects/config/.zshrc ~/
