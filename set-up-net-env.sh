@@ -1,3 +1,8 @@
+echo "Make dirs..."
+mkdir -p ~/projects/web/hosts
+mkdir -p ~/projects/rust
+git clone
+
 echo "Copy config files..."
 cp ~/projects/config/.bashrc ~/
 cp ~/projects/config/.zshrc ~/

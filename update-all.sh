@@ -5,10 +5,11 @@ cp ~/.bashrc ~/.config/
 cp ~/.bashrc ~/projects/config
 cp ~/.zshrc ~/projects/config
 cp ~/.profile ~/projects/config
-echo "Copy hosts files..."
+echo "Update hosts files..."
 cd ~/projects/web/hosts/
 git pull
-cd hosts-files && sudo cp * /etc/
+echo "Copy hosts files..."
+sudo cp hosts-files/* /etc/
 echo "Add hosts to support coursera..."
 sudo echo "
 52.84.246.90    d3c33hcgiwev3.cloudfront.net
