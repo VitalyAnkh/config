@@ -5,6 +5,22 @@ cp ~/.bashrc ~/.config/
 cp ~/.bashrc ~/projects/config
 cp ~/.zshrc ~/projects/config
 cp ~/.profile ~/projects/config
+echo "Copy hosts files..."
+cd ~/projects/web/hosts/
+git pull
+cd hosts-files && sudo cp * /etc/
+echo "Add hosts to support coursera..."
+sudo echo "
+52.84.246.90    d3c33hcgiwev3.cloudfront.net
+52.84.246.252    d3c33hcgiwev3.cloudfront.net
+52.84.246.144    d3c33hcgiwev3.cloudfront.net
+52.84.246.72    d3c33hcgiwev3.cloudfront.net
+52.84.246.106    d3c33hcgiwev3.cloudfront.net
+52.84.246.135    d3c33hcgiwev3.cloudfront.net
+52.84.246.114    d3c33hcgiwev3.cloudfront.net
+52.84.246.90    d3c33hcgiwev3.cloudfront.net
+52.84.246.227    d3c33hcgiwev3.cloudfront.net
+" >>/etc/hosts
 echo "Exchange CapsLock and Ctrl in X11..."
 setxkbmap -option "ctrl:swapcaps"
 echo "modprobe bluetooth..."

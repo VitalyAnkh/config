@@ -67,7 +67,6 @@ plugins=(
   zsh-autosuggestions
 )
 
-
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -133,21 +132,14 @@ load-nvmrc() {
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 setxkbmap -option "ctrl:swapcaps"
 alias ls="lsd"
 alias cat="bat"
 
 # opam configuration
-test -r /home/vitalyr/.opam/opam-init/init.zsh && . /home/vitalyr/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-export PUB_HOSTED_URL=https://pub.flutter-io.cn
-export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
-export PATH=$HOME/projects/dart/flutter/bin:$PATH
-
-export PATH=/home/vitalyr/.deno/bin:$PATH
-export WINIT_HIDPI_FACTOR=2.5
+test -r /home/vitalyr/.opam/opam-init/init.zsh && . /home/vitalyr/.opam/opam-init/init.zsh >/dev/null 2>/dev/null || true
 
 nvm use stable
