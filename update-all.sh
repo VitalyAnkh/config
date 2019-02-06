@@ -41,8 +41,8 @@ echo "Update rust..."
 rustup update
 echo "Update cargo components..."
 cargo install-update -a
-echo "Update anaconda libraries..."
-conda update --all -y
+# echo "Update anaconda libraries..."
+# conda update --all -y
 echo "Update haskell stack libraries..."
 stack update
 echo "Update OCaml libraries..."

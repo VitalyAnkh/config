@@ -143,3 +143,5 @@ alias cat="bat"
 test -r /home/vitalyr/.opam/opam-init/init.zsh && . /home/vitalyr/.opam/opam-init/init.zsh >/dev/null 2>/dev/null || true
 
 nvm use stable
+export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.gem/ruby/2.6.0/bin:$PATH"
