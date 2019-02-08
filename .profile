@@ -50,3 +50,7 @@ export PATH=/home/vitalyr/.deno/bin:$PATH
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
+export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH" # configure adb path
+
+export ANDROID_HOME=$HOME/projects/sdk/android
+export ANDROID_SDK_ROOT=$ANDROID_HOME
