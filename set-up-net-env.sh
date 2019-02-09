@@ -45,3 +45,9 @@ sudo echo "
 
 echo "Configure rust environment..."
 curl https://sh.rustup.rs -sSf | sh
+
+echo "Install rust-analyzer..."
+git clone https://github.com/rust-analyzer/rust-analyzer.git --depth 1
+cd rust-analyzer
+cargo install-code
+rustup component add rust-src
