@@ -43,6 +43,7 @@ echo "Update cargo components..."
 cargo install-update -a
 echo "Update rust analyzer..."
 cd ~/projects/rust/rust-analyzer
+git checkout -- Cargo.lock
 git pull
 cargo install-code
 rustup component add rust-src

@@ -2,13 +2,13 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/usr/share/oh-my-zsh
+# export ZSH=/usr/share/oh-my-zsh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
+# ZSH_THEME="agnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -101,48 +101,26 @@ if [[ ! -d $ZSH_CACHE_DIR ]]; then
   mkdir $ZSH_CACHE_DIR
 fi
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 source $HOME/.profile
 
 eval $(thefuck --alias)
 
-. $HOME/projects/shell/z/z.sh
+# . $HOME/projects/shell/z/z.sh
 
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# place this after nvm initialization!
-autoload -U add-zsh-hook
-load-nvmrc() {
-  local node_version="$(nvm version)"
-  local nvmrc_path="$(nvm_find_nvmrc)"
-
-  if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-    if [ "$nvmrc_node_version" = "N/A" ]; then
-      nvm install
-    elif [ "$nvmrc_node_version" != "$node_version" ]; then
-      nvm use
-    fi
-  elif [ "$node_version" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
-  fi
-}
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 setxkbmap -option "ctrl:swapcaps"
 alias ls="lsd"
 alias cat="bat"
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
 # opam configuration
 test -r /home/vitalyr/.opam/opam-init/init.zsh && . /home/vitalyr/.opam/opam-init/init.zsh >/dev/null 2>/dev/null || true
 
-nvm use stable
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH" # configure adb path
@@ -150,3 +128,29 @@ export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/androi
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 source /usr/share/zsh/share/antigen.zsh
+
+OS_NAME=$(uname -s)
+source $HOME/projects/shell/antigen.zsh
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle git
+# Syntax highlighting
+antigen bundle zsh-users/zsh-syntax-highlighting
+# Fish-like auto suggestions
+antigen bundle zsh-users/zsh-autosuggestions
+# Additional completion definitions
+antigen bundle zsh-users/zsh-completions
+# Load the theme.
+antigen theme agnoster
+# Use 韦易笑's z.lua
+antigen bundle skywind3000/z.lua
+# Tell Antigen that you're done.
+antigen bundle command-not-found
+antigen bundle lukechilds/zsh-nvm
+antigen apply
+#source /usr/share/nvm/init-nvm.sh
+#[ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+#source /usr/share/nvm/nvm.sh
+#source /usr/share/nvm/bash_completion
+#source /usr/share/nvm/install-nvm-exe
