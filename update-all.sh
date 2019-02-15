@@ -28,6 +28,8 @@ echo "modprobe bluetooth..."
 modprobe bluetooth
 echo "modprobe nvidia..."
 sudo modprobe nvidia
+echo "Update npm..."
+npm install npm@latest -g
 echo "Update rbenv..."
 cd ~/.rbenv
 git pull
