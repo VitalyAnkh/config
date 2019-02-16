@@ -1,3 +1,4 @@
+# TODO: use ansible to update
 echo "Copy config files..."
 cp ~/.zshrc ~/.config/
 cp ~/.profile ~/.config/

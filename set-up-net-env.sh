@@ -1,3 +1,4 @@
+# TODO: use ansible to set up
 echo "Make dirs..."
 mkdir -p ~/projects/web/hosts
 mkdir -p ~/projects/rust
