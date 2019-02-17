@@ -1,4 +1,6 @@
 # TODO: use ansible to update
+# todo: update haskell ide engine
+# todo: clean build after building successfully
 echo "Copy config files..."
 cp ~/.zshrc ~/.config/
 cp ~/.profile ~/.config/
@@ -52,6 +54,10 @@ cargo install-code
 rustup component add rust-src
 # echo "Update anaconda libraries..."
 # conda update --all -y
+echo "Update servo..."
+cd ~/projects/rust/servo
+git pull
+./mach build --release
 echo "Update haskell stack libraries..."
 stack update
 echo "Update OCaml libraries..."
