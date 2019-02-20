@@ -14,6 +14,10 @@ echo "Setting up ruby-build..."
 mkdir -p ~/projects/ruby && cd ~/projects/ruby && git clone https://github.com/rbenv/ruby-build.git
 PREFIX=/usr/local ./ruby-build/install.sh
 
+echo "Setting up haskell env..."
+mkdir -p ~/projects/haskell && cd ~/projects/haskell && git clone https://github.com/haskell/haskell-ide-engine --recursive
+make build-all
+
 echo "Copy config files..."
 cp ~/projects/config/.bashrc ~/
 cp ~/projects/config/.zshrc ~/

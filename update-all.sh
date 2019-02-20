@@ -40,6 +40,8 @@ echo "Update ruby build..."
 cd "$(rbenv root)"/plugins/ruby-build && git pull
 echo "Navigat GPU status..."
 nvidia-smi
+echo "Update haskell ide engine..."
+cd ~/projects/haskell/haskell-ide-engine && git pull && make hie-8.6.3 && make build-doc-8.6.3
 echo "Update flutter..."
 flutter upgrade
 echo "Update rust..."
@@ -56,13 +58,11 @@ rustup component add rust-src
 # conda update --all -y
 echo "Update servo..."
 cd ~/projects/rust/servo
-git pull
-./mach build --release
+git pull && ./mach build --release
 echo "Update haskell stack libraries..."
 stack update
 echo "Update OCaml libraries..."
-opam update
-opam upgrade -y
+opam update && opam upgrade -y
 echo "Update system packages..."
 yay
 echo "Done!"

@@ -11,6 +11,7 @@ export PATH=$HOME/projects/dart/flutter/bin:$PATH
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
 export WINIT_HIDPI_FACTOR=2.5
+export GOPROXY=https://athens.azurefd.net/
 
 alias amap='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full amap'
 alias burpsuite='docker run -it --rm -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full java -jar /usr/bin/burpsuite'
@@ -45,7 +46,7 @@ alias wpscan='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-
 alias yersinia='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full yersinia'
 alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full zaproxy'
 
-export PATH=/home/vitalyr/.deno/bin:$PATH
+export PATH=/home/vitalyr/projects/go/bin:/home/vitalyr/.deno/bin:$PATH
 
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
