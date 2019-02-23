@@ -30,7 +30,7 @@ setxkbmap -option "ctrl:swapcaps"
 echo "modprobe bluetooth..."
 modprobe bluetooth
 echo "modprobe nvidia..."
-sudo modprobe nvidia
+sudo modprobe nvidia && sudo modprobe nvidia-modset && sudo modprobe nvidia-uvm
 echo "Update npm..."
 npm install npm@latest -g
 echo "Update rbenv..."

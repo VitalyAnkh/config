@@ -55,3 +55,5 @@ export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/androi
 
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+export CLASSPATH="$CLASSPATH:."
