@@ -65,6 +65,7 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(
   git
   zsh-autosuggestions
+  gitfast
 )
 
 # User configuration
@@ -134,8 +135,9 @@ source $HOME/projects/shell/antigen.zsh
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle git
+# antigen bundle git
 # Syntax highlighting
+# antigen bundle gitfast
 antigen bundle zsh-users/zsh-syntax-highlighting
 # Fish-like auto suggestions
 antigen bundle zsh-users/zsh-autosuggestions
@@ -154,3 +156,27 @@ antigen apply
 #source /usr/share/nvm/nvm.sh
 #source /usr/share/nvm/bash_completion
 #source /usr/share/nvm/install-nvm-exe
+
+# TODO: report antigen git plugin bug:
+# compdef: unknown command or service: git-diff
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-log
+# compdef: unknown command or service: git-push
+# compdef: unknown command or service: git-diff
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-checkout
+# compdef: unknown command or service: git-log
+# compdef: unknown command or service: git-push
