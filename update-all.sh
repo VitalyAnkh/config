@@ -66,6 +66,7 @@ cargo install-update -a
 echo "***************************************************************"
 echo "Update rust analyzer..."
 cd ~/projects/rust/rust-analyzer
+cargo clean
 git checkout -- Cargo.lock
 git pull
 cargo install-code
@@ -75,6 +76,7 @@ conda update --all -y
 echo "***************************************************************"
 echo "Update servo..."
 cd ~/projects/rust/servo
+cargo clean
 git pull && ./mach build --release
 echo "***************************************************************"
 echo "Update haskell stack libraries..."

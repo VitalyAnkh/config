@@ -10,13 +10,16 @@ cd ~/.rbenv && src/configure && make -C src
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >>~/.zshrc
 ~/.rbenv/bin/rbenv init
 
+echo "Settup haskell tools"
+sudo pacman -S hie hindent stylish-haskell
+
 echo "Setting up ruby-build..."
 mkdir -p ~/projects/ruby && cd ~/projects/ruby && git clone https://github.com/rbenv/ruby-build.git
 PREFIX=/usr/local ./ruby-build/install.sh
 
-echo "Setting up haskell env..."
-mkdir -p ~/projects/haskell && cd ~/projects/haskell && git clone https://github.com/haskell/haskell-ide-engine --recursive
-make build-all
+# echo "Setting up haskell env..."
+# mkdir -p ~/projects/haskell && cd ~/projects/haskell && git clone https://github.com/haskell/haskell-ide-engine --recursive
+# make build-all
 
 echo "Copy config files..."
 cp ~/projects/config/.bashrc ~/
@@ -55,4 +58,4 @@ echo "Install rust-analyzer..."
 git clone https://github.com/rust-analyzer/rust-analyzer.git --depth 1
 cd rust-analyzer
 cargo install-code
-rustup component add rust-src
+# rustup component add rust-src # no longer need
