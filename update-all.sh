@@ -72,6 +72,10 @@ git checkout -- Cargo.lock
 git pull
 cargo install-code
 echo "********************************************************************************"
+echo "Update IJava..."
+cd ~/projects/java/IJava && cd IJava && git pull
+./gradlew installKernel
+echo "********************************************************************************"
 echo "Update anaconda libraries..."
 conda update --all -y
 echo "********************************************************************************"

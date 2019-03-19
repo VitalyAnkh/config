@@ -29,6 +29,10 @@ cp ~/projects/config/.profile ~/
 echo "Change shell to zsh"
 chsh -s /bin/zsh
 
+echo "Set up IJava"
+cd ~/projects/java && git clone https://github.com/SpencerPark/IJava.git && cd IJava
+chmod u+x gradlew && ./gradlew installKernel
+
 echo "Configure directory jump..."
 mkdir -p /home/vitalyr/projects/shell
 git clone git@github.com:rupa/z.git
