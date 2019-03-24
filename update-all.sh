@@ -43,6 +43,8 @@ echo "**************************************************************************
 echo "Update npm..."
 npm install npm@latest -g
 npm install -g jshint
+npm install -g bash-language-server
+npm install -g vsce
 echo "********************************************************************************"
 echo "Update rbenv..."
 cd ~/.rbenv
@@ -52,9 +54,9 @@ cd "$(rbenv root)"/plugins/ruby-build && git pull
 echo "********************************************************************************"
 echo "Navigat GPU status..."
 nvidia-smi
-echo "********************************************************************************"
-echo "Update haskell ide engine..."
-cd ~/projects/haskell/haskell-ide-engine && git pull && make hie-8.6.3 && make build-doc-8.6.3
+# echo "********************************************************************************"
+# echo "Update haskell ide engine..."
+# cd ~/projects/haskell/haskell-ide-engine && git pull && make hie-8.6.3 && make build-doc-8.6.3
 echo "********************************************************************************"
 echo "Update flutter..."
 flutter upgrade
