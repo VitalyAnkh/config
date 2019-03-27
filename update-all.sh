@@ -68,6 +68,7 @@ echo "Update cargo components..."
 cargo install-update -a
 echo "********************************************************************************"
 echo "Update rust analyzer..."
+npm install -g vsce
 cd ~/projects/rust/rust-analyzer
 cargo clean
 git checkout -- Cargo.lock
