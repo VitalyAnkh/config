@@ -57,3 +57,5 @@ export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
 export CLASSPATH="$CLASSPATH:."
+
+export GO111MODULE=on
