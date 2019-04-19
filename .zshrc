@@ -88,9 +88,11 @@ plugins=(
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 # set to wayland
-if [[ -z $DISPLAY ]] && [[ $(tty) == /dev/tty1 ]] && [[ -z $XDG_SESSION_TYPE ]]; then
-  QT_QPA_PLATFORM=wayland XDG_SESSION_TYPE=wayland exec dbus-run-session gnome-session
-fi
+# if [[ -z $DISPLAY ]] && [[ $(tty) == /dev/tty1 ]] && [[ -z $XDG_SESSION_TYPE ]]; then
+#   QT_QPA_PLATFORM=wayland XDG_SESSION_TYPE=wayland exec dbus-run-session gnome-session
+# fi
+
+# when in tty1, exec sway
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh

@@ -1,6 +1,13 @@
 export EDITOR=/usr/bin/vim
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
+# to scale a factor of 2 to support sway
+# export QT_AUTO_SCREEN_SCALE_FACTOR=2
+# export GDK_SCALE=2
+# export QT_QPA_PLATFORM=wayland
+# export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+# export _JAVA_AWT_WM_NONREPARENTING=1
+
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
@@ -10,7 +17,7 @@ export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
-export WINIT_HIDPI_FACTOR=2.5
+export WINIT_HIDPI_FACTOR=2
 export GOPROXY=https://athens.azurefd.net/
 
 alias amap='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full amap'
