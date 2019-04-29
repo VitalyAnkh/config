@@ -1,0 +1,22 @@
+####################################
+# Configuration file for bochs
+####################################
+
+# 设置内存 单位:MB
+memory: guest=512, host=256
+
+# 设置BIOS和VGA BIOS 
+romimage: file=$BXSHARE/BIOS-bochs-latest, options=fastboot
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+
+boot: disk
+
+log: bochs.out
+
+mouse: enabled=0
+keyboard: type=mf, serial_delay=200, paste_delay=100000
+keyboard: keymap=$BXSHARE/keymaps/x11-pc-us.map
+
+ata0-master: type=disk, path="/home/vitalyr/projects/config/hd64M.image", mode=flat
+
+# gdbstub: enabeld=1, port=1234, text_base=0, data_base=0, bss_base=0

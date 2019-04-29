@@ -66,3 +66,5 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 export CLASSPATH="$CLASSPATH:."
 
 export GO111MODULE=on
+
+export BXSHARE=/usr/share/bochs
