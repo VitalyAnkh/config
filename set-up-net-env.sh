@@ -58,6 +58,10 @@ sudo echo "
 echo "Configure rust environment..."
 curl https://sh.rustup.rs -sSf | sh
 
+source $HOME/.cargo/env
+
+curl -L git.io/antigen >antigen.zsh
+
 jupyter labextension install jupyterlab_nbmetadata
 
 echo "Install rust-analyzer..."
@@ -65,3 +69,5 @@ git clone https://github.com/rust-analyzer/rust-analyzer.git --depth 1
 cd rust-analyzer
 cargo install-code
 # rustup component add rust-src # no longer need
+
+cargo install lsd

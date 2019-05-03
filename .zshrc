@@ -137,7 +137,7 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 source /usr/share/zsh/share/antigen.zsh
 
 OS_NAME=$(uname -s)
-source $HOME/projects/shell/antigen.zsh
+source $HOME/projects/config/antigen.zsh
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
