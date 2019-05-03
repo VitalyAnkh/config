@@ -60,3 +60,4 @@ source $HOME/.cargo/env
 curl -L git.io/antigen >antigen.zsh
 
 cargo install lsd
+cargo install bat

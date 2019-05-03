@@ -71,3 +71,4 @@ cargo install-code
 # rustup component add rust-src # no longer need
 
 cargo install lsd
+cargo install bat
