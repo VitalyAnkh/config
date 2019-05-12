@@ -66,3 +66,10 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 export CLASSPATH="$CLASSPATH:."
 
 export GO111MODULE=on
+
+alias c="code ."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias local-wifi="sudo netctl switch-to wlp0s20f3-local.wlan.bjtu"
+alias web-wifi="sudo netctl switch-to wlp0s20f3-web.wlan.bjtu"

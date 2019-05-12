@@ -94,6 +94,7 @@ echo "Update OCaml libraries..."
 opam update && opam upgrade -y
 echo "********************************************************************************"
 echo "Update system packages..."
-yay
+sudo pacman -Syu --ignore emacs-git
+yay emacs-git
 echo "********************************************************************************"
 echo "Done!"
