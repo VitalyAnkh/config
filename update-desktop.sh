@@ -81,11 +81,11 @@ cd ~/projects/java/IJava && cd IJava && git pull
 echo "********************************************************************************"
 echo "Update anaconda libraries..."
 conda update --all -y
-echo "********************************************************************************"
-echo "Update servo..."
-cd ~/projects/rust/servo
-cargo clean
-git pull && ./mach build --release
+# echo "********************************************************************************"
+# echo "Update servo..."
+# cd ~/projects/rust/servo
+# cargo clean
+# git pull && ./mach build --release
 echo "********************************************************************************"
 echo "Update haskell stack libraries..."
 stack update
