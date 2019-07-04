@@ -54,15 +54,18 @@ alias yersinia='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linu
 alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full zaproxy'
 
 export PATH=/home/vitalyr/projects/go/bin:/home/vitalyr/.deno/bin:$PATH
-
+export JAVA_HOME=/usr/lib/jvm/default
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
-export PATH=$HOME/projects/dart/flutter/bin:$PATH
+export PATH=$HOME/projects/dart/flutter/bin:$JAVA_HOME:$PATH
 export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH" # configure adb path
 
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
-export CLASSPATH="$CLASSPATH:."
+export CLASSPATH="$CLASSPATH:/home/vitalyr/下载/postgresql-42.2.6.jar"
 
 export GO111MODULE=on
+
+export CATALINA_HOME=~/projects/java/catalina
+export CATALINA_BASE=$CATALINA_HOME
