@@ -9,13 +9,13 @@ git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 cd ~/.rbenv && src/configure && make -C src
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >>~/.zshrc
 ~/.rbenv/bin/rbenv init
-echo "********************************************************"
-echo "Setting up gvm..."
-cd ~/projects/shell 
-git clone git@github.com:moovweb/gvm.git 
-cd gvm/binscript 
-sh gvm-installer
-source ~/.gvm/scripts/gvm
+#echo "********************************************************"
+#echo "Setting up gvm..."
+#cd ~/projects/shell
+#git clone git@github.com:moovweb/gvm.git
+#cd gvm/binscript
+#sh gvm-installer
+#source ~/.gvm/scripts/gvm
 echo "*******************************************************"
 echo "Settup haskell tools"
 sudo pacman -S hie hindent stylish-haskell

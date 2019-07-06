@@ -53,6 +53,9 @@ alias wpscan='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-
 alias yersinia='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full yersinia'
 alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full zaproxy'
 
+
+alias pc=proxychains
+
 export PATH=/home/vitalyr/projects/go/bin:/home/vitalyr/.deno/bin:$PATH
 export JAVA_HOME=/usr/lib/jvm/default
 export PUB_HOSTED_URL=https://pub.flutter-io.cn

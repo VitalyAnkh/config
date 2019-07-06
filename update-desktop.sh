@@ -1,3 +1,4 @@
+#!/usr/bin/zsh
 # todo: use ansible to update
 # todo: update haskell ide engine
 # todo: clean build cache after building successfully
@@ -50,14 +51,14 @@ echo "**************************************************************************
 echo "Update rbenv..."
 cd ~/.rbenv
 git pull
-echo "*******************************************************************************"
-echo "Update gvm"
-cd ~/projects/shell/gvm
-git pull 
-rm -rf ~/.gvm
-sh binscript/gvm-installer
-source ~/.gvm/script/gvm
 
+#echo "*******************************************************************************"
+#echo "Update gvm"
+#cd ~/projects/shell/gvm
+#git pull
+#rm -rf ~/.gvm
+#sh binscript/gvm-installer
+#source ~/.gvm/script/gvm
 
 echo "Update ruby build..."
 cd "$(rbenv root)"/plugins/ruby-build && git pull

@@ -120,6 +120,7 @@ eval $(thefuck --alias)
 setxkbmap -option "ctrl:swapcaps"
 alias ls="lsd"
 alias cat="bat"
+alias pc="proxychains"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
