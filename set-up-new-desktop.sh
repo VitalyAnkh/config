@@ -7,7 +7,8 @@ mkdir -p ~/projects/web/hosts
 mkdir -p ~/projects/rust
 cd ~/projects && git clone git@github.com:VitalyAnkh/config.git
 
-
+# add mirror site for conda
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 echo "Setting up rbenv..."
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
