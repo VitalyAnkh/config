@@ -132,6 +132,7 @@ test -r /home/vitalyr/.opam/opam-init/init.zsh && . /home/vitalyr/.opam/opam-ini
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH" # configure adb path
+export PATH="$HOME/.cabal/bin/:$PATH"
 
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME

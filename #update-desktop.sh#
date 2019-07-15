@@ -1,25 +1,10 @@
 #!/usr/bin/env bash
 
+export SDK_DIR=$HOME/SDK
 # todo: use ansible to update
 # todo: update haskell ide engine
 # todo: clean build cache after building successfully
 # todo: read the fucking manual of stack and cabal and fix update issue
-
-export SDK_DIR="${HOME}/sdk"
-echo "********************************************************************************"
-echo "update idris from github repo..."
-cd "${SDK_DIR}/Idris-dev"
-git pull
-make
-make relib
-make test
-echo "********************************************************************************"
-echo "update idris2 from github repo..."
-cd "${HOME}/Idris2"
-git pull
-make idris2
-make install
-
 echo "********************************************************************************"
 echo "Copy config files..."
 cp ~/.zshrc ~/.config/
@@ -78,12 +63,11 @@ git pull
 #source ~/.gvm/script/gvm
 
 echo "********************************************************************************"
-ccho "update agda-stdlib from agda-lib git repo"
+echo "update agda-stdlib from agda-lib git repo"
 source ~/.profile
 # the $AGDA_STDLIB is defined in .profile
 cd $AGDA_STDLIB
 git pull
-stack --stack-yaml=stack-8.6.5.yaml install
 echo "********************************************************************************"
 echo "Update ruby build..."
 cd "$(rbenv root)"/plugins/ruby-build && git pull

@@ -1,8 +1,13 @@
+#!/usr/bin/env bash
 # TODO: use ansible to set up
+
+export SDK_DIR="${HOME}/sdk"
 echo "Make dirs..."
 mkdir -p ~/projects/web/hosts
 mkdir -p ~/projects/rust
 cd ~/projects && git clone git@github.com:VitalyAnkh/config.git
+
+
 
 echo "Setting up rbenv..."
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv

@@ -1,0 +1,14 @@
+# Thing to do when setting up a new desktop computer
+
+## config system source mirror site
+* for archlinux/manjaro: tuna
+* for ubuntu:
+
+## download the necessary softwares, packages, SDKs
+1. just run setup-new-desktop.sh
+2. check the uninstalled things and install them mannually
+
+## config some uneful thing for the packages
+1. vscode: install config sync extesnsion and download packages from it
+2. emacs: sync emacs.d/init.el from git repo
+3. haskell: add stackage and cabal mirror site from tuna

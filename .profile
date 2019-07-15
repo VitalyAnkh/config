@@ -15,8 +15,11 @@ export PATH=$HOME/.cargo/bin:$HOME/go/bin:$PATH
 export PATH=$HOME/anaconda3/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
+# todo: move LGOPATH and $GOPATH to $HOME/SDK
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
+
 export WINIT_HIDPI_FACTOR=2
 export GOPROXY=https://athens.azurefd.net/
 
@@ -56,19 +59,26 @@ alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xau
 
 alias pc=proxychains
 
+export SDK_DIR=~/SDK
+
+export AGDA_STDLIB=$SDK_DIR/agda/agda-stdlib
+export AGDA_DIR=/home/vitalyr/.agda
 export PATH=/home/vitalyr/projects/go/bin:/home/vitalyr/.deno/bin:$PATH
 export JAVA_HOME=/usr/lib/jvm/default
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
 export PATH=$HOME/projects/dart/flutter/bin:$JAVA_HOME:$PATH
-export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH" # configure adb path
+export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH"
+# configure adb path
 
+# todo: move $HOME/projects/sdk to $HOME/SDK
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
+# make CLASSPATH great again
 export CLASSPATH="$CLASSPATH:/home/vitalyr/下载/postgresql-42.2.6.jar"
 
 export GO111MODULE=on
-
+# todo: make CLASSPATH great again
 export CATALINA_HOME=~/projects/java/catalina
 export CATALINA_BASE=$CATALINA_HOME
