@@ -13,9 +13,13 @@ export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
 export PATH=$HOME/.cargo/bin:$HOME/go/bin:$PATH
 export PATH=$HOME/anaconda3/bin:$PATH
-export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
+
+# import idris2 from .idris2
+export PATH=$HOME/.idris2/bin:$PATH
+
 # todo: move LGOPATH and $GOPATH to $HOME/SDK
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
@@ -59,7 +63,7 @@ alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xau
 
 alias pc=proxychains
 
-export SDK_DIR=~/SDK
+export SDK_DIR=~/sdk
 
 export AGDA_STDLIB=$SDK_DIR/agda/agda-stdlib
 export AGDA_DIR=/home/vitalyr/.agda
@@ -71,7 +75,7 @@ export PATH=$HOME/projects/dart/flutter/bin:$JAVA_HOME:$PATH
 export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/android/tools:$PATH"
 # configure adb path
 
-# todo: move $HOME/projects/sdk to $HOME/SDK
+# todo: move $HOME/projects/sdk to $SDK_DIR
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
@@ -80,5 +84,3 @@ export CLASSPATH="$CLASSPATH:/home/vitalyr/下载/postgresql-42.2.6.jar"
 
 export GO111MODULE=on
 # todo: make CLASSPATH great again
-export CATALINA_HOME=~/projects/java/catalina
-export CATALINA_BASE=$CATALINA_HOME

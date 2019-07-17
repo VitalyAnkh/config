@@ -5,20 +5,7 @@
 # todo: clean build cache after building successfully
 # todo: read the fucking manual of stack and cabal and fix update issue
 
-export SDK_DIR="${HOME}/sdk"
-echo "********************************************************************************"
-echo "update idris from github repo..."
-cd "${SDK_DIR}/Idris-dev"
-git pull
-make
-make relib
-make test
-echo "********************************************************************************"
-echo "update idris2 from github repo..."
-cd "${HOME}/Idris2"
-git pull
-make idris2
-make install
+
 
 echo "********************************************************************************"
 echo "Copy config files..."
@@ -51,6 +38,22 @@ sudo echo "
 echo "********************************************************************************"
 echo "Exchange CapsLock and Ctrl in X11..."
 setxkbmap -option "ctrl:swapcaps"
+
+export SDK_DIR="${HOME}/sdk"
+echo "********************************************************************************"
+echo "update idris from github repo..."
+cd "${SDK_DIR}/Idris-dev"
+git pull
+make
+make relib
+make test
+echo "********************************************************************************"
+echo "update idris2 from github repo..."
+cd "${SDK_DIR}/Idris2"
+git pull
+make idris2
+make install
+
 echo "********************************************************************************"
 echo "modprobe bluetooth..."
 modprobe bluetooth
