@@ -5,8 +5,6 @@
 # todo: clean build cache after building successfully
 # todo: read the fucking manual of stack and cabal and fix update issue
 
-
-
 echo "********************************************************************************"
 echo "Copy config files..."
 cp ~/.zshrc ~/.config/
@@ -39,14 +37,19 @@ echo "**************************************************************************
 echo "Exchange CapsLock and Ctrl in X11..."
 setxkbmap -option "ctrl:swapcaps"
 
-
-
 echo "********************************************************************************"
 echo "modprobe bluetooth..."
 modprobe bluetooth
 echo "********************************************************************************"
 echo "modprobe nvidia..."
 sudo modprobe nvidia && sudo modprobe nvidia-modset && sudo modprobe nvidia-uvm
+echo "********************************************************************************"
+echo "update agda-stdlib from agda-lib git repo"
+source ~/.profile
+# the $AGDA_STDLIB is defined in .profile
+cd $AGDA_STDLIB
+git pull
+stack --stack-yaml=stack-8.6.5.yaml install
 echo "********************************************************************************"
 echo "Update npm..."
 
@@ -67,13 +70,6 @@ git pull
 #sh binscript/gvm-installer
 #source ~/.gvm/script/gvm
 
-echo "********************************************************************************"
-ccho "update agda-stdlib from agda-lib git repo"
-source ~/.profile
-# the $AGDA_STDLIB is defined in .profile
-cd $AGDA_STDLIB
-git pull
-stack --stack-yaml=stack-8.6.5.yaml install
 echo "********************************************************************************"
 echo "Update ruby build..."
 cd "$(rbenv root)"/plugins/ruby-build && git pull
