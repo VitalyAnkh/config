@@ -14,6 +14,9 @@ cp ~/.bashrc ~/projects/config
 cp ~/.zshrc ~/projects/config
 cp ~/.profile ~/projects/config
 echo "********************************************************************************"
+echo "Update ghc using ghcup, and update ghcup..."
+ghcup upgrade
+echo "********************************************************************************"
 echo "Update hosts files..."
 cd ~/projects/web/hosts/
 git pull
@@ -49,7 +52,6 @@ source ~/.profile
 # the $AGDA_STDLIB is defined in .profile
 cd $AGDA_STDLIB
 git pull
-stack --stack-yaml=stack-8.6.5.yaml install
 echo "********************************************************************************"
 echo "Update npm..."
 

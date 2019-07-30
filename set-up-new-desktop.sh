@@ -9,7 +9,14 @@ cd ~/projects && git clone git@github.com:VitalyAnkh/config.git
 
 # add mirror site for conda
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
+echo "*******************************************************"
+# install proxychains first
+echo "setting up ghcup, ghc and cabal..."
+alias pc="proxychains"
+pc curl https://get-ghcup.haskell.org -sSf | pc sh
+source ~/.ghcup/env
+export PATH=~/.ghcup/bin:$PATH
+echo "*******************************************************"
 echo "Setting up rbenv..."
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 cd ~/.rbenv && src/configure && make -C src
