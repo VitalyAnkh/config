@@ -192,5 +192,5 @@ antigen apply
 # compdef: unknown command or service: git-log
 # compdef: unknown command or service: git-push
 
-export CLASSPATH="$CLASSPATH:/home/vitalyr/下载/postgresql-42.2.6.jar"
 export JAVA_HOME=/usr/lib/jvm/default
+source ~/.ghcup/env

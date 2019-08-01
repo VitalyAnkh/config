@@ -55,11 +55,10 @@ alias volafox='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux
 alias volatility='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full volatility'
 alias wash='docker run -it --rm -w /data -v $(pwd):/data --net=host --privileged booyaabes/kali-linux-full wash'
 alias webscarab='docker run -it --rm -w /data -v $(pwd):/data -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full java -jar /usr/bin/webscarab'
-alias wireshark='docker run -it --rm -w /data -v $(pwd):/data -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host --privileged booyaabes/kali-linux-full wireshark'
+alias wireshark-docker-kali='docker run -it --rm -w /data -v $(pwd):/data -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host --privileged booyaabes/kali-linux-full wireshark'
 alias wpscan='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full wpscan'
 alias yersinia='docker run -it --rm -w /data -v $(pwd):/data booyaabes/kali-linux-full yersinia'
 alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xauthority:/root/.Xauthority --net=host booyaabes/kali-linux-full zaproxy'
-
 
 alias pc=proxychains
 
@@ -79,8 +78,8 @@ export PATH="$HOME/projects/sdk/android/platform-tools:$HOME/projects/sdk/androi
 export ANDROID_HOME=$HOME/projects/sdk/android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
-# make CLASSPATH great again
-export CLASSPATH="$CLASSPATH:/home/vitalyr/下载/postgresql-42.2.6.jar"
+# TODO: make CLASSPATH great again
 
 export GO111MODULE=on
 # todo: make CLASSPATH great again
+export PATH=~/.ghcup/bin:$PATH
