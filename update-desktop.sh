@@ -7,12 +7,7 @@
 
 echo "********************************************************************************"
 echo "Copy config files..."
-cp ~/.zshrc ~/.config/
-cp ~/.profile ~/.config/
-cp ~/.bashrc ~/.config/
-cp ~/.bashrc ~/projects/config
-cp ~/.zshrc ~/projects/config
-cp ~/.profile ~/projects/config
+sh update-config-files.sh
 echo "********************************************************************************"
 echo "Update ghc using ghcup, and update ghcup..."
 ghcup upgrade

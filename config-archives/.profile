@@ -11,12 +11,15 @@ export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
+export WINIT_HIDPI_FACTOR=2
+
 export PATH=$HOME/.cargo/bin:$HOME/go/bin:$PATH
 export PATH=$HOME/anaconda3/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
+# make julia great again!
 export JULIA_LOAD_PATH=.
 export JULIA_DEPOT_PATH=$HOME/.julia
 
@@ -26,8 +29,6 @@ export PATH=$HOME/.idris2/bin:$PATH
 # todo: move LGOPATH and $GOPATH to $HOME/SDK
 export LGOPATH=$HOME/projects/go
 export GOPATH=$HOME/projects/go
-
-export WINIT_HIDPI_FACTOR=2
 
 export GOPROXY=http://127.0.0.1:1080
 

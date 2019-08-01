@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # TODO: use ansible to set up
 
+mkdir -p ~/projects/config/config_archives
 export SDK_DIR="${HOME}/sdk"
 echo "Make dirs..."
 mkdir -p ~/projects/web/hosts
