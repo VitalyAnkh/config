@@ -87,12 +87,11 @@ echo "Update cargo components..."
 cargo install-update -a
 echo "********************************************************************************"
 echo "Update rust analyzer..."
-npm install -g vsce
 cd ~/projects/rust/rust-analyzer
 cargo clean
 git checkout -- Cargo.lock
 git pull
-cargo install-code
+cargo install-ra
 echo "********************************************************************************"
 echo "Update IJava..."
 cd ~/projects/java/IJava && cd IJava && git pull
