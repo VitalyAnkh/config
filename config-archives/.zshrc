@@ -194,3 +194,16 @@ antigen apply
 
 export JAVA_HOME=/usr/lib/jvm/default
 source ~/.ghcup/env
+
+
+# set proxy
+function set_proxy() {
+    export {http,https,ftp}_proxy="http://127.0.0.1:1080"
+    export {HTTP,HTTPS,FTP}_PROXY="http://127.0.0.1:1080"
+}
+
+# unset proxy
+function unset_proxy() {
+    unset {http,https,ftp}_proxy
+    unset {HTTP,HTTPS,FTP}_PROXY
+}
