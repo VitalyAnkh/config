@@ -1,6 +1,9 @@
 export EDITOR=/usr/bin/vim
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
+# will make QT_QPA_PLATFORM=wayland when time is ready
+#export QT_QPA_PLATFORM=wayland
+
 # to scale a factor of 2 to support sway
 # export QT_AUTO_SCREEN_SCALE_FACTOR=2
 # export GDK_SCALE=2
