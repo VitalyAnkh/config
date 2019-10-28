@@ -42,6 +42,9 @@ echo "**************************************************************************
 echo "modprobe nvidia..."
 sudo modprobe nvidia && sudo modprobe nvidia-modset && sudo modprobe nvidia-uvm
 echo "********************************************************************************"
+echo "update common things..."
+./update-common-things.sh
+echo "********************************************************************************"
 echo "update agda-stdlib from agda-lib git repo"
 source ~/.profile
 # the $AGDA_STDLIB is defined in .profile
