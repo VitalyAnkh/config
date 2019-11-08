@@ -4,6 +4,7 @@
 # todo: update haskell ide engine
 # todo: clean build cache after building successfully
 # todo: read the fucking manual of stack and cabal and fix update issue
+# todo: backup .z.lua config data
 
 echo "********************************************************************************"
 echo "Copy config files..."
