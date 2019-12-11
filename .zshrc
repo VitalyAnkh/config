@@ -105,6 +105,7 @@ alias ohmyzsh="mate ~/.oh-my-zsh"
 alias e="emacs"
 alias ed="emacs -d"
 alias chez="chez-scheme"
+alias ls = "lsd"
 
 ZSH_CACHE_DIR=$HOME/.oh-my-zsh-cache
 if [[ ! -d $ZSH_CACHE_DIR ]]; then
