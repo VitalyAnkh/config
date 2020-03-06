@@ -195,6 +195,8 @@ antigen apply
 export JAVA_HOME=/usr/lib/jvm/default
 source ~/.ghcup/env
 
+# launch aria2
+aria2c --conf-path="/home/vitalyr/.aria2/aria2.conf" -D
 
 # set proxy
 function set_proxy() {
