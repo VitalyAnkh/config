@@ -120,7 +120,7 @@ eval $(thefuck --alias)
 
 # source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-setxkbmap -option "ctrl:swapcaps"
+# setxkbmap -option "ctrl:swapcaps"
 alias ls="lsd"
 alias cat="bat"
 alias pc="proxychains"

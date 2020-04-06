@@ -70,7 +70,7 @@ alias zaproxy='docker run -it --rm -v ~/.ZAP:/root/.ZAP -e DISPLAY -v $HOME/.Xau
 
 alias pc=proxychains
 
-export SDK_DIR=~/sdk
+export SDK_DIR=/home/vitalyr/sdk
 
 export AGDA_STDLIB=$SDK_DIR/agda/agda-stdlib
 export AGDA_DIR=/home/vitalyr/.agda
@@ -90,4 +90,4 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 
 export GO111MODULE=on
 # todo: make CLASSPATH great again
-export PATH=~/.ghcup/bin:$PATH
+export PATH=/home/vitalyr/.ghcup/bin:$PATH

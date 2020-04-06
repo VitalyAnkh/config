@@ -48,6 +48,7 @@ echo "update common things..."
 echo "********************************************************************************"
 echo "update agda-stdlib from agda-lib git repo"
 source ~/.profile
+$AGDA_STDLIB = /home/vitalyr/sdk/agda-stdlib/
 # the $AGDA_STDLIB is defined in .profile
 cd $AGDA_STDLIB
 git pull
@@ -60,7 +61,7 @@ npm install -g bash-language-server
 npm install -g vsce
 echo "********************************************************************************"
 echo "Update rbenv..."
-cd ~/.rbenv
+cd $HOME/.rbenv
 git pull
 
 #echo "*******************************************************************************"
@@ -70,6 +71,11 @@ git pull
 #rm -rf ~/.gvm
 #sh binscript/gvm-installer
 #source ~/.gvm/script/gvm
+
+echo "********************************************************************************"
+cd $SDK_DIR/chemacs
+git pull
+echo "Update chemacs done!"
 
 echo "********************************************************************************"
 echo "Update ruby build..."
