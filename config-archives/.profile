@@ -2,7 +2,7 @@ export EDITOR=/usr/bin/vim
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 # make QT_QPA_PLATFORM=wayland when time is ready
-# export QT_QPA_PLATFORM=wayland
+export QT_QPA_PLATFORM=wayland
 
 # to scale a factor of 2 to support sway
 # export QT_AUTO_SCREEN_SCALE_FACTOR=2
@@ -19,8 +19,6 @@ export WINIT_HIDPI_FACTOR=2
 export PATH=$HOME/.cargo/bin:$HOME/go/bin:$PATH
 export PATH=$HOME/anaconda3/bin:$PATH
 export PATH=$HOME/projects/dart/flutter/bin:$PATH
-export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/.cabal/bin:$PATH
 
 # make julia great again!
 export JULIA_LOAD_PATH=.
