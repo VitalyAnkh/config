@@ -8,4 +8,3 @@ Besides, this also builds `servo`, `rust-analyzer`, `idris2`.
 ## How to use
 
 You should read the `set-up-new-*.sh` file and `update-*.sh` first. If you are satisfied with the effect, run the former script once and the latter script every day (to keep them update to date every day). Or you can set a timed task using "crontab" or "systemd".
-
