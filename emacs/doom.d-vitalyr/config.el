@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 35))
+(setq doom-font (font-spec :family "FantasqueSansMono Nerd Font Mono" :size 100))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -37,6 +37,9 @@
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
+
+(setq org-roam-directory "~/projects/learn/Notebook/org/roam")
+(add-hook 'after-init-hook 'org-oram-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
