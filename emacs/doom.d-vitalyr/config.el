@@ -40,6 +40,7 @@
 
 (setq org-roam-directory "~/projects/learn/Notebook/org/roam")
 (add-hook 'after-init-hook 'org-oram-mode)
+(add-hook 'doom-first-file-hook #'auto-image-file-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
