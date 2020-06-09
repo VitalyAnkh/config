@@ -86,7 +86,7 @@
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        direnv
        ;;docker
-       editorconfig      ; let someone else argue about tabs vs spaces
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
        ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
@@ -124,7 +124,7 @@
        fstar             ; (dependent) types and (monadic) effects and Z3
        ;;(go +lsp)         ; the hipster dialect
        (haskell +dante)  ; a language that's lazier than I am
-       ;;hy                ; readability of scheme w/ speed of python
+       hy                ; readability of scheme w/ speed of python
        idris             ;
        json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
@@ -140,7 +140,15 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ocaml             ; an objective camel
-       (org +roam)               ; organize your plain life in plain text
+       (org +roam
+            +dragdrop
+            +journal
+            +jupyter
+            +pandoc
+            +pomodoro
+            +present
+            ;;+hugo
+            )               ; organize your plain life in plain text
        ;;perl              ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
@@ -163,9 +171,9 @@
        yaml              ; JSON, but readable
 
        :email
-       ;;(mu4e +gmail)
-       ;;notmuch
-       ;;(wanderlust +gmail)
+       (mu4e +gmail)
+       notmuch
+       (wanderlust +gmail)
 
        :app
        calendar

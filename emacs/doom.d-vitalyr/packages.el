@@ -47,10 +47,3 @@
 ;(package! builtin-package :recipe (:branch "develop"))
 (package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
-
-(setq org-roam-server-host "127.0.0.1"
-                                        org-roam-server-port 8080
-                                        org-roam-server-authenticate nil
-                                        org-roam-server-label-truncate t
-                                        org-roam-server-label-truncate-lenght 60
-                                        org-roam-server-label-wrap-length 20)
