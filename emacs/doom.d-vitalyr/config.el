@@ -63,7 +63,7 @@
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
   :init
   (setq org-roam-directory org-directory)
-  (setq org-roam-graph-viewer "/usr/bin/open")
+  ;;(setq org-roam-graph-viewer "/usr/bin/open")
   (map! :leader
         :prefix "n"
         :desc "Org-Roam-Insert" "i" #'org-roam-insert
