@@ -53,17 +53,35 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+(require 'posframe)
+
 (setq +latex-viewers '(pdf-tools))
+(setq pdf-view-use-scaling t)
+(setq pdf-view-resize-factor 1.5)
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
+(use-package pdf-tools
+  :config
+  (setq-default pdf-view-display-size 'fit-width)
+
+  )
+(setq TeX-source-correlate-start-server t)
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
+;;(setq-default preview-scale-function 2)
+;; preview-scale-function and preview-scale has no effect in the size of the
+;; preview image
+
+(setq-default preview-default-document-pt 5)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
+
 (use-package! org-roam
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
   :init
   (setq org-roam-directory org-directory)
-  ;;(setq org-roam-graph-viewer "/usr/bin/open")
+  ;;(setq org-roam-graph-viewer "open")
   (map! :leader
         :prefix "n"
         :desc "Org-Roam-Insert" "i" #'org-roam-insert
@@ -82,30 +100,52 @@
                                         org-roam-server-label-truncate-lenght 60
                                         org-roam-server-label-wrap-length 20)
 
-(use-package pyim
-  :ensure nil
-  :config
-  (use-package pyim-basedict
-              :ensure nil
-              :config (pyim-basedict-enable))
-  (setq default-input-method "pyim")
-  (setq pyim-default-scheme 'xiaohe-shuangpin)
+;; (use-package pyim                       ;
+;;   :ensure nil
+;;   :config
+;;   (use-package pyim-basedict
+;;               :ensure nil
+;;               :config (pyim-basedict-enable))
+;;   ;;(setq default-input-method "pyim")
+;;   (setq pyim-default-scheme 'xiaohe-shuangpin)
+;; ;
 
   ;;(setq-default pyim-english-input-switch-functions
    ;;             '(pyim-probe-dynamic-english
     ;;              pyim-probe-isearch-mode
      ;;             pyim-probe-program-mode
       ;;            pyim-probe-org-structure-template))
-  (setq-default pyim-punctuation-half-width-functions
-                '(pyim-probe-punctuation-line-beginning
-                  pyim-probe-punctuation-after-punctuation))
-  (pyim-isearch-mode 1)
-  ;;(setq pyim-page-tooltip 'popup)
+  ;; (setq-default pyim-punctuation-half-width-functions
+  ;;               '(pyim-probe-punctuation-line-beginning
+  ;;                 pyim-probe-punctuation-after-punctuation))
+  ;; (pyim-isearch-mode 1)
+  ;; ;;(setq pyim-page-tooltip 'popup)
 
   ;;(setq pyim-page-length 5)
-  (add-hook 'emacs-startup-hook #'(lambda () (pyim-restart-1 t)))
-  )
-(setq pyim-dicts
-      '((:name "dict1" :file "/home/vitalyr/sdk/config/emacs/pyim-bigdict.pyim.gz")
-        ))
+;;   (add-hook 'emacs-startup-hook #'(lambda () (pyim-restart-1 t)))
+;;   )
+;; (setq pyim-dicts                        ;
+;;       '((:name "dict1" :file "/home/vitalyr/sdk/config/emacs/pyim-bigdict.pyim.gz")
+;;         ))
         
+
+(use-package rime
+;;   :straight (rime :type git             ;
+;;                   :host github          ;
+;;                   :repo "DogLooksGood/emacs-rime" ;
+;;                   :files ("*.el" "Makefile" "lib.c"))
+  :custom
+  (default-input-method "rime"))
+
+(setq rime-user-data-dir "~/sdk/config/input_method/rime")
+(setq rime-show-candidate "posframe")
+(setq rime-disable-predicates
+      '(rime-predicate-evil-mode-p
+        rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
+        rime-predicate-prog-in-code-p
+        ))
+;;(setq rime--popup t)
+(setq rime-show-preedit t)
+;
+;锦瑟无端五十弦
+;

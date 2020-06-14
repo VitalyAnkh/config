@@ -47,3 +47,4 @@
 ;(package! builtin-package :recipe (:branch "develop"))
 (package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
+(package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))

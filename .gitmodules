@@ -7,3 +7,9 @@
 [submodule "emacs/emacs.d-doom"]
 	path = emacs/emacs.d-doom
 	url = https://github.com/hlissner/doom-emacs
+[submodule "gnome/PaperWM"]
+	path = gnome/PaperWM
+	url = git@github.com:paperwm/PaperWM.git
+[submodule "input_method/plum"]
+	path = input_method/plum
+	url = https://github.com/rime/plum.git
