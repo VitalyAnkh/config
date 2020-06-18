@@ -1,0 +1,56 @@
+[Groups/0]
+# Group Name
+Name=Languages
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=keyboard-fr
+
+[Groups/0/Items/0]
+# Name
+Name=keyboard-ru
+# Layout
+Layout=
+
+[Groups/0/Items/1]
+# Name
+Name=keyboard-fr
+# Layout
+Layout=
+
+[Groups/0/Items/2]
+# Name
+Name=keyboard-jp
+# Layout
+Layout=
+
+[Groups/1]
+# Group Name
+Name=Default
+# Layout
+Default Layout=us
+# Default Input Method
+DefaultIM=keyboard-us-scn
+
+[Groups/1/Items/0]
+# Name
+Name=keyboard-us
+# Layout
+Layout=
+
+[Groups/1/Items/1]
+# Name
+Name=keyboard-us-scn
+# Layout
+Layout=
+
+[Groups/1/Items/2]
+# Name
+Name=shuangpin
+# Layout
+Layout=Xiaohe
+
+[GroupOrder]
+0=Default
+1=Languages
+

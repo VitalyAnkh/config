@@ -48,3 +48,4 @@
 (package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
+(package! valign :recipe (:host github :repo "casouri/valign"))

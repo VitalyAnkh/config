@@ -1,0 +1,9 @@
+2020/06/16-23:02:31.822511 140250613544704 Log #92: 72 ops saved to Table #93 OK
+2020/06/16-23:02:31.822614 140250613544704 Archiving /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb/000092.log: OK
+2020/06/16-23:02:31.822668 140250613544704 Table #83: 309 entries OK
+2020/06/16-23:02:31.822690 140250613544704 Table #88: 34 entries OK
+2020/06/16-23:02:31.822721 140250613544704 Table #85: 263 entries OK
+2020/06/16-23:02:31.822747 140250613544704 Table #91: 28 entries OK
+2020/06/16-23:02:31.822760 140250613544704 Table #93: 72 entries OK
+2020/06/16-23:02:31.822808 140250613544704 Archiving /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb/MANIFEST-000090: OK
+2020/06/16-23:02:31.833630 140250613544704 **** Repaired leveldb /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb; recovered 5 files; 14941 bytes. Some data may have been lost. ****

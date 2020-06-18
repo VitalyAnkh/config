@@ -81,7 +81,7 @@
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
   :init
   (setq org-roam-directory org-directory)
-  ;;(setq org-roam-graph-viewer "open")
+  (setq org-roam-graph-viewer "dot")
   (map! :leader
         :prefix "n"
         :desc "Org-Roam-Insert" "i" #'org-roam-insert
@@ -138,7 +138,7 @@
   (default-input-method "rime"))
 
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
-(setq rime-show-candidate "posframe")
+;; (setq rime-show-candidate "posframe")
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
@@ -146,6 +146,13 @@
         ))
 ;;(setq rime--popup t)
 (setq rime-show-preedit t)
-;
-;锦瑟无端五十弦
-;
+
+(use-package! valign
+  :init
+  (require 'valign)
+  :hook
+  ('org-mode . #'valign-mode))
+
+(require 'kana)
+(setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
+(setq org-format-latex-options 2.0)
