@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "FantasqueSansMono Nerd Font Mono" :size 40 :weight 'semi-light)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 40 :weight 'light)
                  doom-variable-pitch-font (font-spec :family "Fira Code" :size 40))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -76,12 +76,13 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
+(auto-image-file-mode 1)
 
 (use-package! org-roam
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
   :init
   (setq org-roam-directory org-directory)
-  (setq org-roam-graph-viewer "dot")
+  ;;(setq org-roam-graph-viewer "inkscape")
   (map! :leader
         :prefix "n"
         :desc "Org-Roam-Insert" "i" #'org-roam-insert
@@ -99,7 +100,8 @@
                                         org-roam-server-label-truncate t
                                         org-roam-server-label-truncate-lenght 60
                                         org-roam-server-label-wrap-length 20)
-
+;; auto start org roam server
+(add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
 ;; (use-package pyim                       ;
 ;;   :ensure nil
 ;;   :config
@@ -155,4 +157,16 @@
 
 (require 'kana)
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
-(setq org-format-latex-options 2.0)
+(require 'org)
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 4.0))
+(setq org-preview-latex-default-process 'dvisvgm)
+(use-package org-latex-instant-preview
+  :defer t
+  :hook (org-mode . org-latex-instant-preview-mode)
+  :init
+  (setq org-latex-instant-preview-tex2svg-bin
+        ;; location of tex2svg executable
+        "tex2svg"))
+(org-roam-server-mode)
+(load-file (let ((coding-system-for-read 'utf-8))
+                (shell-command-to-string "agda-mode locate")))
