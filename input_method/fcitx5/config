@@ -5,6 +5,10 @@ EnumerateWithTriggerKeys=True
 AltTriggerKeys=
 # 向后切换输入法
 EnumerateBackwardKeys=
+# 默认跳转前一个候选词
+PrevCandidate=
+# 默认跳转下一个候选词
+NextCandidate=
 
 [Hotkey/TriggerKeys]
 0=Control+Shift+F8
@@ -25,15 +29,9 @@ EnumerateBackwardKeys=
 0=Hangul_Romaja
 
 [Hotkey/PrevPage]
-0=Up
+0=Control+Tab
 
 [Hotkey/NextPage]
-0=Down
-
-[Hotkey/PrevCandidate]
-0=Shift+Tab
-
-[Hotkey/NextCandidate]
 0=Tab
 
 [Behavior]
@@ -46,7 +44,7 @@ ShowInputMethodInformation=False
 # 在焦点更改时显示输入法信息
 showInputMethodInformationWhenFocusIn=True
 # 默认页大小
-DefaultPageSize=7
+DefaultPageSize=9
 # Force Enabled Addons
 EnabledAddons=
 # Force Disabled Addons

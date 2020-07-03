@@ -24,8 +24,9 @@
        ;;ido               ; the other *other* search engine...
        (ivy +fuzzy
             +childframe
-            )
-               ; a search engine for love and life
+            +prescient
+            +icons
+        ) ;; a search engine for love and life
 
        :ui
        deft              ; notational velocity for Emacs
@@ -41,7 +42,9 @@
        nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
-       (popup +defaults +all)   ; tame sudden yet inevitable temporary windows
+       (popup +defaults
+              +all
+              )   ; tame sudden yet inevitable temporary windows
        (pretty-code +fira)      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
@@ -74,7 +77,7 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       ;;eshell            ; the elisp shell that works everywhere
+       eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
        ;;term              ; basic terminal emulator for Emacs
        vterm             ; the best terminal emulation in Emacs

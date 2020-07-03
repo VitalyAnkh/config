@@ -19,7 +19,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "JetBrains Mono" :size 40 :weight 'light)
+(setq doom-font (font-spec :family "mononoki" :size 45 :weight 'light)
                  doom-variable-pitch-font (font-spec :family "Fira Code" :size 40))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -53,8 +53,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(require 'posframe)
-
 (setq +latex-viewers '(pdf-tools))
 (setq pdf-view-use-scaling t)
 (setq pdf-view-resize-factor 1.5)
@@ -76,7 +74,7 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
-(auto-image-file-mode 1)
+;;(auto-image-file-mode 1)
 
 (use-package! org-roam
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
@@ -101,7 +99,7 @@
                                         org-roam-server-label-truncate-lenght 60
                                         org-roam-server-label-wrap-length 20)
 ;; auto start org roam server
-(add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
+;; (add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
 ;; (use-package pyim                       ;
 ;;   :ensure nil
 ;;   :config
@@ -131,35 +129,32 @@
 ;;         ))
         
 
-(use-package rime
-;;   :straight (rime :type git             ;
-;;                   :host github          ;
-;;                   :repo "DogLooksGood/emacs-rime" ;
-;;                   :files ("*.el" "Makefile" "lib.c"))
-  :custom
-  (default-input-method "rime"))
-
+(setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
-;; (setq rime-show-candidate "posframe")
+;;(setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
         rime-predicate-prog-in-code-p
         ))
-;;(setq rime--popup t)
-(setq rime-show-preedit t)
+;; (setq rime-posframe-properties
+;;  (list :font "sarasa ui sc"
+;;        :internal-border-width 10))
+(setq rime--popup 1)
+(setq rime-show-preedit 1)
+;;(setq rime-posframe-fixed-position t)
 
 (use-package! valign
   :init
   (require 'valign)
   :hook
   ('org-mode . #'valign-mode))
-
 (require 'kana)
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
 (require 'org)
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 4.0))
 (setq org-preview-latex-default-process 'dvisvgm)
+
 (use-package org-latex-instant-preview
   :defer t
   :hook (org-mode . org-latex-instant-preview-mode)
@@ -167,6 +162,93 @@
   (setq org-latex-instant-preview-tex2svg-bin
         ;; location of tex2svg executable
         "tex2svg"))
+
 (org-roam-server-mode)
+
 (load-file (let ((coding-system-for-read 'utf-8))
                 (shell-command-to-string "agda-mode locate")))
+
+(require 'deft)
+(setq deft-directory org-directory)
+
+(use-package smart-input-source
+  :init
+  ;; set the english input source
+  ;;(setq smart-input-source-english
+   ;;     "com.apple.keylayout.US")
+
+  ;; set the default other language input source for all buffer
+  ;;(setq-default smart-input-source-other
+   ;;             "com.sogou.inputmethod.sogou.pinyin")
+
+  :config
+  ;; Input source specific cursor color
+  (defvar original-cursor-background nil)
+  (add-hook 'smart-input-source-set-english-hook
+            (lambda ()
+              (when original-cursor-background
+                (set-cursor-color original-cursor-background))))
+  (add-hook 'smart-input-source-set-other-hook
+            (lambda ()
+              (unless original-cursor-background
+                (setq original-cursor-background
+                      (or (cdr (assq 'cursor-color default-frame-alist))
+                          (face-background 'cursor)
+                          "Red")))
+              (set-cursor-color "green")))
+
+  ;; (push 'YOUR-COMMAND smart-input-source-preserve-save-triggers)
+
+  ;; enable the /respect/ mode
+  (smart-input-source-global-respect-mode t)
+
+  ;; enable the /follow context/ and /inline english/ mode for all buffers
+  (smart-input-source-global-follow-context-mode t)
+  (smart-input-source-global-inline-english-mode t)
+
+  ;; enable the /follow context/ and /inline english/ mode for specific buffers
+  ;; :hook
+  ;; (((text-mode prog-mode) . smart-input-source-follow-context-mode)
+  ;;  ((text-mode prog-mode) . smart-input-source-inline-english-mode))
+  )
+
+(require 'subr-x)
+(setq smart-input-source-external-ism "fcitx5-remote")
+(setq smart-input-source-english "1")
+(setq-default smart-input-source-other "2")
+(setq smart-input-source-do-get
+      (lambda()
+        (string-trim
+         (shell-command-to-string
+          smart-input-source-external-ism))))
+(setq smart-input-source-do-set
+      (lambda(source)
+        (pcase source
+          ("1" (string-trim (shell-command-to-string
+                             (concat smart-input-source-external-ism " -c"))))
+          ("2" (string-trim (shell-command-to-string
+                             (concat smart-input-source-external-ism " -o")))))))
+
+
+(require 'nox)
+(dolist (hook (list
+               'html-mode-hook
+               'css-mode-hook
+               'js-mode-hook
+               'json-mode-hook
+               ;;'rust-mode-hook
+               'python-mode-hook
+               'ruby-mode-hook
+               'java-mode-hook
+               'sh-mode-hook
+               'tex-mode-hook
+               'php-mode-hook
+               'c-mode-common-hook
+               'c-mode-hook
+               'csharp-mode-hook
+               'c++-mode-hook
+               'haskell-mode-hook
+
+
+               ))
+  (add-hook hook '(lambda () (nox-ensure))))
