@@ -53,6 +53,8 @@
 (package! org-latex-instant-preview :recipe (:host github :repo "yangsheng6810/org-latex-instant-preview"))
 (package! smart-input-source :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
+(package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
+(package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
 ;; no nox any more
 ;;(package! nox :recipe(:host github :repo "manateelazycat/nox"))
 (unpin! org-roam)

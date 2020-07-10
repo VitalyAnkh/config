@@ -84,7 +84,7 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       spell             ; tasing you for misspelling mispelling
+       ;;spell             ; tasing you for misspelling mispelling
        grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -137,7 +137,10 @@
        ;;fsharp           ; ML stands for Microsoft's Language
        fstar             ; (dependent) types and (monadic) effects and Z3
        (go +lsp)         ; the hipster dialect
-       (haskell +dante)  ; a language that's lazier than I am
+       (haskell
+        +dante
+        +ghcide
+        )  ; a language that's lazier than I am
        hy                ; readability of scheme w/ speed of python
        idris             ;
        (json              ; At least it ain't XML
@@ -153,7 +156,7 @@
         +latexmk
         +cdlatex
         +fold
-        +lsp)              ; writing papers in Emacs has never been so fun
+        )              ; writing papers in Emacs has never been so fun
        lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs

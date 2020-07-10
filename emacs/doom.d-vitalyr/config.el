@@ -52,6 +52,20 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (setq lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
+  (setq lsp-rust-analyzer-proc-macro-enable t)
+  (setq lsp-rust-analyzer-display-chaining-hints t)
+  (setq lsp-rust-analyzer-display-parameter-hints t)
+  (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  (setq lsp-rust-all-features t)
+  (setq lsp-rust-full-docs t)
+  (setq lsp-enable-semantic-highlighting t))
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 
 (setq +latex-viewers '(pdf-tools))
 (setq pdf-view-use-scaling t)
@@ -100,34 +114,6 @@
                                         org-roam-server-label-wrap-length 20)
 ;; auto start org roam server
 ;; (add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
-;; (use-package pyim                       ;
-;;   :ensure nil
-;;   :config
-;;   (use-package pyim-basedict
-;;               :ensure nil
-;;               :config (pyim-basedict-enable))
-;;   ;;(setq default-input-method "pyim")
-;;   (setq pyim-default-scheme 'xiaohe-shuangpin)
-;; ;
-
-  ;;(setq-default pyim-english-input-switch-functions
-   ;;             '(pyim-probe-dynamic-english
-    ;;              pyim-probe-isearch-mode
-     ;;             pyim-probe-program-mode
-      ;;            pyim-probe-org-structure-template))
-  ;; (setq-default pyim-punctuation-half-width-functions
-  ;;               '(pyim-probe-punctuation-line-beginning
-  ;;                 pyim-probe-punctuation-after-punctuation))
-  ;; (pyim-isearch-mode 1)
-  ;; ;;(setq pyim-page-tooltip 'popup)
-
-  ;;(setq pyim-page-length 5)
-;;   (add-hook 'emacs-startup-hook #'(lambda () (pyim-restart-1 t)))
-;;   )
-;; (setq pyim-dicts                        ;
-;;       '((:name "dict1" :file "/home/vitalyr/sdk/config/emacs/pyim-bigdict.pyim.gz")
-;;         ))
-        
 
 (setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
@@ -253,20 +239,9 @@
 ;;                ))
 ;;  (add-hook hook '(lambda () (nox-ensure))))
 
-(after! rustic
-  (setq rustic-lsp-server 'rust-analyzer)
-  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
-  (setq lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
-  (setq lsp-rust-analyzer-proc-macro-enable t)
-  (setq lsp-rust-analyzer-display-chaining-hints t)
-  (setq lsp-rust-analyzer-display-parameter-hints t)
-  (setq lsp-rust-analyzer-server-display-inlay-hints t)
-  (setq lsp-rust-all-features t)
-  (setq lsp-rust-full-docs t)
-  (setq lsp-enable-semantic-highlighting t))
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
 
 ;; garbage collection for org-roam
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 (setq haskell-process-type 'cabal-new-repl)
+(add-hook 'prog-mode-hook #'wucuo-start)
+(add-hook 'text-mode-hook #'wucuo-start)
