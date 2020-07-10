@@ -20,7 +20,7 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "mononoki" :size 45 :weight 'light)
-                 doom-variable-pitch-font (font-spec :family "Fira Code" :size 40))
+                 doom-variable-pitch-font (font-spec :family "Noto Sans CJK SC Light" :size 40))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -171,84 +171,102 @@
 (require 'deft)
 (setq deft-directory org-directory)
 
-(use-package smart-input-source
-  :init
-  ;; set the english input source
-  ;;(setq smart-input-source-english
-   ;;     "com.apple.keylayout.US")
+;; (use-package smart-input-source
+;;   :init
+;;   ;; set the english input source
+;;   ;;(setq smart-input-source-english
+;;    ;;     "com.apple.keylayout.US")
 
-  ;; set the default other language input source for all buffer
-  ;;(setq-default smart-input-source-other
-   ;;             "com.sogou.inputmethod.sogou.pinyin")
+;;   ;; set the default other language input source for all buffer
+;;   ;;(setq-default smart-input-source-other
+;;    ;;             "com.sogou.inputmethod.sogou.pinyin")
 
-  :config
-  ;; Input source specific cursor color
-  (defvar original-cursor-background nil)
-  (add-hook 'smart-input-source-set-english-hook
-            (lambda ()
-              (when original-cursor-background
-                (set-cursor-color original-cursor-background))))
-  (add-hook 'smart-input-source-set-other-hook
-            (lambda ()
-              (unless original-cursor-background
-                (setq original-cursor-background
-                      (or (cdr (assq 'cursor-color default-frame-alist))
-                          (face-background 'cursor)
-                          "Red")))
-              (set-cursor-color "green")))
+;;   :config
+;;   ;; Input source specific cursor color
+;;   (defvar original-cursor-background nil)
+;;   (add-hook 'smart-input-source-set-english-hook
+;;             (lambda ()
+;;               (when original-cursor-background
+;;                 (set-cursor-color original-cursor-background))))
+;;   (add-hook 'smart-input-source-set-other-hook
+;;             (lambda ()
+;;               (unless original-cursor-background
+;;                 (setq original-cursor-background
+;;                       (or (cdr (assq 'cursor-color default-frame-alist))
+;;                           (face-background 'cursor)
+;;                           "Red")))
+;;               (set-cursor-color "green")))
 
   ;; (push 'YOUR-COMMAND smart-input-source-preserve-save-triggers)
 
   ;; enable the /respect/ mode
-  (smart-input-source-global-respect-mode t)
+;;   (smart-input-source-global-respect-mode t)
 
-  ;; enable the /follow context/ and /inline english/ mode for all buffers
-  (smart-input-source-global-follow-context-mode t)
-  (smart-input-source-global-inline-english-mode t)
+;;   ;; enable the /follow context/ and /inline english/ mode for all buffers
+;;   (smart-input-source-global-follow-context-mode t)
+;;   (smart-input-source-global-inline-english-mode t)
 
-  ;; enable the /follow context/ and /inline english/ mode for specific buffers
-  ;; :hook
-  ;; (((text-mode prog-mode) . smart-input-source-follow-context-mode)
-  ;;  ((text-mode prog-mode) . smart-input-source-inline-english-mode))
-  )
+;;   ;; enable the /follow context/ and /inline english/ mode for specific buffers
+;;   ;; :hook
+;;   ;; (((text-mode prog-mode) . smart-input-source-follow-context-mode)
+;;   ;;  ((text-mode prog-mode) . smart-input-source-inline-english-mode))
+;;   )
 
-(require 'subr-x)
-(setq smart-input-source-external-ism "fcitx5-remote")
-(setq smart-input-source-english "1")
-(setq-default smart-input-source-other "2")
-(setq smart-input-source-do-get
-      (lambda()
-        (string-trim
-         (shell-command-to-string
-          smart-input-source-external-ism))))
-(setq smart-input-source-do-set
-      (lambda(source)
-        (pcase source
-          ("1" (string-trim (shell-command-to-string
-                             (concat smart-input-source-external-ism " -c"))))
-          ("2" (string-trim (shell-command-to-string
-                             (concat smart-input-source-external-ism " -o")))))))
-
-
-(require 'nox)
-(dolist (hook (list
-               'html-mode-hook
-               'css-mode-hook
-               'js-mode-hook
-               'json-mode-hook
-               ;;'rust-mode-hook
-               'python-mode-hook
-               'ruby-mode-hook
-               'java-mode-hook
-               'sh-mode-hook
-               'tex-mode-hook
-               'php-mode-hook
-               'c-mode-common-hook
-               'c-mode-hook
-               'csharp-mode-hook
-               'c++-mode-hook
-               'haskell-mode-hook
+;; (require 'subr-x)
+;; (setq smart-input-source-external-ism "fcitx5-remote")
+;; (setq smart-input-source-english "1")
+;; (setq-default smart-input-source-other "2")
+;; (setq smart-input-source-do-get
+;;       (lambda()
+;;         (string-trim
+;;          (shell-command-to-string
+;;           smart-input-source-external-ism))))
+;; (setq smart-input-source-do-set
+;;       (lambda(source)
+;;         (pcase source
+;;           ("1" (string-trim (shell-command-to-string
+;;                              (concat smart-input-source-external-ism " -c"))))
+;;           ("2" (string-trim (shell-command-to-string
+;;                              (concat smart-input-source-external-ism " -o")))))))
 
 
-               ))
-  (add-hook hook '(lambda () (nox-ensure))))
+;; (require 'nox)
+;; (dolist (hook (list
+;;                'html-mode-hook
+;;                'css-mode-hook
+;;                'js-mode-hook
+;;                'json-mode-hook
+;;                ;;'rust-mode-hook
+;;                'python-mode-hook
+;;                'ruby-mode-hook
+;;                'java-mode-hook
+;;                'sh-mode-hook
+;;                'tex-mode-hook
+;;                'php-mode-hook
+;;                'c-mode-common-hook
+;;                'c-mode-hook
+;;                'csharp-mode-hook
+;;                'c++-mode-hook
+;;                'haskell-mode-hook
+
+
+;;                ))
+;;  (add-hook hook '(lambda () (nox-ensure))))
+
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (setq lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
+  (setq lsp-rust-analyzer-proc-macro-enable t)
+  (setq lsp-rust-analyzer-display-chaining-hints t)
+  (setq lsp-rust-analyzer-display-parameter-hints t)
+  (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  (setq lsp-rust-all-features t)
+  (setq lsp-rust-full-docs t)
+  (setq lsp-enable-semantic-highlighting t))
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+;; garbage collection for org-roam
+(setq org-roam-db-gc-threshold most-positive-fixnum)
+(setq haskell-process-type 'cabal-new-repl)

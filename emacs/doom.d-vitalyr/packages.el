@@ -45,12 +45,15 @@
 ;; This is required for some packages whose default branch isn't 'master' (which
 ;; our package manager can't deal with; see raxod502/straight.el#279)
 ;(package! builtin-package :recipe (:branch "develop"))
+;
 (package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-latex-instant-preview :recipe (:host github :repo "yangsheng6810/org-latex-instant-preview"))
 (package! smart-input-source :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
-(package! nox :recipe(:host github :repo "manateelazycat/nox"))
+(package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
+;; no nox any more
+;;(package! nox :recipe(:host github :repo "manateelazycat/nox"))
 (unpin! org-roam)
 (unpin! rime)
