@@ -10,6 +10,3 @@
 [submodule "input_method/plum"]
 	path = input_method/plum
 	url = https://github.com/rime/plum.git
-[submodule "emacs/emacs.d-doom"]
-	path = emacs/emacs.d-doom
-	url = https://github.com/hlissner/doom-emacs

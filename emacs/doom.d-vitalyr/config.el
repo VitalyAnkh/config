@@ -20,12 +20,13 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "mononoki" :size 45 :weight 'light)
-                 doom-variable-pitch-font (font-spec :family "Noto Sans CJK SC Light" :size 40))
+      doom-variable-pitch-font (font-spec :family "Noto Sans CJK SC Light" :size 40)
+      doom-unicode-font (font-spec :family "Sarasa Term SC" :size 42)
+      doom-big-font (font-spec :family "Sarasa Term SC Semibold" :size 60))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -61,7 +62,7 @@
   (setq lsp-rust-analyzer-display-parameter-hints t)
   (setq lsp-rust-analyzer-server-display-inlay-hints t)
   (setq lsp-rust-all-features t)
-  (setq lsp-rust-full-docs t)
+  ;; (setq lsp-rust-full-docs t)
   (setq lsp-enable-semantic-highlighting t))
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -107,13 +108,14 @@
   (require 'org-roam-protocol) ;; require org-roam-protocol here
   )
 (setq org-roam-server-host "127.0.0.1"
-                                        org-roam-server-port 8080
-                                        org-roam-server-authenticate nil
-                                        org-roam-server-label-truncate t
-                                        org-roam-server-label-truncate-lenght 60
-                                        org-roam-server-label-wrap-length 20)
+      org-roam-server-port 8080
+      org-roam-server-authenticate nil
+      org-roam-server-label-truncate t
+      org-roam-server-label-truncate-lenght 60
+      org-roam-server-label-wrap-length 20)
 ;; auto start org roam server
 ;; (add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
+
 
 (setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
@@ -137,10 +139,8 @@
   ('org-mode . #'valign-mode))
 (require 'kana)
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
-(require 'org)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 4.0))
-(setq org-preview-latex-default-process 'dvisvgm)
 
+(require 'org)
 (use-package org-latex-instant-preview
   :defer t
   :hook (org-mode . org-latex-instant-preview-mode)
@@ -148,73 +148,38 @@
   (setq org-latex-instant-preview-tex2svg-bin
         ;; location of tex2svg executable
         "tex2svg"))
-
-(org-roam-server-mode)
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 10.0))
+(setq org-preview-latex-default-process 'dvisvgm)
 
 (load-file (let ((coding-system-for-read 'utf-8))
-                (shell-command-to-string "agda-mode locate")))
+             (shell-command-to-string "agda-mode locate")))
 
 (require 'deft)
 (setq deft-directory org-directory)
 
-;; (use-package smart-input-source
-;;   :init
-;;   ;; set the english input source
-;;   ;;(setq smart-input-source-english
-;;    ;;     "com.apple.keylayout.US")
-
-;;   ;; set the default other language input source for all buffer
-;;   ;;(setq-default smart-input-source-other
-;;    ;;             "com.sogou.inputmethod.sogou.pinyin")
+;; (use-package sis
+;;   ;; :hook
+;;   ;; enable the /follow context/ and /inline region/ mode for specific buffers
+;;   ;; (((text-mode prog-mode) . sis-follow-context-mode)
+;;   ;;  ((text-mode prog-mode) . sis-inline-mode))
 
 ;;   :config
-;;   ;; Input source specific cursor color
-;;   (defvar original-cursor-background nil)
-;;   (add-hook 'smart-input-source-set-english-hook
-;;             (lambda ()
-;;               (when original-cursor-background
-;;                 (set-cursor-color original-cursor-background))))
-;;   (add-hook 'smart-input-source-set-other-hook
-;;             (lambda ()
-;;               (unless original-cursor-background
-;;                 (setq original-cursor-background
-;;                       (or (cdr (assq 'cursor-color default-frame-alist))
-;;                           (face-background 'cursor)
-;;                           "Red")))
-;;               (set-cursor-color "green")))
+;;   ;; (sis-ism-lazyman-config
+;;   ;;  ;; "com.apple.keylayout.ABC"
+;;   ;;  "com.apple.keylayout.US"
+;;   ;;  ;; "im.rime.inputmethod.Squirrel.Rime"
+;;   ;;  "com.sogou.inputmethod.sogou.pinyin")
 
-  ;; (push 'YOUR-COMMAND smart-input-source-preserve-save-triggers)
-
-  ;; enable the /respect/ mode
-;;   (smart-input-source-global-respect-mode t)
-
-;;   ;; enable the /follow context/ and /inline english/ mode for all buffers
-;;   (smart-input-source-global-follow-context-mode t)
-;;   (smart-input-source-global-inline-english-mode t)
-
-;;   ;; enable the /follow context/ and /inline english/ mode for specific buffers
-;;   ;; :hook
-;;   ;; (((text-mode prog-mode) . smart-input-source-follow-context-mode)
-;;   ;;  ((text-mode prog-mode) . smart-input-source-inline-english-mode))
+;;   (sis-ism-lazyman-config nil nil 'fcitx5)
+;;   ;; enable the /cursor color/ mode
+;;   (sis-global-cursor-color-mode t)
+;;   ;; enable the /respect/ mode
+;;   (sis-global-respect-mode t)
+;;   ;; enable the /follow context/ mode for all buffers
+;;   (sis-global-follow-context-mode t)
+;;   ;; enable the /inline english/ mode for all buffers
+;;   (sis-global-inline-mode t)
 ;;   )
-
-;; (require 'subr-x)
-;; (setq smart-input-source-external-ism "fcitx5-remote")
-;; (setq smart-input-source-english "1")
-;; (setq-default smart-input-source-other "2")
-;; (setq smart-input-source-do-get
-;;       (lambda()
-;;         (string-trim
-;;          (shell-command-to-string
-;;           smart-input-source-external-ism))))
-;; (setq smart-input-source-do-set
-;;       (lambda(source)
-;;         (pcase source
-;;           ("1" (string-trim (shell-command-to-string
-;;                              (concat smart-input-source-external-ism " -c"))))
-;;           ("2" (string-trim (shell-command-to-string
-;;                              (concat smart-input-source-external-ism " -o")))))))
-
 
 ;; (require 'nox)
 ;; (dolist (hook (list
@@ -242,6 +207,75 @@
 
 ;; garbage collection for org-roam
 (setq org-roam-db-gc-threshold most-positive-fixnum)
+
 (setq haskell-process-type 'cabal-new-repl)
+
 (add-hook 'prog-mode-hook #'wucuo-start)
 (add-hook 'text-mode-hook #'wucuo-start)
+
+;; to speed up company
+(setq company-idle-delay 0)
+;; for native-comp branch
+
+;; (when (fboundp 'native-compile-async)
+;;   (if (yes-or-no-p "async compile?")
+;;       (setq comp-async-jobs-number 12 ;; not using all cores
+;;             comp-deferred-compilation t
+;;             comp-deferred-compilation-black-list '())
+;;     (setq comp-deferred-compilation nil)))
+
+;; (native-compile-async "~/.emacs.d/.local/straight/repos" 12 t)
+
+(use-package maple-run
+  :ensure nil
+  :commands (maple-run))
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  ;; (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;; (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+(transwin-toggle-transparent-frame)
+
+(use-package company-tabnine
+  :ensure t)
+(require 'company-tabnine)
+(add-to-list 'company-backends #'company-tabnine)
+
+;; Number the candidates (use M-1, M-2 etc to select completions).
+(setq company-show-numbers t)
+;; use aspell as ispell backend
+(setq-default ispell-program-name "aspell")
+;; use American English as ispell default dictionary
+(ispell-change-dictionary "american" t)
+
+(setq
+ ghc-ghc-options '("-fno-warn-missing-signatures")
+ haskell-compile-cabal-build-command "cd %s && stack build"
+ haskell-process-type 'stack-ghci
+ haskell-interactive-popup-errors nil
+ haskell-process-args-stack-ghci '("--ghc-options=-ferror-spans" "--with-ghc=ghci")
+ haskell-process-path-ghci "stack"
+ )
+
+(require 'eaf)
+(use-package eaf
+  :load-path "~/usr/share/emacs/site-lisp/eaf" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+  :custom
+  (eaf-find-alternate-file-in-dired t)
+  :config
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key take_photo "p" eaf-camera-keybinding))

@@ -45,7 +45,11 @@
        (popup +defaults
               +all
               )   ; tame sudden yet inevitable temporary windows
-       (pretty-code +fira)      ; ligatures or substitute text with pretty symbols
+       (pretty-code
+        +fira
+        ;; +hasklig
+        ;; +iosevka
+        )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
@@ -115,7 +119,7 @@
 
        :lang
        agda              ; types of types of types of types...
-       (cc +lsp)               ; C/C++/Obj-C madness
+       ;; (cc +lsp)               ; C/C++/Obj-C madness
        clojure           ; java with a lisp
        (common-lisp       ; if you've seen one lisp, you've seen them all
         +lsp
@@ -138,8 +142,9 @@
        fstar             ; (dependent) types and (monadic) effects and Z3
        (go +lsp)         ; the hipster dialect
        (haskell
-        +dante
-        +ghcide
+        +lsp
+        ;; +dante
+        ;; +ghcide
         )  ; a language that's lazier than I am
        hy                ; readability of scheme w/ speed of python
        idris             ;
@@ -178,9 +183,10 @@
             +capture
             +export
             +babel
+            +pretty
             ;;+hugo
             )               ; organize your plain life in plain text
-       ;;perl              ; write code no one else can comprehend
+       raku        ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional

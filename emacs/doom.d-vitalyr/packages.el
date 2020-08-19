@@ -55,7 +55,13 @@
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
 (package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
+(package! maple-run :recipe (:host github :repo "VitalyAnkh/emacs-maple-run"))
+(package! doom-themes :recipe (:host github :repo "hlissner/emacs-doom-themes"))
+(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
+(package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
+(package! org-roam-bibtex :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 ;; no nox any more
 ;;(package! nox :recipe(:host github :repo "manateelazycat/nox"))
 (unpin! org-roam)
+(unpin! org-roam-server)
 (unpin! rime)

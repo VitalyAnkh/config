@@ -1,0 +1,1 @@
+/home/vitalyr/sdk/config/emacs/chemacs/./.emacs
