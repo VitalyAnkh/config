@@ -19,10 +19,10 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "mononoki" :size 45 :weight 'light)
-      doom-variable-pitch-font (font-spec :family "Noto Sans CJK SC Light" :size 40)
-      doom-unicode-font (font-spec :family "Sarasa Term SC" :size 42)
-      doom-big-font (font-spec :family "Sarasa Term SC Semibold" :size 60))
+(setq doom-font (font-spec :family "mononoki" :size 22 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "等距更纱黑体 SC Light" :size 24)
+      doom-unicode-font (font-spec :family "等距更纱黑体 SC" :size 22)
+      doom-big-font (font-spec :family "等距更纱黑体 SC" :size 24))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -76,8 +76,8 @@
 (use-package pdf-tools
   :config
   (setq-default pdf-view-display-size 'fit-width)
-
   )
+
 (setq TeX-source-correlate-start-server t)
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
@@ -247,7 +247,7 @@
 
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-(transwin-toggle-transparent-frame)
+;;(transwin-toggle-transparent-frame)
 
 (use-package company-tabnine
   :ensure t)

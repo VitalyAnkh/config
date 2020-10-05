@@ -45,10 +45,10 @@
        (popup +defaults
               +all
               )   ; tame sudden yet inevitable temporary windows
-       (pretty-code
+       (ligatures
         +fira
-        ;; +hasklig
-        ;; +iosevka
+        +hasklig
+        +iosevka
         )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
@@ -93,7 +93,7 @@
 
        :tools
        ansible
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       debugger          ; FIXME stepping through code, to help you add bugs
        direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
@@ -137,7 +137,7 @@
        (ess               ; emacs speaks statistics
         +lsp
         )
-       faust             ; dsp, but you get to keep your soul
+       ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp           ; ML stands for Microsoft's Language
        fstar             ; (dependent) types and (monadic) effects and Z3
        (go +lsp)         ; the hipster dialect
