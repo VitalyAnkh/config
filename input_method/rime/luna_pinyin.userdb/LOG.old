@@ -1,8 +1,5 @@
-2020/08/15-05:27:05.145584 140595923871488 Log #73: 2 ops saved to Table #74 OK
-2020/08/15-05:27:05.145668 140595923871488 Archiving /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb/000073.log: OK
-2020/08/15-05:27:05.146032 140595923871488 Table #67: 668 entries OK
-2020/08/15-05:27:05.146079 140595923871488 Table #69: 10 entries OK
-2020/08/15-05:27:05.146112 140595923871488 Table #72: 8 entries OK
-2020/08/15-05:27:05.146128 140595923871488 Table #74: 2 entries OK
-2020/08/15-05:27:05.146222 140595923871488 Archiving /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb/MANIFEST-000071: OK
-2020/08/15-05:27:05.152390 140595923871488 **** Repaired leveldb /home/vitalyr/sdk/config/input_method/rime/luna_pinyin.userdb; recovered 4 files; 17998 bytes. Some data may have been lost. ****
+2020/11/30-00:56:11.784280 140238457152320 Recovering log #209
+2020/11/30-00:56:11.784461 140238457152320 Level-0 table #211: started
+2020/11/30-00:56:11.793478 140238457152320 Level-0 table #211: 371 bytes OK
+2020/11/30-00:56:11.811844 140238457152320 Delete type=3 #207
+2020/11/30-00:56:11.811882 140238457152320 Delete type=0 #209

@@ -36,7 +36,6 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
-
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
@@ -69,8 +68,9 @@
 
 
 (setq +latex-viewers '(pdf-tools))
-(setq pdf-view-use-scaling t)
-(setq pdf-view-resize-factor 1.5)
+(setq pdf-view-use-scaling t
+      pdf-view-use-imagemagick nil
+      pdf-view-resize-factor 10)
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 (use-package pdf-tools
@@ -81,12 +81,13 @@
 (setq TeX-source-correlate-start-server t)
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
-;;(setq-default preview-scale-function 2)
+(setq-default preview-scale-function 2)
 ;; preview-scale-function and preview-scale has no effect in the size of the
 ;; preview image
 
-(setq-default preview-default-document-pt 5)
+(setq-default preview-default-document-pt 20)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 ;;(auto-image-file-mode 1)
@@ -119,36 +120,42 @@
 
 (setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
-;;(setq rime-show-candidate 'posframe)
+(setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
         rime-predicate-prog-in-code-p
         ))
-;; (setq rime-posframe-properties
-;;  (list :font "sarasa ui sc"
-;;        :internal-border-width 10))
+(setq rime-posframe-properties
+      (list :font "sarasa ui sc"
+            :internal-border-width 10))
+
 (setq rime--popup 1)
 (setq rime-show-preedit 1)
-;;(setq rime-posframe-fixed-position t)
+(setq rime-posframe-fixed-position t)
 
 (use-package! valign
   :init
   (require 'valign)
   :hook
   ('org-mode . #'valign-mode))
+
 (require 'kana)
+
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
 
 (require 'org)
+
 (use-package org-latex-instant-preview
   :defer t
   :hook (org-mode . org-latex-instant-preview-mode)
   :init
-  (setq org-latex-instant-preview-tex2svg-bin
-        ;; location of tex2svg executable
-        "tex2svg"))
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 10.0))
+  (setq org-latex-instant-preview-tex2svg-bin "tex2svg")
+  (setq org-latex-instant-preview-scale 2)
+  (setq org-latex-instant-preview-delay 0.01)
+  )
+
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
 (setq org-preview-latex-default-process 'dvisvgm)
 
 (load-file (let ((coding-system-for-read 'utf-8))
@@ -234,7 +241,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  (load-theme 'doom-opera-light t)
 
   ;; Enable flashing mode-line on errors
   ;; (doom-themes-visual-bell-config)
@@ -279,3 +286,7 @@
   (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
   (eaf-bind-key take_photo "p" eaf-camera-keybinding))
+
+(add-to-list 'load-path "/home/vitalyr/.opam/default/share/emacs/site-lisp")
+     (require 'ocp-indent)
+(setq word-wrap-by-category t)

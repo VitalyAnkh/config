@@ -26,7 +26,7 @@
             +childframe
             +prescient
             +icons
-        ) ;; a search engine for love and life
+            ) ;; a search engine for love and life
 
        :ui
        deft              ; notational velocity for Emacs
@@ -55,7 +55,8 @@
        unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       window-select     ; visually switch windows
+       (window-select +ace-window
+                      ) ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
        zen               ; distraction-free coding or writing
 
@@ -208,7 +209,7 @@
         +fish
         +zsh
         )                ; she sells {ba,z,fi}sh shells on the C xor
-       ;;sml
+       sml
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        terra             ; Earth and Moon in alignment for performance.
