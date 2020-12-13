@@ -50,7 +50,7 @@
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
-(package! org-latex-instant-preview :recipe (:host github :repo "yangsheng6810/org-latex-instant-preview"))
+(package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
 (package! smart-input-source :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
 (package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))

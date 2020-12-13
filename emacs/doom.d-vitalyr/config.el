@@ -23,6 +23,7 @@
       doom-variable-pitch-font (font-spec :family "等距更纱黑体 SC Light" :size 24)
       doom-unicode-font (font-spec :family "等距更纱黑体 SC" :size 22)
       doom-big-font (font-spec :family "等距更纱黑体 SC" :size 24))
+(set-fontset-font t 'unicode "Symbola" nil 'prepend)
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -146,13 +147,13 @@
 
 (require 'org)
 
-(use-package org-latex-instant-preview
+(use-package org-latex-impatient
   :defer t
-  :hook (org-mode . org-latex-instant-preview-mode)
+  :hook (org-mode . org-latex-impatient-mode)
   :init
-  (setq org-latex-instant-preview-tex2svg-bin "tex2svg")
-  (setq org-latex-instant-preview-scale 2)
-  (setq org-latex-instant-preview-delay 0.01)
+  (setq org-latex-impatient-tex2svg-bin "tex2svg")
+  (setq org-latex-impatient-scale 2)
+  (setq org-latex-impatient-delay 0.01)
   )
 
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
