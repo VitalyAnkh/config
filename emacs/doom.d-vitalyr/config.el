@@ -152,7 +152,7 @@
   :hook (org-mode . org-latex-impatient-mode)
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
-  (setq org-latex-impatient-scale 2)
+  (setq org-latex-impatient-scale 1)
   (setq org-latex-impatient-delay 0.01)
   )
 
@@ -223,16 +223,6 @@
 
 ;; to speed up company
 (setq company-idle-delay 0)
-;; for native-comp branch
-
-;; (when (fboundp 'native-compile-async)
-;;   (if (yes-or-no-p "async compile?")
-;;       (setq comp-async-jobs-number 12 ;; not using all cores
-;;             comp-deferred-compilation t
-;;             comp-deferred-compilation-black-list '())
-;;     (setq comp-deferred-compilation nil)))
-
-;; (native-compile-async "~/.emacs.d/.local/straight/repos" 12 t)
 
 (use-package maple-run
   :ensure nil
@@ -278,16 +268,18 @@
  haskell-process-path-ghci "stack"
  )
 
-(require 'eaf)
-(use-package eaf
-  :load-path "~/usr/share/emacs/site-lisp/eaf" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
-  :custom
-  (eaf-find-alternate-file-in-dired t)
-  :config
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key take_photo "p" eaf-camera-keybinding))
+;; When time comes, I will use emacs-eaf again
+;; (require 'eaf)
+;; (use-package eaf
+;;   :load-path "~/usr/share/emacs/site-lisp/eaf" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+;;   :custom
+;;   (eaf-find-alternate-file-in-dired t)
+;;   :config
+;;   (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;;   (eaf-bind-key take_photo "p" eaf-camera-keybinding))
 
 (add-to-list 'load-path "/home/vitalyr/.opam/default/share/emacs/site-lisp")
      (require 'ocp-indent)
 (setq word-wrap-by-category t)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
