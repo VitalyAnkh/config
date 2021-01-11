@@ -120,12 +120,12 @@
 
        :lang
        agda              ; types of types of types of types...
-       ;; (cc +lsp)               ; C/C++/Obj-C madness
-       clojure           ; java with a lisp
+       (cc +lsp)               ; C/C++/Obj-C madness
+       ;; clojure           ; java with a lisp
        (common-lisp       ; if you've seen one lisp, you've seen them all
         +lsp
         )
-       ;;coq               ; proofs-as-programs
+       coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
@@ -135,9 +135,9 @@
        (emacs-lisp        ; drown in parentheses
         +lsp)
        ;;erlang            ; an elegant language for a more civilized age
-       (ess               ; emacs speaks statistics
-        +lsp
-        )
+       ;;(ess               ; emacs speaks statistics
+       ;; +lsp
+       ;; )
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp           ; ML stands for Microsoft's Language
        fstar             ; (dependent) types and (monadic) effects and Z3

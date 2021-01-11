@@ -283,3 +283,10 @@
      (require 'ocp-indent)
 (setq word-wrap-by-category t)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; add this after install emacs-libvterm-git from AUR
+;; (require 'vterm)
+
+(require 'org-download)
+
+;; Drag-and-drop to `dired`
+(add-hook 'dired-mode-hook 'org-download-enable)
