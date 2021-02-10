@@ -53,13 +53,18 @@
 (package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
 (package! smart-input-source :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
-(package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
-(package! maple-run :recipe (:host github :repo "VitalyAnkh/emacs-maple-run"))
-(package! doom-themes :recipe (:host github :repo "hlissner/emacs-doom-themes"))
+(package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
 (package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
 (package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
 (package! org-roam-bibtex :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+(package! org-xournal :recipe (:host github
+                               :repo "yuchen-lea/org-xournal"
+                               :files ("*.el")))
+(package! org-krita
+  :recipe (:host github
+           :repo "lepisma/org-krita"
+           :files ("resources" "resources" "*.el" "*.el")))
 ;; no nox any more
 ;;(package! nox :recipe(:host github :repo "manateelazycat/nox"))
 (unpin! org-roam)

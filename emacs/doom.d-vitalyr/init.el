@@ -14,6 +14,14 @@
 ;;      Alternatively, press 'gd' (or 'C-c g d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+;; add this to fix the breaking changes in emacs
+(define-advice define-obsolete-function-alias (:filter-args (ll) fix-obsolete)
+  (let ((obsolete-name (pop ll))
+        (current-name (pop ll))
+        (when (if ll (pop ll) "1"))
+        (docstring (if ll (pop ll) nil)))
+    (list obsolete-name current-name when docstring)))
+
 (doom! :input
        ;;chinese
        japanese
@@ -98,7 +106,7 @@
        direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
-       ein               ; tame Jupyter notebooks with emacs
+       ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
        gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
@@ -172,7 +180,7 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ocaml             ; an objective camel
        (org +roam
-            +dragdrop
+            +dragndrop
             +journal
             +jupyter
             +pandoc
@@ -190,7 +198,7 @@
        raku        ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
-       ;;purescript        ; javascript, but functional
+       purescript        ; javascript, but functional
        python            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        (racket            ; a DSL for DSLs
@@ -202,8 +210,8 @@
        (rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
         +lsp
         )
-       ;;scala             ; java, but good
-       ;; scheme            ; a fully conniving family of lisps
+       scala             ; java, but good
+       scheme            ; a fully conniving family of lisps
        (sh
         +bash
         +fish
@@ -223,9 +231,9 @@
 
        :app
        calendar
-       irc               ; how neckbeards socialize
+       ;; irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
-       twitter           ; twitter client https://twitter.com/vnought
+       ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
        literate

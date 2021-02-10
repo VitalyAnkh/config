@@ -24,6 +24,7 @@
       doom-unicode-font (font-spec :family "等距更纱黑体 SC" :size 22)
       doom-big-font (font-spec :family "等距更纱黑体 SC" :size 24))
 (set-fontset-font t 'unicode "Symbola" nil 'prepend)
+(push "等距更纱黑体 SC" doom-unicode-extra-fonts)
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -74,6 +75,26 @@
       pdf-view-resize-factor 10)
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
+
+;; (use-package auctex
+;;   :hook ((LaTeX-mode-hook . visual-line-mode)
+;; 	 (LaTeX-mode-hook . turn-on-reftex))
+;;   :custom ((TeX-master nil)
+;; 	   (TeX-auto-save t)
+;; 	   (TeX-parse-self t)
+;; 	   (reftex-plug-into-AUCTeX t)
+;; 	   (TeX-command-list '(("LaTeX"
+;; 				"%`xelatex%(mode)%' %t"
+;; 				TeX-run-command nil t
+;; 				:help "Run XeLaTeX")
+;; 			       ("Tectonic" "tectonic %t"
+;; 				TeX-run-command nil t
+;; 				:help "Run tectonic")))
+;; 	   (TeX-view-program-selection '((output-pdf "pdf-tools")))
+;; 	   (TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+;; 	   (TeX-source-correlate-mode t)
+;; 	   (TeX-source-correlate-start-server t)))
+
 (use-package pdf-tools
   :config
   (setq-default pdf-view-display-size 'fit-width)
@@ -82,16 +103,16 @@
 (setq TeX-source-correlate-start-server t)
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
-(setq-default preview-scale-function 2)
+;;(setq-default preview-scale-function 1)
 ;; preview-scale-function and preview-scale has no effect in the size of the
 ;; preview image
 
-(setq-default preview-default-document-pt 20)
+(setq-default preview-default-document-pt 30)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
-;;(auto-image-file-mode 1)
+(auto-image-file-mode 1)
 
 (use-package! org-roam
   :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
@@ -152,11 +173,11 @@
   :hook (org-mode . org-latex-impatient-mode)
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
-  (setq org-latex-impatient-scale 1)
+  (setq org-latex-impatient-scale 2)
   (setq org-latex-impatient-delay 0.01)
   )
 
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 1))
 (setq org-preview-latex-default-process 'dvisvgm)
 
 (load-file (let ((coding-system-for-read 'utf-8))
@@ -207,8 +228,6 @@
 ;;                'csharp-mode-hook
 ;;                'c++-mode-hook
 ;;                'haskell-mode-hook
-
-
 ;;                ))
 ;;  (add-hook hook '(lambda () (nox-ensure))))
 
@@ -224,9 +243,6 @@
 ;; to speed up company
 (setq company-idle-delay 0)
 
-(use-package maple-run
-  :ensure nil
-  :commands (maple-run))
 (use-package doom-themes
   :config
   ;; Global settings (defaults)
@@ -280,13 +296,30 @@
 ;;   (eaf-bind-key take_photo "p" eaf-camera-keybinding))
 
 (add-to-list 'load-path "/home/vitalyr/.opam/default/share/emacs/site-lisp")
-     (require 'ocp-indent)
+(require 'ocp-indent)
 (setq word-wrap-by-category t)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; add this after install emacs-libvterm-git from AUR
 ;; (require 'vterm)
+(setq org-image-actual-width nil)
+(setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
+(use-package! org-xournal
+  :hook (org-mode . org-xournal-mode)
+  :config
+  (setq org-xournal-note-dir "~/nutstore_files/Notebook/xournalpp"  ;; xopp 笔记存储目录
+        org-xournal-template-dir "~/nutstore_files/Notebook/xournalpp/templates" ;; xournal 目标文件存储目录
+        org-xournal-default-template-name "template.xopp" ;; 默认笔记模版名称，应该位于 org-xournal-template-dir
+        org-xournal-bin "xournalpp" ;; xournal 执行文件
+        )
+  )
+(use-package! org-krita
+  :config
+  (add-hook 'org-mode-hook 'org-krita-mode))
 
-(require 'org-download)
-
-;; Drag-and-drop to `dired`
-(add-hook 'dired-mode-hook 'org-download-enable)
+(require 'quickrun)
+(quickrun-add-command "c++/c1z"
+  '((:command . "g++")
+    (:exec    . ("%c -std=c++1z %o -o %e %s"
+		 "%e %a"))
+    (:remove  . ("%e")))
+  :default "c++")
