@@ -69,85 +69,38 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-;;(setq display-line-numbers-type t)
+(setq display-line-numbers-type t)
 
 (setq auto-save-default t
       make-backup-files t)
 
 (setq confirm-kill-emacs nil)
 
-(let ((alternatives '("doom-emacs-bw-light.svg")))
-   ;;((alternatives '("doom-emacs-color.png" "doom-emacs-bw-light.svg")))
+(let ;;((alternatives '("doom-emacs-bw-light.svg")))
+    ((alternatives '("doom-emacs-color.png" "doom-emacs-bw-light.svg")))
   (setq fancy-splash-image
         (concat doom-private-dir "splash/"
                 (nth (random (length alternatives)) alternatives))))
 
 (setq doom-font (font-spec :family "mononoki" :size 23)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      ;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
-      doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
+      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
+      ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC Light" :size 22)
-      doom-big-font (font-spec :family "Noto Serif CJK SC" :size 24))
-
-(let* ((variable-tuple
-        (cond ((x-list-fonts "Alegreya")         '(:font "Alegreya"))
-              ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-              ((x-list-fonts "Lucida Grande")   '(:font "CMU Typewriter"))
-              ((x-list-fonts "Verdana")         '(:font "Verdana"))
-              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-       (base-font-color     (face-foreground 'default nil 'default))
-       (headline           `(:inherit default :weight bold :foreground
-                             ,base-font-color))))
-
-(custom-theme-set-faces
- ;; not using default, let doom handle it
- ;;'(default ((t (:family "mononoki" :foundry "nil" :slant normal :weight light :height 141 :width normal))))
- 'user
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- '(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
-                             :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
- ;;'(org-code ((t (:foreground "#957f5f" :family "Latin Modern Mono"))))
- '(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
- '(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
- ;;'(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
- ;;                   :height 1.5 :family "CMU Typewriter Text"))))
- ;;'(org-level-2 ((t (:inherit outline-2 :foreground "#b57614" :height 1.2 :family
- ;;                   "CMU Typewriter Text"))))
- '(org-level-8 ((t (,@headline ,@variable-tuple))))
- '(org-level-7 ((t (,@headline ,@variable-tuple))))
- '(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (,@headline ,@variable-tuple))))
- '(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
- '(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
- '(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
- '(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
- '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
- '(org-list-dt ((t (:foreground "#7382a0"))))
- ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
- '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- '(org-block ((t (:inherit fixed-pitch))))
- '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- ;; TODO set the color following this
- ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- ;;'(variable-pitch ((t (:family "Georgia"))))
- '(variable-pitch ((t (:family "ETBembo" :height 180 :weight thin))))
- '(fixed-pitch ((t (:family "mononoki" :height 170))))
- )
+      doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
 
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 
-;;(setq doom-theme 'doom-opera-light)
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-opera-light t)
-  ;;(setq doom-theme 'doom-nord-light)
-  ;;(setq doom-theme 'doom-solarized-light)
+(setq doom-theme 'doom-opera-light)
+;;(use-package doom-themes
+;;  :config
+;; Global settings (defaults)
+;;  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+;;        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+;;  (load-theme 'doom-opera-light t))
+;;(setq doom-theme 'doom-nord-light)
+;;(setq doom-theme 'doom-solarized-light)
 
 (add-hook 'window-setup-hook #'doom/quickload-session)
 
@@ -293,20 +246,71 @@
 
 (add-hook! org-mode (electric-indent-local-mode -1))
 
+(add-hook! org-mode (solaire-mode nil))
+
 (defun zz/adjust-org-company-backends ()
   (remove-hook 'after-change-major-mode-hook '+company-init-backends-h)
   (setq-local company-backends nil))
 (add-hook! org-mode (zz/adjust-org-company-backends))
 
+(let* ((variable-tuple
+        (cond ((x-list-fonts "Alegreya")         '(:font "Alegreya"))
+              ((x-list-fonts "DejaVu Serif") '(:font "DejaVu Serif"))
+              ((x-list-fonts "ETBembo")   '(:font "ETBembo"))
+              ((x-list-fonts "Verdana")         '(:font "Verdana"))
+              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+       (base-font-color     (face-foreground 'default nil 'default))
+       (headline           `(:inherit default :weight bold :foreground
+                             ,base-font-color))))
+
+(custom-theme-set-faces
+ ;; not using default, let doom handle it
+ ;;'(default ((t (:family "mononoki" :foundry "nil" :slant normal :weight light :height 141 :width normal))))
+ 'user
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ '(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+                             :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+ ;;'(org-code ((t (:foreground "#957f5f" :family "Latin Modern Mono"))))
+ '(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+ '(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+ ;;'(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
+ ;;                   :height 1.5 :family "CMU Typewriter Text"))))
+ ;;'(org-level-2 ((t (:inherit outline-2 :foreground "#b57614" :height 1.2 :family
+ ;;                   "CMU Typewriter Text"))))
+ '(org-level-8 ((t (,@headline ,@variable-tuple))))
+ '(org-level-7 ((t (,@headline ,@variable-tuple))))
+ '(org-level-6 ((t (,@headline ,@variable-tuple))))
+ '(org-level-5 ((t (,@headline ,@variable-tuple))))
+ '(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+ '(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+ '(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+ '(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+ '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+ '(org-list-dt ((t (:foreground "#7382a0"))))
+ ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ ;; TODO set the color following this
+ ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
+ '(org-code ((t (:inherit (shadow fixed-pitch)))))
+ ;;'(variable-pitch ((t (:family "Georgia"))))
+ '(variable-pitch ((t (:family "Alegreya" :height 180 :weight thin))))
+ '(fixed-pitch ((t (:family "mononoki" :height 170))))
+ )
+
+(setq org-hide-emphasis-markers t)
+
 (add-hook! org-mode :append
-           #'visual-line-mode
-           #'variable-pitch-mode)
+           'visual-line-mode
+           'variable-pitch-mode)
 
 (add-hook! org-mode :append #'org-appear-mode)
 
-(after! org
-  (setq org-agenda-files
-        '("~/gtd" "~/Work/work.org.gpg" "~/org/")))
+;;(after! org
+;;  (setq org-agenda-files
+;;        '("~/gtd" "~/Work/work.org.gpg" "~/org/")))
 
 (defun zz/add-file-keybinding (key file &optional desc)
   (let ((key key)
@@ -316,10 +320,10 @@
           key
           (lambda () (interactive) (find-file file)))))
 
-(zz/add-file-keybinding "C-c z w" "~/Work/work.org.gpg" "work.org")
-(zz/add-file-keybinding "C-c z i" "~/org/ideas.org" "ideas.org")
-(zz/add-file-keybinding "C-c z p" "~/org/projects.org" "projects.org")
-(zz/add-file-keybinding "C-c z d" "~/org/diary.org" "diary.org")
+;;(zz/add-file-keybinding "C-c z w" "~/Work/work.org.gpg" "work.org")
+;;(zz/add-file-keybinding "C-c z i" "~/org/ideas.org" "ideas.org")
+;;(zz/add-file-keybinding "C-c z p" "~/org/projects.org" "projects.org")
+;;(zz/add-file-keybinding "C-c z d" "~/org/diary.org" "diary.org")
 
 (setq org-roam-directory org-directory)
 ;; garbage collection for org-roam
@@ -350,8 +354,8 @@
 (map! :after counsel :map org-mode-map
       "C-c l l h" #'counsel-org-link)
 
-(after! counsel
-  (setq counsel-outline-display-style 'title))
+;;(after! counsel
+;;  (setq counsel-outline-display-style 'title))
 
 (after! org-id
   ;; Do not create ID if a CUSTOM_ID exists
@@ -506,11 +510,11 @@ title."
 ;;(use-package! ox-moderncv
 ;;  :after org)
 
-(use-package! ox-leanpub
-  :after org
-  :config
-  (require 'ox-leanpub-markdown)
-  (org-leanpub-book-setup-menu-markdown))
+;;(use-package! ox-leanpub
+;;  :after org
+;;  :config
+;;  (require 'ox-leanpub-markdown)
+;;  (org-leanpub-book-setup-menu-markdown))
 
 (after! ox-hugo
   (setq org-hugo-use-code-for-kbd t))
@@ -681,12 +685,45 @@ end repeat\"")))
         :desc "Find function at point"
         "g p" #'find-function-at-point))
 
-(use-package! cfengine
-  :defer t
-  :commands cfengine3-mode
-  :mode ("\\.cf\\'" . cfengine3-mode))
+;;(use-package! cfengine
+;;  :defer t
+;;  :commands cfengine3-mode
+;;  :mode ("\\.cf\\'" . cfengine3-mode))
 
 (use-package! graphviz-dot-mode)
+
+(setq
+ ghc-ghc-options '("-fno-warn-missing-signatures")
+ haskell-interactive-popup-errors nil
+ )
+
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (setq lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
+  (setq lsp-rust-analyzer-proc-macro-enable t)
+  (setq lsp-rust-analyzer-display-chaining-hints t)
+  (setq lsp-rust-analyzer-display-parameter-hints t)
+  (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  (setq lsp-rust-all-features t)
+  ;; (setq lsp-rust-full-docs t)
+  (setq lsp-enable-semantic-highlighting t))
+
+(setq +latex-viewers '(pdf-tools))
+(setq pdf-view-use-scaling t
+      pdf-view-use-imagemagick nil
+      pdf-view-resize-factor 10)
+(setq-default TeX-engine 'xetex
+              TeX-PDF-mode t)
+
+(use-package pdf-tools
+  :config
+  (setq-default pdf-view-display-size 'fit-width)
+  )
+
+(setq TeX-source-correlate-start-server t)
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
 
 (use-package! emacs-everywhere
   :config
@@ -729,7 +766,7 @@ end repeat\"")))
      ,@body
      (float-time (time-since time))))
 
-(setq vterm-shell "/usr/local/bin/elvish")
+;;(setq vterm-shell "/usr/local/bin/elvish")
 
 (use-package! unfill
   :defer t

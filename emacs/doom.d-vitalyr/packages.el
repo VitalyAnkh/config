@@ -129,10 +129,10 @@
 
 (package! org-auto-tangle)
 
-(package! elvish-mode)
-(package! ob-elvish)
+;;(package! elvish-mode)
+;;(package! ob-elvish)
 
-(package! ob-cfengine3)
+;;(package! ob-cfengine3)
 
 (package! graphviz-dot-mode)
 
