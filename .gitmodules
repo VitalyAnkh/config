@@ -13,3 +13,9 @@
 [submodule "emacs/emacs.d-doom"]
 	path = emacs/emacs.d-doom
 	url = https://github.com/hlissner/doom-emacs
+[submodule "emacs/chemacs2"]
+	path = emacs/chemacs2
+	url = git@github.com:plexus/chemacs2.git
+[submodule "emacs/profiles/ksqsf"]
+	path = emacs/profiles/ksqsf
+	url = git@github.com:ksqsf/emacs-config.git
