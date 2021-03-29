@@ -1,1 +1,28 @@
 #+TITLE: Config
+* General Settings
+* Org Mode
+** Visual Settings
+Hide org emephsis markers.
+
+#+begin_src emacs-lisp :tangle config.el
+(setq org-hide-emphasis-markers t)
+#+end_src
+
+Enable variable and visual line mode in Org mode by default.
+
+#+begin_src emacs-lisp
+(add-hook! org-mode :append
+           'visual-line-mode
+           'variable-pitch-mode)
+#+end_src
+
+Use [[https://github.com/awth13/org-appear][org-appear]] to reveal emphasis markers when moving the cursor over them.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-appear
+  :recipe (:host github
+           :repo "awth13/org-appear"))
+#+end_src
+#+begin_src emacs-lisp
+(add-hook! org-mode :append #'org-appear-mode)
+#+end_src

@@ -62,7 +62,7 @@
 ;; sis is in melpa now
 (package! sis)
 (package! diminish)
-(package! quelpa-use-package)
+;;(package! quelpa-use-package)
 (package! shackle)
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
@@ -138,7 +138,9 @@
 
 (package! package-lint)
 
-(package! emacs-everywhere :pin nil)
+(package! rustic)
+
+;;(package! emacs-everywhere :pin nil)
 
 (package! iedit)
 

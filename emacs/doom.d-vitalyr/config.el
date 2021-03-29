@@ -84,7 +84,7 @@
 
 (setq doom-font (font-spec :family "mononoki" :size 23)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
+      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC Light" :size 22)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
@@ -254,8 +254,9 @@
 (add-hook! org-mode (zz/adjust-org-company-backends))
 
 (let* ((variable-tuple
-        (cond ((x-list-fonts "Alegreya")         '(:font "Alegreya"))
+        (cond 
               ((x-list-fonts "DejaVu Serif") '(:font "DejaVu Serif"))
+              ((x-list-fonts "Alegreya")         '(:font "Alegreya"))
               ((x-list-fonts "ETBembo")   '(:font "ETBembo"))
               ((x-list-fonts "Verdana")         '(:font "Verdana"))
               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
@@ -296,7 +297,7 @@
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
  '(org-code ((t (:inherit (shadow fixed-pitch)))))
  ;;'(variable-pitch ((t (:family "Georgia"))))
- '(variable-pitch ((t (:family "Alegreya" :height 180 :weight thin))))
+ '(variable-pitch ((t (:family "DejaVu Serif" :height 180 :weight thin))))
  '(fixed-pitch ((t (:family "mononoki" :height 170))))
  )
 
@@ -725,9 +726,149 @@ end repeat\"")))
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
 
-(use-package! emacs-everywhere
+(setq-default preview-default-document-pt 30)
+(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+
+
+(add-hook 'doom-first-file-hook #'auto-image-file-mode)
+(auto-image-file-mode 1)
+(use-package! org-roam
+  :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
+  :init
+  (setq org-roam-directory org-directory)
+  ;;(setq org-roam-graph-viewer "inkscape")
+  (map! :leader
+        :prefix "n"
+        :desc "Org-Roam-Insert" "i" #'org-roam-insert
+        :desc "Org-Roam-Find" "/" #'org-roam-find-file
+        :desc "Org-roam-Buffer" "r" #'org-roam
+        :desc "Org-Roam-Show-Graph" "g" #'org-roam-show-graph
+        )
   :config
-  (setq emacs-everywhere-major-mode-function #'org-mode))
+  (org-roam-mode t)
+  (require 'org-roam-protocol) ;; require org-roam-protocol here
+  )
+(setq org-roam-server-host "127.0.0.1"
+      org-roam-server-port 8080
+      org-roam-server-authenticate nil
+      org-roam-server-label-truncate t
+      org-roam-server-label-truncate-lenght 60
+      org-roam-server-label-wrap-length 20)
+;; auto start org roam server
+;; (add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
+
+
+(setq default-input-method "rime")
+(setq rime-user-data-dir "~/sdk/config/input_method/rime")
+(setq rime-show-candidate 'posframe)
+(setq rime-disable-predicates
+      '(rime-predicate-evil-mode-p
+        rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
+        rime-predicate-prog-in-code-p
+        ))
+(setq rime-posframe-properties
+      (list :font "sarasa ui sc"
+            :internal-border-width 10))
+
+(setq rime--popup 1)
+(setq rime-show-preedit 1)
+(setq rime-posframe-fixed-position t)
+
+(use-package! valign
+  :init
+  (require 'valign)
+  :hook
+  ('org-mode . #'valign-mode))
+
+(require 'kana)
+
+(setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
+
+(require 'org)
+
+(use-package org-latex-impatient
+  :defer t
+  :hook (org-mode . org-latex-impatient-mode)
+  :init
+  (setq org-latex-impatient-tex2svg-bin "tex2svg")
+  (setq org-latex-impatient-scale 2)
+  (setq org-latex-impatient-delay 0.01)
+  )
+
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 1))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :background "default"))
+
+(setq org-preview-latex-default-process 'dvisvgm)
+
+(load-file (let ((coding-system-for-read 'utf-8))
+             (shell-command-to-string "agda-mode locate")))
+
+(require 'deft)
+(setq deft-directory org-directory)
+
+
+(add-hook 'prog-mode-hook #'wucuo-start)
+(add-hook 'text-mode-hook #'wucuo-start)
+
+;; to speed up company
+(setq company-idle-delay 0)
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-opera-light t)
+
+  ;; Enable flashing mode-line on errors
+  ;; (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;; (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+;;(transwin-toggle-transparent-frame)
+
+(use-package company-tabnine
+  :ensure t)
+(require 'company-tabnine)
+(add-to-list 'company-backends #'company-tabnine)
+
+;; Number the candidates (use M-1, M-2 etc to select completions).
+(setq company-show-numbers t)
+;; use aspell as ispell backend
+(setq-default ispell-program-name "aspell")
+;; use American English as ispell default dictionary
+(ispell-change-dictionary "american" t)
+
+
+(add-to-list 'load-path "/home/vitalyr/.opam/default/share/emacs/site-lisp")
+(require 'ocp-indent)
+
+(setq org-image-actual-width nil)
+(setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
+(use-package! org-xournal
+  :hook (org-mode . org-xournal-mode)
+  :config
+  (setq org-xournal-note-dir "~/nutstore_files/Notebook/xournalpp"  ;; xopp 笔记存储目录
+        org-xournal-template-dir "~/nutstore_files/Notebook/xournalpp/templates" ;; xournal 目标文件存储目录
+        org-xournal-default-template-name "template.xopp" ;; 默认笔记模版名称，应该位于 org-xournal-template-dir
+        org-xournal-bin "xournalpp" ;; xournal 执行文件
+        )
+  )
+(use-package! org-krita
+  :config
+  (add-hook 'org-mode-hook 'org-krita-mode))
+
+(load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
+
+;;(use-package! emacs-everywhere
+;;  :config
+;;  (setq emacs-everywhere-major-mode-function #'org-mode))
 
 (after! magit
   (setq zz/repolist
