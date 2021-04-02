@@ -82,9 +82,9 @@
         (concat doom-private-dir "splash/"
                 (nth (random (length alternatives)) alternatives))))
 
-(setq doom-font (font-spec :family "mononoki" :size 23)
+(setq doom-font (font-spec :family "mononoki" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 22)
+      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC Light" :size 22)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
@@ -93,14 +93,15 @@
 (setq mixed-pitch-variable-pitch-cursor nil)
 
 (setq doom-theme 'doom-opera-light)
-;;(use-package doom-themes
-;;  :config
-;; Global settings (defaults)
-;;  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;  (load-theme 'doom-opera-light t))
-;;(setq doom-theme 'doom-nord-light)
-;;(setq doom-theme 'doom-solarized-light)
+(use-package doom-themes
+  :config
+  ;;Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;;(setq doom-theme 'doom-nord-light)
+  ;;(setq doom-theme 'doom-solarized-light)
+  (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
 (add-hook 'window-setup-hook #'doom/quickload-session)
 
@@ -244,50 +245,23 @@
           (and (looking-at org-outline-regexp)
                (looking-back "^\**")))))
 
-(add-hook! org-mode (electric-indent-local-mode -1))
+;;(add-hook! org-mode (electric-indent-local-mode -1))
 
-(add-hook! org-mode (solaire-mode nil))
+(add-hook! org-mode (solaire-mode -1))
 
 (defun zz/adjust-org-company-backends ()
   (remove-hook 'after-change-major-mode-hook '+company-init-backends-h)
   (setq-local company-backends nil))
 (add-hook! org-mode (zz/adjust-org-company-backends))
 
-(let* ((variable-tuple
-        (cond 
-              ((x-list-fonts "DejaVu Serif") '(:font "DejaVu Serif"))
-              ((x-list-fonts "Alegreya")         '(:font "Alegreya"))
-              ((x-list-fonts "ETBembo")   '(:font "ETBembo"))
-              ((x-list-fonts "Verdana")         '(:font "Verdana"))
-              ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-              (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-       (base-font-color     (face-foreground 'default nil 'default))
-       (headline           `(:inherit default :weight bold :foreground
-                             ,base-font-color))))
-
-(custom-theme-set-faces
- ;; not using default, let doom handle it
- ;;'(default ((t (:family "mononoki" :foundry "nil" :slant normal :weight light :height 141 :width normal))))
- 'user
+(custom-set-faces
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
  '(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
                              :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
- ;;'(org-code ((t (:foreground "#957f5f" :family "Latin Modern Mono"))))
+ '(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
  '(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
  '(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
- ;;'(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
- ;;                   :height 1.5 :family "CMU Typewriter Text"))))
- ;;'(org-level-2 ((t (:inherit outline-2 :foreground "#b57614" :height 1.2 :family
- ;;                   "CMU Typewriter Text"))))
- '(org-level-8 ((t (,@headline ,@variable-tuple))))
- '(org-level-7 ((t (,@headline ,@variable-tuple))))
- '(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (,@headline ,@variable-tuple))))
- '(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
- '(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
- '(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
- '(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
- '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+
  '(org-list-dt ((t (:foreground "#7382a0"))))
  ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
  '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
@@ -295,11 +269,21 @@
  '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
  ;; TODO set the color following this
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
- '(org-code ((t (:inherit (shadow fixed-pitch)))))
- ;;'(variable-pitch ((t (:family "Georgia"))))
- '(variable-pitch ((t (:family "DejaVu Serif" :height 180 :weight thin))))
+ ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(variable-pitch ((t (:family "Alegreya" :height 180 :weight thin))))
  '(fixed-pitch ((t (:family "mononoki" :height 170))))
- )
+ ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-5 ((t (,@headline ,@variable-tuple))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "ETBembo"))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
+                    "Alegreya"))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
+                    :height 1.75 :family "Alegreya"))))
+
+ '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
 
 (setq org-hide-emphasis-markers t)
 
@@ -313,13 +297,13 @@
 ;;  (setq org-agenda-files
 ;;        '("~/gtd" "~/Work/work.org.gpg" "~/org/")))
 
-(defun zz/add-file-keybinding (key file &optional desc)
-  (let ((key key)
-        (file file)
-        (desc desc))
-    (map! :desc (or desc file)
-          key
-          (lambda () (interactive) (find-file file)))))
+;;(defun zz/add-file-keybinding (key file &optional desc)
+;;  (let ((key key)
+;;        (file file)
+;;        (desc desc))
+;;    (map! :desc (or desc file)
+;;          key
+;;          (lambda () (interactive) (find-file file)))))
 
 ;;(zz/add-file-keybinding "C-c z w" "~/Work/work.org.gpg" "work.org")
 ;;(zz/add-file-keybinding "C-c z i" "~/org/ideas.org" "ideas.org")
@@ -664,7 +648,7 @@ end repeat\"")))
   :config
   (setq org-auto-tangle-default t))
 
-(defun zz/sp-enclose-next-sexp (num)
+(defun vr/sp-enclose-next-sexp (num)
   (interactive "p")
   (insert-parentheses (or num 1)))
 
@@ -677,7 +661,7 @@ end repeat\"")))
               racket-repl-mode) :append #'smartparens-strict-mode)
   (add-hook! smartparens-mode :append #'sp-use-paredit-bindings)
   (map! :map (smartparens-mode-map smartparens-strict-mode-map)
-        "M-(" #'zz/sp-enclose-next-sexp))
+        "M-(" #'vr/sp-enclose-next-sexp))
 
 (after! prog-mode
   (map! :map prog-mode-map "C-h C-f" #'find-function-at-point)
@@ -717,6 +701,12 @@ end repeat\"")))
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 
+(with-eval-after-load 'font-latex
+  (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
+  (set-face-attribute 'font-latex-math-face nil :inherit 'fixed-pitch)
+  )
+(add-hook 'LaTeX-mode-hook #'variable-pitch-mode)
+
 (use-package pdf-tools
   :config
   (setq-default pdf-view-display-size 'fit-width)
@@ -726,7 +716,9 @@ end repeat\"")))
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
 
-(setq-default preview-default-document-pt 30)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
+(setq-default preview-default-document-pt 22)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 
@@ -795,8 +787,13 @@ end repeat\"")))
   (setq org-latex-impatient-delay 0.01)
   )
 
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 1))
-;;(setq org-format-latex-options (plist-put org-format-latex-options :background "default"))
+;;(set-default 'preview-scale-function 10)
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.8))
+
+;;(plist-put org-format-latex-options :background "default")
+;;(plist-put org-format-latex-options :foreground "default")
+
+
 
 (setq org-preview-latex-default-process 'dvisvgm)
 
@@ -813,24 +810,8 @@ end repeat\"")))
 ;; to speed up company
 (setq company-idle-delay 0)
 
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-opera-light t)
 
-  ;; Enable flashing mode-line on errors
-  ;; (doom-themes-visual-bell-config)
 
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  ;; (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
 ;;(transwin-toggle-transparent-frame)
 
 (use-package company-tabnine

@@ -168,6 +168,7 @@
        (latex
         +latexmk
         +cdlatex
+        +lsp
         +fold
         )              ; writing papers in Emacs has never been so fun
        lean

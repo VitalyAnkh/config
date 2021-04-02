@@ -138,7 +138,7 @@
 
 (package! package-lint)
 
-(package! rustic)
+(package! org-fragtog)
 
 ;;(package! emacs-everywhere :pin nil)
 
