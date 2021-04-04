@@ -402,28 +402,6 @@ title."
           (search . " %i %-12:c")))
   (setq org-agenda-include-diary t))
 
-(use-package! holidays
-  :after org-agenda
-  :config
-  (require 'mexican-holidays)
-  (require 'swiss-holidays)
-  (setq swiss-holidays-zh-city-holidays
-        '((holiday-float 4 1 3 "Sechseläuten")
-          (holiday-float 9 1 3 "Knabenschiessen")))
-  (setq calendar-holidays
-        (append '((holiday-fixed 1 1 "New Year's Day")
-                  (holiday-fixed 2 14 "Valentine's Day")
-                  (holiday-fixed 4 1 "April Fools' Day")
-                  (holiday-fixed 10 31 "Halloween")
-                  (holiday-easter-etc)
-                  (holiday-fixed 12 25 "Christmas")
-                  (solar-equinoxes-solstices))
-                swiss-holidays
-                swiss-holidays-labour-day
-                swiss-holidays-catholic
-                swiss-holidays-zh-city-holidays
-                holiday-mexican-holidays)))
-
 (use-package! org-super-agenda
   :after org-agenda
   :config

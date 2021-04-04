@@ -101,8 +101,8 @@
 
 (package! org-download)
 
-(package! mexican-holidays)
-(package! swiss-holidays)
+;;(package! mexican-holidays)
+;;(package! swiss-holidays)
 
 (package! org-super-agenda)
 

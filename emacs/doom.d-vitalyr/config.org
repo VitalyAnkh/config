@@ -1210,10 +1210,11 @@ Customize the agenda display to indent todo items by level to show nesting, and 
 Install and load some custom local holiday lists I'm interested in.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! mexican-holidays)
-(package! swiss-holidays)
+;;(package! mexican-holidays)
+;;(package! swiss-holidays)
 #+end_src
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :tangle no
 (use-package! holidays
   :after org-agenda
   :config
