@@ -126,8 +126,8 @@
   (sis-global-inline-mode t)
   )
 
-(map! "C-x b"   #'counsel-buffer-or-recentf
-      "C-x C-b" #'counsel-switch-buffer)
+;;(map! "C-x b"   #'counsel-buffer-or-recentf
+;;      "C-x C-b" #'counsel-switch-buffer)
 
 (defun zz/counsel-buffer-or-recentf-candidates ()
   "Return candidates for `counsel-buffer-or-recentf'."
@@ -590,6 +590,11 @@ end repeat\"")))
     (sleep-for 0.2)
     (call-process-shell-command cmd)))
 
+;;(add-to-list 'load-path "~/sdk/lib/emacs-reveal")
+;;(require 'emacs-reveal)
+
+(require 'ox-reveal)
+
 (use-package! ox-jira
   :after org)
 
@@ -699,6 +704,8 @@ end repeat\"")))
 (setq-default preview-default-document-pt 22)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
+(setq lsp-file-watch-threshold 1000)
+
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
@@ -707,17 +714,76 @@ end repeat\"")))
   :init
   (setq org-roam-directory org-directory)
   ;;(setq org-roam-graph-viewer "inkscape")
-  (map! :leader
-        :prefix "n"
-        :desc "Org-Roam-Insert" "i" #'org-roam-insert
-        :desc "Org-Roam-Find" "/" #'org-roam-find-file
-        :desc "Org-roam-Buffer" "r" #'org-roam
-        :desc "Org-Roam-Show-Graph" "g" #'org-roam-show-graph
-        )
   :config
-  (org-roam-mode t)
+  (org-roam-mode)
   (require 'org-roam-protocol) ;; require org-roam-protocol here
   )
+
+(use-package! org-roam
+  :init
+  (map! :leader
+        :prefix "n"
+        :desc "org-roam" "l" #'org-roam-buffer-toggle
+        :desc "org-roam-node-insert" "i" #'org-roam-node-insert
+        :desc "org-roam-node-find" "f" #'org-roam-node-find
+        :desc "org-roam-ref-find" "r" #'org-roam-ref-find
+        :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+        :desc "org-roam-capture" "c" #'org-roam-capture
+        :desc "org-roam-dailies-capture-today" "j" #'org-roam-dailies-capture-today)
+  (setq org-roam-directory org-directory
+        org-roam-db-gc-threshold most-positive-fixnum
+        org-id-link-to-org-use-id t)
+  (add-to-list 'display-buffer-alist
+               '(("\\*org-roam\\*"
+                  (display-buffer-in-direction)
+                  (direction . right)
+                  (window-width . 0.33)
+                  (window-height . fit-window-to-buffer))))
+  :config
+  (setq org-roam-mode-sections
+        (list #'org-roam-backlinks-insert-section
+              #'org-roam-reflinks-insert-section
+              ;; #'org-roam-unlinked-references-insert-section
+              ))
+  (org-roam-setup)
+  (setq org-roam-capture-templates
+        '(("d" "default" plain
+           "%?"
+           :if-new (file+head "${slug}.org"
+                              "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)))
+  (setq org-roam-capture-ref-templates
+        '(("r" "ref" plain
+           "%?"
+           :if-new (file+head "${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t)))
+
+  (add-to-list 'org-capture-templates `("c" "org-protocol-capture" entry (file+olp ,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory) "The List")
+                                        "* TO-READ [[%:link][%:description]] %^g"
+                                        :immediate-finish t))
+  (add-to-list 'org-agenda-custom-commands `("r" "Reading"
+                                             ((todo "WRITING"
+                                                    ((org-agenda-overriding-header "Writing")
+                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
+                                              (todo "READING"
+                                                    ((org-agenda-overriding-header "Reading")
+                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
+                                              (todo "TO-READ"
+                                                    ((org-agenda-overriding-header "To Read")
+                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory))))))))
+  (setq org-roam-dailies-directory "daily/")
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           "* %?"
+           :if-new (file+head "daily/%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d>\n"))))
+  (set-company-backend! 'org-mode '(company-capf)))
+
+(use-package! org-roam-protocol
+  :after org-protocol)
+
 (setq org-roam-server-host "127.0.0.1"
       org-roam-server-port 8080
       org-roam-server-authenticate nil
@@ -725,7 +791,7 @@ end repeat\"")))
       org-roam-server-label-truncate-lenght 60
       org-roam-server-label-wrap-length 20)
 ;; auto start org roam server
-;; (add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
+;;(add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
 
 
 (setq default-input-method "rime")
@@ -775,6 +841,8 @@ end repeat\"")))
 
 (setq org-preview-latex-default-process 'dvisvgm)
 
+(setq comp-async-jobs-number 8)
+
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
 
@@ -788,12 +856,9 @@ end repeat\"")))
 ;; to speed up company
 (setq company-idle-delay 0)
 
-
-
 ;;(transwin-toggle-transparent-frame)
 
-(use-package company-tabnine
-  :ensure t)
+(use-package company-tabnine)
 (require 'company-tabnine)
 (add-to-list 'company-backends #'company-tabnine)
 
@@ -811,7 +876,9 @@ end repeat\"")))
 (setq org-image-actual-width nil)
 (setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
 (use-package! org-xournal
-  :hook (org-mode . org-xournal-mode)
+  ;; TODO: re-enable this
+  ;; disable this to debug
+  ;; :hook (org-mode . org-xournal-mode)
   :config
   (setq org-xournal-note-dir "~/nutstore_files/Notebook/xournalpp"  ;; xopp 笔记存储目录
         org-xournal-template-dir "~/nutstore_files/Notebook/xournalpp/templates" ;; xournal 目标文件存储目录
@@ -824,6 +891,71 @@ end repeat\"")))
   (add-hook 'org-mode-hook 'org-krita-mode))
 
 (load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
+
+;; helm-bibtex related stuff
+(after! helm
+  (use-package helm-bibtex
+    :custom
+    ;; In the lines below I point helm-bibtex to my default library file.
+    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+    ;; The line below tells helm-bibtex to find the path to the pdf
+    ;; in the "file" field in the .bib file.
+    (bibtex-completion-pdf-field "file")
+    :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
+  ;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
+  ;; I added the keybind below for that.
+  (map! :leader
+        :desc "Open literature database"
+        "o l" #'helm-bibtex)
+  ;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
+  ;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
+  (map! :map helm-map
+        "C-j" #'helm-next-line
+        "C-k" #'helm-previous-line )
+  )
+
+;; (setq org-ref-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+;; (setq reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+
+;; Set up org-ref stuff
+(use-package! org-ref
+    :after org
+    :init
+    ; code to run before loading org-ref
+    :config
+    ; code to run after loading org-ref
+    )
+(require 'org-ref)
+(after! org-ref
+  (setq org-ref-default-bibliography `,(list (concat org-directory "library.bib"))))
+
+;; The default citation type of org-ref is cite:, but I use citep: much more often
+;; I therefore changed the default type to the latter.
+(org-ref-default-citation-link "citep")
+
+;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results))
+         (pdf-file (funcall org-ref-get-pdf-filename-function key)))
+    (if (file-exists-p pdf-file)
+        (find-file pdf-file)
+      (message "No PDF found for %s" key))))
+
+(setq org-ref-completion-library 'org-ref-ivy-cite
+      org-export-latex-format-toc-function 'org-export-latex-no-toc
+      org-ref-get-pdf-filename-function
+      (lambda (key) (car (bibtex-completion-find-pdf key)))
+      ;; See the function I defined above.
+      org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
+      ;; For pdf export engines.
+      ;;org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f"
+      )
+      ;; I use orb to link org-ref, helm-bibtex and org-noter together (see below for more on org-noter and orb).
+      org-ref-notes-function 'orb-edit-notes)
 
 ;;(use-package! emacs-everywhere
 ;;  :config
