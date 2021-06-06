@@ -108,10 +108,10 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (use-package sis
-  :hook
+  ;;:hook
   ;; enable the /follow context/ and /inline region/ mode for specific buffers
-  (((text-mode prog-mode) . sis-context-mode)
-   ((text-mode prog-mode) . sis-inline-mode))
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
 
 
   :config
@@ -328,10 +328,10 @@
 
 (after! org
   (setq org-download-method 'directory)
-  (setq org-download-image-dir "images")
+  ;;(setq org-download-image-dir "images")
   (setq org-download-heading-lvl nil)
   (setq org-download-timestamp "%Y%m%d-%H%M%S_")
-  (setq org-image-actual-width 300)
+  (setq org-image-actual-width 500)
   (map! :map org-mode-map
         "C-c l a y" #'zz/org-download-paste-clipboard
         "C-M-y" #'zz/org-download-paste-clipboard))
@@ -698,6 +698,7 @@ end repeat\"")))
 (setq TeX-source-correlate-start-server t)
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
+;; for pgtk user
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
@@ -705,7 +706,6 @@ end repeat\"")))
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (setq lsp-file-watch-threshold 1000)
-
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
@@ -828,20 +828,16 @@ end repeat\"")))
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
   (setq org-latex-impatient-scale 2)
-  (setq org-latex-impatient-delay 0.01)
+  (setq org-latex-impatient-delay 0.2)
   )
 
 ;;(set-default 'preview-scale-function 10)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.8))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.8))
 
 ;;(plist-put org-format-latex-options :background "default")
 ;;(plist-put org-format-latex-options :foreground "default")
 
-
-
 (setq org-preview-latex-default-process 'dvisvgm)
-
-(setq comp-async-jobs-number 8)
 
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
@@ -873,19 +869,17 @@ end repeat\"")))
 (add-to-list 'load-path "/home/vitalyr/.opam/default/share/emacs/site-lisp")
 (require 'ocp-indent)
 
-(setq org-image-actual-width nil)
-(setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
-(use-package! org-xournal
-  ;; TODO: re-enable this
-  ;; disable this to debug
-  ;; :hook (org-mode . org-xournal-mode)
-  :config
-  (setq org-xournal-note-dir "~/nutstore_files/Notebook/xournalpp"  ;; xopp 笔记存储目录
-        org-xournal-template-dir "~/nutstore_files/Notebook/xournalpp/templates" ;; xournal 目标文件存储目录
-        org-xournal-default-template-name "template.xopp" ;; 默认笔记模版名称，应该位于 org-xournal-template-dir
-        org-xournal-bin "xournalpp" ;; xournal 执行文件
-        )
-  )
+;;(use-package! org-xournal
+;; TODO: re-enable this
+;; disable this to debug
+;; :hook (org-mode . org-xournal-mode)
+;;  :config
+;;  (setq org-xournal-note-dir "~/nutstore_files/Notebook/xournalpp"  ;; xopp 笔记存储目录
+;;        org-xournal-template-dir "~/nutstore_files/Notebook/xournalpp/templates" ;; xournal 目标文件存储目录
+;;        org-xournal-default-template-name "template.xopp" ;; 默认笔记模版名称，应该位于 org-xournal-template-dir
+;;        org-xournal-bin "xournalpp" ;; xournal 执行文件        )
+;;  )
+
 (use-package! org-krita
   :config
   (add-hook 'org-mode-hook 'org-krita-mode))
@@ -920,19 +914,19 @@ end repeat\"")))
 
 ;; Set up org-ref stuff
 (use-package! org-ref
-    :after org
-    :init
-    ; code to run before loading org-ref
-    :config
-    ; code to run after loading org-ref
-    )
+  :after org
+  :init
+                                        ; code to run before loading org-ref
+  :config
+                                        ; code to run after loading org-ref
+  )
 (require 'org-ref)
 (after! org-ref
   (setq org-ref-default-bibliography `,(list (concat org-directory "library.bib"))))
 
 ;; The default citation type of org-ref is cite:, but I use citep: much more often
 ;; I therefore changed the default type to the latter.
-(org-ref-default-citation-link "citep")
+;; (org-ref-default-citation-link "citep")
 
 ;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
 (defun my/org-ref-open-pdf-at-point ()
@@ -952,10 +946,24 @@ end repeat\"")))
       ;; See the function I defined above.
       org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
       ;; For pdf export engines.
-      ;;org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f"
-      )
+      ;;org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
       ;; I use orb to link org-ref, helm-bibtex and org-noter together (see below for more on org-noter and orb).
       org-ref-notes-function 'orb-edit-notes)
+(setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
+(use-package org-download
+  :after org
+  :defer nil
+  :custom
+  (org-download-method 'directory)
+  ;;(org-download-image-dir "images")
+  (org-download-heading-lvl nil)
+  (org-download-timestamp "%Y%m%d-%H%M%S_")
+  (org-image-actual-width 500)
+  ;;(org-download-screenshot-method "/usr/local/bin/pngpaste %s")
+  ;;:bind
+  ;;("C-M-y" . org-download-screenshot)
+  :config
+  (require 'org-download))
 
 ;;(use-package! emacs-everywhere
 ;;  :config

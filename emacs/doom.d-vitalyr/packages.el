@@ -57,7 +57,6 @@
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
-(package! org-bullets)
 (package! org-roam
   :recipe (:host github :repo "org-roam/org-roam" :branch "v2"))
 ;; (package! sis :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
@@ -67,10 +66,12 @@
 ;;(package! quelpa-use-package)
 (package! shackle)
 
-(package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
+;; install exec-path-from-shell if using macOS
+;; (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
 (package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
-(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
+;; to make the window transparent
+;;(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
 (package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
 (package! org-roam-bibtex :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 (package! org-xournal :recipe (:host github
@@ -86,8 +87,6 @@
            :files ("*.el")
            ))
 (unpin! rustic)
-;; no nox any more
-;;(package! nox :recipe(:host github :repo "manateelazycat/nox"))
 
 ;;(package! spacemacs-theme)
 
