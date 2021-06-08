@@ -680,7 +680,8 @@ end repeat\"")))
 (setq +latex-viewers '(pdf-tools))
 (setq pdf-view-use-scaling t
       pdf-view-use-imagemagick nil
-      pdf-view-resize-factor 10)
+      ;;pdf-view-resize-factor 10
+      )
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 
@@ -698,11 +699,10 @@ end repeat\"")))
 (setq TeX-source-correlate-start-server t)
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
-;; for pgtk user
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
-(setq-default preview-default-document-pt 22)
+;;(setq-default preview-default-document-pt 22)
 (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (setq lsp-file-watch-threshold 1000)
@@ -715,7 +715,6 @@ end repeat\"")))
   (setq org-roam-directory org-directory)
   ;;(setq org-roam-graph-viewer "inkscape")
   :config
-  (org-roam-mode)
   (require 'org-roam-protocol) ;; require org-roam-protocol here
   )
 
@@ -827,18 +826,24 @@ end repeat\"")))
   :hook (org-mode . org-latex-impatient-mode)
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
-  (setq org-latex-impatient-scale 2)
+  ;; (setq org-latex-impatient-scale 1)
   (setq org-latex-impatient-delay 0.2)
   )
 
 ;;(set-default 'preview-scale-function 10)
-;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.8))
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.4))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
+(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
 
-;;(plist-put org-format-latex-options :background "default")
-;;(plist-put org-format-latex-options :foreground "default")
+;; make the background color of latex fragments in org the same with other parts
+(after! org
+  ;; fix color handling in org-preview-latex-fragment
+  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+    (plist-put dvipng--plist :use-xcolor t)
+    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
 (setq org-preview-latex-default-process 'dvisvgm)
-
+(global-hl-line-mode nil)
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
 
@@ -949,6 +954,7 @@ end repeat\"")))
       ;;org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
       ;; I use orb to link org-ref, helm-bibtex and org-noter together (see below for more on org-noter and orb).
       org-ref-notes-function 'orb-edit-notes)
+
 (setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
 (use-package org-download
   :after org
@@ -958,10 +964,11 @@ end repeat\"")))
   ;;(org-download-image-dir "images")
   (org-download-heading-lvl nil)
   (org-download-timestamp "%Y%m%d-%H%M%S_")
-  (org-image-actual-width 500)
   ;;(org-download-screenshot-method "/usr/local/bin/pngpaste %s")
   ;;:bind
   ;;("C-M-y" . org-download-screenshot)
+  (setq org-download-image-attr-list
+        '("#+attr_html: :width 80% :height 70% :align center"))
   :config
   (require 'org-download))
 
