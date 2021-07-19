@@ -56,8 +56,11 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#set-face-for-latex][Set face for LaTeX]]
     - [[#use-pdf-tools-to-view-pdf][Use pdf-tools to view pdf]]
     - [[#automate-org-latex-preview][Automate org-latex-preview:]]
+    - [[#use-auto-activating-snippets-to-auto-expand-latex-snippets][Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets]]
+  - [[#lean][Lean]]
   - [[#other-config-to-be-classified][Other config to be classified]]
 - [[#other-tools][Other tools]]
+  -  [[#wakatime][wakatime]]
 - [[#experiments][Experiments]]
 
 * References
@@ -169,15 +172,11 @@ We start by simply defining the standard headers used by the three files. These 
 ;;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;;(unpin! t)
-(package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
-(package! org-roam
-  :recipe (:host github :repo "org-roam/org-roam" :branch "v2"))
-;; (package! sis :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
-;; sis is in melpa now
+(package! org-roam)
 (package! sis)
 (package! diminish)
 ;;(package! quelpa-use-package)
@@ -190,7 +189,7 @@ We start by simply defining the standard headers used by the three files. These 
 ;; to make the window transparent
 ;;(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
 (package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
-(package! org-roam-bibtex :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+(package! org-roam-bibtex)
 (package! org-xournal :recipe (:host github
                                :repo "yuchen-lea/org-xournal"
                                :files ("*.el")))
@@ -323,7 +322,7 @@ This code is written to the =init.el= to select which modules to load. Written h
         )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
+       unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (window-select
@@ -432,7 +431,8 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;kotlin            ; a better, slicker Java(Script)
        (latex
         +latexmk
-        +cdlatex
+        ;; use laas
+        ;;+cdlatex
         +lsp
         +fold
         )              ; writing papers in Emacs has never been so fun
@@ -447,7 +447,6 @@ This code is written to the =init.el= to select which modules to load. Written h
        (org
         ;;use org-roam v2 other than doom's org-roam
         ;;+roam
-
         +dragndrop
         +journal
         +jupyter
@@ -462,14 +461,14 @@ This code is written to the =init.el= to select which modules to load. Written h
         +babel
         +pretty
         +hugo
-        )               ; organize your plain life in plain text
-       raku        ; write code no one else can comprehend
+        )                 ; organize your plain life in plain text
+       raku                ; write code no one else can comprehend
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
+       python              ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
-       (racket            ; a DSL for DSLs
+       (racket             ; a DSL for DSLs
         +lsp
         )
        ;;rest              ; Emacs as a REST client
@@ -877,9 +876,10 @@ Disable [[https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L323][el
 ;;(add-hook! org-mode (electric-indent-local-mode -1))
 #+end_src
 
-Disable solaire-mode, to make org-latex-preview pictures with the same background color.
+Disable ~solaire-mode~ and ~hl-line-mode~, to make ~org-latex-preview~ pictures with the same background color.
 #+begin_src emacs-lisp
 (add-hook! org-mode (solaire-mode -1))
+(add-hook! org-mode (hl-line-mode -1))
 #+end_src
 
 I really dislike completion of words as I type prose (in code it's OK), so I disable it in Org:
@@ -1006,14 +1006,7 @@ The following are to be examined:
    `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
    `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
    `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
-
   )
-#+end_src
-
-Hide org emephsis markers.
-
-#+begin_src emacs-lisp
-(setq org-hide-emphasis-markers t)
 #+end_src
 
 Enable variable and visual line mode in Org mode by default.
@@ -1074,7 +1067,7 @@ I'm still trying out =org-roam=, although I have not figured out very well how i
 (setq org-roam-directory org-directory)
 ;; garbage collection for org-roam
 (setq org-roam-db-gc-threshold most-positive-fixnum)
-(setq +org-roam-open-buffer-on-find-file t)
+;;(setq +org-roam-open-buffer-on-find-file t)
 #+end_src
 
 ** Capturing images
@@ -1820,23 +1813,74 @@ And XeLaTeX to compile tex file.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
+*** Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! laas)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! laas
+  :hook (org-mode . laas-mode)
+  :config
+  ;; 不自动插入空格
+  (setq laas-enable-auto-space nil)
+  (aas-set-snippets 'laas-mode
+                    ;; 只在 org latex 片段中展开
+                    :cond #'org-inside-LaTeX-fragment-p
+                    "tan" "\\tan"
+                    ;; 内积
+                    "i*" (lambda () (interactive)
+                           (yas-expand-snippet "\\langle $1\\rangle$0"))
+                    "sr" "^2"
+                    ;; 还可以绑定函数，和 yasnippet 联动
+                    "Sum" (lambda () (interactive)
+                            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+                    ;; 这是 laas 中定义的用于包裹式 latex 代码的函数，实现 \bm{a}
+                    :cond #'laas-object-on-left-condition
+                    ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
+                    ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
+#+end_src
+
+** Lean
+#+begin_src emacs-lisp :tangle no
+(package! lean4-mode
+  :recipe (:host github
+           :repo "leanprover/lean4"
+           :files ("lean4-mode")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(setq lean4-mode-required-packages '(dash f flycheck lsp-mode magit-section s))
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
+(let ((need-to-refresh t))
+  (dolist (p lean4-mode-required-packages)
+    (when (not (package-installed-p p))
+      (when need-to-refresh
+        (package-refresh-contents)
+        (setq need-to-refresh nil))
+      (package-install p))))
+
+(require 'lean4-mode)
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(add-hook 'lean-mode-hook
+  (lambda () (setq-default sis-english-source "Lean")))
+
+#+end_src
 ** Other config to be classified
 #+begin_src emacs-lisp
 ;;(setq-default preview-default-document-pt 22)
-(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+;;(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (setq lsp-file-watch-threshold 1000)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
-(use-package! org-roam
-  :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
-  :init
-  (setq org-roam-directory org-directory)
-  ;;(setq org-roam-graph-viewer "inkscape")
-  :config
-  (require 'org-roam-protocol) ;; require org-roam-protocol here
-  )
 
 (use-package! org-roam
   :init
@@ -1898,10 +1942,14 @@ And XeLaTeX to compile tex file.
            "* %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n"))))
-  (set-company-backend! 'org-mode '(company-capf)))
+  ;;(set-company-backend! 'org-mode '(company-capf))
+  )
 
 (use-package! org-roam-protocol
   :after org-protocol)
+
+(after! org
+  (setq org-attach-dir-relative t))
 
 (setq org-roam-server-host "127.0.0.1"
       org-roam-server-port 8080
@@ -1935,7 +1983,6 @@ And XeLaTeX to compile tex file.
   :hook
   ('org-mode . #'valign-mode))
 
-(require 'kana)
 
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
 
@@ -1977,6 +2024,7 @@ And XeLaTeX to compile tex file.
 ;; to speed up company
 (setq company-idle-delay 0)
 
+;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)
 
 (use-package company-tabnine)
@@ -2095,6 +2143,19 @@ And XeLaTeX to compile tex file.
 
 * Other tools
 
+**  wakatime
+Use wakatime to track your coding time!
+#+begin_src emacs-lisp :tangle packages.el
+(package! wakatime-mode)
+#+end_src
+
+Configure wakatime:
+#+begin_src emacs-lisp
+(use-package wakatime
+  :ensure t)
+(global-wakatime-mode)
+#+end_src
+
 - Use Emacs [[https://github.com/tecosaur/emacs-everywhere][Everywhere]]!
 
   #+begin_src emacs-lisp :tangle packages.el
@@ -2190,6 +2251,7 @@ And XeLaTeX to compile tex file.
   #+begin_src emacs-lisp :tangle packages.el
 (package! annotate)
   #+end_src
+
 
 - [[https://github.com/csrhodes/gift-mode][gift-mode]] for editing quizzes in [[https://docs.moodle.org/39/en/GIFT_format][GIFT format]].
   #+begin_src emacs-lisp :tangle packages.el

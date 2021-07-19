@@ -248,6 +248,7 @@
 ;;(add-hook! org-mode (electric-indent-local-mode -1))
 
 (add-hook! org-mode (solaire-mode -1))
+(add-hook! org-mode (hl-line-mode -1))
 
 (defun zz/adjust-org-company-backends ()
   (remove-hook 'after-change-major-mode-hook '+company-init-backends-h)
@@ -285,8 +286,6 @@
 
  '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
 
-(setq org-hide-emphasis-markers t)
-
 (add-hook! org-mode :append
            'visual-line-mode
            'variable-pitch-mode)
@@ -313,7 +312,7 @@
 (setq org-roam-directory org-directory)
 ;; garbage collection for org-roam
 (setq org-roam-db-gc-threshold most-positive-fixnum)
-(setq +org-roam-open-buffer-on-find-file t)
+;;(setq +org-roam-open-buffer-on-find-file t)
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -702,21 +701,34 @@ end repeat\"")))
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
+(use-package! laas
+  :hook (org-mode . laas-mode)
+  :config
+  ;; 不自动插入空格
+  (setq laas-enable-auto-space nil)
+  (aas-set-snippets 'laas-mode
+                    ;; 只在 org latex 片段中展开
+                    :cond #'org-inside-LaTeX-fragment-p
+                    "tan" "\\tan"
+                    ;; 内积
+                    "i*" (lambda () (interactive)
+                           (yas-expand-snippet "\\langle $1\\rangle$0"))
+                    "sr" "^2"
+                    ;; 还可以绑定函数，和 yasnippet 联动
+                    "Sum" (lambda () (interactive)
+                            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+                    ;; 这是 laas 中定义的用于包裹式 latex 代码的函数，实现 \bm{a}
+                    :cond #'laas-object-on-left-condition
+                    ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
+                    ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
+
 ;;(setq-default preview-default-document-pt 22)
-(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+;;(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (setq lsp-file-watch-threshold 1000)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
-(use-package! org-roam
-  :commands (org-roam-insert org-roam-find-file org-roam-show-graph)
-  :init
-  (setq org-roam-directory org-directory)
-  ;;(setq org-roam-graph-viewer "inkscape")
-  :config
-  (require 'org-roam-protocol) ;; require org-roam-protocol here
-  )
 
 (use-package! org-roam
   :init
@@ -778,10 +790,14 @@ end repeat\"")))
            "* %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n"))))
-  (set-company-backend! 'org-mode '(company-capf)))
+  ;;(set-company-backend! 'org-mode '(company-capf))
+  )
 
 (use-package! org-roam-protocol
   :after org-protocol)
+
+(after! org
+  (setq org-attach-dir-relative t))
 
 (setq org-roam-server-host "127.0.0.1"
       org-roam-server-port 8080
@@ -815,7 +831,6 @@ end repeat\"")))
   :hook
   ('org-mode . #'valign-mode))
 
-(require 'kana)
 
 (setq-hook! 'LaTeX-mode-hook +spellcheck-immediately nil)
 
@@ -857,6 +872,7 @@ end repeat\"")))
 ;; to speed up company
 (setq company-idle-delay 0)
 
+;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)
 
 (use-package company-tabnine)
@@ -971,6 +987,10 @@ end repeat\"")))
         '("#+attr_html: :width 80% :height 70% :align center"))
   :config
   (require 'org-download))
+
+(use-package wakatime
+  :ensure t)
+(global-wakatime-mode)
 
 ;;(use-package! emacs-everywhere
 ;;  :config

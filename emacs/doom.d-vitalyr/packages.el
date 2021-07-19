@@ -52,15 +52,11 @@
 ;;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;;(unpin! t)
-(package! kana :recipe (:host github :repo "chenyanming/kana"))
 (package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
-(package! org-roam
-  :recipe (:host github :repo "org-roam/org-roam" :branch "v2"))
-;; (package! sis :recipe (:host github :repo "laishulu/emacs-smart-input-source"))
-;; sis is in melpa now
+(package! org-roam)
 (package! sis)
 (package! diminish)
 ;;(package! quelpa-use-package)
@@ -73,7 +69,7 @@
 ;; to make the window transparent
 ;;(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
 (package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
-(package! org-roam-bibtex :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+(package! org-roam-bibtex)
 (package! org-xournal :recipe (:host github
                                :repo "yuchen-lea/org-xournal"
                                :files ("*.el")))
@@ -143,6 +139,10 @@
 (package! package-lint)
 
 (package! org-fragtog)
+
+(package! laas)
+
+(package! wakatime-mode)
 
 ;;(package! emacs-everywhere :pin nil)
 
