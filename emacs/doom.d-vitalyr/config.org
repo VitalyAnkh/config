@@ -32,6 +32,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#dont-disable-electric-mode-it-will-help-a-lot-when-writing-latex-formula-in-org-file-as-for-the-indentation-problem-find-it-and-fix-it-in-other-ways][Don't disable electric-mode. It will help a lot when writing LaTeX formula in org file. As for the indentation problem, find it and fix it in other ways.]]
   - [[#org-visual-settings][Org visual settings]]
   - [[#capturing-and-note-taking][Capturing and note taking]]
+  - [[#org-for-academic][Org for Academic]]
   - [[#capturing-images][Capturing images]]
   - [[#capturing-links][Capturing links]]
     - [[#capturing-and-creating-internal-org-links][Capturing and creating internal Org links]]
@@ -56,6 +57,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#set-face-for-latex][Set face for LaTeX]]
     - [[#use-pdf-tools-to-view-pdf][Use pdf-tools to view pdf]]
     - [[#automate-org-latex-preview][Automate org-latex-preview:]]
+    - [[#set-org-preview-latex-process-alist][Set ~org-preview-latex-process-alist~]]
     - [[#use-auto-activating-snippets-to-auto-expand-latex-snippets][Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets]]
   - [[#lean][Lean]]
   - [[#other-config-to-be-classified][Other config to be classified]]
@@ -75,6 +77,9 @@ Emacs config is an art, and I have learned a lot by reading through other people
 
 Note: a lot of manual configuration has been rendered moot by using Emacs Doom, which aggregates a well-maintained and organized collection of common configuration settings for performance optimization, package management, commonly used packages (e.g. Org) and much more.
 * Doom config file overview
+:LOGBOOK:
+CLOCK: [2021-10-08 五 17:22]--[2021-10-08 五 17:25] =>  0:03
+:END:
 
 Doom Emacs uses three config files:
 
@@ -172,7 +177,8 @@ We start by simply defining the standard headers used by the three files. These 
 ;;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;;(unpin! t)
-(package! org-roam-server :recipe (:host github :repo "org-roam/org-roam-server"))
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! rime :recipe (:host github :repo "DogLooksGood/emacs-rime"))
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-latex-impatient :recipe (:host github :repo "yangsheng6810/org-latex-impatient"))
@@ -446,7 +452,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ocaml             ; an objective camel
        (org
         ;;use org-roam v2 other than doom's org-roam
-        ;;+roam
+        +roam2
         +dragndrop
         +journal
         +jupyter
@@ -1069,7 +1075,14 @@ I'm still trying out =org-roam=, although I have not figured out very well how i
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 ;;(setq +org-roam-open-buffer-on-find-file t)
 #+end_src
-
+** Org for Academic
+Config for exporting pdf from org:
+#+begin_src emacs-lisp
+(setq org-latex-pdf-process
+      '("xelatex -interaction nonstopmode -output-directory %o %f"
+        "xelatex -interaction nonstopmode -output-directory %o %f"
+        "xelatex -interaction nonstopmode -output-directory %o %f"))
+#+end_src
 ** Capturing images
 
 Using =org-download= to make it easier to insert images into my org notes. I don't like the configuration provided by Doom as part of the =(org +dragndrop)= module, so I install the package by hand and configure it to my liking. I also define a new keybinding to paste an image from the clipboard, asking for the filename first.
@@ -1094,7 +1107,7 @@ Using =org-download= to make it easier to insert images into my org notes. I don
   ;;(setq org-download-image-dir "images")
   (setq org-download-heading-lvl nil)
   (setq org-download-timestamp "%Y%m%d-%H%M%S_")
-  (setq org-image-actual-width 500)
+  (setq org-image-actual-width nil)
   (map! :map org-mode-map
         "C-c l a y" #'zz/org-download-paste-clipboard
         "C-M-y" #'zz/org-download-paste-clipboard))
@@ -1813,6 +1826,63 @@ And XeLaTeX to compile tex file.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
+*** Set ~org-preview-latex-process-alist~
+#+begin_src emacs-lisp
+(setq org-preview-latex-process-alist
+      '((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f")
+                :transparent-image-converter
+                ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+        (dvisvgm :programs
+                 ("latex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: latex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (1.0 . 1.0)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (tectonic :programs
+                 ("latex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: tectonic and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (1.7 . 1.5)
+                 :latex-compiler
+                 ("xelatex %f --outfmt xdv --pass tex -output-directory %o")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
+      )
+#+end_src
+Unicode support:
+#+begin_src emacs-lisp
+(setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
+
+(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
+
+(setq org-preview-latex-default-process 'dvisvgm)
+
+(setq org-latex-compiler "xelatex")
+#+end_src
+#+RESULTS:
+
 *** Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -1882,83 +1952,26 @@ And XeLaTeX to compile tex file.
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
 
-(use-package! org-roam
-  :init
-  (map! :leader
-        :prefix "n"
-        :desc "org-roam" "l" #'org-roam-buffer-toggle
-        :desc "org-roam-node-insert" "i" #'org-roam-node-insert
-        :desc "org-roam-node-find" "f" #'org-roam-node-find
-        :desc "org-roam-ref-find" "r" #'org-roam-ref-find
-        :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-        :desc "org-roam-capture" "c" #'org-roam-capture
-        :desc "org-roam-dailies-capture-today" "j" #'org-roam-dailies-capture-today)
-  (setq org-roam-directory org-directory
-        org-roam-db-gc-threshold most-positive-fixnum
-        org-id-link-to-org-use-id t)
-  (add-to-list 'display-buffer-alist
-               '(("\\*org-roam\\*"
-                  (display-buffer-in-direction)
-                  (direction . right)
-                  (window-width . 0.33)
-                  (window-height . fit-window-to-buffer))))
-  :config
-  (setq org-roam-mode-sections
-        (list #'org-roam-backlinks-insert-section
-              #'org-roam-reflinks-insert-section
-              ;; #'org-roam-unlinked-references-insert-section
-              ))
-  (org-roam-setup)
-  (setq org-roam-capture-templates
-        '(("d" "default" plain
-           "%?"
-           :if-new (file+head "${slug}.org"
-                              "#+title: ${title}\n")
-           :immediate-finish t
-           :unnarrowed t)))
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain
-           "%?"
-           :if-new (file+head "${slug}.org"
-                              "#+title: ${title}\n")
-           :unnarrowed t)))
+(use-package! org-roam-protocol
+  :after org-protocol)
 
-  (add-to-list 'org-capture-templates `("c" "org-protocol-capture" entry (file+olp ,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory) "The List")
-                                        "* TO-READ [[%:link][%:description]] %^g"
-                                        :immediate-finish t))
-  (add-to-list 'org-agenda-custom-commands `("r" "Reading"
-                                             ((todo "WRITING"
-                                                    ((org-agenda-overriding-header "Writing")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
-                                              (todo "READING"
-                                                    ((org-agenda-overriding-header "Reading")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
-                                              (todo "TO-READ"
-                                                    ((org-agenda-overriding-header "To Read")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory))))))))
+(after! org
+  (setq org-attach-dir-relative t)
   (setq org-roam-dailies-directory "daily/")
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry
            "* %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n"))))
-  ;;(set-company-backend! 'org-mode '(company-capf))
+                              "#+title: %<%Y-%m-%d>\n")))))
+;;(set-company-backend! 'org-mode '(company-capf))
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam ;; or :after org
+  :hook (org-roam . org-roam-ui-mode)
+  :config
   )
-
-(use-package! org-roam-protocol
-  :after org-protocol)
-
-(after! org
-  (setq org-attach-dir-relative t))
-
-(setq org-roam-server-host "127.0.0.1"
-      org-roam-server-port 8080
-      org-roam-server-authenticate nil
-      org-roam-server-label-truncate t
-      org-roam-server-label-truncate-lenght 60
-      org-roam-server-label-wrap-length 20)
-;; auto start org roam server
-;;(add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
 
 
 (setq default-input-method "rime")
@@ -1998,18 +2011,17 @@ And XeLaTeX to compile tex file.
   )
 
 ;;(set-default 'preview-scale-function 10)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.4))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
-(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
 
 ;; make the background color of latex fragments in org the same with other parts
-(after! org
+;;(after! org
   ;; fix color handling in org-preview-latex-fragment
-  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-    (plist-put dvipng--plist :use-xcolor t)
-    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
+;;  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+;;    (plist-put dvipng--plist :use-xcolor t)
+;;    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
-(setq org-preview-latex-default-process 'dvisvgm)
 (global-hl-line-mode nil)
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
@@ -2151,7 +2163,7 @@ Use wakatime to track your coding time!
 
 Configure wakatime:
 #+begin_src emacs-lisp
-(use-package wakatime
+(use-package wakatime-mode
   :ensure t)
 (global-wakatime-mode)
 #+end_src
@@ -2197,11 +2209,11 @@ Configure wakatime:
 - I prefer to use the GPG graphical PIN entry utility. This is achieved by setting =epg-pinentry-mode= (=epa-pinentry-mode= before Emacs 27) to =nil= instead of the default ='loopback=.
 
   #+begin_src emacs-lisp
-(after! epa
-  (set (if EMACS27+
-           'epg-pinentry-mode
-         'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
-       nil))
+;;(after! epa
+;;  (set (if EMACS27+
+;;           'epg-pinentry-mode
+;;         'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
+;;       nil))
   #+end_src
 
 - I find =iedit= absolutely indispensable when coding. In short: when you hit =Ctrl-;=, all occurrences of the symbol under the cursor (or the current selection) are highlighted, and any changes you make on one of them will be automatically applied to all others. It's great for renaming variables in code, but it needs to be used with care, as it has no idea of semantics, it's  a plain string replacement, so it can inadvertently modify unintended parts of the code.

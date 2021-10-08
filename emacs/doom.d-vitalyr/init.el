@@ -182,7 +182,7 @@
        ocaml             ; an objective camel
        (org
         ;;use org-roam v2 other than doom's org-roam
-        ;;+roam
+        +roam2
         +dragndrop
         +journal
         +jupyter

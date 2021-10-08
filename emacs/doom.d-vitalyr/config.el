@@ -314,6 +314,11 @@
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 ;;(setq +org-roam-open-buffer-on-find-file t)
 
+(setq org-latex-pdf-process
+      '("xelatex -interaction nonstopmode -output-directory %o %f"
+        "xelatex -interaction nonstopmode -output-directory %o %f"
+        "xelatex -interaction nonstopmode -output-directory %o %f"))
+
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
   (require 'org-download)
@@ -330,7 +335,7 @@
   ;;(setq org-download-image-dir "images")
   (setq org-download-heading-lvl nil)
   (setq org-download-timestamp "%Y%m%d-%H%M%S_")
-  (setq org-image-actual-width 500)
+  (setq org-image-actual-width nil)
   (map! :map org-mode-map
         "C-c l a y" #'zz/org-download-paste-clipboard
         "C-M-y" #'zz/org-download-paste-clipboard))
@@ -463,9 +468,9 @@ title."
                  :kill-buffer t)))
 
 (defadvice! +zz/load-org-gtd-before-capture (&optional goto keys)
-    :before #'org-capture
-    (require 'org-capture)
-    (require 'org-gtd))
+  :before #'org-capture
+  (require 'org-capture)
+  (require 'org-gtd))
 
 ;;(use-package! ox-awesomecv
 ;;  :after org)
@@ -573,7 +578,7 @@ headlines tagged with :noexport:"
          (title (cadar (org-collect-keywords '("TITLE"))))
          ;; Command to reload the browser and move to the correct slide
          (cmd (concat
-"osascript -e \"tell application \\\"Brave\\\" to repeat with W in windows
+               "osascript -e \"tell application \\\"Brave\\\" to repeat with W in windows
 set i to 0
 repeat with T in (tabs in W)
 set i to i + 1
@@ -701,6 +706,57 @@ end repeat\"")))
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 
+(setq org-preview-latex-process-alist
+      '((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f")
+                :transparent-image-converter
+                ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+        (dvisvgm :programs
+                 ("latex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: latex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (1.0 . 1.0)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (tectonic :programs
+                  ("latex" "dvisvgm")
+                  :description "xdv > svg"
+                  :message "you need to install the programs: tectonic and dvisvgm."
+                  :image-input-type "xdv"
+                  :image-output-type "svg"
+                  :image-size-adjust (1.7 . 1.5)
+                  :latex-compiler
+                  ("xelatex %f --outfmt xdv --pass tex -output-directory %o")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
+      )
+
+(setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
+
+(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
+
+(setq org-preview-latex-default-process 'dvisvgm)
+
+(setq org-latex-compiler "xelatex")
+
 (use-package! laas
   :hook (org-mode . laas-mode)
   :config
@@ -730,83 +786,26 @@ end repeat\"")))
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
 
-(use-package! org-roam
-  :init
-  (map! :leader
-        :prefix "n"
-        :desc "org-roam" "l" #'org-roam-buffer-toggle
-        :desc "org-roam-node-insert" "i" #'org-roam-node-insert
-        :desc "org-roam-node-find" "f" #'org-roam-node-find
-        :desc "org-roam-ref-find" "r" #'org-roam-ref-find
-        :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-        :desc "org-roam-capture" "c" #'org-roam-capture
-        :desc "org-roam-dailies-capture-today" "j" #'org-roam-dailies-capture-today)
-  (setq org-roam-directory org-directory
-        org-roam-db-gc-threshold most-positive-fixnum
-        org-id-link-to-org-use-id t)
-  (add-to-list 'display-buffer-alist
-               '(("\\*org-roam\\*"
-                  (display-buffer-in-direction)
-                  (direction . right)
-                  (window-width . 0.33)
-                  (window-height . fit-window-to-buffer))))
-  :config
-  (setq org-roam-mode-sections
-        (list #'org-roam-backlinks-insert-section
-              #'org-roam-reflinks-insert-section
-              ;; #'org-roam-unlinked-references-insert-section
-              ))
-  (org-roam-setup)
-  (setq org-roam-capture-templates
-        '(("d" "default" plain
-           "%?"
-           :if-new (file+head "${slug}.org"
-                              "#+title: ${title}\n")
-           :immediate-finish t
-           :unnarrowed t)))
-  (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain
-           "%?"
-           :if-new (file+head "${slug}.org"
-                              "#+title: ${title}\n")
-           :unnarrowed t)))
+(use-package! org-roam-protocol
+  :after org-protocol)
 
-  (add-to-list 'org-capture-templates `("c" "org-protocol-capture" entry (file+olp ,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory) "The List")
-                                        "* TO-READ [[%:link][%:description]] %^g"
-                                        :immediate-finish t))
-  (add-to-list 'org-agenda-custom-commands `("r" "Reading"
-                                             ((todo "WRITING"
-                                                    ((org-agenda-overriding-header "Writing")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
-                                              (todo "READING"
-                                                    ((org-agenda-overriding-header "Reading")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory)))))
-                                              (todo "TO-READ"
-                                                    ((org-agenda-overriding-header "To Read")
-                                                     (org-agenda-files '(,(expand-file-name "reading_and_writing_inbox.org" org-roam-directory))))))))
+(after! org
+  (setq org-attach-dir-relative t)
   (setq org-roam-dailies-directory "daily/")
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry
            "* %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n"))))
-  ;;(set-company-backend! 'org-mode '(company-capf))
+                              "#+title: %<%Y-%m-%d>\n")))))
+;;(set-company-backend! 'org-mode '(company-capf))
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam ;; or :after org
+  :hook (org-roam . org-roam-ui-mode)
+  :config
   )
-
-(use-package! org-roam-protocol
-  :after org-protocol)
-
-(after! org
-  (setq org-attach-dir-relative t))
-
-(setq org-roam-server-host "127.0.0.1"
-      org-roam-server-port 8080
-      org-roam-server-authenticate nil
-      org-roam-server-label-truncate t
-      org-roam-server-label-truncate-lenght 60
-      org-roam-server-label-wrap-length 20)
-;; auto start org roam server
-;;(add-hook 'org-mode #'(lambda () (org-roam-server-mode 1)))
 
 
 (setq default-input-method "rime")
@@ -846,18 +845,17 @@ end repeat\"")))
   )
 
 ;;(set-default 'preview-scale-function 10)
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.4))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
-(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
+;;(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
 
 ;; make the background color of latex fragments in org the same with other parts
-(after! org
-  ;; fix color handling in org-preview-latex-fragment
-  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-    (plist-put dvipng--plist :use-xcolor t)
-    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
+;;(after! org
+;; fix color handling in org-preview-latex-fragment
+;;  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+;;    (plist-put dvipng--plist :use-xcolor t)
+;;    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
-(setq org-preview-latex-default-process 'dvisvgm)
 (global-hl-line-mode nil)
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
@@ -988,7 +986,7 @@ end repeat\"")))
   :config
   (require 'org-download))
 
-(use-package wakatime
+(use-package wakatime-mode
   :ensure t)
 (global-wakatime-mode)
 
@@ -1013,12 +1011,11 @@ end repeat\"")))
            ((:right-align t)
             (:help-echo "Local changes not in upstream")))
           ("Path" 99 magit-repolist-column-path nil))))
-
-(after! epa
-  (set (if EMACS27+
-           'epg-pinentry-mode
-         'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
-       nil))
+;;(after! epa
+;;  (set (if EMACS27+
+;;           'epg-pinentry-mode
+;;         'epa-pinentry-mode) ; DEPRECATED `epa-pinentry-mode'
+;;       nil))
 
 (use-package! iedit
   :defer
@@ -1026,7 +1023,6 @@ end repeat\"")))
   (set-face-background 'iedit-occurrence "Magenta")
   :bind
   ("C-;" . iedit-mode))
-
 (defmacro zz/measure-time (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
