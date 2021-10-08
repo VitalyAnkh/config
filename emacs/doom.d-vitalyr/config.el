@@ -271,16 +271,16 @@
  ;; TODO set the color following this
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
  ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "Alegreya" :height 180 :weight thin))))
+ '(variable-pitch ((t (:family "DejaVu Serif" :height 170))))
  '(fixed-pitch ((t (:family "mononoki" :height 170))))
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-5 ((t (,@headline ,@variable-tuple))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1 :family "DejaVu Serif Condensed"))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "ETBembo"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Serif Condensed"))))
  '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
-                    "Alegreya"))))
+                    "DejaVu Serif Condensed"))))
  '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
                     :height 1.75 :family "Alegreya"))))
 
@@ -314,10 +314,35 @@
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 ;;(setq +org-roam-open-buffer-on-find-file t)
 
-(setq org-latex-pdf-process
-      '("xelatex -interaction nonstopmode -output-directory %o %f"
-        "xelatex -interaction nonstopmode -output-directory %o %f"
-        "xelatex -interaction nonstopmode -output-directory %o %f"))
+;;(setq org-latex-pdf-process
+;;      '("xelatex -interaction nonstopmode -output-directory %o %f"
+;;        "xelatex -interaction nonstopmode -output-directory %o %f"
+;;        "xelatex -interaction nonstopmode -output-directory %o %f"))
+;;(setq org-latex-pdf-process
+;;      (list (concat "latexmk -"
+;;                    org-latex-compiler
+;;                    " -recorder -synctex=1 -bibtex-cond %b")))
+;;(setq org-latex-listings t)
+(setq org-startup-with-latex-preview t)
+(with-eval-after-load 'ox-latex
+ ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
+ ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
+ ;; automatically to resolve the cross-references.
+ (setq org-latex-pdf-process '("latexmk -xelatex -quiet -shell-escape -f %f"))
+ (add-to-list 'org-latex-classes
+               '("elegantpaper"
+                 "\\documentclass[lang=cn]{elegantpaper}
+                 [NO-DEFAULT-PACKAGES]
+                 [PACKAGES]
+                 [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+               )
+  (setq org-latex-listings 'minted)
+  (add-to-list 'org-latex-packages-alist '("" "minted")))
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -468,9 +493,9 @@ title."
                  :kill-buffer t)))
 
 (defadvice! +zz/load-org-gtd-before-capture (&optional goto keys)
-  :before #'org-capture
-  (require 'org-capture)
-  (require 'org-gtd))
+    :before #'org-capture
+    (require 'org-capture)
+    (require 'org-gtd))
 
 ;;(use-package! ox-awesomecv
 ;;  :after org)
@@ -578,7 +603,7 @@ headlines tagged with :noexport:"
          (title (cadar (org-collect-keywords '("TITLE"))))
          ;; Command to reload the browser and move to the correct slide
          (cmd (concat
-               "osascript -e \"tell application \\\"Brave\\\" to repeat with W in windows
+"osascript -e \"tell application \\\"Brave\\\" to repeat with W in windows
 set i to 0
 repeat with T in (tabs in W)
 set i to i + 1
@@ -723,7 +748,7 @@ end repeat\"")))
                  :message "you need to install the programs: latex and dvisvgm."
                  :image-input-type "xdv"
                  :image-output-type "svg"
-                 :image-size-adjust (1.0 . 1.0)
+                 :image-size-adjust (0.8 . 0.8)
                  :latex-compiler
                  ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
                  :image-converter
@@ -741,8 +766,11 @@ end repeat\"")))
                   ("dvisvgm %f -n -b min -c %S -o %O"))
         (imagemagick :programs
                      ("latex" "convert")
-                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                     (1.0 . 1.0)
+                     :description "pdf > png"
+                     :message "you need to install the programs: latex and imagemagick."
+                     :image-input-type "pdf"
+                     :image-output-type "png"
+                     :image-size-adjust (1.0 . 1.0)
                      :latex-compiler
                      ("pdflatex -interaction nonstopmode -output-directory %o %f")
                      :image-converter
@@ -750,11 +778,8 @@ end repeat\"")))
       )
 
 (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
-
 (add-to-list 'org-latex-packages-alist '("" "unicode-math"))
-
 (setq org-preview-latex-default-process 'dvisvgm)
-
 (setq org-latex-compiler "xelatex")
 
 (use-package! laas
@@ -805,6 +830,10 @@ end repeat\"")))
   :after org-roam ;; or :after org
   :hook (org-roam . org-roam-ui-mode)
   :config
+  (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t)
   )
 
 
@@ -910,7 +939,7 @@ end repeat\"")))
   (use-package helm-bibtex
     :custom
     ;; In the lines below I point helm-bibtex to my default library file.
-    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
     (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
     ;; The line below tells helm-bibtex to find the path to the pdf
     ;; in the "file" field in the .bib file.
@@ -941,7 +970,7 @@ end repeat\"")))
   )
 (require 'org-ref)
 (after! org-ref
-  (setq org-ref-default-bibliography `,(list (concat org-directory "library.bib"))))
+  (setq org-ref-default-bibliography `,(list (concat org-directory "/library.bib"))))
 
 ;; The default citation type of org-ref is cite:, but I use citep: much more often
 ;; I therefore changed the default type to the latter.
@@ -959,7 +988,7 @@ end repeat\"")))
       (message "No PDF found for %s" key))))
 
 (setq org-ref-completion-library 'org-ref-ivy-cite
-      org-export-latex-format-toc-function 'org-export-latex-no-toc
+      ;;org-export-latex-format-toc-function 'org-export-latex-no-toc
       org-ref-get-pdf-filename-function
       (lambda (key) (car (bibtex-completion-find-pdf key)))
       ;; See the function I defined above.
@@ -974,15 +1003,7 @@ end repeat\"")))
   :after org
   :defer nil
   :custom
-  (org-download-method 'directory)
-  ;;(org-download-image-dir "images")
-  (org-download-heading-lvl nil)
-  (org-download-timestamp "%Y%m%d-%H%M%S_")
-  ;;(org-download-screenshot-method "/usr/local/bin/pngpaste %s")
-  ;;:bind
-  ;;("C-M-y" . org-download-screenshot)
-  (setq org-download-image-attr-list
-        '("#+attr_html: :width 80% :height 70% :align center"))
+  (org-download-method 'directory) ;;(org-download-image-dir "images") (org-download-heading-lvl nil) (org-download-timestamp "%Y%m%d-%H%M%S_") ;;(org-download-screenshot-method "/usr/local/bin/pngpaste %s") ;;:bind ;;("C-M-y" . org-download-screenshot) (setq org-download-image-attr-list '("#+attr_html: :width 80% :height 70% :align center"))
   :config
   (require 'org-download))
 
@@ -1011,6 +1032,7 @@ end repeat\"")))
            ((:right-align t)
             (:help-echo "Local changes not in upstream")))
           ("Path" 99 magit-repolist-column-path nil))))
+
 ;;(after! epa
 ;;  (set (if EMACS27+
 ;;           'epg-pinentry-mode
@@ -1023,6 +1045,7 @@ end repeat\"")))
   (set-face-background 'iedit-occurrence "Magenta")
   :bind
   ("C-;" . iedit-mode))
+
 (defmacro zz/measure-time (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))
