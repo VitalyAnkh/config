@@ -271,8 +271,8 @@
  ;; TODO set the color following this
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
  ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "DejaVu Serif" :height 170))))
- '(fixed-pitch ((t (:family "mononoki" :height 170))))
+ '(variable-pitch ((t (:family "DejaVu Serif" :height 150))))
+ '(fixed-pitch ((t (:family "mononoki" :height 160))))
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
