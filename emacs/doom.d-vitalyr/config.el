@@ -84,28 +84,31 @@
 
 (setq doom-font (font-spec :family "mononoki" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
+      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 19)
+      doom-serif-font (font-spec :family "DejaVu Serif" :size 19)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
-      doom-unicode-font (font-spec :family "Noto Serif CJK SC Light" :size 22)
+      ;;doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
+(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
 
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 
-(setq doom-theme 'doom-opera-light)
+(setq doom-theme 'doom-solarized-light)
+;;(setq doom-theme 'doom-solarized-light)
 (use-package doom-themes
   :config
   ;;Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;;(setq doom-theme 'doom-nord-light)
-  ;;(setq doom-theme 'doom-solarized-light)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
 (add-hook 'window-setup-hook #'doom/quickload-session)
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+(rainbow-mode)
 
 (use-package sis
   ;;:hook
@@ -748,7 +751,7 @@ end repeat\"")))
                  :message "you need to install the programs: latex and dvisvgm."
                  :image-input-type "xdv"
                  :image-output-type "svg"
-                 :image-size-adjust (0.8 . 0.8)
+                 :image-size-adjust (0.5 . 0.5)
                  :latex-compiler
                  ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
                  :image-converter
