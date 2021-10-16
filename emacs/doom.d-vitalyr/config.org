@@ -34,6 +34,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#org-visual-settings][Org visual settings]]
   - [[#capturing-and-note-taking][Capturing and note taking]]
   - [[#org-for-academic][Org for Academic]]
+    - [[#use-xenops-for-latex][Use ~xenops~ for ~LaTeX~]]
   - [[#capturing-images][Capturing images]]
   - [[#capturing-links][Capturing links]]
     - [[#capturing-and-creating-internal-org-links][Capturing and creating internal Org links]]
@@ -63,6 +64,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#lean][Lean]]
   - [[#other-config-to-be-classified][Other config to be classified]]
 - [[#other-tools][Other tools]]
+  - [[#artist-mode][Artist Mode]]
   -  [[#wakatime][wakatime]]
 - [[#experiments][Experiments]]
 
@@ -325,7 +327,7 @@ This code is written to the =init.el= to select which modules to load. Written h
         )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
+       unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (window-select
@@ -504,7 +506,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;; I will write one for Wayland
        ;; everywhere
        calendar
-       ;; irc               ; how neckbeards socialize
+       irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
@@ -582,9 +584,9 @@ Set base and variable-pitch fonts. I currently like [[https://github.com/tonsky/
       doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 19)
       doom-serif-font (font-spec :family "DejaVu Serif" :size 19)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
-      ;;doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
+      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
-(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
+;;(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
 #+end_src
 
 Allow mixed fonts in a buffer. This is particularly useful for Org mode, so I can mix source and prose blocks in the same document.
@@ -925,7 +927,7 @@ Set a beautiful org-mode.
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (:inherit outline-5 :height 1 :family "DejaVu Serif Condensed"))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Serif Condensed"))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Serif Condensed"))))
  '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
@@ -1111,6 +1113,15 @@ Config for exporting pdf from org:
                )
   (setq org-latex-listings 'minted)
   (add-to-list 'org-latex-packages-alist '("" "minted")))
+#+end_src
+*** Use ~xenops~ for ~LaTeX~
+#+begin_src emacs-lisp :tangle packages.el
+(package! xenops)
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'latex-mode-hook #'xenops-mode)
+(add-hook 'LaTeX-mode-hook #'xenops-mode)
 #+end_src
 ** Capturing images
 
@@ -2179,6 +2190,12 @@ Unicode support:
 #+end_src
 
 * Other tools
+
+** Artist Mode
+Disable line numbers when using ~artist-mode~:
+#+begin_src emacs-lisp
+(add-hook 'artist-mode-hook (lambda () (display-line-numbers-mode -1)))
+#+end_src
 
 **  wakatime
 Use wakatime to track your coding time!

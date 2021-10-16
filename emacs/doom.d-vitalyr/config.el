@@ -87,9 +87,9 @@
       doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 19)
       doom-serif-font (font-spec :family "DejaVu Serif" :size 19)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
-      ;;doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
+      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
-(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
+;;(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
 
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
@@ -279,7 +279,7 @@
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (:inherit outline-5 :height 1 :family "DejaVu Serif Condensed"))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Serif Condensed"))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Serif Condensed"))))
  '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
@@ -346,6 +346,9 @@
                )
   (setq org-latex-listings 'minted)
   (add-to-list 'org-latex-packages-alist '("" "minted")))
+
+(add-hook 'latex-mode-hook #'xenops-mode)
+(add-hook 'LaTeX-mode-hook #'xenops-mode)
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -1009,6 +1012,8 @@ end repeat\"")))
   (org-download-method 'directory) ;;(org-download-image-dir "images") (org-download-heading-lvl nil) (org-download-timestamp "%Y%m%d-%H%M%S_") ;;(org-download-screenshot-method "/usr/local/bin/pngpaste %s") ;;:bind ;;("C-M-y" . org-download-screenshot) (setq org-download-image-attr-list '("#+attr_html: :width 80% :height 70% :align center"))
   :config
   (require 'org-download))
+
+(add-hook 'artist-mode-hook (lambda () (display-line-numbers-mode -1)))
 
 (use-package wakatime-mode
   :ensure t)

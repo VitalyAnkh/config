@@ -96,6 +96,8 @@
   :recipe (:host github
            :repo "awth13/org-appear"))
 
+(package! xenops)
+
 (package! org-download)
 
 ;;(package! mexican-holidays)

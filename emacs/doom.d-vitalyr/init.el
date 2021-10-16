@@ -58,7 +58,7 @@
         )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
+       unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (window-select
@@ -237,7 +237,7 @@
        ;; I will write one for Wayland
        ;; everywhere
        calendar
-       ;; irc               ; how neckbeards socialize
+       irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
