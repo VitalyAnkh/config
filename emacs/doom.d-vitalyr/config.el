@@ -230,6 +230,8 @@
 
 (setq org-directory "~/projects/learn/Notebook/org")
 
+(setq word-wrap-by-category t)
+
 (after! org (setq org-hide-emphasis-markers t))
 
 (after! org (setq org-insert-heading-respect-content nil))

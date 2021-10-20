@@ -841,6 +841,11 @@ Default directory for Org files.
 (setq org-directory "~/projects/learn/Notebook/org")
 #+end_src
 
+Set ~word-wrap-by-category~ to make Chinese and English characters align on the same line:
+#+begin_src emacs-lisp
+(setq word-wrap-by-category t)
+#+end_src
+
 Hide Org markup indicators.
 
 #+begin_src emacs-lisp
