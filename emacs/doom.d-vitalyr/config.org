@@ -2214,8 +2214,7 @@ Use wakatime to track your coding time!
 
 Configure wakatime:
 #+begin_src emacs-lisp
-(use-package wakatime-mode
-  :ensure t)
+(use-package wakatime-mode)
 (global-wakatime-mode)
 #+end_src
 

@@ -1019,8 +1019,7 @@ end repeat\"")))
 
 (add-hook 'artist-mode-hook (lambda () (display-line-numbers-mode -1)))
 
-(use-package wakatime-mode
-  :ensure t)
+(use-package wakatime-mode)
 (global-wakatime-mode)
 
 ;;(use-package! emacs-everywhere
