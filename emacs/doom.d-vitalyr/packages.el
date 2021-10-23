@@ -145,6 +145,11 @@
 
 (package! laas)
 
+(package! lean4-mode :recipe
+  (:host github
+   :repo "leanprover/lean4"
+   :files ("lean4-mode/*.el")))
+
 (package! wakatime-mode)
 
 ;;(package! emacs-everywhere :pin nil)

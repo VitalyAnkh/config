@@ -61,7 +61,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#automate-org-latex-preview][Automate org-latex-preview:]]
     - [[#set-org-preview-latex-process-alist][Set ~org-preview-latex-process-alist~]]
     - [[#use-auto-activating-snippets-to-auto-expand-latex-snippets][Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets]]
-  - [[#lean][Lean]]
+  - [[#lean-4][Lean 4]]
   - [[#other-config-to-be-classified][Other config to be classified]]
 - [[#other-tools][Other tools]]
   - [[#artist-mode][Artist Mode]]
@@ -539,6 +539,10 @@ When at the beginning of the line, make =Ctrl-K= remove the whole line, instead 
 
 #+begin_src emacs-lisp
 (setq kill-whole-line t)
+#+end_src
+Set ~ivy-use-selectable-prompt~:
+#+begin_src emacs-lisp
+(setq ivy-use-selectable-prompt t)
 #+end_src
 
 Enable line numbers.
@@ -1958,12 +1962,12 @@ Unicode support:
                     ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 #+end_src
 
-** Lean
-#+begin_src emacs-lisp :tangle no
-(package! lean4-mode
-  :recipe (:host github
-           :repo "leanprover/lean4"
-           :files ("lean4-mode")))
+** Lean 4
+#+begin_src emacs-lisp :tangle packages.el
+(package! lean4-mode :recipe
+  (:host github
+   :repo "leanprover/lean4"
+   :files ("lean4-mode/*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no

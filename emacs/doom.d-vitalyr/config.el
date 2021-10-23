@@ -67,6 +67,8 @@
 
 (setq kill-whole-line t)
 
+(setq ivy-use-selectable-prompt t)
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
