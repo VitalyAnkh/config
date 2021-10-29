@@ -351,8 +351,8 @@
   (setq org-latex-listings 'minted)
   (add-to-list 'org-latex-packages-alist '("" "minted")))
 
-(add-hook 'latex-mode-hook #'xenops-mode)
-(add-hook 'LaTeX-mode-hook #'xenops-mode)
+;;(add-hook 'latex-mode-hook #'xenops-mode)
+;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -598,36 +598,6 @@ headlines tagged with :noexport:"
         ;; innermost and all its parents), so we only return the innermost one.
         ;; We reverse its order to make it more readable.
         (reverse (car new))))))
-
-(defun zz/refresh-reveal-prez ()
-  ;; Export the file
-  (org-re-reveal-export-to-html)
-  (let* ((slide-list (zz/org-current-headline-number))
-         (slide-str (string-join (mapcar #'number-to-string slide-list) "-"))
-         ;; Determine the filename to use
-         (file (concat (file-name-directory (buffer-file-name))
-                       (org-export-output-file-name ".html" nil)))
-         ;; Final URL including the slide number
-         (uri (concat "file://" file "#/slide-" slide-str))
-         ;; Get the document title
-         (title (cadar (org-collect-keywords '("TITLE"))))
-         ;; Command to reload the browser and move to the correct slide
-         (cmd (concat
-"osascript -e \"tell application \\\"Brave\\\" to repeat with W in windows
-set i to 0
-repeat with T in (tabs in W)
-set i to i + 1
-if title of T is \\\"" title "\\\" then
-  reload T
-  delay 0.1
-  set URL of T to \\\"" uri "\\\"
-  set (active tab index of W) to i
-end if
-end repeat
-end repeat\"")))
-    ;; Short sleep seems necessary for the file changes to be noticed
-    (sleep-for 0.2)
-    (call-process-shell-command cmd)))
 
 ;;(add-to-list 'load-path "~/sdk/lib/emacs-reveal")
 ;;(require 'emacs-reveal)
@@ -945,42 +915,42 @@ end repeat\"")))
 (load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
 
 ;; helm-bibtex related stuff
-(after! helm
-  (use-package helm-bibtex
-    :custom
-    ;; In the lines below I point helm-bibtex to my default library file.
-    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
-    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
+;;(after! helm
+;;  (use-package helm-bibtex
+;;    :custom
+;;    ;; In the lines below I point helm-bibtex to my default library file.
+;;    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
+;;    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
     ;; The line below tells helm-bibtex to find the path to the pdf
     ;; in the "file" field in the .bib file.
-    (bibtex-completion-pdf-field "file")
-    :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
+;;    (bibtex-completion-pdf-field "file")
+;;    :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
   ;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
   ;; I added the keybind below for that.
-  (map! :leader
-        :desc "Open literature database"
-        "o l" #'helm-bibtex)
+;;  (map! :leader
+;;        :desc "Open literature database"
+;;        "o l" #'helm-bibtex)
   ;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
   ;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
-  (map! :map helm-map
-        "C-j" #'helm-next-line
-        "C-k" #'helm-previous-line )
-  )
+;;  (map! :map helm-map
+;;        "C-j" #'helm-next-line
+;;        "C-k" #'helm-previous-line )
+;;  )
 
 ;; (setq org-ref-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 ;; (setq reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 
 ;; Set up org-ref stuff
-(use-package! org-ref
-  :after org
-  :init
+;;(use-package! org-ref
+;;  :after org
+;;  :init
                                         ; code to run before loading org-ref
-  :config
+;;  :config
                                         ; code to run after loading org-ref
-  )
-(require 'org-ref)
-(after! org-ref
-  (setq org-ref-default-bibliography `,(list (concat org-directory "/library.bib"))))
+;;  )
+;;(require 'org-ref)
+;;(after! org-ref
+;;  (setq org-ref-default-bibliography `,(list (concat org-directory "/library.bib"))))
 
 ;; The default citation type of org-ref is cite:, but I use citep: much more often
 ;; I therefore changed the default type to the latter.
@@ -997,18 +967,8 @@ end repeat\"")))
         (find-file pdf-file)
       (message "No PDF found for %s" key))))
 
-(setq org-ref-completion-library 'org-ref-ivy-cite
-      ;;org-export-latex-format-toc-function 'org-export-latex-no-toc
-      org-ref-get-pdf-filename-function
-      (lambda (key) (car (bibtex-completion-find-pdf key)))
-      ;; See the function I defined above.
-      org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
-      ;; For pdf export engines.
-      ;;org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
-      ;; I use orb to link org-ref, helm-bibtex and org-noter together (see below for more on org-noter and orb).
-      org-ref-notes-function 'orb-edit-notes)
 
-(setq-default org-download-image-dir (concat org-directory "/.attach/pictures"))
+(setq-default org-download-image-dir (concat org-directory "/attach/pictures"))
 (use-package org-download
   :after org
   :defer nil

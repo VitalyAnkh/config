@@ -92,7 +92,7 @@
        eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
        ;;term              ; basic terminal emulator for Emacs
-       vterm             ; the best terminal emulation in Emacs
+       ;;vterm             ; the best terminal emulation in Emacs
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
@@ -141,7 +141,7 @@
        elm               ; care for a cup of TEA?
        (emacs-lisp        ; drown in parentheses
         +lsp)
-       ;;erlang            ; an elegant language for a more civilized age
+       erlang            ; an elegant language for a more civilized age
        ;;(ess               ; emacs speaks statistics
        ;; +lsp
        ;; )
