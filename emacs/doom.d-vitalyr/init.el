@@ -38,8 +38,8 @@
        deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
+       ;;(emoji +unicode)  ; 🙂
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        indent-guides     ; highlighted indent columns
@@ -124,6 +124,11 @@
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
+       biblio
+
+       :os
+       (:if IS-MAC macos)  ; improve compatibility with macOS
+       ;;tty               ; improve the terminal Emacs experience
 
        :lang
        (agda +local)             ; types of types of types of types...
@@ -137,7 +142,7 @@
        ;;csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
-       ;;elixir            ; erlang done right
+       elixir            ; erlang done right
        elm               ; care for a cup of TEA?
        (emacs-lisp        ; drown in parentheses
         +lsp)
@@ -214,7 +219,7 @@
         +lsp
         )
        scala             ; java, but good
-       scheme            ; a fully conniving family of lisps
+       (scheme +guile)            ; a fully conniving family of lisps
        (sh
         +bash
         +fish

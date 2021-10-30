@@ -49,7 +49,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#reformatting-an-org-buffer][Reformatting an Org buffer]]
   - [[#avoiding-non-org-mode-files][Avoiding non-Org mode files]]
   - [[#revealjs-presentations][Reveal.js presentations]]
-    - [[#i-use-emacs-reveal---a-bundle-for-presentation][I use emacs-reveal - a bundle for presentation.]]
+    - [[#i-use-org-reveal-for-presentation][I use =org-reveal= for presentation.]]
   - [[#other-exporters][Other exporters]]
   - [[#programming-org][Programming Org]]
 - [[#coding][Coding]]
@@ -208,6 +208,7 @@ We start by simply defining the standard headers used by the three files. These 
            :files ("*.el")
            ))
 (unpin! rustic)
+(unpin! org-roam)
 #+end_src
 #+html: </details>
 
@@ -307,8 +308,8 @@ This code is written to the =init.el= to select which modules to load. Written h
        deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
+       ;;(emoji +unicode)  ; 🙂
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        indent-guides     ; highlighted indent columns
@@ -393,6 +394,11 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
+       biblio
+
+       :os
+       (:if IS-MAC macos)  ; improve compatibility with macOS
+       ;;tty               ; improve the terminal Emacs experience
 
        :lang
        (agda +local)             ; types of types of types of types...
@@ -406,7 +412,7 @@ This code is written to the =init.el= to select which modules to load. Written h
        ;;csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
-       ;;elixir            ; erlang done right
+       elixir            ; erlang done right
        elm               ; care for a cup of TEA?
        (emacs-lisp        ; drown in parentheses
         +lsp)
@@ -483,7 +489,7 @@ This code is written to the =init.el= to select which modules to load. Written h
         +lsp
         )
        scala             ; java, but good
-       scheme            ; a fully conniving family of lisps
+       (scheme +guile)            ; a fully conniving family of lisps
        (sh
         +bash
         +fish
@@ -1627,15 +1633,11 @@ end repeat\"")))
     (call-process-shell-command cmd)))
 #+end_src
 
-*** I use emacs-reveal - a bundle for presentation.
+*** I use =org-reveal= for presentation.
 #+begin_src emacs-lisp :tangle packages.el
 ;;(package! emacs-reveal :recipe (:host gitlab :repo "oer/emacs-reveal"))
 #+end_src
 
-#+begin_src emacs-lisp
-;;(add-to-list 'load-path "~/sdk/lib/emacs-reveal")
-;;(require 'emacs-reveal)
-#+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-reveal)
@@ -1654,8 +1656,8 @@ end repeat\"")))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! ox-jira
-  :after org)
+;;(use-package! ox-jira
+;;  :after org)
 #+end_src
 
 [[https://github.com/ahungry/org-jira][org-jira]] for full Jira integration - manage issues from Org mode.
@@ -1811,11 +1813,14 @@ Some other languages I use.
   #+end_src
 
 ** Haskell
+set haskell source code formatter.
 #+begin_src emacs-lisp
 (setq
  ghc-ghc-options '("-fno-warn-missing-signatures")
  haskell-interactive-popup-errors nil
  )
+(after!
+  (setq lsp-haskell-formatting-provider "ormolu"))
 #+end_src
 
 ** Rust
@@ -1972,9 +1977,6 @@ Unicode support:
 #+begin_src emacs-lisp :tangle no
 (setq lean4-mode-required-packages '(dash f flycheck lsp-mode magit-section s))
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(package-initialize)
 (let ((need-to-refresh t))
   (dolist (p lean4-mode-required-packages)
     (when (not (package-installed-p p))
@@ -2003,6 +2005,12 @@ Unicode support:
 (use-package! org-roam-protocol
   :after org-protocol)
 
+(use-package! org-roam-bibtex
+  :after org-roam
+  :config
+  (require 'org-ref))
+
+
 (after! org
   (setq org-attach-dir-relative t)
   (setq org-roam-dailies-directory "daily/")
@@ -2020,20 +2028,20 @@ Unicode support:
   :hook (org-roam . org-roam-ui-mode)
   :config
   (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t)
-  )
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 
-(setq default-input-method "rime")
+
+;;(setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
 (setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
-        rime-predicate-prog-in-code-p
-        ))
+        rime-predicate-prog-in-code-p))
+
 (setq rime-posframe-properties
       (list :font "sarasa ui sc"
             :internal-border-width 10))
@@ -2059,10 +2067,9 @@ Unicode support:
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
   ;; (setq org-latex-impatient-scale 1)
-  (setq org-latex-impatient-delay 0.2)
-  )
+  (setq org-latex-impatient-delay 0.2))
 
-;;(set-default 'preview-scale-function 10)
+
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
@@ -2075,6 +2082,7 @@ Unicode support:
 ;;    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
 (global-hl-line-mode nil)
+
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
 
@@ -2121,7 +2129,7 @@ Unicode support:
   :config
   (add-hook 'org-mode-hook 'org-krita-mode))
 
-(load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
+;;(load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
 
 ;; helm-bibtex related stuff
 ;;(after! helm
@@ -2130,17 +2138,17 @@ Unicode support:
 ;;    ;; In the lines below I point helm-bibtex to my default library file.
 ;;    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
 ;;    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
-    ;; The line below tells helm-bibtex to find the path to the pdf
-    ;; in the "file" field in the .bib file.
+;; The line below tells helm-bibtex to find the path to the pdf
+;; in the "file" field in the .bib file.
 ;;    (bibtex-completion-pdf-field "file")
 ;;    :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
-  ;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
-  ;; I added the keybind below for that.
+;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
+;; I added the keybind below for that.
 ;;  (map! :leader
 ;;        :desc "Open literature database"
 ;;        "o l" #'helm-bibtex)
-  ;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
-  ;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
+;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
+;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
 ;;  (map! :map helm-map
 ;;        "C-j" #'helm-next-line
 ;;        "C-k" #'helm-previous-line )
@@ -2150,6 +2158,7 @@ Unicode support:
 ;; (setq reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 
 ;; Set up org-ref stuff
+
 ;;(use-package! org-ref
 ;;  :after org
 ;;  :init
@@ -2175,7 +2184,43 @@ Unicode support:
     (if (file-exists-p pdf-file)
         (find-file pdf-file)
       (message "No PDF found for %s" key))))
+(setq bibtex-completion-bibliography '("~/Dropbox/emacs/bibliography/references.bib"
+		 "~/Dropbox/emacs/bibliography/dei.bib"
+			 "~/Dropbox/emacs/bibliography/master.bib"
+			 "~/Dropbox/emacs/bibliography/archive.bib")
+bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
+bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
+bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
+bibtex-completion-additional-search-fields '(keywords)
+bibtex-completion-display-formats
+'((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+  (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+  (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+  (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+  (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
+bibtex-completion-pdf-open-function
+(lambda (fpath)
+  (call-process "open" nil 0 nil fpath)))
+(require 'bibtex)
+
+(setq bibtex-autokey-year-length 4
+	bibtex-autokey-name-year-separator "-"
+	bibtex-autokey-year-title-separator "-"
+	bibtex-autokey-titleword-separator "-"
+	bibtex-autokey-titlewords 2
+	bibtex-autokey-titlewords-stretch 1
+	bibtex-autokey-titleword-length 5
+	org-ref-bibtex-hydra-key-binding (kbd "H-b"))
+
+(define-key bibtex-mode-map (kbd "H-b") 'org-ref-bibtex-hydra/body)
+(require 'org-ref-ivy)
+
+(setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
+      org-ref-insert-cite-function 'org-ref-cite-insert-ivy
+      org-ref-insert-label-function 'org-ref-insert-label-link
+      org-ref-insert-ref-function 'org-ref-insert-ref-link
+      org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
 
 (setq-default org-download-image-dir (concat org-directory "/attach/pictures"))
 (use-package org-download
@@ -2186,7 +2231,10 @@ Unicode support:
   :config
   (require 'org-download))
 #+end_src
-
+Install =org-ref=
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-ref)
+#+end_src
 * Other tools
 
 ** Artist Mode

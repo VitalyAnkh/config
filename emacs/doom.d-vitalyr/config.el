@@ -599,13 +599,10 @@ headlines tagged with :noexport:"
         ;; We reverse its order to make it more readable.
         (reverse (car new))))))
 
-;;(add-to-list 'load-path "~/sdk/lib/emacs-reveal")
-;;(require 'emacs-reveal)
-
 (require 'ox-reveal)
 
-(use-package! ox-jira
-  :after org)
+;;(use-package! ox-jira
+;;  :after org)
 
 ;;(make-directory "~/.org-jira" 'ignore-if-exists)
 ;;(setq jiralib-url "https://jira.swisscom.com/")
@@ -673,6 +670,8 @@ headlines tagged with :noexport:"
  ghc-ghc-options '("-fno-warn-missing-signatures")
  haskell-interactive-popup-errors nil
  )
+(after!
+  (setq lsp-haskell-formatting-provider "ormolu"))
 
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer)
@@ -794,6 +793,12 @@ headlines tagged with :noexport:"
 (use-package! org-roam-protocol
   :after org-protocol)
 
+(use-package! org-roam-bibtex
+  :after org-roam
+  :config
+  (require 'org-ref))
+
+
 (after! org
   (setq org-attach-dir-relative t)
   (setq org-roam-dailies-directory "daily/")
@@ -811,20 +816,20 @@ headlines tagged with :noexport:"
   :hook (org-roam . org-roam-ui-mode)
   :config
   (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t)
-  )
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 
-(setq default-input-method "rime")
+
+;;(setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
 (setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-after-alphabet-char-p ;; 当光标处于紧挨着字母的位置时，自动由中文切换为英文
-        rime-predicate-prog-in-code-p
-        ))
+        rime-predicate-prog-in-code-p))
+
 (setq rime-posframe-properties
       (list :font "sarasa ui sc"
             :internal-border-width 10))
@@ -850,10 +855,9 @@ headlines tagged with :noexport:"
   :init
   (setq org-latex-impatient-tex2svg-bin "tex2svg")
   ;; (setq org-latex-impatient-scale 1)
-  (setq org-latex-impatient-delay 0.2)
-  )
+  (setq org-latex-impatient-delay 0.2))
 
-;;(set-default 'preview-scale-function 10)
+
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
@@ -866,6 +870,7 @@ headlines tagged with :noexport:"
 ;;    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
 (global-hl-line-mode nil)
+
 (load-file (let ((coding-system-for-read 'utf-8))
              (shell-command-to-string "agda-mode locate")))
 
@@ -912,7 +917,7 @@ headlines tagged with :noexport:"
   :config
   (add-hook 'org-mode-hook 'org-krita-mode))
 
-(load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
+;;(load "/home/vitalyr/.opam/default/share/emacs/site-lisp/tuareg-site-file")
 
 ;; helm-bibtex related stuff
 ;;(after! helm
@@ -921,17 +926,17 @@ headlines tagged with :noexport:"
 ;;    ;; In the lines below I point helm-bibtex to my default library file.
 ;;    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
 ;;    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
-    ;; The line below tells helm-bibtex to find the path to the pdf
-    ;; in the "file" field in the .bib file.
+;; The line below tells helm-bibtex to find the path to the pdf
+;; in the "file" field in the .bib file.
 ;;    (bibtex-completion-pdf-field "file")
 ;;    :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
-  ;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
-  ;; I added the keybind below for that.
+;; I also like to be able to view my library from anywhere in emacs, for example if I want to read a paper.
+;; I added the keybind below for that.
 ;;  (map! :leader
 ;;        :desc "Open literature database"
 ;;        "o l" #'helm-bibtex)
-  ;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
-  ;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
+;; And I added the keybinds below to make the helm-menu behave a bit like the other menus in emacs behave with evil-mode.
+;; Basically, the keybinds below make sure I can scroll through my list of references with C-j and C-k.
 ;;  (map! :map helm-map
 ;;        "C-j" #'helm-next-line
 ;;        "C-k" #'helm-previous-line )
@@ -941,6 +946,7 @@ headlines tagged with :noexport:"
 ;; (setq reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 
 ;; Set up org-ref stuff
+
 ;;(use-package! org-ref
 ;;  :after org
 ;;  :init
@@ -966,7 +972,43 @@ headlines tagged with :noexport:"
     (if (file-exists-p pdf-file)
         (find-file pdf-file)
       (message "No PDF found for %s" key))))
+(setq bibtex-completion-bibliography '("~/Dropbox/emacs/bibliography/references.bib"
+		 "~/Dropbox/emacs/bibliography/dei.bib"
+			 "~/Dropbox/emacs/bibliography/master.bib"
+			 "~/Dropbox/emacs/bibliography/archive.bib")
+bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
+bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
+bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
+bibtex-completion-additional-search-fields '(keywords)
+bibtex-completion-display-formats
+'((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+  (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+  (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+  (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+  (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
+bibtex-completion-pdf-open-function
+(lambda (fpath)
+  (call-process "open" nil 0 nil fpath)))
+(require 'bibtex)
+
+(setq bibtex-autokey-year-length 4
+	bibtex-autokey-name-year-separator "-"
+	bibtex-autokey-year-title-separator "-"
+	bibtex-autokey-titleword-separator "-"
+	bibtex-autokey-titlewords 2
+	bibtex-autokey-titlewords-stretch 1
+	bibtex-autokey-titleword-length 5
+	org-ref-bibtex-hydra-key-binding (kbd "H-b"))
+
+(define-key bibtex-mode-map (kbd "H-b") 'org-ref-bibtex-hydra/body)
+(require 'org-ref-ivy)
+
+(setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
+      org-ref-insert-cite-function 'org-ref-cite-insert-ivy
+      org-ref-insert-label-function 'org-ref-insert-label-link
+      org-ref-insert-ref-function 'org-ref-insert-ref-link
+      org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
 
 (setq-default org-download-image-dir (concat org-directory "/attach/pictures"))
 (use-package org-download

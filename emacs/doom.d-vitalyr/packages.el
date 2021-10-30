@@ -84,6 +84,7 @@
            :files ("*.el")
            ))
 (unpin! rustic)
+(unpin! org-roam)
 
 ;;(package! spacemacs-theme)
 
@@ -149,6 +150,8 @@
   (:host github
    :repo "leanprover/lean4"
    :files ("lean4-mode/*.el")))
+
+(package! org-ref)
 
 (package! wakatime-mode)
 
