@@ -1,0 +1,10 @@
+colors=colors
+show=drun
+width=500
+height=300
+prompt=search
+allow_images=true
+no_actions=true
+sort_order=alphabetical
+hide_scroll=true
+term=termite

@@ -1,0 +1,46 @@
+window {
+    margin: 5px;
+    padding: 5px;
+    background-color:  --wofi-color0;
+    font-family: "Hack";
+    border: 4px solid --wofi-color2;
+    }
+
+    #input {
+    background-color:  --wofi-color0;
+    border: 2px solid  --wofi-color0;
+    margin: 0px;
+    padding: 8px;
+    }
+    
+    #input:focus {
+    background-color: --wofi-color0;
+    color: --wofi-color1;
+    border: 2px solid --wofi-color8;
+    }
+    
+    #inner-box {
+    background-color: --wofi-color0;
+    margin: 0px;
+    }
+
+    #outer-box {
+    padding: 5px;
+    background-color:  -wofi-color4;
+    }
+    
+    #entry {
+    color: --wofi-color1;
+    }
+
+    #entry:selected {
+    background-color: --wofi-color8;
+    }
+
+    #inner-box flowboxchild:focus {
+    background-color: --wofi-color8;
+    }
+    
+    #text {
+    margin: 5px;
+    }

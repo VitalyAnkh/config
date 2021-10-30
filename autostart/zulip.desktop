@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=zulip
+Comment=zulipstartup script
+Exec=/usr/lib/zulip-desktop/zulip
+StartupNotify=false
+Terminal=false
+Hidden=false
+

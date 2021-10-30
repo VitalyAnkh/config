@@ -1,0 +1,35 @@
+set $GTK_IM_MODULE fcitx
+set $QT_IM_MODULE fcitx
+set $XMODIFIERS @im fcitx
+set $XIM fcitx
+set $XIM_PROGRAM fcitx
+set $SDL_IM_MODULE fcitx
+set $QT_AUTO_SCREEN_SCALE_FACTOR 1
+# set $QT_SCREEN_SCALE_FACTOR 2
+
+# Set variables to let programs run natively under wayland
+
+# for gtk3 applications
+set $GDK_BACKEND wayland
+
+# This is firefox
+set $MOZ_ENABLE_WAYLAND 1
+# This is LibreOffice
+set $SAL_USE_VCLPLUGIN gtk3
+# For Qt5
+set $QT_QPA_PLATFORM wayland-egl
+set $QT_WAYLAND_DISABLE_WINDOWDECORATION 1
+set $QT_WAYLAND_FORCE_DPI physical
+# For Elementary/EFL
+set $ECORE_EVAS_ENGINE wayland_egl
+set $ELM_ENGINE wayland_egl
+# For SDL
+set $SDL_VIDEODRIVER wayland
+# For Flatpak
+# flatpak run --socket wayland
+# For GFLW
+# Arch users should install `glfw-wayland`
+# For Java under Xwayland
+set $_JAVA_AWT_WM_NONREPARENTING 1
+set $CLUTTER_BACKEND wayland
+set $BEMENU_BACKEND wayland

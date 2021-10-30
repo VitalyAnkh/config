@@ -1,0 +1,7 @@
+{
+    "name": "org.gnome.shell.extensions.gsconnect",
+    "description": "Native messaging host for GSConnect WebExtension",
+    "path": "/home/vitalyr/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/nativeMessagingHost.js",
+    "type": "stdio",
+    "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
+}

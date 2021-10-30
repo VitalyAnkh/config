@@ -1,0 +1,63 @@
+[Hotkey]
+# 反复按切换键时进行轮换
+EnumerateWithTriggerKeys=True
+# 临时在当前和第一个输入法之间切换
+AltTriggerKeys=
+# 向前切换输入法
+EnumerateForwardKeys=
+# 轮换输入法时跳过第一个输入法
+EnumerateSkipFirst=False
+# 激活输入法
+ActivateKeys=
+# 取消激活输入法
+DeactivateKeys=
+# 默认跳转前一个候选词
+PrevCandidate=
+# 默认跳转下一个候选词
+NextCandidate=
+
+[Hotkey/TriggerKeys]
+0=Control+asciicircum
+
+[Hotkey/EnumerateBackwardKeys]
+0=Control+asterisk
+
+[Hotkey/EnumerateGroupForwardKeys]
+0=Alt+Shift+space
+
+[Hotkey/EnumerateGroupBackwardKeys]
+0=Shift+Super+space
+
+[Hotkey/PrevPage]
+0=Tab
+
+[Hotkey/NextPage]
+0=Control+Tab
+
+[Hotkey/TogglePreedit]
+0=Control+Alt+P
+
+[Behavior]
+# 默认状态为激活
+ActiveByDefault=False
+# 共享输入状态
+ShareInputState=No
+# 在程序中显示预编辑文本
+PreeditEnabledByDefault=True
+# 切换输入法时显示输入法信息
+ShowInputMethodInformation=False
+# 在焦点更改时显示输入法信息
+showInputMethodInformationWhenFocusIn=False
+# 显示紧凑的输入法信息
+CompactInputMethodInformation=True
+# 显示第一个输入法的信息
+ShowFirstInputMethodInformation=True
+# 默认页大小
+DefaultPageSize=9
+# Force Enabled Addons
+EnabledAddons=
+# Force Disabled Addons
+DisabledAddons=
+# Preload input method to be used by default
+PreloadInputMethod=True
+

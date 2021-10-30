@@ -924,7 +924,7 @@ headlines tagged with :noexport:"
 ;;  (use-package helm-bibtex
 ;;    :custom
 ;;    ;; In the lines below I point helm-bibtex to my default library file.
-;;    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/jjjkkklibrary.bib"))
+;;    (bibtex-completion-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 ;;    (reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 ;; The line below tells helm-bibtex to find the path to the pdf
 ;; in the "file" field in the .bib file.
@@ -954,7 +954,6 @@ headlines tagged with :noexport:"
 ;;  :config
                                         ; code to run after loading org-ref
 ;;  )
-;;(require 'org-ref)
 ;;(after! org-ref
 ;;  (setq org-ref-default-bibliography `,(list (concat org-directory "/library.bib"))))
 
@@ -972,12 +971,13 @@ headlines tagged with :noexport:"
     (if (file-exists-p pdf-file)
         (find-file pdf-file)
       (message "No PDF found for %s" key))))
-(setq bibtex-completion-bibliography '("~/Dropbox/emacs/bibliography/references.bib"
-		 "~/Dropbox/emacs/bibliography/dei.bib"
-			 "~/Dropbox/emacs/bibliography/master.bib"
-			 "~/Dropbox/emacs/bibliography/archive.bib")
-bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
-bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
+(setq bibtex-completion-bibliography '("~/projects/learn/Notebook/org/library.bib"
+		 ;;"~/Dropbox/emacs/bibliography/dei.bib"
+			;; "~/Dropbox/emacs/bibliography/master.bib"
+			 ;;"~/Dropbox/emacs/bibliography/archive.bib"
+                                       )
+;;bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
+;;bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
 bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
 bibtex-completion-additional-search-fields '(keywords)

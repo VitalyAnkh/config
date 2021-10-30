@@ -1,0 +1,5 @@
+[Bookmarks]
+[Recent]
+/home/vitalyr/nutstore_files/Projects/Creative/Blender/
+!Downloads
+/home/vitalyr/下载/
