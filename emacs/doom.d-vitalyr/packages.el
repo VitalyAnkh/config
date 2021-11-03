@@ -68,8 +68,8 @@
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
 (package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
 ;; to make the window transparent
-;;(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
-(package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
+(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
+;;(package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
 (package! org-roam-bibtex)
 (package! org-xournal :recipe (:host github
                                :repo "yuchen-lea/org-xournal"
@@ -107,6 +107,12 @@
 (package! org-super-agenda)
 
 (package! org-gtd)
+
+(package! org-transclusion
+  :recipe (:host github
+           :repo "nobiot/org-transclusion"
+           :branch "main"
+           :files ("*.el")))
 
 ;;(package! org-cv
 ;;  :recipe (:local-repo "~/Dropbox/Personal/devel/emacs/org-cv"))
@@ -152,6 +158,8 @@
    :files ("lean4-mode/*.el")))
 
 (package! org-ref)
+
+(package! rg)
 
 (package! wakatime-mode)
 

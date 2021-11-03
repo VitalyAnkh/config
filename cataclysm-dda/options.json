@@ -137,7 +137,7 @@
   { "info": "决定怪物每次进化时间间隔的比率。数字越大代表进化越慢。设为 0.00 会停止怪物进化。", "default": "默认：4.00（最小：0.00，最大：100.00）", "name": "MONSTER_UPGRADE_FACTOR", "value": "4.00" },
   { "info": "决定怪物速度。该值更高将会使怪物动作变得更快，该值较低会让怪物们变得慢吞吞。需要重置世界。", "default": "默认：100（最小：1，最大：1000）", "name": "MONSTER_SPEED", "value": "100%" },
   { "info": "决定怪物血量。该值更高会让怪物们更抗揍，该值较低会让怪物们像瓷娃娃一样软弱。需要重置世界。", "default": "默认：100（最小：1，最大：1000）", "name": "MONSTER_RESILIENCE", "value": "100%" },
-  { "info": "（WIP功能）确定地形，商店，工厂，等等。", "default": "默认：default - 可选值：default，desert_test", "name": "DEFAULT_REGION", "value": "default" },
+  { "info": "（WIP功能）确定地形，商店，工厂，等等。", "default": "默认：default - 可选值：default", "name": "DEFAULT_REGION", "value": "default" },
   { "info": "创建角色时的开始时间。", "default": "默认：8（最小：0，最大：23）", "name": "INITIAL_TIME", "value": "8" },
   { "info": "大灾变发生时的日历天数。设置为 0 时大灾变发生在春季第一天。设置为 -1 则随机开始日期。会被场景所对应的设置值覆盖。增加该值并不会导致世界内生成的食物腐烂或怪物进化。", "default": "默认：60（最小：-1，最大：999）", "name": "INITIAL_DAY", "value": "60" },
   { "info": "大灾变发生后多少天开始游戏。设置为 0 时将在大灾变当日开始游戏。会被场景所对应的设置值覆盖。增加该值将导致世界内生成的食物腐烂和怪物进化。", "default": "默认：0（最小：0，最大：9999）", "name": "SPAWN_DELAY", "value": "0" },

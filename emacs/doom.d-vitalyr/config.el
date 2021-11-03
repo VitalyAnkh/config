@@ -169,8 +169,8 @@
   :config
   (require 'pcre2el)
   (setq vr/engine 'pcre2el)
-  (map! "C-c s r" #'vr/replace)
-  (map! "C-c s q" #'vr/query-replace))
+  (map! "C-c r r" #'vr/replace)
+  (map! "C-c r q" #'vr/query-replace))
 
 (after! undo-fu
   (map! :map undo-fu-mode-map "C-?" #'undo-fu-only-redo))
@@ -507,6 +507,16 @@ title."
     (require 'org-capture)
     (require 'org-gtd))
 
+(use-package! org-transclusion
+  :defer
+  :after org
+  :init
+  (map!
+   :map global-map "<f12>" #'org-transclusion-add
+   :leader
+   :prefix "n"
+   :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+
 ;;(use-package! ox-awesomecv
 ;;  :after org)
 ;;(use-package! ox-moderncv
@@ -797,7 +807,22 @@ headlines tagged with :noexport:"
   :after org-roam
   :config
   (require 'org-ref))
-
+;; set org-id-method
+(setq org-id-method 'ts)
+;; set org-roam-capture-templates, make org id contain current time
+;;(setq org-roam-capture-templates
+;;  (quote (
+;;    ;; Override default to set timestamp to UTC
+;;    ("d" "default" plain (function org-roam--capture-get-point) "%?"
+;;     :target "%(format-time-string \"%Y%m%dT%H%M%SZ-${slug}\" (current-time) t)"
+;;     :head ":PROPERTIES:
+;;:ID:    %(format-time-string \"%Y%m%dT%H%M%SZ\" (current-time) t)
+;;:TITLE: ${title}
+;;:END:
+;;,#+ROAM_TAGS:
+;;,#+ROAM_ALIAS:
+;;"
+;;     :unnarrowed t))))
 
 (after! org
   (setq org-attach-dir-relative t)
@@ -819,8 +844,8 @@ headlines tagged with :noexport:"
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
-
-
+;; start org-roam-ui-mode when emacs launches
+;;(org-roam-ui-mode)
 
 ;;(setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
@@ -887,9 +912,10 @@ headlines tagged with :noexport:"
 ;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)
 
-(use-package company-tabnine)
-(require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
+;; disable tabnine
+;;(use-package company-tabnine)
+;;(require 'company-tabnine)
+;;(add-to-list 'company-backends #'company-tabnine)
 
 ;; Number the candidates (use M-1, M-2 etc to select completions).
 (setq company-show-numbers t)
@@ -1020,6 +1046,8 @@ bibtex-completion-pdf-open-function
   (require 'org-download))
 
 (add-hook 'artist-mode-hook (lambda () (display-line-numbers-mode -1)))
+
+(rg-enable-default-bindings)
 
 (use-package wakatime-mode)
 (global-wakatime-mode)

@@ -7,7 +7,7 @@ set -x PATH /home/vitalyr/.opam/default/bin /home/vitalyr/sdk/lib/flutter/bin /h
 set -x SDK_DIR $HOME/sdk
 set -x PUB_HOSTED_URL https://pub.flutter-io.cn
 set -x FLUTTER_STORAGE_BASE_URL https://storage.flutter-io.cn
-set -x DOOMDIR $SDK_DIR/config/emacs/doom.d-vitalyr
+set -x DOOMDIR $HOME/.config/emacs/doom.d-vitalyr
 set -x CHROME_EXECUTABLE google-chrome-stable
 set -x WGPU_BACKEND vulkan
 # erase the GDK_BACKEND variable
@@ -44,4 +44,5 @@ zoxide init fish | source
 mcfly init fish | source
 
 # remove this when Nvidia driver support glutin and winit on Wayland fully
-set -x WINIT_X10_BACKEND x11
+set -x WINIT_UNIX_BACKEND x11
+eval (opam env)

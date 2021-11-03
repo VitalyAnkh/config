@@ -42,6 +42,8 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#tasks-and-agenda][Tasks and agenda]]
   - [[#gtd][GTD]]
     - [[#capture-templates][Capture templates]]
+  - [[#org-roam][Org-roam]]
+    - [[#use-org-transclusion][Use =org-transclusion=]]
   - [[#exporting-a-curriculum-vitae][Exporting a Curriculum Vitae]]
   - [[#publishing-to-leanpub][Publishing to LeanPub]]
   - [[#blogging-with-hugo][Blogging with Hugo]]
@@ -63,8 +65,11 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#use-auto-activating-snippets-to-auto-expand-latex-snippets][Use ~auto-activating-snippets~ to auto-expand =LaTeX= snippets]]
   - [[#lean-4][Lean 4]]
   - [[#other-config-to-be-classified][Other config to be classified]]
-- [[#other-tools][Other tools]]
+- [[#useful-tools][Useful tools]]
   - [[#artist-mode][Artist Mode]]
+  - [[#rgel][=rg.el=]]
+    - [[#install-rgel][Install =rg.el=:]]
+    - [[#enable-rgels-default-key-map-rg-menu-under-the-default-prefix-key-c-c-s][Enable =rg.el='s default key map =rg-menu= under the default prefix key =C-c s=.]]
   -  [[#wakatime][wakatime]]
 - [[#experiments][Experiments]]
 
@@ -192,8 +197,8 @@ We start by simply defining the standard headers used by the three files. These 
 (package! wucuo :recipe (:host github :repo "redguardtoo/wucuo"))
 (package! quickrun :recipe (:host github :repo "emacsorphanage/quickrun"))
 ;; to make the window transparent
-;;(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
-(package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
+(package! transwin :recipe (:host github :repo "jcs-elpa/transwin"))
+;;(package! company-tabnine :recipe (:host github :repo "TommyX12/company-tabnine"))
 (package! org-roam-bibtex)
 (package! org-xournal :recipe (:host github
                                :repo "yuchen-lea/org-xournal"
@@ -752,8 +757,8 @@ Interactive search key bindings -  [[https://github.com/benma/visual-regexp-ster
   :config
   (require 'pcre2el)
   (setq vr/engine 'pcre2el)
-  (map! "C-c s r" #'vr/replace)
-  (map! "C-c s q" #'vr/query-replace))
+  (map! "C-c r r" #'vr/replace)
+  (map! "C-c r q" #'vr/query-replace))
 #+end_src
 
 The Doom =undo= package introduces the use of [[https://gitlab.com/ideasman42/emacs-undo-fu][=undo-fu=]], which makes undo/redo more "lineal". I normally use ~C-/~ for undo and Emacs doesn't have a separate "redo" action, so I map ~C-?~ (in my keyboard, the same combination + ~Shift~) for redo.
@@ -1399,6 +1404,30 @@ I set up an advice before =org-capture= to make sure =org-gtd= and =org-capture=
     (require 'org-capture)
     (require 'org-gtd))
 #+end_src
+
+** Org-roam
+*** Use =org-transclusion=
+Transclusion is the ability to include content from one file into another by reference. Org-transclusion is an Org Mode version of it.
+It lets you insert a copy of text content via a file link or ID link within an Org file.
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-transclusion
+  :recipe (:host github
+           :repo "nobiot/org-transclusion"
+           :branch "main"
+           :files ("*.el")))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-transclusion
+  :defer
+  :after org
+  :init
+  (map!
+   :map global-map "<f12>" #'org-transclusion-add
+   :leader
+   :prefix "n"
+   :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+#+end_src
 ** Exporting a Curriculum Vitae
 
 I use =ox-awesomecv= from [[https://titan-c.gitlab.io/org-cv/][Org-CV]], to export my [[https://github.com/zzamboni/vita/][Curriculum Vitaelig]].
@@ -2009,7 +2038,22 @@ Unicode support:
   :after org-roam
   :config
   (require 'org-ref))
-
+;; set org-id-method
+(setq org-id-method 'ts)
+;; set org-roam-capture-templates, make org id contain current time
+;;(setq org-roam-capture-templates
+;;  (quote (
+;;    ;; Override default to set timestamp to UTC
+;;    ("d" "default" plain (function org-roam--capture-get-point) "%?"
+;;     :target "%(format-time-string \"%Y%m%dT%H%M%SZ-${slug}\" (current-time) t)"
+;;     :head ":PROPERTIES:
+;;:ID:    %(format-time-string \"%Y%m%dT%H%M%SZ\" (current-time) t)
+;;:TITLE: ${title}
+;;:END:
+;;,#+ROAM_TAGS:
+;;,#+ROAM_ALIAS:
+;;"
+;;     :unnarrowed t))))
 
 (after! org
   (setq org-attach-dir-relative t)
@@ -2031,8 +2075,8 @@ Unicode support:
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
-
-
+;; start org-roam-ui-mode when emacs launches
+;;(org-roam-ui-mode)
 
 ;;(setq default-input-method "rime")
 (setq rime-user-data-dir "~/sdk/config/input_method/rime")
@@ -2099,9 +2143,10 @@ Unicode support:
 ;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)
 
-(use-package company-tabnine)
-(require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
+;; disable tabnine
+;;(use-package company-tabnine)
+;;(require 'company-tabnine)
+;;(add-to-list 'company-backends #'company-tabnine)
 
 ;; Number the candidates (use M-1, M-2 etc to select completions).
 (setq company-show-numbers t)
@@ -2235,12 +2280,21 @@ Install =org-ref=
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-ref)
 #+end_src
-* Other tools
+* Useful tools
 
 ** Artist Mode
 Disable line numbers when using ~artist-mode~:
 #+begin_src emacs-lisp
 (add-hook 'artist-mode-hook (lambda () (display-line-numbers-mode -1)))
+#+end_src
+** =rg.el=
+*** Install =rg.el=:
+#+begin_src eamcs-lisp :tangle packages.el
+(package! rg)
+#+end_src
+*** Enable =rg.el='s default key map =rg-menu= under the default prefix key =C-c s=.
+#+begin_src emacs-lisp
+(rg-enable-default-bindings)
 #+end_src
 
 **  wakatime
