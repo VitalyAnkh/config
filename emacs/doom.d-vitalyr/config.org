@@ -32,6 +32,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#general-org-configuration][General Org Configuration]]
     - [[#dont-disable-electric-mode-it-will-help-a-lot-when-writing-latex-formula-in-org-file-as-for-the-indentation-problem-find-it-and-fix-it-in-other-ways][Don't disable electric-mode. It will help a lot when writing LaTeX formula in org file. As for the indentation problem, find it and fix it in other ways.]]
   - [[#org-visual-settings][Org visual settings]]
+  - [[#turn-on-auto-fill-mode][Turn on =auto-fill-mode=]]
   - [[#capturing-and-note-taking][Capturing and note taking]]
   - [[#org-for-academic][Org for Academic]]
     - [[#use-xenops-for-latex][Use ~xenops~ for ~LaTeX~]]
@@ -1058,6 +1059,11 @@ Use [[https://github.com/awth13/org-appear][org-appear]] to reveal emphasis mark
 #+begin_src emacs-lisp
 (add-hook! org-mode :append #'org-appear-mode)
 #+end_src
+** Turn on =auto-fill-mode=
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+#+end_src
+
 ** Capturing and note taking
 
 First, I define where all my Org-captured things can be found.

@@ -299,6 +299,8 @@
 
 (add-hook! org-mode :append #'org-appear-mode)
 
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+
 ;;(after! org
 ;;  (setq org-agenda-files
 ;;        '("~/gtd" "~/Work/work.org.gpg" "~/org/")))
