@@ -299,7 +299,11 @@
 
 (add-hook! org-mode :append #'org-appear-mode)
 
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
+;; No auto-fill-mode any more
+;; Not friendly for blogging
+;;(add-hook 'org-mode-hook 'turn-on-auto-fill)
+
+(setq org-footnote-auto-adjust t)
 
 ;;(after! org
 ;;  (setq org-agenda-files
