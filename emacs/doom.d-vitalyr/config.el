@@ -85,9 +85,8 @@
                 (nth (random (length alternatives)) alternatives))))
 
 (setq doom-font (font-spec :family "mononoki" :size 22)
-      ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      doom-variable-pitch-font (font-spec :family "DejaVu Math TeX Gyre" :size 19)
-      doom-serif-font (font-spec :family "DejaVu Math TeX Gyre" :size 19)
+      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 22)
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
@@ -96,12 +95,12 @@
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 
-(setq doom-theme 'tango)
-;;(setq doom-theme 'doom-solarized-light)
+;;(setq doom-theme 'tango)
+(setq doom-theme 'doom-solarized-light)
 (use-package doom-themes
   :config
   ;;Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
@@ -128,7 +127,7 @@
   ;; enable the /follow context/ mode for all buffers
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
-  (sis-global-inline-mode t)
+  ;; (sis-global-inline-mode t)
   )
 
 ;;(map! "C-x b"   #'counsel-buffer-or-recentf
@@ -278,18 +277,18 @@
  ;; TODO set the color following this
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
  ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "DejaVu Math TeX Gyre" :height 150))))
+ '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
  '(fixed-pitch ((t (:family "mononoki" :height 160))))
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Math TeX Gyre"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
  '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
                     "CMU Typewriter Text"))))
  '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
-                    :height 1.75 :family "Alegreya"))))
+                    :height 1.75 :family "CMU Typewriter Text"))))
 
  '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
 
@@ -712,7 +711,11 @@ headlines tagged with :noexport:"
 (with-eval-after-load 'font-latex
   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
   (set-face-attribute 'font-latex-math-face nil :inherit 'fixed-pitch)
-  )
+   (cond
+    ;; fix the problem that inline latex has different color
+    ;; with normal text when theme is doom-solarized-light
+    ((equal doom-theme 'doom-solarized-light) (set-face-attribute 'font-latex-math-face nil :background "#FDF6E3"))
+    ))
 (add-hook 'LaTeX-mode-hook #'variable-pitch-mode)
 
 (use-package pdf-tools
@@ -887,13 +890,13 @@ headlines tagged with :noexport:"
 
 (require 'org)
 
-(use-package org-latex-impatient
-  :defer t
-  :hook (org-mode . org-latex-impatient-mode)
-  :init
-  (setq org-latex-impatient-tex2svg-bin "tex2svg")
-  ;; (setq org-latex-impatient-scale 1)
-  (setq org-latex-impatient-delay 0.2))
+;;(use-package org-latex-impatient
+;;  :defer t
+;;  :hook (org-mode . org-latex-impatient-mode)
+;;  :init
+;  (setq org-latex-impatient-tex2svg-bin "tex2svg")
+;  ;; (setq org-latex-impatient-scale 1)
+;  (setq org-latex-impatient-delay 0.2))
 
 
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
