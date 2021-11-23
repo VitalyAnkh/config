@@ -157,7 +157,7 @@
    :repo "leanprover/lean4"
    :files ("lean4-mode/*.el")))
 
-(package! org-ref)
+;;(package! org-ref)
 
 (package! rg)
 

@@ -84,12 +84,12 @@
         (concat doom-private-dir "splash/"
                 (nth (random (length alternatives)) alternatives))))
 
-(setq doom-font (font-spec :family "mononoki" :size 22)
+(setq doom-font (font-spec :family "mononoki" :weight 'light :size 22)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 22)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
-      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
-      doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
+      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
+      doom-big-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 25))
 ;;(set-fontset-font t 'unicode "Noto Serif CJK SC" nil 'prepend)
 
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
@@ -358,6 +358,39 @@
 
 (add-hook 'latex-mode-hook #'xenops-mode)
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
+(add-hook 'org-mode-hook #'xenops-mode)
+(setq xenops-reveal-on-entry t
+      xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
+      xenops-math-latex-process 'dvipng
+      )
+(setq xenops-math-latex-process-alist
+      '((dvipng :programs
+               ("latex" "dvipng")
+               :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+               (1.0 . 1.0)
+               :latex-compiler
+               ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+               :image-converter
+               ("dvipng -D %D -T tight -o %O %f"))
+       (dvisvgm :programs
+                ("latex" "dvisvgm")
+                :description "xdv > svg"
+                :message "you need to install the programs: latex and dvisvgm."
+                :image-input-type "xdv"
+                :image-output-type "svg"
+                :image-size-adjust (0.5 . 0.5)
+                :latex-compiler
+                ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                :image-converter
+                ("dvisvgm %f -n -b min -c %S -o %O"))
+       (imagemagick :programs
+                    ("latex" "convert")
+                    :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                    (1.0 . 1.0)
+                    :latex-compiler
+                    ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+                    :image-converter
+                    ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -646,6 +679,10 @@ headlines tagged with :noexport:"
   (let ((tags (s-split ":" (cl-sixth (org-heading-components)) t)))
     (zz/headings-with-tags file tags)))
 
+;(add-to-list 'load-path "~/sdk/app/emacs-application-framework")
+;(require 'eaf)
+;(require 'eaf-org-previewer)
+
 (use-package! org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode)
@@ -705,17 +742,26 @@ headlines tagged with :noexport:"
       pdf-view-use-imagemagick nil
       ;;pdf-view-resize-factor 10
       )
-(setq-default TeX-engine 'xetex
-              TeX-PDF-mode t)
+;;(setq-default TeX-engine 'xetex
+;;              TeX-PDF-mode t)
+(setq-default TeX-PDF-mode t)
 
 (with-eval-after-load 'font-latex
   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
   (set-face-attribute 'font-latex-math-face nil :inherit 'fixed-pitch)
-   (cond
-    ;; fix the problem that inline latex has different color
-    ;; with normal text when theme is doom-solarized-light
-    ((equal doom-theme 'doom-solarized-light) (set-face-attribute 'font-latex-math-face nil :background "#FDF6E3"))
-    ))
+  (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+  ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
+  )
+
+(defun set-latex-background-same-with-default ()
+  "Set inline latex color correctly"
+  (interactive)
+  (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
+  (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+  ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
+  )
+
+;(add-hook 'org-mode-hook 'set-latex-background-same-with-default)
 (add-hook 'LaTeX-mode-hook #'variable-pitch-mode)
 
 (use-package pdf-tools
@@ -727,7 +773,7 @@ headlines tagged with :noexport:"
 (add-hook 'TeX-after-compilation-finished-functions
           #'TeX-revert-document-buffer)
 
-(add-hook 'org-mode-hook 'org-fragtog-mode)
+;(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 (setq org-preview-latex-process-alist
       '((dvipng :programs
@@ -801,17 +847,23 @@ headlines tagged with :noexport:"
                     ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
                     ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 
-;;(setq-default preview-default-document-pt 22)
+(add-to-list 'load-path "~/sdk/app/popweb")
+
+(setq dummy-citar-bibliography (concat org-directory "/liabrary.bib"))
+(setq! citar-bibliography '(dummy-citar-bibliography))
+(setq! citar-library-paths '("/home/vitalyr/Zotero/storage")
+       citar-notes-paths '(org-directory))
+
+(setq-default preview-default-document-pt 22)
 ;;(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
 (setq lsp-file-watch-threshold 1000
       lsp-ui-doc-position "Bottom"
-      )
-(setq lsp-ui-peek-enable t)
-(setq lsp-ui-doc-enable nil)
-(setq lsp-ui-imenu-enable t)
-(setq lsp-ui-sideline-enable nil)
-(setq lsp-ui-sideline-ignore-duplicate t)
+      lsp-ui-peek-enable t
+      lsp-ui-doc-enable nil
+      lsp-ui-imenu-enable t
+      lsp-ui-sideline-enable nil
+      lsp-ui-sideline-ignore-duplicate t)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
@@ -825,24 +877,9 @@ headlines tagged with :noexport:"
   (require 'org-ref))
 ;; set org-id-method
 (setq org-id-method 'ts)
-;; set org-roam-capture-templates, make org id contain current time
-;;(setq org-roam-capture-templates
-;;  (quote (
-;;    ;; Override default to set timestamp to UTC
-;;    ("d" "default" plain (function org-roam--capture-get-point) "%?"
-;;     :target "%(format-time-string \"%Y%m%dT%H%M%SZ-${slug}\" (current-time) t)"
-;;     :head ":PROPERTIES:
-;;:ID:    %(format-time-string \"%Y%m%dT%H%M%SZ\" (current-time) t)
-;;:TITLE: ${title}
-;;:END:
-;;,#+ROAM_TAGS:
-;;,#+ROAM_ALIAS:
-;;"
-;;     :unnarrowed t))))
 
 (after! org
   (setq org-attach-dir-relative t)
-  (setq org-roam-dailies-directory "daily/")
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry
            "* %?"
@@ -864,7 +901,7 @@ headlines tagged with :noexport:"
 ;;(org-roam-ui-mode)
 
 ;;(setq default-input-method "rime")
-(setq rime-user-data-dir "~/sdk/config/input_method/rime")
+(setq rime-user-data-dir "~/.config/input_method/rime")
 (setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
@@ -900,15 +937,7 @@ headlines tagged with :noexport:"
 
 
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :scale 0.5))
-;;(setq org-format-latex-options (plist-put org-format-latex-options :foreground 'auto))
 ;;(setq org-format-latex-options (plist-put org-format-latex-options :background 'auto))
-
-;; make the background color of latex fragments in org the same with other parts
-;;(after! org
-;; fix color handling in org-preview-latex-fragment
-;;  (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-;;    (plist-put dvipng--plist :use-xcolor t)
-;;    (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f"))))
 
 (global-hl-line-mode nil)
 
@@ -987,17 +1016,6 @@ headlines tagged with :noexport:"
 ;; (setq org-ref-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 ;; (setq reftex-default-bibliography '("~/projects/learn/Notebook/org/library.bib"))
 
-;; Set up org-ref stuff
-
-;;(use-package! org-ref
-;;  :after org
-;;  :init
-                                        ; code to run before loading org-ref
-;;  :config
-                                        ; code to run after loading org-ref
-;;  )
-;;(after! org-ref
-;;  (setq org-ref-default-bibliography `,(list (concat org-directory "/library.bib"))))
 
 ;; The default citation type of org-ref is cite:, but I use citep: much more often
 ;; I therefore changed the default type to the latter.
@@ -1032,7 +1050,6 @@ headlines tagged with :noexport:"
       bibtex-completion-pdf-open-function
       (lambda (fpath)
         (call-process "open" nil 0 nil fpath)))
-;;(require 'bibtex)
 
 (setq bibtex-autokey-year-length 4
       bibtex-autokey-name-year-separator "-"
@@ -1042,15 +1059,6 @@ headlines tagged with :noexport:"
       bibtex-autokey-titlewords-stretch 1
       bibtex-autokey-titleword-length 5
       org-ref-bibtex-hydra-key-binding (kbd "H-b"))
-
-(define-key bibtex-mode-map (kbd "H-b") 'org-ref-bibtex-hydra/body)
-;;(require 'org-ref-ivy)
-
-(setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
-      org-ref-insert-cite-function 'org-ref-cite-insert-ivy
-      org-ref-insert-label-function 'org-ref-insert-label-link
-      org-ref-insert-ref-function 'org-ref-insert-ref-link
-      org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
 
 (setq-default org-download-image-dir (concat org-directory "/attach/pictures"))
 (use-package org-download
