@@ -12,7 +12,7 @@ font:
     family: FiraCode Nerd Font Mono
   size: 14
 # 背景不透明度
-background_opacity: 0.8
+#background_opacity: 0.8
 
 # colors:
 #   # Default colors
@@ -98,6 +98,7 @@ window:
   #
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
+  opacity: 0.8
   padding:
    x: 5
    y: 0 

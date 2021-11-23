@@ -67,7 +67,7 @@
 
 (setq kill-whole-line t)
 
-(setq ivy-use-selectable-prompt t)
+;;(setq ivy-use-selectable-prompt t)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -86,8 +86,8 @@
 
 (setq doom-font (font-spec :family "mononoki" :size 22)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
-      doom-variable-pitch-font (font-spec :family "DejaVu Serif" :size 19)
-      doom-serif-font (font-spec :family "DejaVu Serif" :size 19)
+      doom-variable-pitch-font (font-spec :family "DejaVu Math TeX Gyre" :size 19)
+      doom-serif-font (font-spec :family "DejaVu Math TeX Gyre" :size 19)
       ;;doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC Light" :size 24)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :size 21)
       doom-big-font (font-spec :family "Noto Serif CJK SC" :size 25))
@@ -96,7 +96,7 @@
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 
-(setq doom-theme 'doom-solarized-light)
+(setq doom-theme 'tango)
 ;;(setq doom-theme 'doom-solarized-light)
 (use-package doom-themes
   :config
@@ -278,16 +278,16 @@
  ;; TODO set the color following this
  ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
  ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "DejaVu Serif" :height 150))))
+ '(variable-pitch ((t (:family "DejaVu Math TeX Gyre" :height 150))))
  '(fixed-pitch ((t (:family "mononoki" :height 160))))
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Serif Condensed"))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Serif Condensed"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "DejaVu Math TeX Gyre"))))
  '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
-                    "DejaVu Serif Condensed"))))
+                    "CMU Typewriter Text"))))
  '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
                     :height 1.75 :family "Alegreya"))))
 
@@ -357,8 +357,8 @@
   (setq org-latex-listings 'minted)
   (add-to-list 'org-latex-packages-alist '("" "minted")))
 
-;;(add-hook 'latex-mode-hook #'xenops-mode)
-;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
+(add-hook 'latex-mode-hook #'xenops-mode)
+(add-hook 'LaTeX-mode-hook #'xenops-mode)
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -801,7 +801,14 @@ headlines tagged with :noexport:"
 ;;(setq-default preview-default-document-pt 22)
 ;;(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
 
-(setq lsp-file-watch-threshold 1000)
+(setq lsp-file-watch-threshold 1000
+      lsp-ui-doc-position "Bottom"
+      )
+(setq lsp-ui-peek-enable t)
+(setq lsp-ui-doc-enable nil)
+(setq lsp-ui-imenu-enable t)
+(setq lsp-ui-sideline-enable nil)
+(setq lsp-ui-sideline-ignore-duplicate t)
 
 (add-hook 'doom-first-file-hook #'auto-image-file-mode)
 (auto-image-file-mode 1)
@@ -1004,37 +1011,37 @@ headlines tagged with :noexport:"
         (find-file pdf-file)
       (message "No PDF found for %s" key))))
 (setq bibtex-completion-bibliography '("~/projects/learn/Notebook/org/library.bib"
-		 ;;"~/Dropbox/emacs/bibliography/dei.bib"
-			;; "~/Dropbox/emacs/bibliography/master.bib"
-			 ;;"~/Dropbox/emacs/bibliography/archive.bib"
+		                       ;;"~/Dropbox/emacs/bibliography/dei.bib"
+			               ;; "~/Dropbox/emacs/bibliography/master.bib"
+			               ;;"~/Dropbox/emacs/bibliography/archive.bib"
                                        )
-;;bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
-;;bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
-bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
+      ;;bibtex-completion-library-path '("~/Dropbox/emacs/bibliography/bibtex-pdfs/")
+      ;;bibtex-completion-notes-path "~/Dropbox/emacs/bibliography/notes/"
+      bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n"
 
-bibtex-completion-additional-search-fields '(keywords)
-bibtex-completion-display-formats
-'((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-  (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-  (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-  (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-  (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
-bibtex-completion-pdf-open-function
-(lambda (fpath)
-  (call-process "open" nil 0 nil fpath)))
-(require 'bibtex)
+      bibtex-completion-additional-search-fields '(keywords)
+      bibtex-completion-display-formats
+      '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+        (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+        (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+        (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+        (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))
+      bibtex-completion-pdf-open-function
+      (lambda (fpath)
+        (call-process "open" nil 0 nil fpath)))
+;;(require 'bibtex)
 
 (setq bibtex-autokey-year-length 4
-	bibtex-autokey-name-year-separator "-"
-	bibtex-autokey-year-title-separator "-"
-	bibtex-autokey-titleword-separator "-"
-	bibtex-autokey-titlewords 2
-	bibtex-autokey-titlewords-stretch 1
-	bibtex-autokey-titleword-length 5
-	org-ref-bibtex-hydra-key-binding (kbd "H-b"))
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5
+      org-ref-bibtex-hydra-key-binding (kbd "H-b"))
 
 (define-key bibtex-mode-map (kbd "H-b") 'org-ref-bibtex-hydra/body)
-(require 'org-ref-ivy)
+;;(require 'org-ref-ivy)
 
 (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
       org-ref-insert-cite-function 'org-ref-cite-insert-ivy

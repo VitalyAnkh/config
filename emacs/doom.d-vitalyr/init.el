@@ -28,17 +28,20 @@
        company           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy +fuzzy
-            +childframe
-            +prescient
-            +icons
-            ) ;; a search engine for love and life
+       ;;(ivy +fuzzy
+       ;;     +childframe
+       ;;     +prescient
+       ;;     +icons
+       ;;     ) ;; a search engine for love and life
+       (vertico +icons
+                )        ; the search engine of the future
+
 
        :ui
        deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
-       ;;(emoji +unicode)  ; 🙂
+       (emoji +unicode)  ; 🙂
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
@@ -58,7 +61,7 @@
         )      ; ligatures or substitute text with pretty symbols
        tabs              ; an tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       unicode           ; extended unicode support for various languages
+       ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (
@@ -133,10 +136,10 @@
        ;;tty               ; improve the terminal Emacs experience
 
        :lang
-       (agda +local)             ; types of types of types of types...
-       (cc +lsp)               ; C/C++/Obj-C madness
-       ;; clojure           ; java with a lisp
-       (common-lisp       ; if you've seen one lisp, you've seen them all
+       (agda +local)       ; types of types of types of types...
+       (cc +lsp)           ; C/C++/Obj-C madness
+       ;; clojure          ; java with a lisp
+       (common-lisp        ; if you've seen one lisp, you've seen them all
         +lsp
         )
        coq               ; proofs-as-programs

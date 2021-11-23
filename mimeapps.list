@@ -1,6 +1,6 @@
 [Added Associations]
 application/octet-stream=transmission-gtk.desktop;visual-studio-code.desktop;
-text/plain=vlc.desktop;visual-studio-code.desktop;org.gnome.gedit.desktop;emacs.desktop;visual-studio-code-insiders.desktop;
+text/plain=visual-studio-code.desktop;vlc.desktop;org.gnome.gedit.desktop;emacs.desktop;visual-studio-code-insiders.desktop;
 application/rss+xml=thunderbird.desktop;userapp-Thunderbird-W7Q5T0.desktop;
 application/atom+xml=thunderbird.desktop;firefox-developer-edition.desktop;
 image/png=com.github.phase1geo.annotator.desktop;aseprite.desktop;krita_png.desktop;org.gnome.eog.desktop;gimp.desktop;
@@ -371,10 +371,13 @@ x-scheme-handler/mo=Motrix.desktop
 x-scheme-handler/motrix=Motrix.desktop
 x-scheme-handler/magnet=Motrix.desktop
 x-scheme-handler/thunder=Motrix.desktop
-text/html=baidunetdisk.desktop
+text/html=microsoft-edge-dev.desktop
 video/vivo=org.gnome.Totem.desktop
 video/vnd.vivo=org.gnome.Totem.desktop
 video/x-flic=org.gnome.Totem.desktop
 video/x-mjpeg=org.gnome.Totem.desktop
 video/x-totem-stream=org.gnome.Totem.desktop
 x-scheme-handler/discord-712465656758665259=discord-712465656758665259.desktop
+x-scheme-handler/about=microsoft-edge-dev.desktop
+x-scheme-handler/unknown=microsoft-edge-dev.desktop
+x-scheme-handler/clash=clash_win.desktop
