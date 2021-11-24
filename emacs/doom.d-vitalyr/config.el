@@ -326,21 +326,14 @@
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 ;;(setq +org-roam-open-buffer-on-find-file t)
 
-;;(setq org-latex-pdf-process
-;;      '("xelatex -interaction nonstopmode -output-directory %o %f"
-;;        "xelatex -interaction nonstopmode -output-directory %o %f"
-;;        "xelatex -interaction nonstopmode -output-directory %o %f"))
-;;(setq org-latex-pdf-process
-;;      (list (concat "latexmk -"
-;;                    org-latex-compiler
-;;                    " -recorder -synctex=1 -bibtex-cond %b")))
-;;(setq org-latex-listings t)
+(setq org-latex-listings t)
 (setq org-startup-with-latex-preview t)
 (with-eval-after-load 'ox-latex
  ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
  ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
  ;; automatically to resolve the cross-references.
- (setq org-latex-pdf-process '("latexmk -xelatex -quiet -shell-escape -f %f"))
+;; Use tectonic for pdf compilation
+(setq org-latex-pdf-process '("tectonic -X compile %f --outfmt pdf --outdir %o"))
  (add-to-list 'org-latex-classes
                '("elegantpaper"
                  "\\documentclass[lang=cn]{elegantpaper}
@@ -361,36 +354,57 @@
 (add-hook 'org-mode-hook #'xenops-mode)
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
-      xenops-math-latex-process 'dvipng
+      xenops-math-latex-process 'tectonic
       )
 (setq xenops-math-latex-process-alist
       '((dvipng :programs
-               ("latex" "dvipng")
-               :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
-               (1.0 . 1.0)
-               :latex-compiler
-               ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
-               :image-converter
-               ("dvipng -D %D -T tight -o %O %f"))
-       (dvisvgm :programs
-                ("latex" "dvisvgm")
-                :description "xdv > svg"
-                :message "you need to install the programs: latex and dvisvgm."
-                :image-input-type "xdv"
-                :image-output-type "svg"
-                :image-size-adjust (0.5 . 0.5)
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
                 :latex-compiler
-                ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
                 :image-converter
-                ("dvisvgm %f -n -b min -c %S -o %O"))
-       (imagemagick :programs
-                    ("latex" "convert")
-                    :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                    (1.0 . 1.0)
-                    :latex-compiler
-                    ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
-                    :image-converter
-                    ("convert -density %D -trim -antialias %f -quality 100 %O"))))
+                ("dvipng -D %D -T tight -o %O %f"))
+        (lualatex :programs ("lualatex" "dvisvgm")
+                  :description "dvi > svg"
+                  :use-xcolor t
+                  :message "you need to install the programs: lualatex and dvisvgm."
+                  :image-input-type "dvi"
+                  :image-output-type "svg"
+                  :image-size-adjust (1.0 . 1.0)
+                  :latex-compiler
+                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (tectonic :programs
+                  ("latex" "dvisvgm")
+                  :description "xdv > svg"
+                  :message "you need to install the programs: tectonic and dvisvgm."
+                  :image-input-type "xdv"
+                  :image-output-type "svg"
+                  :image-size-adjust (0.75 . 0.75)
+                  :latex-compiler
+                  ("tectonic -X compile %f -Z shell-escape --outfmt xdv --outdir %o")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (dvisvgm :programs ("xelatex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: xelatex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (0.52 . 0.52)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
@@ -742,9 +756,8 @@ headlines tagged with :noexport:"
       pdf-view-use-imagemagick nil
       ;;pdf-view-resize-factor 10
       )
-;;(setq-default TeX-engine 'xetex
-;;              TeX-PDF-mode t)
-(setq-default TeX-PDF-mode t)
+(setq-default TeX-engine 'luatex
+              TeX-PDF-mode t)
 
 (with-eval-after-load 'font-latex
   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
@@ -777,9 +790,12 @@ headlines tagged with :noexport:"
 
 (setq org-preview-latex-process-alist
       '((dvipng :programs
-                ("latex" "dvipng")
-                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
-                (1.0 . 1.0)
+                ("lualatex" "dvipng")
+                :description "dvi > png"
+                :message "you need to install the programs: latex and dvipng."
+                :image-input-type "dvi"
+                :image-output-type "png"
+                :image-size-adjust (1.0 . 1.0)
                 :latex-compiler
                 ("latex -interaction nonstopmode -output-directory %o %f")
                 :image-converter
@@ -787,9 +803,9 @@ headlines tagged with :noexport:"
                 :transparent-image-converter
                 ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
         (dvisvgm :programs
-                 ("latex" "dvisvgm")
+                 ("xelatex" "dvisvgm")
                  :description "xdv > svg"
-                 :message "you need to install the programs: latex and dvisvgm."
+                 :message "you need to install the programs: xelatex and dvisvgm."
                  :image-input-type "xdv"
                  :image-output-type "svg"
                  :image-size-adjust (0.5 . 0.5)
@@ -822,9 +838,9 @@ headlines tagged with :noexport:"
       )
 
 (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
-(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
+;;(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
 (setq org-preview-latex-default-process 'dvisvgm)
-(setq org-latex-compiler "xelatex")
+(setq org-latex-compiler "lualatex")
 
 (use-package! laas
   :hook (org-mode . laas-mode)
@@ -848,9 +864,12 @@ headlines tagged with :noexport:"
                     ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 
 (add-to-list 'load-path "~/sdk/app/popweb")
+(add-to-list 'load-path "~/sdk/app/popweb/extension/latex")
+(require 'popweb-latex)
+(add-hook 'latex-mode-hook #'popweb-latex-mode)
 
-(setq dummy-citar-bibliography (concat org-directory "/liabrary.bib"))
-(setq! citar-bibliography '(dummy-citar-bibliography))
+;;(setq dummy-citar-bibliography (concat org-directory "/library.bib"))
+(setq! citar-bibliography '("/home/vitalyr/projects/learn/Notebook/org/library.bib"))
 (setq! citar-library-paths '("/home/vitalyr/Zotero/storage")
        citar-notes-paths '(org-directory))
 
@@ -928,11 +947,11 @@ headlines tagged with :noexport:"
 (require 'org)
 
 ;;(use-package org-latex-impatient
-;;  :defer t
-;;  :hook (org-mode . org-latex-impatient-mode)
-;;  :init
+;  :defer t
+;  :hook (org-mode . org-latex-impatient-mode)
+;  :init
 ;  (setq org-latex-impatient-tex2svg-bin "tex2svg")
-;  ;; (setq org-latex-impatient-scale 1)
+  ;; (setq org-latex-impatient-scale 1)
 ;  (setq org-latex-impatient-delay 0.2))
 
 

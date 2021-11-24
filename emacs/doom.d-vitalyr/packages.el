@@ -148,7 +148,7 @@
 
 (package! package-lint)
 
-(package! org-fragtog)
+;;(package! org-fragtog)
 
 (package! laas)
 
