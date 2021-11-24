@@ -25,6 +25,7 @@ SETUVAR _fish_abbr_pqri:proxychains\x20\x2dq\x20rua\x20install
 SETUVAR _fish_abbr_pzl:http_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20https_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20zulip\x20\x2d\x2dproxy\x2dserver\x3d\x22socks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x22
 SETUVAR _fish_abbr_q:QT_QPA_PLATFORM\x3d
 SETUVAR _fish_abbr_qidea:QT_QPA_PLATFORM\x3d\x27\x27\x20_JAVA_AWT_WM_NONREPARENTING\x3d1\x20idea
+SETUVAR _fish_abbr_qtx:env\x20QT_QPA_PLATFORM\x3dxcb
 SETUVAR _fish_abbr_rm:echo\x20\x22This\x20is\x20not\x20the\x20command\x20you\x20are\x20looking\x20for\x2e\x22\x3b\x20false
 SETUVAR _fish_abbr_setproxy:set\x20http_proxy\x20http\x3a//127\x2e0\x2e0\x2e1\x3a1080\x3b\x20set\x20https_proxy\x20http_proxy\x3b\x20echo\x20\x22HTTP\x20Proxy\x20on\x22\x3b
 SETUVAR _fish_abbr_sp:set\x20http_proxy\x20http\x3a//127\x2e0\x2e0\x2e1\x3a1080\x3b\x20set\x20https_proxy\x20http_proxy\x3b\x20echo\x20\x22HTTP\x20Proxy\x20on\x22\x3b

@@ -229,7 +229,7 @@
             (t (self-insert-command (or arg 1))))))
   (map! "%" 'zz/goto-match-paren))
 
-(setq org-directory "~/projects/learn/Notebook/org")
+(setq org-directory "~/org")
 
 (setq word-wrap-by-category t)
 
@@ -253,8 +253,9 @@
 
 ;;(add-hook! org-mode (electric-indent-local-mode -1))
 
-(add-hook! org-mode (solaire-mode -1))
-(add-hook! org-mode (hl-line-mode -1))
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
 
 (defun zz/adjust-org-company-backends ()
   (remove-hook 'after-change-major-mode-hook '+company-init-backends-h)
@@ -329,12 +330,13 @@
 (setq org-latex-listings t)
 (setq org-startup-with-latex-preview t)
 (with-eval-after-load 'ox-latex
- ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
- ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
- ;; automatically to resolve the cross-references.
-;; Use tectonic for pdf compilation
-(setq org-latex-pdf-process '("tectonic -X compile %f --outfmt pdf --outdir %o"))
- (add-to-list 'org-latex-classes
+  ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
+  ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
+  ;; automatically to resolve the cross-references.
+  ;; Use tectonic for pdf compilation
+  ;; tectonic is not mature enough...
+  ;;(setq org-latex-pdf-process '("tectonic -X compile %f -Z shell-escape --outfmt pdf --outdir %o"))
+  (add-to-list 'org-latex-classes
                '("elegantpaper"
                  "\\documentclass[lang=cn]{elegantpaper}
                  [NO-DEFAULT-PACKAGES]
@@ -346,8 +348,16 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
                )
-  (setq org-latex-listings 'minted)
-  (add-to-list 'org-latex-packages-alist '("" "minted")))
+  ;; use listings (not minted) to export code
+  (add-to-list 'org-latex-packages-alist '("" "listings"))
+  (add-to-list 'org-latex-packages-alist '("" "color"))
+  )
+
+(setq citar-symbols
+      `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+        (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+        (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))
+(setq citar-symbol-separator "  ")
 
 (add-hook 'latex-mode-hook #'xenops-mode)
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
@@ -756,7 +766,7 @@ headlines tagged with :noexport:"
       pdf-view-use-imagemagick nil
       ;;pdf-view-resize-factor 10
       )
-(setq-default TeX-engine 'luatex
+(setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 
 (with-eval-after-load 'font-latex
@@ -840,7 +850,7 @@ headlines tagged with :noexport:"
 (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
 ;;(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
 (setq org-preview-latex-default-process 'dvisvgm)
-(setq org-latex-compiler "lualatex")
+(setq org-latex-compiler "xelatex")
 
 (use-package! laas
   :hook (org-mode . laas-mode)
@@ -863,15 +873,16 @@ headlines tagged with :noexport:"
                     ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
                     ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))))
 
-(add-to-list 'load-path "~/sdk/app/popweb")
-(add-to-list 'load-path "~/sdk/app/popweb/extension/latex")
-(require 'popweb-latex)
-(add-hook 'latex-mode-hook #'popweb-latex-mode)
+;;(add-to-list 'load-path "~/sdk/app/popweb")
+;;(add-to-list 'load-path "~/sdk/app/popweb/extension/latex")
+;;(require 'popweb-latex)
+;;(add-hook 'latex-mode-hook #'popweb-latex-mode)
 
 ;;(setq dummy-citar-bibliography (concat org-directory "/library.bib"))
-(setq! citar-bibliography '("/home/vitalyr/projects/learn/Notebook/org/library.bib"))
+(setq! citar-bibliography '("/home/vitalyr/org/library.bib"))
 (setq! citar-library-paths '("/home/vitalyr/Zotero/storage")
        citar-notes-paths '(org-directory))
+(setq org-cite-global-bibliography citar-bibliography)
 
 (setq-default preview-default-document-pt 22)
 ;;(add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
@@ -1143,3 +1154,7 @@ headlines tagged with :noexport:"
   :bind
   ("M-q" . unfill-toggle)
   ("A-q" . unfill-paragraph))
+
+(add-to-list 'load-path "/home/vitalyr/projects/learn/Emacs/greeting")
+(require 'greeting)
+(greeting-say-hello "Emacs")

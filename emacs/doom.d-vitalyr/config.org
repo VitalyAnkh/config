@@ -36,6 +36,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
   - [[#turn-on-org-footnote-auto-adjust][Turn on =org-footnote-auto-adjust=]]
   - [[#capturing-and-note-taking][Capturing and note taking]]
   - [[#org-for-academic][Org for Academic]]
+    - [[#citar][=Citar=]]
     - [[#use-xenops-for-org-mode-latex-async-compilation][Use ~xenops~ for =org-mode= ~LaTeX~ async compilation]]
   - [[#capturing-images][Capturing images]]
   - [[#capturing-links][Capturing links]]
@@ -79,6 +80,7 @@ This file is written in [[https://leanpub.com/lit-config][literate programming s
     - [[#enable-rgels-default-key-map-rg-menu-under-the-default-prefix-key-c-c-s][Enable =rg.el='s default key map =rg-menu= under the default prefix key =C-c s=.]]
   -  [[#wakatime][wakatime]]
 - [[#experiments][Experiments]]
+  - [[#emacs-rust-dynamic-module-experiments][Emacs Rust dynamic module experiments]]
 
 * References
 
@@ -864,7 +866,7 @@ Doom's Org module provides a lot of sane configuration settings, so I don't have
 Default directory for Org files.
 
 #+begin_src emacs-lisp
-(setq org-directory "~/projects/learn/Notebook/org")
+(setq org-directory "~/org")
 #+end_src
 
 Set ~word-wrap-by-category~ to make Chinese and English characters align on the same line:
@@ -920,8 +922,9 @@ Disable [[https://code.orgmode.org/bzg/org-mode/src/master/etc/ORG-NEWS#L323][el
 
 Disable ~solaire-mode~ and ~hl-line-mode~, to make ~org-latex-preview~ pictures with the same background color.
 #+begin_src emacs-lisp
-(add-hook! org-mode (solaire-mode -1))
-(add-hook! org-mode (hl-line-mode -1))
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
 #+end_src
 
 I really dislike completion of words as I type prose (in code it's OK), so I disable it in Org:
@@ -1128,12 +1131,13 @@ Config for exporting pdf from org:
 (setq org-latex-listings t)
 (setq org-startup-with-latex-preview t)
 (with-eval-after-load 'ox-latex
- ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
- ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
- ;; automatically to resolve the cross-references.
-;; Use tectonic for pdf compilation
-(setq org-latex-pdf-process '("tectonic -X compile %f --outfmt pdf --outdir %o"))
- (add-to-list 'org-latex-classes
+  ;; http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
+  ;; latexmk runs pdflatex/xelatex (whatever is specified) multiple times
+  ;; automatically to resolve the cross-references.
+  ;; Use tectonic for pdf compilation
+  ;; tectonic is not mature enough...
+  ;;(setq org-latex-pdf-process '("tectonic -X compile %f -Z shell-escape --outfmt pdf --outdir %o"))
+  (add-to-list 'org-latex-classes
                '("elegantpaper"
                  "\\documentclass[lang=cn]{elegantpaper}
                  [NO-DEFAULT-PACKAGES]
@@ -1145,8 +1149,19 @@ Config for exporting pdf from org:
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
                )
-  (setq org-latex-listings 'minted)
-  (add-to-list 'org-latex-packages-alist '("" "minted")))
+  ;; use listings (not minted) to export code
+  (add-to-list 'org-latex-packages-alist '("" "listings"))
+  (add-to-list 'org-latex-packages-alist '("" "color"))
+  )
+#+end_src
+*** =Citar=
+Let =citar= use icons in its UI:
+#+begin_src emacs-lisp
+(setq citar-symbols
+      `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+        (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+        (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " ")))
+(setq citar-symbol-separator "  ")
 #+end_src
 *** Use ~xenops~ for =org-mode= ~LaTeX~ async compilation
 #+begin_src emacs-lisp :tangle packages.el
@@ -1969,7 +1984,7 @@ And XeLaTeX to compile tex file.
       pdf-view-use-imagemagick nil
       ;;pdf-view-resize-factor 10
       )
-(setq-default TeX-engine 'luatex
+(setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 #+end_src
 
@@ -2070,7 +2085,7 @@ Unicode support:
 (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
 ;;(add-to-list 'org-latex-packages-alist '("" "unicode-math"))
 (setq org-preview-latex-default-process 'dvisvgm)
-(setq org-latex-compiler "lualatex")
+(setq org-latex-compiler "xelatex")
 #+end_src
 #+RESULTS:
 
@@ -2131,20 +2146,22 @@ Unicode support:
 #+end_src
 ** popweb
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/sdk/app/popweb")
-(add-to-list 'load-path "~/sdk/app/popweb/extension/latex")
-(require 'popweb-latex)
-(add-hook 'latex-mode-hook #'popweb-latex-mode)
+;;(add-to-list 'load-path "~/sdk/app/popweb")
+;;(add-to-list 'load-path "~/sdk/app/popweb/extension/latex")
+;;(require 'popweb-latex)
+;;(add-hook 'latex-mode-hook #'popweb-latex-mode)
 #+end_src
 
 ** biblio
 Use =citar= and =org-cite= to insert citation:
 #+begin_src emacs-lisp
 ;;(setq dummy-citar-bibliography (concat org-directory "/library.bib"))
-(setq! citar-bibliography '("/home/vitalyr/projects/learn/Notebook/org/library.bib"))
+(setq! citar-bibliography '("/home/vitalyr/org/library.bib"))
 (setq! citar-library-paths '("/home/vitalyr/Zotero/storage")
        citar-notes-paths '(org-directory))
+(setq org-cite-global-bibliography citar-bibliography)
 #+end_src
+
 ** Other config to be classified
 #+begin_src emacs-lisp
 (setq-default preview-default-document-pt 22)
@@ -2527,4 +2544,10 @@ channel."
             lang
             (org-remove-indentation
              (org-export-format-code-default example-block info)))))
+#+end_src
+** Emacs Rust dynamic module experiments
+#+begin_src emacs-lisp
+(add-to-list 'load-path "/home/vitalyr/projects/learn/Emacs/greeting")
+(require 'greeting)
+(greeting-say-hello "Emacs")
 #+end_src
