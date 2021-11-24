@@ -381,3 +381,4 @@ x-scheme-handler/discord-712465656758665259=discord-712465656758665259.desktop
 x-scheme-handler/about=microsoft-edge-dev.desktop
 x-scheme-handler/unknown=microsoft-edge-dev.desktop
 x-scheme-handler/clash=clash_win.desktop
+text/org=emacs.desktop

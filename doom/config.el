@@ -1,8 +1,8 @@
 ;;; config.el -*- lexical-binding: t; -*-
 
 ;; [[file:config.org::*Personal Information][Personal Information:1]]
-(setq user-full-name "TEC"
-      user-mail-address "tec@tecosaur.com")
+(setq user-full-name "VitalyR"
+      user-mail-address "vitalyankh@gmail.com")
 ;; Personal Information:1 ends here
 
 ;; [[file:config.org::*Personal Information][Personal Information:2]]
@@ -25,9 +25,9 @@
       scroll-margin 2)                            ; It's nice to maintain a little margin
 
 (display-time-mode 1)                             ; Enable time in the mode-line
-
-(unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-  (display-battery-mode 1))                       ; it's nice to know how much power you have
+;; This mess things up, disable for now
+;;(unless (string-match-p "^Power N/A" (battery)) ; On laptops...
+;;  (display-battery-mode 1))                     ; it's nice to know how much power you have
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 ;; Simple settings:1 ends here
@@ -74,7 +74,7 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "mononoki" :size 23)
+(setq doom-font (font-spec :family "mononoki" :size 22)
       doom-big-font (font-spec :family "mononoki" :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
@@ -123,7 +123,7 @@
 ;; Theme and modeline:3 ends here
 
 ;; [[file:config.org::*Miscellaneous][Miscellaneous:1]]
-(setq display-line-numbers-type 'relative)
+;;(setq display-line-numbers-type 'relative)
 ;; Miscellaneous:1 ends here
 
 ;; [[file:config.org::*Miscellaneous][Miscellaneous:2]]
@@ -473,26 +473,6 @@
     (run-at-time nil nil #'+config-run-setup)))
 ;; Prompt to run setup script:2 ends here
 
-;; [[file:config.org::*Emacs Everywhere][Emacs Everywhere:2]]
-(use-package! emacs-everywhere
-  :if (daemonp)
-  :config
-  (require 'spell-fu)
-  (setq emacs-everywhere-major-mode-function #'org-mode
-        emacs-everywhere-frame-name-format "Edit ∷ %s - %s")
-  (defadvice! emacs-everywhere-raise-frame ()
-    :after #'emacs-everywhere-set-frame-name
-    (setq emacs-everywhere-frame-name (format emacs-everywhere-frame-name-format
-                                (emacs-everywhere-app-class emacs-everywhere-current-app)
-                                (truncate-string-to-width
-                                 (emacs-everywhere-app-title emacs-everywhere-current-app)
-                                 45 nil nil "…")))
-    ;; need to wait till frame refresh happen before really set
-    (run-with-timer 0.1 nil #'emacs-everywhere-raise-frame-1))
-  (defun emacs-everywhere-raise-frame-1 ()
-    (call-process "wmctrl" nil nil nil "-a" emacs-everywhere-frame-name)))
-;; Emacs Everywhere:2 ends here
-
 ;; [[file:config.org::*Which-key][Which-key:1]]
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
 ;; Which-key:1 ends here
@@ -771,6 +751,10 @@
      (doom-blend 'base8 'functions 0.1)
      (face-attribute 'default :foreground))))
 ;; Theme magic:3 ends here
+
+;; [[file:config.org::*Theme magic][Theme magic:4]]
+(run-with-idle-timer 0.1 nil (lambda () (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)))
+;; Theme magic:4 ends here
 
 ;; [[file:config.org::*Emojify][Emojify:1]]
 (setq emojify-emoji-set "twemoji-v2")
@@ -2183,6 +2167,8 @@ Prevents a series of redisplays from being called (when set to an appropriate va
           (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
                        #'mu4e-reindex-maybe))))))
 ;; Rebuild mail index while using mu4e:1 ends here
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
 (after! mu4e
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
@@ -5654,6 +5640,39 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 (use-package! ox-chameleon
   :after ox)
 
+(after! ox-ascii
+  (defvar org-ascii-convert-latex t
+    "Use latex2text to convert LaTeX elements to unicode.")
+
+  (defadvice! org-ascii-latex-environment-unicode-a (latex-environment _contents info)
+    "Transcode a LATEX-ENVIRONMENT element from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-environment
+    (when (plist-get info :with-latex)
+      (org-ascii--justify-element
+       (org-remove-indentation
+        (let* ((latex (org-element-property :value latex-environment))
+               (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                             org-ascii-convert-latex
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
+          (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+              (cdr unicode) latex)))
+       latex-environment info)))
+
+  (defadvice! org-ascii-latex-fragment-unicode-a (latex-fragment _contents info)
+    "Transcode a LATEX-FRAGMENT object from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-fragment
+    (when (plist-get info :with-latex)
+      (let* ((latex (org-element-property :value latex-fragment))
+             (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                           org-ascii-convert-latex
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
+        (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
+            (cdr unicode) latex)))))
+
 (use-package! ox-gfm
   :after ox)
 
@@ -6002,20 +6021,20 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; Terminal viewing:2 ends here
 
 ;; [[file:config.org::*Terminal viewing][Terminal viewing:3]]
-(use-package! pdftotext
-  :init
-  (unless (display-graphic-p)
-    (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
-    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
-  :config
-  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
-  ;; For prettyness
-  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
-  (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
-  ;; I have no idea why this is needed
-  (map! :map pdftotext-mode-map
-        "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
-        "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
+;;(use-package! pdftotext
+;;  :init
+;;  (unless (display-graphic-p)
+;;    (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
+;;    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
+;;  :config
+;;  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
+;;  ;; For prettyness
+;;  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
+;;  (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
+;;  ;; I have no idea why this is needed
+;;  (map! :map pdftotext-mode-map
+;;        "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
+;;        "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
 ;; Terminal viewing:3 ends here
 
 ;; [[file:config.org::*Editor Visuals][Editor Visuals:1]]

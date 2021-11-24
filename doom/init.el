@@ -125,7 +125,7 @@
        ;;fstar                      ; (dependent) types and (monadic) effects and Z3
        ;;gdscript                   ; the language you waited for
        ;;(go +lsp)                  ; the hipster dialect
-       ;;(haskell +lsp)             ; a language that's lazier than I am
+       (haskell +lsp)               ; a language that's lazier than I am
        ;;hy                         ; readability of scheme w/ speed of python
        ;;idris                      ;
        json                         ; At least it ain't XML
@@ -144,11 +144,11 @@
        markdown                     ; writing docs for people to ignore
        ;;nim                        ; python + lisp at the speed of c
        ;;nix                        ; I hereby declare "nix geht mehr!"
-       ;;ocaml                      ; an objective camel
+       ocaml                        ; an objective camel
        (org                         ; organize your plain life in plain text
         +pretty                     ; yessss my pretties! (nice unicode symbols)
         +dragndrop                  ; drag & drop files/images into org buffers
-        ;;+hugo                     ; use Emacs for hugo blogging
+        +hugo                       ; use Emacs for hugo blogging
         +noter                      ; enhanced PDF notetaking
         +jupyter                    ; ipython/jupyter support for babel
         +pandoc                     ; export-with-pandoc support
@@ -161,13 +161,13 @@
        ;;purescript                 ; javascript, but functional
        (python +lsp +pyright)       ; beautiful is better than ugly
        ;;qt                         ; the 'cutest' gui framework ever
-       ;;racket                     ; a DSL for DSLs
+       racket                       ; a DSL for DSLs
        ;;raku                       ; the artist formerly known as perl6
        ;;rest                       ; Emacs as a REST client
        ;;rst                        ; ReST in peace
        ;;(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       ;;scala                      ; java, but good
+       scala                        ; java, but good
        scheme                       ; a fully conniving family of lisps
        sh                           ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml                        ; no, the /other/ ML
@@ -179,15 +179,15 @@
        ;;zig                        ; C, but simpler
 
        :email
-       (:if (executable-find "mu") (mu4e +org +gmail))
+       ;;(:if (executable-find "mu") (mu4e +org +gmail))
        ;;notmuch
        ;;(wanderlust +gmail)
 
        :app
-       ;;calendar                   ; A dated approach to timetabling
+       calendar                   ; A dated approach to timetabling
        ;;emms                       ; Multimedia in Emacs is music to my ears
-       everywhere                   ; *leave* Emacs!? You must be joking.
-       irc                          ; how neckbeards socialize
+       ;;everywhere                 ; *leave* Emacs!? You must be joking.
+       ;;irc                        ; how neckbeards socialize
        (rss +org)                   ; emacs as an RSS reader
        ;;twitter                    ; twitter client https://twitter.com/vnought
 

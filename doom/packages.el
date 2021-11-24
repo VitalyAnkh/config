@@ -5,8 +5,8 @@
 ;; Rotate (window management):1 ends here
 
 ;; [[file:config.org::*Emacs Everywhere][Emacs Everywhere:1]]
-(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere"))
-(unpin! emacs-everywhere)
+;;(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere"))
+;;(unpin! emacs-everywhere)
 ;; Emacs Everywhere:1 ends here
 
 ;; [[file:config.org::*Very large files][Very large files:1]]
@@ -177,7 +177,7 @@
 (package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
 
 ;; [[file:config.org::*LAAS][LAAS:1]]
-(package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
+(package! laas)
 ;; LAAS:1 ends here
 
 ;; [[file:config.org::*Graphviz][Graphviz:1]]
