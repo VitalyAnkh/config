@@ -677,12 +677,6 @@
   :commands aas-mode)
 ;; Auto activating snippets:2 ends here
 
-;; [[file:config.org::*Screenshot][Screenshot:2]]
-(use-package! screenshot
-  :defer t
-  :config (setq screenshot-upload-fn "upload %s 2>/dev/null"))
-;; Screenshot:2 ends here
-
 ;; [[file:config.org::*YASnippet][YASnippet:1]]
 (setq yas-triggers-in-field t)
 ;; YASnippet:1 ends here
@@ -1388,11 +1382,6 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! selectic-mode
   :commands selectic-mode)
 ;; Selectric:2 ends here
-
-;; [[file:config.org::*Wttrin][Wttrin:2]]
-(use-package! wttrin
-  :commands wttrin)
-;; Wttrin:2 ends here
 
 ;; [[file:config.org::*Spray][Spray:2]]
 (use-package! spray
@@ -5469,18 +5458,6 @@ Prevents a series of redisplays from being called (when set to an appropriate va
       :localleader
       :desc "Outline" "O" #'org-ol-tree)
 
-(use-package! ob-julia
-  :commands org-babel-execute:julia
-  :config
-  (setq org-babel-julia-command-arguments
-        `("--sysimage"
-          ,(when-let ((img "~/.local/lib/julia.so")
-                      (exists? (file-exists-p img)))
-             (expand-file-name img))
-          "--threads"
-          ,(number-to-string (- (doom-system-cpus) 2))
-          "--banner=no")))
-
 (use-package! ob-http
   :commands org-babel-execute:http)
 
@@ -5492,35 +5469,6 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
-
-(use-package! org-pandoc-import
-  :after org)
-
-(use-package! orgdiff
-  :defer t
-  :config
-  (defun +orgdiff-nicer-change-colours ()
-    (goto-char (point-min))
-    ;; Set red/blue based on whether chameleon is being used
-    (if (search-forward "%% make document follow Emacs theme" nil t)
-        (setq red  (substring (doom-blend 'red 'fg 0.8) 1)
-              blue (substring (doom-blend 'blue 'teal 0.6) 1))
-      (setq red  "c82829"
-            blue "00618a"))
-    (when (and (search-forward "%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF" nil t)
-               (search-forward "\\RequirePackage{color}" nil t))
-      (when (re-search-forward "definecolor{red}{rgb}{1,0,0}" (cdr (bounds-of-thing-at-point 'line)) t)
-        (replace-match (format "definecolor{red}{HTML}{%s}" red)))
-      (when (re-search-forward "definecolor{blue}{rgb}{0,0,1}" (cdr (bounds-of-thing-at-point 'line)) t)
-        (replace-match (format "definecolor{blue}{HTML}{%s}" blue)))))
-  (add-to-list 'orgdiff-latexdiff-postprocess-hooks #'+orgdiff-nicer-change-colours))
-
-(use-package! org-music
-  :after org
-  :config
-  (setq org-music-mpris-player "Lollypop"
-        org-music-track-search-method 'beets
-        org-music-beets-db "~/Music/library.db"))
 
 (evil-define-command evil-buffer-org-new (count file)
   "Creates a new ORG buffer replacing the current window, optionally
@@ -5563,7 +5511,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
   (setq org-cite-export-processors
         '((t csl))))
 
-  ;;; Org-cite processors
+  ;; Org-cite processors
 (use-package! oc-biblatex
   :after oc)
 
@@ -5637,12 +5585,6 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 
 (use-package! org-fragtog
   :hook (org-mode . org-fragtog-mode))
-
-(use-package! engrave-faces-latex
-  :after ox-latex)
-
-(use-package! ox-chameleon
-  :after ox)
 
 (after! ox-ascii
   (defvar org-ascii-convert-latex t

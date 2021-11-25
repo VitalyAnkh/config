@@ -28,7 +28,7 @@
 ;; Auto activating snippets:1 ends here
 
 ;; [[file:config.org::*Screenshot][Screenshot:1]]
-(package! screenshot :recipe (:local-repo "lisp/screenshot"))
+;;(package! screenshot :recipe (:local-repo "lisp/screenshot"))
 ;; Screenshot:1 ends here
 
 ;; [[file:config.org::*Etrace][Etrace:1]]
@@ -77,7 +77,7 @@
 ;; Selectric:1 ends here
 
 ;; [[file:config.org::*Wttrin][Wttrin:1]]
-(package! wttrin :recipe (:local-repo "lisp/wttrin"))
+;;(package! wttrin :recipe (:local-repo "lisp/wttrin"))
 ;; Wttrin:1 ends here
 
 ;; [[file:config.org::*Spray][Spray:1]]
@@ -133,7 +133,7 @@
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
   :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
 
-(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
+;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 
 (package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
 
@@ -144,16 +144,16 @@
 
 (package! org-chef :pin "a97232b4706869ecae16a1352487a99bc3cf97af")
 
-(package! org-pandoc-import :recipe
-  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
+;;(package! org-pandoc-import :recipe
+;;  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 
-(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
+;;(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 
-(package! org-music :recipe (:local-repo "lisp/org-music"))
+;;(package! org-music :recipe (:local-repo "lisp/org-music"))
 
-(package! citar :pin "a6926650114a8091f98bff8c7fd00add82043190")
-(package! citeproc :pin "38e70c0a94eeefe86ddefc38dfa8ab2311008774")
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "8f49ccbd337edda01e52da0c75f6a76e2cc976f7")
+(package! citar)
+(package! citeproc)
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 
 (package! org-super-agenda)
 
@@ -169,9 +169,9 @@
 
 (package! org-fragtog :pin "479e0a1c3610dfe918d89a5f5a92c8aec37f131d")
 
-(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
+;;(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
 
-(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
+;;(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 
 (package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
 

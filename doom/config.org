@@ -517,7 +517,7 @@ I reckon enabling half the modules Doom provides should do it.
 ;;deft                       ; notational velocity for Emacs
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
-doom-quit                    ; DOOM quit-message prompts when you quit Emacs
+;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
 (emoji +unicode)             ; :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -556,7 +556,7 @@ multiple-cursors             ; editing in many places at once
 ;;parinfer                   ; turn lisp into python, sort of
 rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
-;;word-wrap                  ; soft wrapping with language-aware indent
+word-wrap                  ; soft wrapping with language-aware indent
 #+end_src
 
 #+name: doom-emacs
@@ -573,7 +573,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 ;;eshell                     ; the elisp shell that works everywhere
 ;;shell                      ; simple shell REPL for Emacs
 ;;term                       ; basic terminal emulator for Emacs
-vterm                        ; the best terminal emulation in Emacs
+;;vterm                      ; the best terminal emulation in Emacs
 #+end_src
 
 #+name: doom-checkers
@@ -586,10 +586,10 @@ grammar                      ; tasing grammar mistake every you make
 #+name: doom-tools
 #+begin_src emacs-lisp
 ansible                      ; a crucible for infrastructure as code
-;;debugger                   ; FIXME stepping through code, to help you add bugs
-;;direnv                     ; be direct about your environment
-docker                       ; port everything to containers
-;;editorconfig               ; let someone else argue about tabs vs spaces
+debugger                     ; FIXME stepping through code, to help you add bugs
+direnv                       ; be direct about your environment
+;;docker                     ; port everything to containers
+editorconfig                 ; let someone else argue about tabs vs spaces
 ;;ein                        ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
@@ -623,12 +623,12 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-;;agda                       ; types of types of types of types...
+(agda +local)                ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
-;;cc                         ; C/C++/Obj-C madness
-;;clojure                    ; java with a lisp
-;;common-lisp                ; if you've seen one lisp, you've seen them all
-;;coq                        ; proofs-as-programs
+cc                         ; C/C++/Obj-C madness
+clojure                    ; java with a lisp
+common-lisp                ; if you've seen one lisp, you've seen them all
+coq                        ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
 ;;csharp                     ; unity, .NET, and mono shenanigans
 data                         ; config/data formats
@@ -643,7 +643,7 @@ ess                          ; emacs speaks statistics
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
 ;;gdscript                   ; the language you waited for
-;;(go +lsp)                  ; the hipster dialect
+(go +lsp)                    ; the hipster dialect
 (haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 ;;idris                      ;
@@ -689,7 +689,7 @@ racket                       ; a DSL for DSLs
 scala                        ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
-;;sml                        ; no, the /other/ ML
+sml                        ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
@@ -2061,7 +2061,7 @@ Sometimes pressing =TAB= is just too much.
 
 This makes it a breeze to take lovely screenshots.
 #+begin_src emacs-lisp :tangle packages.el
-(package! screenshot :recipe (:local-repo "lisp/screenshot"))
+;;(package! screenshot :recipe (:local-repo "lisp/screenshot"))
 #+end_src
 
 #+attr_html: :class invertible :alt Example screenshot.el screenshot
@@ -2069,7 +2069,7 @@ This makes it a breeze to take lovely screenshots.
 
 Some light configuring is all we need, so we can make use of the [[https://github.com/Calinou/0x0][0x0]] wrapper
 file uploading script (which I've renamed to ~upload~).
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! screenshot
   :defer t
   :config (setq screenshot-upload-fn "upload %s 2>/dev/null"))
@@ -3058,10 +3058,10 @@ Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
 roll our [[file:lisp/wttrin/wttrin.el][own version]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! wttrin :recipe (:local-repo "lisp/wttrin"))
+;;(package! wttrin :recipe (:local-repo "lisp/wttrin"))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! wttrin
   :commands wttrin)
 #+end_src
@@ -3123,15 +3123,14 @@ about it?
 My patch giving my patch giving =authinfo-mode= syntax highlighting is only
 available in Emacs28+. For older versions, I've got a package I can use.
 #+begin_src emacs-lisp :tangle (if (< emacs-major-version 28) "packages.el" "no")
-(package! authinfo-color-mode
-  :recipe (:local-repo "lisp/authinfo-color-mode"))
+;;(package! authinfo-color-mode :recipe (:local-repo "lisp/authinfo-color-mode"))
 #+end_src
 
 Now we just need to load it appropriately.
 #+begin_src emacs-lisp :tangle (if (< emacs-major-version 28) "yes" "no")
-(use-package! authinfo-color-mode
-  :mode ("authinfo.gpg\\'" . authinfo-color-mode)
-  :init (advice-add 'authinfo-mode :override #'authinfo-color-mode))
+;;(use-package! authinfo-color-mode
+;;  :mode ("authinfo.gpg\\'" . authinfo-color-mode)
+;;  :init (advice-add 'authinfo-mode :override #'authinfo-color-mode))
 #+end_src
 
 *** Systemd
@@ -3967,7 +3966,7 @@ To interface with this, we'll use a my =lexic= package.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
 
 #+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
-(package! lexic :recipe (:local-repo "lisp/lexic"))
+;;(package! lexic :recipe (:local-repo "lisp/lexic"))
 #+end_src
 
 Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
@@ -5215,8 +5214,6 @@ correct package statement needed.
    `(package! org-mode
       :recipe (,@(cond ((and dev-key dev-pkg)
                         (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
-                       (dev-key
-                        (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git"))
                        (t
                         (list :host 'github :repo "emacs-straight/org-mode")))
                ,@recipe-common)
@@ -5295,10 +5292,10 @@ Now and then citations need to happen
 ***** Julia support
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
 #+begin_src emacs-lisp
-(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
+;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! ob-julia
   :commands org-babel-execute:julia
   :config
@@ -5363,11 +5360,11 @@ it, either by command or in a capture template.
 Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
 to make that right again, and this package makes that even easier to do.
 #+begin_src emacs-lisp
-(package! org-pandoc-import :recipe
-  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
+;;(package! org-pandoc-import :recipe
+;;  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! org-pandoc-import
   :after org)
 #+end_src
@@ -5378,14 +5375,14 @@ probably =latexdiff=. There are a few annoying steps involved here, and so I've
 written a package to streamline the process.
 
 #+begin_src emacs-lisp
-(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
+;;(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 #+end_src
 
 The only little annoyance is the fact that =latexdiff= uses ~#FF0000~ and ~#0000FF~ as
 the red/blue change indication colours. We can make this a bit nicer by
 post-processing the =latexdiff= result.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! orgdiff
   :defer t
   :config
@@ -5409,9 +5406,9 @@ post-processing the =latexdiff= result.
 ***** Org music
 It's nice to be able to link to music
 #+begin_src emacs-lisp
-(package! org-music :recipe (:local-repo "lisp/org-music"))
+;;(package! org-music :recipe (:local-repo "lisp/org-music"))
 #+end_src
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! org-music
   :after org
   :config
@@ -9179,10 +9176,10 @@ The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting
 exporting that as LaTeX commands.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
+;;(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp :noweb-ref none :tangle no
 (use-package! engrave-faces-latex
   :after ox-latex)
 #+end_src
@@ -9809,10 +9806,10 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 which I have implemented in the package =ox-chameleon=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
+;;(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp :noweb-ref none :tangle no
 (use-package! ox-chameleon
   :after ox)
 #+end_src
