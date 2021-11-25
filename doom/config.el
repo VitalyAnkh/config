@@ -84,22 +84,30 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-	     (run-at-time nil nil
-			  (lambda nil
-			    (message "%s missing the following fonts: %s"
-				     (propertize "Warning!" 'face
-						 '(bold warning))
-				     (mapconcat
-				      (lambda
-					(font)
-					(propertize font 'face 'font-lock-variable-name-face))
-				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather")
-				      ", "))
-			    (sleep-for 0.5)))))
+    (run-at-time nil nil
+		 (lambda nil
+		   (message "%s missing the following fonts: %s"
+			    (propertize "Warning!" 'face
+					'(bold warning))
+			    (mapconcat
+			     (lambda
+			       (font)
+			       (propertize font 'face 'font-lock-variable-name-face))
+			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather")
+			     ", "))
+		   (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
 (setq doom-theme 'doom-solarized-light)
+(use-package doom-themes
+  :config
+  ;;Global settings (defaults)
+  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (doom-themes-treemacs-config)
+  ;;(doom-themes-org-config)
+  )
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
@@ -474,7 +482,7 @@
 	  (yes-or-no-p "Would you like to run this script?")
 	(async-shell-command "./setup.sh"))))
   (add-hook! 'doom-init-ui-hook
-	     (run-at-time nil nil #'+config-run-setup)))
+    (run-at-time nil nil #'+config-run-setup)))
 ;; Prompt to run setup script:2 ends here
 
 ;; [[file:config.org::*Which-key][Which-key:1]]
@@ -717,6 +725,43 @@
  "<<" ">>"
  :actions '(insert))
 ;; Smart parentheses:1 ends here
+
+;; [[file:config.org::*Org Mode Visual Effects][Org Mode Visual Effects:1]]
+;; disable =hl-line-mode= and =solaire-mode= for org-mode
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+
+(custom-set-faces
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+ ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+ ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
+ ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+ ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+
+ ;;'(org-list-dt ((t (:foreground "#7382a0"))))
+ ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+ ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ ;;'(org-block ((t (:inherit fixed-pitch))))
+ ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ ;; TODO set the color following this
+ ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
+ ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
+ '(fixed-pitch ((t (:family "mononoki" :height 160))))
+ ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
+                    "CMU Typewriter Text"))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
+                    :height 1.75 :family "CMU Typewriter Text"))))
+ '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
+;; Org Mode Visual Effects:1 ends here
 
 ;; [[file:config.org::*Info colours][Info colours:2]]
 (use-package! info-colors
@@ -1419,1007 +1464,6 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! systemd
   :defer t)
 ;; Systemd:2 ends here
-
-;; [[file:config.org::*Input Method][Input Method:1]]
-(package! sis)
-;; Input Method:1 ends here
-
-;; [[file:config.org::*Input Method][Input Method:2]]
-(use-package sis
-  ;;:hook
-  ;; enable the /follow context/ and /inline region/ mode for specific buffers
-  ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mode))
-  :config
-  (sis-ism-lazyman-config "1" "2" 'fcitx5)
-  ;; enable the /cursor color/ mode
-  (sis-global-cursor-color-mode t)
-  ;; enable the /respect/ mode
-  (sis-global-respect-mode t)
-  ;; enable the /follow context/ mode for all buffers
-  (sis-global-context-mode t)
-  ;; enable the /inline english/ mode for all buffers
-  ;; (sis-global-inline-mode t)
-  )
-;; Input Method:2 ends here
-
-;; [[file:config.org::*Ebooks][Ebooks:3]]
-(use-package! calibredb
-  :commands calibredb
-  :config
-  (setq calibredb-root-dir "~/nutstore_files/Books"
-        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (map! :map calibredb-show-mode-map
-        :ne "?" #'calibredb-entry-dispatch
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "q" #'calibredb-entry-quit
-        :ne "." #'calibredb-open-dired
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments)
-  (map! :map calibredb-search-mode-map
-        :ne [mouse-3] #'calibredb-search-mouse
-        :ne "RET" #'calibredb-find-file
-        :ne "?" #'calibredb-dispatch
-        :ne "a" #'calibredb-add
-        :ne "A" #'calibredb-add-dir
-        :ne "c" #'calibredb-clone
-        :ne "d" #'calibredb-remove
-        :ne "D" #'calibredb-remove-marked-items
-        :ne "j" #'calibredb-next-entry
-        :ne "k" #'calibredb-previous-entry
-        :ne "l" #'calibredb-virtual-library-list
-        :ne "L" #'calibredb-library-list
-        :ne "n" #'calibredb-virtual-library-next
-        :ne "N" #'calibredb-library-next
-        :ne "p" #'calibredb-virtual-library-previous
-        :ne "P" #'calibredb-library-previous
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "S" #'calibredb-switch-library
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "v" #'calibredb-view
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "." #'calibredb-open-dired
-        :ne "b" #'calibredb-catalog-bib-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "r" #'calibredb-search-refresh-and-clear-filter
-        :ne "R" #'calibredb-search-clear-filter
-        :ne "q" #'calibredb-search-quit
-        :ne "m" #'calibredb-mark-and-forward
-        :ne "f" #'calibredb-toggle-favorite-at-point
-        :ne "x" #'calibredb-toggle-archive-at-point
-        :ne "h" #'calibredb-toggle-highlight-at-point
-        :ne "u" #'calibredb-unmark-and-forward
-        :ne "i" #'calibredb-edit-annotation
-        :ne "DEL" #'calibredb-unmark-and-backward
-        :ne [backtab] #'calibredb-toggle-view
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-n" #'calibredb-show-next-entry
-        :ne "M-p" #'calibredb-show-previous-entry
-        :ne "/" #'calibredb-search-live-filter
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments))
-;; Ebooks:3 ends here
-
-;; [[file:config.org::*Ebooks][Ebooks:4]]
-(use-package! nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map! :map nov-mode-map
-        :n "RET" #'nov-scroll-up)
-
-  (defun doom-modeline-segment--nov-info ()
-    (concat
-     " "
-     (propertize
-      (cdr (assoc 'creator nov-metadata))
-      'face 'doom-modeline-project-parent-dir)
-     " "
-     (cdr (assoc 'title nov-metadata))
-     " "
-     (propertize
-      (format "%d/%d"
-              (1+ nov-documents-index)
-              (length nov-documents))
-      'face 'doom-modeline-info)))
-
-  (advice-add 'nov-render-title :override #'ignore)
-
-  (defun +nov-mode-setup ()
-    (face-remap-add-relative 'variable-pitch
-                             :family "Merriweather"
-                             :height 1.4
-                             :width 'semi-expanded)
-    (face-remap-add-relative 'default :height 1.3)
-    (setq-local line-spacing 0.2
-                next-screen-context-lines 4
-                shr-use-colors nil)
-    (require 'visual-fill-column nil t)
-    (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 81
-                nov-text-width 80)
-    (visual-fill-column-mode 1)
-    (hl-line-mode -1)
-
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-
-    (setq-local mode-line-format
-                `((:eval
-                   (doom-modeline-segment--workspace-name))
-                  (:eval
-                   (doom-modeline-segment--window-number))
-                  (:eval
-                   (doom-modeline-segment--nov-info))
-                  ,(propertize
-                    " %P "
-                    'face 'doom-modeline-buffer-minor-mode)
-                  ,(propertize
-                    " "
-                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-                    'display `((space
-                                :align-to
-                                (- (+ right right-fringe right-margin)
-                                   ,(* (let ((width (doom-modeline--font-width)))
-                                         (or (and (= width 1) 1)
-                                             (/ width (frame-char-width) 1.0)))
-                                       (string-width
-                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-                  (:eval (doom-modeline-segment--major-mode)))))
-
-  (add-hook 'nov-mode-hook #'+nov-mode-setup))
-;; Ebooks:4 ends here
-
-;; [[file:config.org::*Defaults][Defaults:1]]
-(setq calc-angle-mode 'rad  ; radians are rad
-      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
-;; Defaults:1 ends here
-
-;; [[file:config.org::*CalcTeX][CalcTeX:2]]
-(use-package! calctex
-  :commands calctex-mode
-  :init
-  (add-hook 'calc-mode-hook #'calctex-mode)
-  :config
-  (setq calctex-additional-latex-packages "
-\\usepackage[usenames]{xcolor}
-\\usepackage{soul}
-\\usepackage{adjustbox}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\usepackage{siunitx}
-\\usepackage{cancel}
-\\usepackage{mathtools}
-\\usepackage{mathalpha}
-\\usepackage{xparse}
-\\usepackage{arevmath}"
-        calctex-additional-latex-macros
-        (concat calctex-additional-latex-macros
-                "\n\\let\\evalto\\Rightarrow"))
-  (defadvice! no-messaging-a (orig-fn &rest args)
-    :around #'calctex-default-dispatching-render-process
-    (let ((inhibit-message t) message-log-max)
-      (apply orig-fn args)))
-  ;; Fix hardcoded dvichop path (whyyyyyyy)
-  (let ((vendor-folder (concat (file-truename doom-local-dir)
-                               "straight/"
-                               (format "build-%s" emacs-version)
-                               "/calctex/vendor/")))
-    (setq calctex-dvichop-sty (concat vendor-folder "texd/dvichop")
-          calctex-dvichop-bin (concat vendor-folder "texd/dvichop")))
-  (unless (file-exists-p calctex-dvichop-bin)
-    (message "CalcTeX: Building dvichop binary")
-    (let ((default-directory (file-name-directory calctex-dvichop-bin)))
-      (call-process "make" nil nil nil))))
-;; CalcTeX:2 ends here
-
-;; [[file:config.org::*Embedded calc][Embedded calc:1]]
-(map! :map calc-mode-map
-      :after calc
-      :localleader
-      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
-(map! :map org-mode-map
-      :after org
-      :localleader
-      :desc "Embedded calc (toggle)" "E" #'calc-embedded)
-(map! :map latex-mode-map
-      :after latex
-      :localleader
-      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
-;; Embedded calc:1 ends here
-
-;; [[file:config.org::*Embedded calc][Embedded calc:2]]
-(defvar calc-embedded-trail-window nil)
-(defvar calc-embedded-calculator-window nil)
-
-(defadvice! calc-embedded-with-side-pannel (&rest _)
-  :after #'calc-do-embedded
-  (when calc-embedded-trail-window
-    (ignore-errors
-      (delete-window calc-embedded-trail-window))
-    (setq calc-embedded-trail-window nil))
-  (when calc-embedded-calculator-window
-    (ignore-errors
-      (delete-window calc-embedded-calculator-window))
-    (setq calc-embedded-calculator-window nil))
-  (when (and calc-embedded-info
-             (> (* (window-width) (window-height)) 1200))
-    (let ((main-window (selected-window))
-          (vertical-p (> (window-width) 80)))
-      (select-window
-       (setq calc-embedded-trail-window
-             (if vertical-p
-                 (split-window-horizontally (- (max 30 (/ (window-width) 3))))
-               (split-window-vertically (- (max 8 (/ (window-height) 4)))))))
-      (switch-to-buffer "*Calc Trail*")
-      (select-window
-       (setq calc-embedded-calculator-window
-             (if vertical-p
-                 (split-window-vertically -6)
-               (split-window-horizontally (- (/ (window-width) 2))))))
-      (switch-to-buffer "*Calculator*")
-      (select-window main-window))))
-;; Embedded calc:2 ends here
-
-;; [[file:config.org::*IRC][IRC:3]]
-(after! circe
-  (setq-default circe-use-tls t)
-  (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
-        lui-logging-directory "~/.emacs.d/.local/etc/irc"
-        lui-logging-file-format "{buffer}/%Y/%m-%d.txt"
-        circe-format-self-say "{nick:+13s} ┃ {body}")
-
-  (custom-set-faces!
-    '(circe-my-message-face :weight unspecified))
-
-  (enable-lui-logging-globally)
-  (enable-circe-display-images)
-
-  (defun lui-org-to-irc ()
-    "Examine a buffer with simple org-mode formatting, and converts the empasis:
-  *bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
-  =code= is converted to inverse (highlighted) text."
-    (goto-char (point-min))
-    (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
-      (replace-match
-       (concat (pcase (match-string 1)
-                 ("*" "")
-                 ("/" "")
-                 ("_" "")
-                 ("=" ""))
-               (match-string 2)
-               "") nil nil)))
-  
-  (add-hook 'lui-pre-input-hook #'lui-org-to-irc)
-
-  (defun lui-ascii-to-emoji ()
-    (goto-char (point-min))
-    (while (re-search-forward "\\( \\)?::?\\([^[:space:]:]+\\):\\( \\)?" nil t)
-      (replace-match
-       (concat
-        (match-string 1)
-        (or (cdr (assoc (match-string 2) lui-emojis-alist))
-            (concat ":" (match-string 2) ":"))
-        (match-string 3))
-       nil nil)))
-  
-  (defun lui-emoticon-to-emoji ()
-    (dolist (emoticon lui-emoticons-alist)
-      (goto-char (point-min))
-      (while (re-search-forward (concat " " (car emoticon) "\\( \\)?") nil t)
-        (replace-match (concat " "
-                               (cdr (assoc (cdr emoticon) lui-emojis-alist))
-                               (match-string 1))))))
-  
-  (define-minor-mode lui-emojify
-    "Replace :emojis: and ;) emoticons with unicode emoji chars."
-    :global t
-    :init-value t
-    (if lui-emojify
-        (add-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)
-      (remove-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)))
-  (defvar lui-emojis-alist
-    '(("grinning"                      . "😀")
-      ("smiley"                        . "😃")
-      ("smile"                         . "😄")
-      ("grin"                          . "😁")
-      ("laughing"                      . "😆")
-      ("sweat_smile"                   . "😅")
-      ("joy"                           . "😂")
-      ("rofl"                          . "🤣")
-      ("relaxed"                       . "☺️")
-      ("blush"                         . ":)")
-      ("innocent"                      . "😇")
-      ("slight_smile"                  . ":)")
-      ("upside_down"                   . "🙃")
-      ("wink"                          . "😉")
-      ("relieved"                      . "😌")
-      ("heart_eyes"                    . "😍")
-      ("yum"                           . "😋")
-      ("stuck_out_tongue"              . "😛")
-      ("stuck_out_tongue_closed_eyes"  . "😝")
-      ("stuck_out_tongue_wink"         . "😜")
-      ("zanzy"                         . "🤪")
-      ("raised_eyebrow"                . "🤨")
-      ("monocle"                       . "🧐")
-      ("nerd"                          . "🤓")
-      ("cool"                          . "😎")
-      ("star_struck"                   . "🤩")
-      ("party"                         . "🥳")
-      ("smirk"                         . "😏")
-      ("unamused"                      . "😒")
-      ("disapointed"                   . "😞")
-      ("pensive"                       . "😔")
-      ("worried"                       . "😟")
-      ("confused"                      . "😕")
-      ("slight_frown"                  . "🙁")
-      ("frown"                         . "☹️")
-      ("persevere"                     . "😣")
-      ("confounded"                    . "😖")
-      ("tired"                         . "😫")
-      ("weary"                         . "😩")
-      ("pleading"                      . "🥺")
-      ("tear"                          . "😢")
-      ("cry"                           . "😢")
-      ("sob"                           . "😭")
-      ("triumph"                       . "😤")
-      ("angry"                         . "😠")
-      ("rage"                          . "😡")
-      ("exploding_head"                . "🤯")
-      ("flushed"                       . "😳")
-      ("hot"                           . "🥵")
-      ("cold"                          . "🥶")
-      ("scream"                        . "😱")
-      ("fearful"                       . "😨")
-      ("disapointed"                   . "😰")
-      ("relieved"                      . "😥")
-      ("sweat"                         . "😓")
-      ("thinking"                      . "🤔")
-      ("shush"                         . "🤫")
-      ("liar"                          . "🤥")
-      ("blank_face"                    . "😶")
-      ("neutral"                       . "😐")
-      ("expressionless"                . "😑")
-      ("grimace"                       . "😬")
-      ("rolling_eyes"                  . "🙄")
-      ("hushed"                        . "😯")
-      ("frowning"                      . "😦")
-      ("anguished"                     . "😧")
-      ("wow"                           . "😮")
-      ("astonished"                    . "😲")
-      ("sleeping"                      . "😴")
-      ("drooling"                      . "🤤")
-      ("sleepy"                        . "😪")
-      ("dizzy"                         . "😵")
-      ("zipper_mouth"                  . "🤐")
-      ("woozy"                         . "🥴")
-      ("sick"                          . "🤢")
-      ("vomiting"                      . "🤮")
-      ("sneeze"                        . "🤧")
-      ("mask"                          . "😷")
-      ("bandaged_head"                 . "🤕")
-      ("money_face"                    . "🤑")
-      ("cowboy"                        . "🤠")
-      ("imp"                           . "😈")
-      ("ghost"                         . "👻")
-      ("alien"                         . "👽")
-      ("robot"                         . "🤖")
-      ("clap"                          . "👏")
-      ("thumpup"                       . "👍")
-      ("+1"                            . "👍")
-      ("thumbdown"                     . "👎")
-      ("-1"                            . "👎")
-      ("ok"                            . "👌")
-      ("pinch"                         . "🤏")
-      ("left"                          . "👈")
-      ("right"                         . "👉")
-      ("down"                          . "👇")
-      ("wave"                          . "👋")
-      ("pray"                          . "🙏")
-      ("eyes"                          . "👀")
-      ("brain"                         . "🧠")
-      ("facepalm"                      . "🤦")
-      ("tada"                          . "🎉")
-      ("fire"                          . "🔥")
-      ("flying_money"                  . "💸")
-      ("lighbulb"                      . "💡")
-      ("heart"                         . "❤️")
-      ("sparkling_heart"               . "💖")
-      ("heartbreak"                    . "💔")
-      ("100"                           . "💯")))
-  
-  (defvar lui-emoticons-alist
-    '((":)"   . "slight_smile")
-      (";)"   . "wink")
-      (":D"   . "smile")
-      ("=D"   . "grin")
-      ("xD"   . "laughing")
-      (";("   . "joy")
-      (":P"   . "stuck_out_tongue")
-      (";D"   . "stuck_out_tongue_wink")
-      ("xP"   . "stuck_out_tongue_closed_eyes")
-      (":("   . "slight_frown")
-      (";("   . "cry")
-      (";'("  . "sob")
-      (">:("  . "angry")
-      (">>:(" . "rage")
-      (":o"   . "wow")
-      (":O"   . "astonished")
-      (":/"   . "confused")
-      (":-/"  . "thinking")
-      (":|"   . "neutral")
-      (":-|"  . "expressionless")))
-
-  (defun named-circe-prompt ()
-    (lui-set-prompt
-     (concat (propertize (format "%13s > " (circe-nick))
-                         'face 'circe-prompt-face)
-             "")))
-  (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
-
-  (appendq! all-the-icons-mode-icon-alist
-            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
-              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
-
-(defun auth-server-pass (server)
-  (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
-      (if (functionp secret)
-          (funcall secret) secret)
-    (error "Could not fetch password for host %s" server)))
-
-(defun register-irc-auths ()
-  (require 'circe)
-  (require 'dash)
-  (let ((accounts (-filter (lambda (a) (string= "irc" (plist-get a :for)))
-                           (auth-source-search :require '(:for) :max 10))))
-    (appendq! circe-network-options
-              (mapcar (lambda (entry)
-                        (let* ((host (plist-get entry :host))
-                               (label (or (plist-get entry :label) host))
-                               (_ports (mapcar #'string-to-number
-                                               (s-split "," (plist-get entry :port))))
-                               (port (if (= 1 (length _ports)) (car _ports) _ports))
-                               (user (plist-get entry :user))
-                               (nick (or (plist-get entry :nick) user))
-                               (channels (mapcar (lambda (c) (concat "#" c))
-                                                 (s-split "," (plist-get entry :channels)))))
-                          `(,label
-                            :host ,host :port ,port :nick ,nick
-                            :sasl-username ,user :sasl-password auth-server-pass
-                            :channels ,channels)))
-                      accounts))))
-
-(add-transient-hook! #'=irc (register-irc-auths))
-;; IRC:3 ends here
-
-;; [[file:config.org::org-emph-to-irc][org-emph-to-irc]]
-(defun lui-org-to-irc ()
-  "Examine a buffer with simple org-mode formatting, and converts the empasis:
-*bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
-=code= is converted to inverse (highlighted) text."
-  (goto-char (point-min))
-  (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
-    (replace-match
-     (concat (pcase (match-string 1)
-               ("*" "")
-               ("/" "")
-               ("_" "")
-               ("=" ""))
-             (match-string 2)
-             "") nil nil)))
-
-(add-hook 'lui-pre-input-hook #'lui-org-to-irc)
-;; org-emph-to-irc ends here
-
-;; [[file:config.org::*Keybindings][Keybindings:1]]
-(map! :map elfeed-search-mode-map
-      :after elfeed-search
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :n "q" #'+rss/quit
-      :n "e" #'elfeed-update
-      :n "r" #'elfeed-search-untag-all-unread
-      :n "u" #'elfeed-search-tag-all-unread
-      :n "s" #'elfeed-search-live-filter
-      :n "RET" #'elfeed-search-show-entry
-      :n "p" #'elfeed-show-pdf
-      :n "+" #'elfeed-search-tag-all
-      :n "-" #'elfeed-search-untag-all
-      :n "S" #'elfeed-search-set-filter
-      :n "b" #'elfeed-search-browse-url
-      :n "y" #'elfeed-search-yank)
-(map! :map elfeed-show-mode-map
-      :after elfeed-show
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :nm "q" #'+rss/delete-pane
-      :nm "o" #'ace-link-elfeed
-      :nm "RET" #'org-ref-elfeed-add
-      :nm "n" #'elfeed-show-next
-      :nm "N" #'elfeed-show-prev
-      :nm "p" #'elfeed-show-pdf
-      :nm "+" #'elfeed-show-tag
-      :nm "-" #'elfeed-show-untag
-      :nm "s" #'elfeed-show-new-live-search
-      :nm "y" #'elfeed-show-yank)
-;; Keybindings:1 ends here
-
-;; [[file:config.org::*Usability enhancements][Usability enhancements:1]]
-(after! elfeed-search
-  (set-evil-initial-state! 'elfeed-search-mode 'normal))
-(after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
-
-(after! evil-snipe
-  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
-  (push 'elfeed-search-mode evil-snipe-disabled-modes))
-;; Usability enhancements:1 ends here
-
-;; [[file:config.org::*Visual enhancements][Visual enhancements:1]]
-(after! elfeed
-
-  (elfeed-org)
-  (use-package! elfeed-link)
-
-  (setq elfeed-search-filter "@1-week-ago +unread"
-        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-        elfeed-search-title-min-width 80
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.6)
-
-  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (defface elfeed-show-author-face `((t (:weight light)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (set-face-attribute 'elfeed-search-title-face nil
-                      :foreground 'nil
-                      :weight 'light)
-
-  (defadvice! +rss-elfeed-wrap-h-nicer ()
-    "Enhances an elfeed entry's readability by wrapping it to a width of
-`fill-column' and centering it with `visual-fill-column-mode'."
-    :override #'+rss-elfeed-wrap-h
-    (setq-local truncate-lines nil
-                shr-width 120
-                visual-fill-column-center-text t
-                default-text-properties '(line-height 1.1))
-    (let ((inhibit-read-only t)
-          (inhibit-modification-hooks t))
-      (visual-fill-column-mode)
-      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
-
-  (defun +rss/elfeed-search-print-entry (entry)
-    "Print ENTRY to the buffer."
-    (let* ((elfeed-goodies/tag-column-width 40)
-           (elfeed-goodies/feed-source-column-width 30)
-           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-           (feed (elfeed-entry-feed entry))
-           (feed-title
-            (when feed
-              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-           (tags-str (concat (mapconcat 'identity tags ",")))
-           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                           elfeed-goodies/tag-column-width 4))
-
-           (tag-column (elfeed-format-column
-                        tags-str (elfeed-clamp (length tags-str)
-                                               elfeed-goodies/tag-column-width
-                                               elfeed-goodies/tag-column-width)
-                        :left))
-           (feed-column (elfeed-format-column
-                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width)
-                         :left)))
-
-      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-      (insert (propertize title 'face title-faces 'kbd-help title))
-      (setq-local line-spacing 0.2)))
-
-  (defun +rss/elfeed-show-refresh--better-style ()
-    "Update the buffer to match the selected entry, using a mail-style."
-    (interactive)
-    (let* ((inhibit-read-only t)
-           (title (elfeed-entry-title elfeed-show-entry))
-           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-           (author (elfeed-meta elfeed-show-entry :author))
-           (link (elfeed-entry-link elfeed-show-entry))
-           (tags (elfeed-entry-tags elfeed-show-entry))
-           (tagsstr (mapconcat #'symbol-name tags ", "))
-           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-           (type (elfeed-entry-content-type elfeed-show-entry))
-           (feed (elfeed-entry-feed elfeed-show-entry))
-           (feed-title (elfeed-feed-title feed))
-           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-      (erase-buffer)
-      (insert "\n")
-      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-      (when (and author elfeed-show-entry-author)
-        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-      (when tags
-        (insert (format "%s\n"
-                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
-      ;; (insert (propertize "Link: " 'face 'message-header-name))
-      ;; (elfeed-insert-link link link)
-      ;; (insert "\n")
-      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-               do (insert (propertize "Enclosure: " 'face 'message-header-name))
-               do (elfeed-insert-link (car enclosure))
-               do (insert "\n"))
-      (insert "\n")
-      (if content
-          (if (eq type 'html)
-              (elfeed-insert-html content base)
-            (insert content))
-        (insert (propertize "(empty)\n" 'face 'italic)))
-      (goto-char (point-min))))
-
-  )
-;; Visual enhancements:1 ends here
-
-;; [[file:config.org::*Functionality enhancements][Functionality enhancements:1]]
-(after! elfeed-show
-  (require 'url)
-
-  (defvar elfeed-pdf-dir
-    (expand-file-name "pdfs/"
-                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
-
-  (defvar elfeed-link-pdfs
-    '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
-      ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
-    "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
-
-  (defun elfeed-show-pdf (entry)
-    (interactive
-     (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
-    (let ((link (elfeed-entry-link entry))
-          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
-          (title (elfeed-entry-title entry))
-          (file-view-function
-           (lambda (f)
-             (when elfeed-show-entry
-               (elfeed-kill-buffer))
-             (pop-to-buffer (find-file-noselect f))))
-          pdf)
-
-      (let ((file (expand-file-name
-                   (concat (subst-char-in-string ?/ ?, title) ".pdf")
-                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
-                                     elfeed-pdf-dir))))
-        (if (file-exists-p file)
-            (funcall file-view-function file)
-          (dolist (link-pdf elfeed-link-pdfs)
-            (when (and (string-match-p (car link-pdf) link)
-                       (not pdf))
-              (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
-          (if (not pdf)
-              (message "No associated PDF for entry")
-            (message "Fetching %s" pdf)
-            (unless (file-exists-p (file-name-directory file))
-              (make-directory (file-name-directory file) t))
-            (url-copy-file pdf file)
-            (funcall file-view-function file))))))
-
-  )
-;; Functionality enhancements:1 ends here
-
-;; [[file:config.org::*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e:1]]
-(after! mu4e
-  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
-    "Location of the reindex request, signaled by existance")
-  (defvar mu4e-reindex-request-min-seperation 5.0
-    "Don't refresh again until this many second have elapsed.
-Prevents a series of redisplays from being called (when set to an appropriate value)")
-
-  (defvar mu4e-reindex-request--file-watcher nil)
-  (defvar mu4e-reindex-request--file-just-deleted nil)
-  (defvar mu4e-reindex-request--last-time 0)
-
-  (defun mu4e-reindex-request--add-watcher ()
-    (setq mu4e-reindex-request--file-just-deleted nil)
-    (setq mu4e-reindex-request--file-watcher
-          (file-notify-add-watch mu4e-reindex-request-file
-                                 '(change)
-                                 #'mu4e-file-reindex-request)))
-
-  (defadvice! mu4e-stop-watching-for-reindex-request ()
-    :after #'mu4e~proc-kill
-    (if mu4e-reindex-request--file-watcher
-        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
-
-  (defadvice! mu4e-watch-for-reindex-request ()
-    :after #'mu4e~proc-start
-    (mu4e-stop-watching-for-reindex-request)
-    (when (file-exists-p mu4e-reindex-request-file)
-      (delete-file mu4e-reindex-request-file))
-    (mu4e-reindex-request--add-watcher))
-
-  (defun mu4e-file-reindex-request (event)
-    "Act based on the existance of `mu4e-reindex-request-file'"
-    (if mu4e-reindex-request--file-just-deleted
-        (mu4e-reindex-request--add-watcher)
-      (when (equal (nth 1 event) 'created)
-        (delete-file mu4e-reindex-request-file)
-        (setq mu4e-reindex-request--file-just-deleted t)
-        (mu4e-reindex-maybe t))))
-
-  (defun mu4e-reindex-maybe (&optional new-request)
-    "Run `mu4e~proc-index' if it's been more than
-`mu4e-reindex-request-min-seperation'seconds since the last request,"
-    (let ((time-since-last-request (- (float-time)
-                                      mu4e-reindex-request--last-time)))
-      (when new-request
-        (setq mu4e-reindex-request--last-time (float-time)))
-      (if (> time-since-last-request mu4e-reindex-request-min-seperation)
-          (mu4e~proc-index nil t)
-        (when new-request
-          (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
-                       #'mu4e-reindex-maybe))))))
-;; Rebuild mail index while using mu4e:1 ends here
-
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
-(after! mu4e
-  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-  (setq mu4e-headers-fields
-        '((:flags . 6)
-          (:account-stripe . 2)
-          (:from-or-to . 25)
-          (:folder . 10)
-          (:recipnum . 2)
-          (:subject . 80)
-          (:human-date . 8))
-        +mu4e-min-header-frame-width 142
-        mu4e-headers-date-format "%d/%m/%y"
-        mu4e-headers-time-format "⧖ %H:%M"
-        mu4e-headers-results-limit 1000
-        mu4e-index-cleanup t)
-  
-  (add-to-list 'mu4e-bookmarks
-               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
-  
-  (defvar +mu4e-header--folder-colors nil)
-  (appendq! mu4e-header-info-custom
-            '((:folder .
-               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-                (lambda (msg)
-                  (+mu4e-colorize-str
-                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
-                   '+mu4e-header--folder-colors))))))
-  (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
-  (setq sendmail-program "/usr/bin/msmtp"
-        send-mail-function #'smtpmail-send-it
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
-        message-send-mail-function #'message-send-mail-with-sendmail)
-  (defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
-    (require 'mu4e)
-    (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
-    (let* ((mailto (message-parse-mailto-url mailto-string))
-           (to (cdr (assoc "To" mailto)))
-           (subject (or (cdr (assoc "Subject" mailto)) ""))
-           (body (cdr (assoc "Body" mailto)))
-           (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
-      (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
-        (switch-to-buffer mu4e-main))
-      (mu4e~compose-mail to subject headers)
-      (when body
-        (goto-char (point-min))
-        (if (eq major-mode 'org-msg-edit-mode)
-            (org-msg-goto-body)
-          (mu4e-compose-goto-bottom))
-        (insert body))
-      (goto-char (point-min))
-      (cond ((null to) (search-forward "To: "))
-            ((string= "" subject) (search-forward "Subject: "))
-            (t (if (eq major-mode 'org-msg-edit-mode)
-                   (org-msg-goto-body)
-                 (mu4e-compose-goto-bottom))))
-      (font-lock-ensure)
-      (when evil-normal-state-minor-mode
-        (evil-append 1))
-      (when quit-frame-after
-        (add-hook 'kill-buffer-hook
-                  `(lambda ()
-                     (when (eq (selected-frame) ,(selected-frame))
-                       (delete-frame)))))))
-  (defvar mu4e-from-name "Timothy"
-    "Name used in \"From:\" template.")
-  (defadvice! mu4e~draft-from-construct-renamed (orig-fn)
-    "Wrap `mu4e~draft-from-construct-renamed' to change the name."
-    :around #'mu4e~draft-from-construct
-    (let ((user-full-name mu4e-from-name))
-      (funcall orig-fn)))
-  (setq message-signature mu4e-from-name)
-  (defun +mu4e-get-woof-header ()
-    (pcase (read-char
-            (format "\
-  %s
-    %s Declare %s Applied %s Aborted
-  %s
-    %s Confirm %s Fixed
-  %s
-    %s Request %s Resolved
-  
-  %s remove X-Woof header"
-                    (propertize "Patch" 'face 'outline-3)
-                    (propertize "p" 'face '(bold consult-key))
-                    (propertize "a" 'face '(bold consult-key))
-                    (propertize "c" 'face '(bold consult-key))
-                    (propertize "Bug" 'face 'outline-3)
-                    (propertize "b" 'face '(bold consult-key))
-                    (propertize "f" 'face '(bold consult-key))
-                    (propertize "Help" 'face 'outline-3)
-                    (propertize "h" 'face '(bold consult-key))
-                    (propertize "r" 'face '(bold consult-key))
-                    (propertize "x" 'face '(bold error))))
-      (?p "X-Woof-Patch: confirmed")
-      (?a "X-Woof-Patch: applied")
-      (?c "X-Woof-Patch: cancelled")
-      (?b "X-Woof-Bug: confirmed")
-      (?f "X-Woof-Bug: fixed")
-      (?h "X-Woof-Help: confirmed")
-      (?r "X-Woof-Help: cancelled")
-      (?x 'delete)))
-  (defun +mu4e-insert-woof-header ()
-    "Insert an X-Woof header into the current message."
-    (interactive)
-    (when-let ((header (+mu4e-get-woof-header)))
-      (save-excursion
-        (goto-char (point-min))
-        (search-forward "--text follows this line--")
-        (unless (eq header 'delete)
-          (beginning-of-line)
-          (insert header "\n")
-          (forward-line -1))
-        (when (re-search-backward "^X-Woof-" nil t)
-          (kill-whole-line)))))
-  
-  (map! :map mu4e-compose-mode-map
-        :localleader
-        :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
-  
-  (map! :map org-msg-edit-mode-map
-        :after org-msg
-        :localleader
-        :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
-  (after! mu4e
-    (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
-    (defvar +org-ml-max-age 600
-      "Maximum permissible age in seconds.")
-    (defvar +org-ml--cache-timestamp 0)
-    (defvar +org-ml--cache nil)
-  
-    (define-minor-mode +org-ml-patchy-mood-mode
-      "Apply patches to Org in bulk."
-      :global t
-      (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
-        (if +org-ml-patchy-mood-mode
-            (add-to-list 'mu4e-view-actions action)
-          (setq mu4e-view-actions (delete action mu4e-view-actions)))))
-  
-    (defun +org-ml-apply-patch (msg)
-      "Apply the patch in the current message to Org."
-      (interactive)
-      (unless msg (setq msg (mu4e-message-at-point)))
-      (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
-        (erase-buffer)
-        (let* ((default-directory +org-ml-target-dir)
-               (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
-          (magit-refresh)
-          (when (not (= 0 exit-code))
-            (+popup/buffer)))))
-  
-    (defun +org-ml-current-patches ()
-      "Get the currently open patches, as a list of alists.
-  Entries of the form (subject . id)."
-      (delq nil
-            (mapcar
-             (lambda (entry)
-               (unless (plist-get entry :fixed)
-                 (cons
-                  (format "%-8s  %s"
-                          (propertize
-                           (replace-regexp-in-string "T.*" ""
-                                                     (plist-get entry :date))
-                           'face 'font-lock-doc-face)
-                          (propertize
-                           (replace-regexp-in-string "\\[PATCH\\] ?" ""
-                                                     (plist-get entry :summary))
-                           'face 'font-lock-keyword-face))
-                  (plist-get entry :id))))
-             (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
-               (goto-char url-http-end-of-headers)
-               (json-parse-buffer :object-type 'plist)))))
-  
-    (defun +org-ml-select-patch-thread ()
-      "Find and apply a proposed Org patch."
-      (interactive)
-      (let* ((current-workspace (+workspace-current))
-             (patches (progn
-                        (when (or (not +org-ml--cache)
-                                  (> (- (float-time) +org-ml--cache-timestamp)
-                                     +org-ml-max-age))
-                          (setq +org-ml--cache (+org-ml-current-patches)
-                                +org-ml--cache-timestamp (float-time)))
-                        +org-ml--cache))
-             (msg-id (cdr (assoc (completing-read
-                                  "Thread: " (mapcar #'car patches))
-                                 patches))))
-        (+workspace-switch +mu4e-workspace-name)
-        (mu4e-view-message-with-message-id msg-id)
-        (unless +org-ml-patchy-mood-mode
-          (add-to-list 'mu4e-view-actions
-                       (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
-  
-    (defun +org-ml-transient-mu4e-action (msg)
-      (setq mu4e-view-actions
-            (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
-                    mu4e-view-actions))
-      (+workspace/other)
-      (magit-status +org-ml-target-dir)
-      (+org-ml-apply-patch msg)))
-  (after! mu4e
-    (defun +mu4e-ml-message-link (msg)
-      "Copy the link to MSG on the mailing list archives."
-      (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
-                            (cdar (mu4e-message-field-raw msg :list-post))
-                            (thread-last (append (mu4e-message-field msg :to)
-                                                 (mu4e-message-field msg :cc))
-                              (mapcar #'last)
-                              (mapcar #'cdr)
-                              (mapcar (lambda (addr)
-                                        (when (string-match-p "emacs.*@gnu\\.org$" addr)
-                                          (replace-regexp-in-string "@" "." addr))))
-                              (delq nil)
-                              (car))))
-             (msg-url
-              (cond
-               ((string= "emacs-orgmode.gnu.org" list-addr)
-                (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
-               (t (user-error "Mailing list %s not supported" list-addr)))))
-        (message "Link %s copied to clipboard" (gui-select-text msg-url))
-        msg-url))
-  
-    (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
-)
-
-;; [[file:config.org::*Org Msg][Org Msg:1]]
-(setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi %s,\n\n"
-      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
-(map! :map org-msg-edit-mode-map
-      :after org-msg
-      :n "G" #'org-msg-goto-body)
-;; Org Msg:1 ends here
 
 ;; [[file:config.org::*File Templates][File Templates:1]]
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
@@ -4417,6 +3461,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
   )
   ;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
   (setq org-latex-pdf-process '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+  (setq org-latex-compiler 'xelatex)
   (defun +org-export-latex-fancy-item-checkboxes (text backend info)
     (when (org-export-derived-backend-p backend 'latex)
       (replace-regexp-in-string
@@ -5595,7 +4640,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 (use-package! doct
   :commands doct)
 
-(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
+(setq org-roam-directory org-directory)
 
 (use-package! websocket
   :after org-roam)
@@ -5619,6 +4664,59 @@ Prevents a series of redisplays from being called (when set to an appropriate va
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   )
+(setq xenops-reveal-on-entry t
+      xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
+      xenops-math-latex-process 'tectonic
+      )
+(setq xenops-math-latex-process-alist
+      '((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f"))
+        (lualatex :programs ("lualatex" "dvisvgm")
+                  :description "dvi > svg"
+                  :use-xcolor t
+                  :message "you need to install the programs: lualatex and dvisvgm."
+                  :image-input-type "dvi"
+                  :image-output-type "svg"
+                  :image-size-adjust (1.0 . 1.0)
+                  :latex-compiler
+                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (tectonic :programs
+                  ("latex" "dvisvgm")
+                  :description "xdv > svg"
+                  :message "you need to install the programs: tectonic and dvisvgm."
+                  :image-input-type "xdv"
+                  :image-output-type "svg"
+                  :image-size-adjust (0.75 . 0.75)
+                  :latex-compiler
+                  ("tectonic -X compile %f -Z shell-escape --outfmt xdv --outdir %o")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (dvisvgm :programs ("xelatex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: xelatex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (0.52 . 0.52)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 
 (after! ox-ascii
   (defvar org-ascii-convert-latex t
@@ -6099,3 +5197,1000 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 ;; Beancount:2 ends here
+
+;; [[file:config.org::*Input Method][Input Method:2]]
+(use-package sis
+  ;;:hook
+  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
+  :config
+  (sis-ism-lazyman-config "1" "2" 'fcitx5)
+  ;; enable the /cursor color/ mode
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode
+  (sis-global-respect-mode t)
+  ;; enable the /follow context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  ;; (sis-global-inline-mode t)
+  )
+;; Input Method:2 ends here
+
+;; [[file:config.org::*Ebooks][Ebooks:3]]
+(use-package! calibredb
+  :commands calibredb
+  :config
+  (setq calibredb-root-dir "~/nutstore_files/Books"
+        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
+  (map! :map calibredb-show-mode-map
+        :ne "?" #'calibredb-entry-dispatch
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "q" #'calibredb-entry-quit
+        :ne "." #'calibredb-open-dired
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments)
+  (map! :map calibredb-search-mode-map
+        :ne [mouse-3] #'calibredb-search-mouse
+        :ne "RET" #'calibredb-find-file
+        :ne "?" #'calibredb-dispatch
+        :ne "a" #'calibredb-add
+        :ne "A" #'calibredb-add-dir
+        :ne "c" #'calibredb-clone
+        :ne "d" #'calibredb-remove
+        :ne "D" #'calibredb-remove-marked-items
+        :ne "j" #'calibredb-next-entry
+        :ne "k" #'calibredb-previous-entry
+        :ne "l" #'calibredb-virtual-library-list
+        :ne "L" #'calibredb-library-list
+        :ne "n" #'calibredb-virtual-library-next
+        :ne "N" #'calibredb-library-next
+        :ne "p" #'calibredb-virtual-library-previous
+        :ne "P" #'calibredb-library-previous
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "S" #'calibredb-switch-library
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "v" #'calibredb-view
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "." #'calibredb-open-dired
+        :ne "b" #'calibredb-catalog-bib-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "r" #'calibredb-search-refresh-and-clear-filter
+        :ne "R" #'calibredb-search-clear-filter
+        :ne "q" #'calibredb-search-quit
+        :ne "m" #'calibredb-mark-and-forward
+        :ne "f" #'calibredb-toggle-favorite-at-point
+        :ne "x" #'calibredb-toggle-archive-at-point
+        :ne "h" #'calibredb-toggle-highlight-at-point
+        :ne "u" #'calibredb-unmark-and-forward
+        :ne "i" #'calibredb-edit-annotation
+        :ne "DEL" #'calibredb-unmark-and-backward
+        :ne [backtab] #'calibredb-toggle-view
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-n" #'calibredb-show-next-entry
+        :ne "M-p" #'calibredb-show-previous-entry
+        :ne "/" #'calibredb-search-live-filter
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments))
+;; Ebooks:3 ends here
+
+;; [[file:config.org::*Ebooks][Ebooks:4]]
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (map! :map nov-mode-map
+        :n "RET" #'nov-scroll-up)
+
+  (defun doom-modeline-segment--nov-info ()
+    (concat
+     " "
+     (propertize
+      (cdr (assoc 'creator nov-metadata))
+      'face 'doom-modeline-project-parent-dir)
+     " "
+     (cdr (assoc 'title nov-metadata))
+     " "
+     (propertize
+      (format "%d/%d"
+              (1+ nov-documents-index)
+              (length nov-documents))
+      'face 'doom-modeline-info)))
+
+  (advice-add 'nov-render-title :override #'ignore)
+
+  (defun +nov-mode-setup ()
+    (face-remap-add-relative 'variable-pitch
+                             :family "Merriweather"
+                             :height 1.4
+                             :width 'semi-expanded)
+    (face-remap-add-relative 'default :height 1.3)
+    (setq-local line-spacing 0.2
+                next-screen-context-lines 4
+                shr-use-colors nil)
+    (require 'visual-fill-column nil t)
+    (setq-local visual-fill-column-center-text t
+                visual-fill-column-width 81
+                nov-text-width 80)
+    (visual-fill-column-mode 1)
+    (hl-line-mode -1)
+
+    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
+
+    (setq-local mode-line-format
+                `((:eval
+                   (doom-modeline-segment--workspace-name))
+                  (:eval
+                   (doom-modeline-segment--window-number))
+                  (:eval
+                   (doom-modeline-segment--nov-info))
+                  ,(propertize
+                    " %P "
+                    'face 'doom-modeline-buffer-minor-mode)
+                  ,(propertize
+                    " "
+                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
+                    'display `((space
+                                :align-to
+                                (- (+ right right-fringe right-margin)
+                                   ,(* (let ((width (doom-modeline--font-width)))
+                                         (or (and (= width 1) 1)
+                                             (/ width (frame-char-width) 1.0)))
+                                       (string-width
+                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
+                  (:eval (doom-modeline-segment--major-mode)))))
+
+  (add-hook 'nov-mode-hook #'+nov-mode-setup))
+;; Ebooks:4 ends here
+
+;; [[file:config.org::*Defaults][Defaults:1]]
+(setq calc-angle-mode 'rad  ; radians are rad
+      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
+;; Defaults:1 ends here
+
+;; [[file:config.org::*CalcTeX][CalcTeX:2]]
+(use-package! calctex
+  :commands calctex-mode
+  :init
+  (add-hook 'calc-mode-hook #'calctex-mode)
+  :config
+  (setq calctex-additional-latex-packages "
+\\usepackage[usenames]{xcolor}
+\\usepackage{soul}
+\\usepackage{adjustbox}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{siunitx}
+\\usepackage{cancel}
+\\usepackage{mathtools}
+\\usepackage{mathalpha}
+\\usepackage{xparse}
+\\usepackage{arevmath}"
+        calctex-additional-latex-macros
+        (concat calctex-additional-latex-macros
+                "\n\\let\\evalto\\Rightarrow"))
+  (defadvice! no-messaging-a (orig-fn &rest args)
+    :around #'calctex-default-dispatching-render-process
+    (let ((inhibit-message t) message-log-max)
+      (apply orig-fn args)))
+  ;; Fix hardcoded dvichop path (whyyyyyyy)
+  (let ((vendor-folder (concat (file-truename doom-local-dir)
+                               "straight/"
+                               (format "build-%s" emacs-version)
+                               "/calctex/vendor/")))
+    (setq calctex-dvichop-sty (concat vendor-folder "texd/dvichop")
+          calctex-dvichop-bin (concat vendor-folder "texd/dvichop")))
+  (unless (file-exists-p calctex-dvichop-bin)
+    (message "CalcTeX: Building dvichop binary")
+    (let ((default-directory (file-name-directory calctex-dvichop-bin)))
+      (call-process "make" nil nil nil))))
+;; CalcTeX:2 ends here
+
+;; [[file:config.org::*Embedded calc][Embedded calc:1]]
+(map! :map calc-mode-map
+      :after calc
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Embedded calc (toggle)" "E" #'calc-embedded)
+(map! :map latex-mode-map
+      :after latex
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+;; Embedded calc:1 ends here
+
+;; [[file:config.org::*Embedded calc][Embedded calc:2]]
+(defvar calc-embedded-trail-window nil)
+(defvar calc-embedded-calculator-window nil)
+
+(defadvice! calc-embedded-with-side-pannel (&rest _)
+  :after #'calc-do-embedded
+  (when calc-embedded-trail-window
+    (ignore-errors
+      (delete-window calc-embedded-trail-window))
+    (setq calc-embedded-trail-window nil))
+  (when calc-embedded-calculator-window
+    (ignore-errors
+      (delete-window calc-embedded-calculator-window))
+    (setq calc-embedded-calculator-window nil))
+  (when (and calc-embedded-info
+             (> (* (window-width) (window-height)) 1200))
+    (let ((main-window (selected-window))
+          (vertical-p (> (window-width) 80)))
+      (select-window
+       (setq calc-embedded-trail-window
+             (if vertical-p
+                 (split-window-horizontally (- (max 30 (/ (window-width) 3))))
+               (split-window-vertically (- (max 8 (/ (window-height) 4)))))))
+      (switch-to-buffer "*Calc Trail*")
+      (select-window
+       (setq calc-embedded-calculator-window
+             (if vertical-p
+                 (split-window-vertically -6)
+               (split-window-horizontally (- (/ (window-width) 2))))))
+      (switch-to-buffer "*Calculator*")
+      (select-window main-window))))
+;; Embedded calc:2 ends here
+
+;; [[file:config.org::*IRC][IRC:3]]
+(after! circe
+  (setq-default circe-use-tls t)
+  (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
+        lui-logging-directory "~/.emacs.d/.local/etc/irc"
+        lui-logging-file-format "{buffer}/%Y/%m-%d.txt"
+        circe-format-self-say "{nick:+13s} ┃ {body}")
+
+  (custom-set-faces!
+    '(circe-my-message-face :weight unspecified))
+
+  (enable-lui-logging-globally)
+  (enable-circe-display-images)
+
+  (defun lui-org-to-irc ()
+    "Examine a buffer with simple org-mode formatting, and converts the empasis:
+  *bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
+  =code= is converted to inverse (highlighted) text."
+    (goto-char (point-min))
+    (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
+      (replace-match
+       (concat (pcase (match-string 1)
+                 ("*" "")
+                 ("/" "")
+                 ("_" "")
+                 ("=" ""))
+               (match-string 2)
+               "") nil nil)))
+  
+  (add-hook 'lui-pre-input-hook #'lui-org-to-irc)
+
+  (defun lui-ascii-to-emoji ()
+    (goto-char (point-min))
+    (while (re-search-forward "\\( \\)?::?\\([^[:space:]:]+\\):\\( \\)?" nil t)
+      (replace-match
+       (concat
+        (match-string 1)
+        (or (cdr (assoc (match-string 2) lui-emojis-alist))
+            (concat ":" (match-string 2) ":"))
+        (match-string 3))
+       nil nil)))
+  
+  (defun lui-emoticon-to-emoji ()
+    (dolist (emoticon lui-emoticons-alist)
+      (goto-char (point-min))
+      (while (re-search-forward (concat " " (car emoticon) "\\( \\)?") nil t)
+        (replace-match (concat " "
+                               (cdr (assoc (cdr emoticon) lui-emojis-alist))
+                               (match-string 1))))))
+  
+  (define-minor-mode lui-emojify
+    "Replace :emojis: and ;) emoticons with unicode emoji chars."
+    :global t
+    :init-value t
+    (if lui-emojify
+        (add-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)
+      (remove-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)))
+  (defvar lui-emojis-alist
+    '(("grinning"                      . "😀")
+      ("smiley"                        . "😃")
+      ("smile"                         . "😄")
+      ("grin"                          . "😁")
+      ("laughing"                      . "😆")
+      ("sweat_smile"                   . "😅")
+      ("joy"                           . "😂")
+      ("rofl"                          . "🤣")
+      ("relaxed"                       . "☺️")
+      ("blush"                         . ":)")
+      ("innocent"                      . "😇")
+      ("slight_smile"                  . ":)")
+      ("upside_down"                   . "🙃")
+      ("wink"                          . "😉")
+      ("relieved"                      . "😌")
+      ("heart_eyes"                    . "😍")
+      ("yum"                           . "😋")
+      ("stuck_out_tongue"              . "😛")
+      ("stuck_out_tongue_closed_eyes"  . "😝")
+      ("stuck_out_tongue_wink"         . "😜")
+      ("zanzy"                         . "🤪")
+      ("raised_eyebrow"                . "🤨")
+      ("monocle"                       . "🧐")
+      ("nerd"                          . "🤓")
+      ("cool"                          . "😎")
+      ("star_struck"                   . "🤩")
+      ("party"                         . "🥳")
+      ("smirk"                         . "😏")
+      ("unamused"                      . "😒")
+      ("disapointed"                   . "😞")
+      ("pensive"                       . "😔")
+      ("worried"                       . "😟")
+      ("confused"                      . "😕")
+      ("slight_frown"                  . "🙁")
+      ("frown"                         . "☹️")
+      ("persevere"                     . "😣")
+      ("confounded"                    . "😖")
+      ("tired"                         . "😫")
+      ("weary"                         . "😩")
+      ("pleading"                      . "🥺")
+      ("tear"                          . "😢")
+      ("cry"                           . "😢")
+      ("sob"                           . "😭")
+      ("triumph"                       . "😤")
+      ("angry"                         . "😠")
+      ("rage"                          . "😡")
+      ("exploding_head"                . "🤯")
+      ("flushed"                       . "😳")
+      ("hot"                           . "🥵")
+      ("cold"                          . "🥶")
+      ("scream"                        . "😱")
+      ("fearful"                       . "😨")
+      ("disapointed"                   . "😰")
+      ("relieved"                      . "😥")
+      ("sweat"                         . "😓")
+      ("thinking"                      . "🤔")
+      ("shush"                         . "🤫")
+      ("liar"                          . "🤥")
+      ("blank_face"                    . "😶")
+      ("neutral"                       . "😐")
+      ("expressionless"                . "😑")
+      ("grimace"                       . "😬")
+      ("rolling_eyes"                  . "🙄")
+      ("hushed"                        . "😯")
+      ("frowning"                      . "😦")
+      ("anguished"                     . "😧")
+      ("wow"                           . "😮")
+      ("astonished"                    . "😲")
+      ("sleeping"                      . "😴")
+      ("drooling"                      . "🤤")
+      ("sleepy"                        . "😪")
+      ("dizzy"                         . "😵")
+      ("zipper_mouth"                  . "🤐")
+      ("woozy"                         . "🥴")
+      ("sick"                          . "🤢")
+      ("vomiting"                      . "🤮")
+      ("sneeze"                        . "🤧")
+      ("mask"                          . "😷")
+      ("bandaged_head"                 . "🤕")
+      ("money_face"                    . "🤑")
+      ("cowboy"                        . "🤠")
+      ("imp"                           . "😈")
+      ("ghost"                         . "👻")
+      ("alien"                         . "👽")
+      ("robot"                         . "🤖")
+      ("clap"                          . "👏")
+      ("thumpup"                       . "👍")
+      ("+1"                            . "👍")
+      ("thumbdown"                     . "👎")
+      ("-1"                            . "👎")
+      ("ok"                            . "👌")
+      ("pinch"                         . "🤏")
+      ("left"                          . "👈")
+      ("right"                         . "👉")
+      ("down"                          . "👇")
+      ("wave"                          . "👋")
+      ("pray"                          . "🙏")
+      ("eyes"                          . "👀")
+      ("brain"                         . "🧠")
+      ("facepalm"                      . "🤦")
+      ("tada"                          . "🎉")
+      ("fire"                          . "🔥")
+      ("flying_money"                  . "💸")
+      ("lighbulb"                      . "💡")
+      ("heart"                         . "❤️")
+      ("sparkling_heart"               . "💖")
+      ("heartbreak"                    . "💔")
+      ("100"                           . "💯")))
+  
+  (defvar lui-emoticons-alist
+    '((":)"   . "slight_smile")
+      (";)"   . "wink")
+      (":D"   . "smile")
+      ("=D"   . "grin")
+      ("xD"   . "laughing")
+      (";("   . "joy")
+      (":P"   . "stuck_out_tongue")
+      (";D"   . "stuck_out_tongue_wink")
+      ("xP"   . "stuck_out_tongue_closed_eyes")
+      (":("   . "slight_frown")
+      (";("   . "cry")
+      (";'("  . "sob")
+      (">:("  . "angry")
+      (">>:(" . "rage")
+      (":o"   . "wow")
+      (":O"   . "astonished")
+      (":/"   . "confused")
+      (":-/"  . "thinking")
+      (":|"   . "neutral")
+      (":-|"  . "expressionless")))
+
+  (defun named-circe-prompt ()
+    (lui-set-prompt
+     (concat (propertize (format "%13s > " (circe-nick))
+                         'face 'circe-prompt-face)
+             "")))
+  (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
+
+  (appendq! all-the-icons-mode-icon-alist
+            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
+              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
+
+(defun auth-server-pass (server)
+  (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
+      (if (functionp secret)
+          (funcall secret) secret)
+    (error "Could not fetch password for host %s" server)))
+
+(defun register-irc-auths ()
+  (require 'circe)
+  (require 'dash)
+  (let ((accounts (-filter (lambda (a) (string= "irc" (plist-get a :for)))
+                           (auth-source-search :require '(:for) :max 10))))
+    (appendq! circe-network-options
+              (mapcar (lambda (entry)
+                        (let* ((host (plist-get entry :host))
+                               (label (or (plist-get entry :label) host))
+                               (_ports (mapcar #'string-to-number
+                                               (s-split "," (plist-get entry :port))))
+                               (port (if (= 1 (length _ports)) (car _ports) _ports))
+                               (user (plist-get entry :user))
+                               (nick (or (plist-get entry :nick) user))
+                               (channels (mapcar (lambda (c) (concat "#" c))
+                                                 (s-split "," (plist-get entry :channels)))))
+                          `(,label
+                            :host ,host :port ,port :nick ,nick
+                            :sasl-username ,user :sasl-password auth-server-pass
+                            :channels ,channels)))
+                      accounts))))
+
+(add-transient-hook! #'=irc (register-irc-auths))
+;; IRC:3 ends here
+
+;; [[file:config.org::org-emph-to-irc][org-emph-to-irc]]
+(defun lui-org-to-irc ()
+  "Examine a buffer with simple org-mode formatting, and converts the empasis:
+*bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
+=code= is converted to inverse (highlighted) text."
+  (goto-char (point-min))
+  (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
+    (replace-match
+     (concat (pcase (match-string 1)
+               ("*" "")
+               ("/" "")
+               ("_" "")
+               ("=" ""))
+             (match-string 2)
+             "") nil nil)))
+
+(add-hook 'lui-pre-input-hook #'lui-org-to-irc)
+;; org-emph-to-irc ends here
+
+;; [[file:config.org::*Keybindings][Keybindings:1]]
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :n "q" #'+rss/quit
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "p" #'elfeed-show-pdf
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank)
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-pdf
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank)
+;; Keybindings:1 ends here
+
+;; [[file:config.org::*Usability enhancements][Usability enhancements:1]]
+(after! elfeed-search
+  (set-evil-initial-state! 'elfeed-search-mode 'normal))
+(after! elfeed-show-mode
+  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+
+(after! evil-snipe
+  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
+  (push 'elfeed-search-mode evil-snipe-disabled-modes))
+;; Usability enhancements:1 ends here
+
+;; [[file:config.org::*Visual enhancements][Visual enhancements:1]]
+(after! elfeed
+
+  (elfeed-org)
+  (use-package! elfeed-link)
+
+  (setq elfeed-search-filter "@1-week-ago +unread"
+        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.6)
+
+  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (defface elfeed-show-author-face `((t (:weight light)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      :foreground 'nil
+                      :weight 'light)
+
+  (defadvice! +rss-elfeed-wrap-h-nicer ()
+    "Enhances an elfeed entry's readability by wrapping it to a width of
+`fill-column' and centering it with `visual-fill-column-mode'."
+    :override #'+rss-elfeed-wrap-h
+    (setq-local truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
+    (let ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (visual-fill-column-mode)
+      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+      (set-buffer-modified-p nil)))
+
+  (defun +rss/elfeed-search-print-entry (entry)
+    "Print ENTRY to the buffer."
+    (let* ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags ",")))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        :left))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         :left)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (setq-local line-spacing 0.2)))
+
+  (defun +rss/elfeed-show-refresh--better-style ()
+    "Update the buffer to match the selected entry, using a mail-style."
+    (interactive)
+    (let* ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry :author))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags ", "))
+           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert "\n")
+      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (when (and author elfeed-show-entry-author)
+        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+      (when tags
+        (insert (format "%s\n"
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      ;; (insert (propertize "Link: " 'face 'message-header-name))
+      ;; (elfeed-insert-link link link)
+      ;; (insert "\n")
+      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize "Enclosure: " 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert "\n"))
+      (insert "\n")
+      (if content
+          (if (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize "(empty)\n" 'face 'italic)))
+      (goto-char (point-min))))
+
+  )
+;; Visual enhancements:1 ends here
+
+;; [[file:config.org::*Functionality enhancements][Functionality enhancements:1]]
+(after! elfeed-show
+  (require 'url)
+
+  (defvar elfeed-pdf-dir
+    (expand-file-name "pdfs/"
+                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
+
+  (defvar elfeed-link-pdfs
+    '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
+      ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
+    "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
+
+  (defun elfeed-show-pdf (entry)
+    (interactive
+     (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+    (let ((link (elfeed-entry-link entry))
+          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
+          (title (elfeed-entry-title entry))
+          (file-view-function
+           (lambda (f)
+             (when elfeed-show-entry
+               (elfeed-kill-buffer))
+             (pop-to-buffer (find-file-noselect f))))
+          pdf)
+
+      (let ((file (expand-file-name
+                   (concat (subst-char-in-string ?/ ?, title) ".pdf")
+                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
+                                     elfeed-pdf-dir))))
+        (if (file-exists-p file)
+            (funcall file-view-function file)
+          (dolist (link-pdf elfeed-link-pdfs)
+            (when (and (string-match-p (car link-pdf) link)
+                       (not pdf))
+              (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
+          (if (not pdf)
+              (message "No associated PDF for entry")
+            (message "Fetching %s" pdf)
+            (unless (file-exists-p (file-name-directory file))
+              (make-directory (file-name-directory file) t))
+            (url-copy-file pdf file)
+            (funcall file-view-function file))))))
+
+  )
+;; Functionality enhancements:1 ends here
+
+;; [[file:config.org::*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e:1]]
+(after! mu4e
+  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
+    "Location of the reindex request, signaled by existance")
+  (defvar mu4e-reindex-request-min-seperation 5.0
+    "Don't refresh again until this many second have elapsed.
+Prevents a series of redisplays from being called (when set to an appropriate value)")
+
+  (defvar mu4e-reindex-request--file-watcher nil)
+  (defvar mu4e-reindex-request--file-just-deleted nil)
+  (defvar mu4e-reindex-request--last-time 0)
+
+  (defun mu4e-reindex-request--add-watcher ()
+    (setq mu4e-reindex-request--file-just-deleted nil)
+    (setq mu4e-reindex-request--file-watcher
+          (file-notify-add-watch mu4e-reindex-request-file
+                                 '(change)
+                                 #'mu4e-file-reindex-request)))
+
+  (defadvice! mu4e-stop-watching-for-reindex-request ()
+    :after #'mu4e~proc-kill
+    (if mu4e-reindex-request--file-watcher
+        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
+
+  (defadvice! mu4e-watch-for-reindex-request ()
+    :after #'mu4e~proc-start
+    (mu4e-stop-watching-for-reindex-request)
+    (when (file-exists-p mu4e-reindex-request-file)
+      (delete-file mu4e-reindex-request-file))
+    (mu4e-reindex-request--add-watcher))
+
+  (defun mu4e-file-reindex-request (event)
+    "Act based on the existance of `mu4e-reindex-request-file'"
+    (if mu4e-reindex-request--file-just-deleted
+        (mu4e-reindex-request--add-watcher)
+      (when (equal (nth 1 event) 'created)
+        (delete-file mu4e-reindex-request-file)
+        (setq mu4e-reindex-request--file-just-deleted t)
+        (mu4e-reindex-maybe t))))
+
+  (defun mu4e-reindex-maybe (&optional new-request)
+    "Run `mu4e~proc-index' if it's been more than
+`mu4e-reindex-request-min-seperation'seconds since the last request,"
+    (let ((time-since-last-request (- (float-time)
+                                      mu4e-reindex-request--last-time)))
+      (when new-request
+        (setq mu4e-reindex-request--last-time (float-time)))
+      (if (> time-since-last-request mu4e-reindex-request-min-seperation)
+          (mu4e~proc-index nil t)
+        (when new-request
+          (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
+                       #'mu4e-reindex-maybe))))))
+;; Rebuild mail index while using mu4e:1 ends here
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+
+(after! mu4e
+  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+  (setq mu4e-headers-fields
+        '((:flags . 6)
+          (:account-stripe . 2)
+          (:from-or-to . 25)
+          (:folder . 10)
+          (:recipnum . 2)
+          (:subject . 80)
+          (:human-date . 8))
+        +mu4e-min-header-frame-width 142
+        mu4e-headers-date-format "%d/%m/%y"
+        mu4e-headers-time-format "⧖ %H:%M"
+        mu4e-headers-results-limit 1000
+        mu4e-index-cleanup t)
+  
+  (add-to-list 'mu4e-bookmarks
+               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+  
+  (defvar +mu4e-header--folder-colors nil)
+  (appendq! mu4e-header-info-custom
+            '((:folder .
+               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+                (lambda (msg)
+                  (+mu4e-colorize-str
+                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                   '+mu4e-header--folder-colors))))))
+  (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+  (setq sendmail-program "/usr/bin/msmtp"
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
+        message-send-mail-function #'message-send-mail-with-sendmail)
+  (defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
+    (require 'mu4e)
+    (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
+    (let* ((mailto (message-parse-mailto-url mailto-string))
+           (to (cdr (assoc "To" mailto)))
+           (subject (or (cdr (assoc "Subject" mailto)) ""))
+           (body (cdr (assoc "Body" mailto)))
+           (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
+      (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+        (switch-to-buffer mu4e-main))
+      (mu4e~compose-mail to subject headers)
+      (when body
+        (goto-char (point-min))
+        (if (eq major-mode 'org-msg-edit-mode)
+            (org-msg-goto-body)
+          (mu4e-compose-goto-bottom))
+        (insert body))
+      (goto-char (point-min))
+      (cond ((null to) (search-forward "To: "))
+            ((string= "" subject) (search-forward "Subject: "))
+            (t (if (eq major-mode 'org-msg-edit-mode)
+                   (org-msg-goto-body)
+                 (mu4e-compose-goto-bottom))))
+      (font-lock-ensure)
+      (when evil-normal-state-minor-mode
+        (evil-append 1))
+      (when quit-frame-after
+        (add-hook 'kill-buffer-hook
+                  `(lambda ()
+                     (when (eq (selected-frame) ,(selected-frame))
+                       (delete-frame)))))))
+  (defvar mu4e-from-name "Timothy"
+    "Name used in \"From:\" template.")
+  (defadvice! mu4e~draft-from-construct-renamed (orig-fn)
+    "Wrap `mu4e~draft-from-construct-renamed' to change the name."
+    :around #'mu4e~draft-from-construct
+    (let ((user-full-name mu4e-from-name))
+      (funcall orig-fn)))
+  (setq message-signature mu4e-from-name)
+  (defun +mu4e-get-woof-header ()
+    (pcase (read-char
+            (format "\
+  %s
+    %s Declare %s Applied %s Aborted
+  %s
+    %s Confirm %s Fixed
+  %s
+    %s Request %s Resolved
+  
+  %s remove X-Woof header"
+                    (propertize "Patch" 'face 'outline-3)
+                    (propertize "p" 'face '(bold consult-key))
+                    (propertize "a" 'face '(bold consult-key))
+                    (propertize "c" 'face '(bold consult-key))
+                    (propertize "Bug" 'face 'outline-3)
+                    (propertize "b" 'face '(bold consult-key))
+                    (propertize "f" 'face '(bold consult-key))
+                    (propertize "Help" 'face 'outline-3)
+                    (propertize "h" 'face '(bold consult-key))
+                    (propertize "r" 'face '(bold consult-key))
+                    (propertize "x" 'face '(bold error))))
+      (?p "X-Woof-Patch: confirmed")
+      (?a "X-Woof-Patch: applied")
+      (?c "X-Woof-Patch: cancelled")
+      (?b "X-Woof-Bug: confirmed")
+      (?f "X-Woof-Bug: fixed")
+      (?h "X-Woof-Help: confirmed")
+      (?r "X-Woof-Help: cancelled")
+      (?x 'delete)))
+  (defun +mu4e-insert-woof-header ()
+    "Insert an X-Woof header into the current message."
+    (interactive)
+    (when-let ((header (+mu4e-get-woof-header)))
+      (save-excursion
+        (goto-char (point-min))
+        (search-forward "--text follows this line--")
+        (unless (eq header 'delete)
+          (beginning-of-line)
+          (insert header "\n")
+          (forward-line -1))
+        (when (re-search-backward "^X-Woof-" nil t)
+          (kill-whole-line)))))
+  
+  (map! :map mu4e-compose-mode-map
+        :localleader
+        :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+  
+  (map! :map org-msg-edit-mode-map
+        :after org-msg
+        :localleader
+        :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+  (after! mu4e
+    (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+    (defvar +org-ml-max-age 600
+      "Maximum permissible age in seconds.")
+    (defvar +org-ml--cache-timestamp 0)
+    (defvar +org-ml--cache nil)
+  
+    (define-minor-mode +org-ml-patchy-mood-mode
+      "Apply patches to Org in bulk."
+      :global t
+      (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
+        (if +org-ml-patchy-mood-mode
+            (add-to-list 'mu4e-view-actions action)
+          (setq mu4e-view-actions (delete action mu4e-view-actions)))))
+  
+    (defun +org-ml-apply-patch (msg)
+      "Apply the patch in the current message to Org."
+      (interactive)
+      (unless msg (setq msg (mu4e-message-at-point)))
+      (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+        (erase-buffer)
+        (let* ((default-directory +org-ml-target-dir)
+               (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
+          (magit-refresh)
+          (when (not (= 0 exit-code))
+            (+popup/buffer)))))
+  
+    (defun +org-ml-current-patches ()
+      "Get the currently open patches, as a list of alists.
+  Entries of the form (subject . id)."
+      (delq nil
+            (mapcar
+             (lambda (entry)
+               (unless (plist-get entry :fixed)
+                 (cons
+                  (format "%-8s  %s"
+                          (propertize
+                           (replace-regexp-in-string "T.*" ""
+                                                     (plist-get entry :date))
+                           'face 'font-lock-doc-face)
+                          (propertize
+                           (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                                     (plist-get entry :summary))
+                           'face 'font-lock-keyword-face))
+                  (plist-get entry :id))))
+             (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+               (goto-char url-http-end-of-headers)
+               (json-parse-buffer :object-type 'plist)))))
+  
+    (defun +org-ml-select-patch-thread ()
+      "Find and apply a proposed Org patch."
+      (interactive)
+      (let* ((current-workspace (+workspace-current))
+             (patches (progn
+                        (when (or (not +org-ml--cache)
+                                  (> (- (float-time) +org-ml--cache-timestamp)
+                                     +org-ml-max-age))
+                          (setq +org-ml--cache (+org-ml-current-patches)
+                                +org-ml--cache-timestamp (float-time)))
+                        +org-ml--cache))
+             (msg-id (cdr (assoc (completing-read
+                                  "Thread: " (mapcar #'car patches))
+                                 patches))))
+        (+workspace-switch +mu4e-workspace-name)
+        (mu4e-view-message-with-message-id msg-id)
+        (unless +org-ml-patchy-mood-mode
+          (add-to-list 'mu4e-view-actions
+                       (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
+  
+    (defun +org-ml-transient-mu4e-action (msg)
+      (setq mu4e-view-actions
+            (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
+                    mu4e-view-actions))
+      (+workspace/other)
+      (magit-status +org-ml-target-dir)
+      (+org-ml-apply-patch msg)))
+  (after! mu4e
+    (defun +mu4e-ml-message-link (msg)
+      "Copy the link to MSG on the mailing list archives."
+      (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
+                            (cdar (mu4e-message-field-raw msg :list-post))
+                            (thread-last (append (mu4e-message-field msg :to)
+                                                 (mu4e-message-field msg :cc))
+                              (mapcar #'last)
+                              (mapcar #'cdr)
+                              (mapcar (lambda (addr)
+                                        (when (string-match-p "emacs.*@gnu\\.org$" addr)
+                                          (replace-regexp-in-string "@" "." addr))))
+                              (delq nil)
+                              (car))))
+             (msg-url
+              (cond
+               ((string= "emacs-orgmode.gnu.org" list-addr)
+                (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+               (t (user-error "Mailing list %s not supported" list-addr)))))
+        (message "Link %s copied to clipboard" (gui-select-text msg-url))
+        msg-url))
+  
+    (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
+)
+
+;; [[file:config.org::*Org Msg][Org Msg:1]]
+(setq +org-msg-accent-color "#1a5fb4"
+      org-msg-greeting-fmt "\nHi %s,\n\n"
+      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :n "G" #'org-msg-goto-body)
+;; Org Msg:1 ends here

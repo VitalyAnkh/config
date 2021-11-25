@@ -98,19 +98,6 @@
 (package! stan-snippets)
 ;; Stan:1 ends here
 
-;; [[file:config.org::*Ebooks][Ebooks:1]]
-(package! calibredb)
-;; Ebooks:1 ends here
-
-;; [[file:config.org::*Ebooks][Ebooks:2]]
-(package! nov)
-;; Ebooks:2 ends here
-
-;; [[file:config.org::*CalcTeX][CalcTeX:1]]
-(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
-;; CalcTeX:1 ends here
-
 (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el") (insert "(fset 'org-release (lambda () \"9.5\"))
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
@@ -153,8 +140,6 @@
 (package! doct
   :recipe (:host github :repo "progfolio/doct"))
 
-(package! org-roam :disable t)
-
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! websocket) ; dependency of `org-roam-ui'
 
@@ -179,3 +164,20 @@
 ;; [[file:config.org::*Beancount][Beancount:1]]
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
 ;; Beancount:1 ends here
+
+;; [[file:config.org::*Input Method][Input Method:1]]
+(package! sis)
+;; Input Method:1 ends here
+
+;; [[file:config.org::*Ebooks][Ebooks:1]]
+(package! calibredb)
+;; Ebooks:1 ends here
+
+;; [[file:config.org::*Ebooks][Ebooks:2]]
+(package! nov)
+;; Ebooks:2 ends here
+
+;; [[file:config.org::*CalcTeX][CalcTeX:1]]
+(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
+;; CalcTeX:1 ends here

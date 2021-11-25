@@ -790,6 +790,14 @@ I find the ~doom-solarized-light~ really nice. Oh, and with the nice selection d
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-solarized-light)
+(use-package doom-themes
+  :config
+  ;;Global settings (defaults)
+  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (doom-themes-treemacs-config)
+  ;;(doom-themes-org-config)
+  )
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
@@ -2150,6 +2158,45 @@ From the =:core packages= module.
 #+end_src
 
 ** Visuals
+*** Org Mode Visual Effects
+
+#+begin_src emacs-lisp
+;; disable =hl-line-mode= and =solaire-mode= for org-mode
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+
+(custom-set-faces
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+ ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+ ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
+ ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+ ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+
+ ;;'(org-list-dt ((t (:foreground "#7382a0"))))
+ ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+ ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ ;;'(org-block ((t (:inherit fixed-pitch))))
+ ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ ;; TODO set the color following this
+ ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
+ ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
+ '(fixed-pitch ((t (:family "mononoki" :height 160))))
+ ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
+                    "CMU Typewriter Text"))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
+                    :height 1.75 :family "CMU Typewriter Text"))))
+ '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
+
+#+end_src
 *** Info colours
 This makes manual pages nicer to look at by adding variable pitch fontification
 and colouring :).
@@ -3157,1913 +3204,6 @@ working with Stan code. Let's grab them all.
 (package! stan-snippets)
 #+end_src
 
-* Applications
-** Input Method
-I can't go out without my favorite input method: [[https://fcitx-im.org/][fcitx5]]
-, especially within Emacs. Let's add =smart-input-source=.
-#+begin_src emacs-lisp
-(package! sis)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package sis
-  ;;:hook
-  ;; enable the /follow context/ and /inline region/ mode for specific buffers
-  ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mode))
-  :config
-  (sis-ism-lazyman-config "1" "2" 'fcitx5)
-  ;; enable the /cursor color/ mode
-  (sis-global-cursor-color-mode t)
-  ;; enable the /respect/ mode
-  (sis-global-respect-mode t)
-  ;; enable the /follow context/ mode for all buffers
-  (sis-global-context-mode t)
-  ;; enable the /inline english/ mode for all buffers
-  ;; (sis-global-inline-mode t)
-  )
-#+end_src
-** Ebooks
-[[xkcd:548]]
-
-For managing my ebooks, I'll hook into the well-established ebook library
-manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
-good option.
-#+begin_src emacs-lisp :tangle packages.el
-(package! calibredb)
-#+end_src
-
-Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
-#+begin_src emacs-lisp :tangle packages.el
-(package! nov)
-#+end_src
-
-Together these should give me a rather good experience reading ebooks.
-
-=calibredb= lets us use calibre through Emacs, because who wouldn't want to use
-something through Emacs?
-#+begin_src emacs-lisp
-(use-package! calibredb
-  :commands calibredb
-  :config
-  (setq calibredb-root-dir "~/nutstore_files/Books"
-        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (map! :map calibredb-show-mode-map
-        :ne "?" #'calibredb-entry-dispatch
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "q" #'calibredb-entry-quit
-        :ne "." #'calibredb-open-dired
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments)
-  (map! :map calibredb-search-mode-map
-        :ne [mouse-3] #'calibredb-search-mouse
-        :ne "RET" #'calibredb-find-file
-        :ne "?" #'calibredb-dispatch
-        :ne "a" #'calibredb-add
-        :ne "A" #'calibredb-add-dir
-        :ne "c" #'calibredb-clone
-        :ne "d" #'calibredb-remove
-        :ne "D" #'calibredb-remove-marked-items
-        :ne "j" #'calibredb-next-entry
-        :ne "k" #'calibredb-previous-entry
-        :ne "l" #'calibredb-virtual-library-list
-        :ne "L" #'calibredb-library-list
-        :ne "n" #'calibredb-virtual-library-next
-        :ne "N" #'calibredb-library-next
-        :ne "p" #'calibredb-virtual-library-previous
-        :ne "P" #'calibredb-library-previous
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "S" #'calibredb-switch-library
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "v" #'calibredb-view
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "." #'calibredb-open-dired
-        :ne "b" #'calibredb-catalog-bib-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "r" #'calibredb-search-refresh-and-clear-filter
-        :ne "R" #'calibredb-search-clear-filter
-        :ne "q" #'calibredb-search-quit
-        :ne "m" #'calibredb-mark-and-forward
-        :ne "f" #'calibredb-toggle-favorite-at-point
-        :ne "x" #'calibredb-toggle-archive-at-point
-        :ne "h" #'calibredb-toggle-highlight-at-point
-        :ne "u" #'calibredb-unmark-and-forward
-        :ne "i" #'calibredb-edit-annotation
-        :ne "DEL" #'calibredb-unmark-and-backward
-        :ne [backtab] #'calibredb-toggle-view
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-n" #'calibredb-show-next-entry
-        :ne "M-p" #'calibredb-show-previous-entry
-        :ne "/" #'calibredb-search-live-filter
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments))
-#+end_src
-
-Then, to actually read the ebooks we use =nov=.
-
-#+attr_html: :class invertible :alt Excerpt of the GNU Emacs manual viewed through nov.el
-[[https://tecosaur.com/lfs/emacs-config/screenshots/nov.png]]
-
-#+begin_src emacs-lisp
-(use-package! nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map! :map nov-mode-map
-        :n "RET" #'nov-scroll-up)
-
-  (defun doom-modeline-segment--nov-info ()
-    (concat
-     " "
-     (propertize
-      (cdr (assoc 'creator nov-metadata))
-      'face 'doom-modeline-project-parent-dir)
-     " "
-     (cdr (assoc 'title nov-metadata))
-     " "
-     (propertize
-      (format "%d/%d"
-              (1+ nov-documents-index)
-              (length nov-documents))
-      'face 'doom-modeline-info)))
-
-  (advice-add 'nov-render-title :override #'ignore)
-
-  (defun +nov-mode-setup ()
-    (face-remap-add-relative 'variable-pitch
-                             :family "Merriweather"
-                             :height 1.4
-                             :width 'semi-expanded)
-    (face-remap-add-relative 'default :height 1.3)
-    (setq-local line-spacing 0.2
-                next-screen-context-lines 4
-                shr-use-colors nil)
-    (require 'visual-fill-column nil t)
-    (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 81
-                nov-text-width 80)
-    (visual-fill-column-mode 1)
-    (hl-line-mode -1)
-
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-
-    (setq-local mode-line-format
-                `((:eval
-                   (doom-modeline-segment--workspace-name))
-                  (:eval
-                   (doom-modeline-segment--window-number))
-                  (:eval
-                   (doom-modeline-segment--nov-info))
-                  ,(propertize
-                    " %P "
-                    'face 'doom-modeline-buffer-minor-mode)
-                  ,(propertize
-                    " "
-                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-                    'display `((space
-                                :align-to
-                                (- (+ right right-fringe right-margin)
-                                   ,(* (let ((width (doom-modeline--font-width)))
-                                         (or (and (= width 1) 1)
-                                             (/ width (frame-char-width) 1.0)))
-                                       (string-width
-                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-                  (:eval (doom-modeline-segment--major-mode)))))
-
-  (add-hook 'nov-mode-hook #'+nov-mode-setup))
-#+end_src
-** Calculator
-Emacs includes the venerable =calc=, which is a pretty impressive RPN (Reverse
-Polish Notation) calculator. However, we can do a bit to improve the experience.
-
-*** Defaults
-
-Any sane person prefers radians and exact values.
-
-#+begin_src emacs-lisp
-(setq calc-angle-mode 'rad  ; radians are rad
-      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
-#+end_src
-
-*** CalcTeX
-
-Everybody knows that mathematical expressions look best with LaTeX, so =calc='s
-ability to create LaTeX representations of its expressions provides a lovely
-opportunity which is taken advantage of in the CalcTeX package.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
-#+end_src
-
-#+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/calc-with-calctex.png]]
-
-We'd like to use CalcTeX too, so let's set that up, and fix some glaring
-inadequacies --- why on earth would you commit a hard-coded path to an executable
-that /only works on your local machine/, consequently breaking the package for
-everyone else!?
-
-#+begin_src emacs-lisp
-(use-package! calctex
-  :commands calctex-mode
-  :init
-  (add-hook 'calc-mode-hook #'calctex-mode)
-  :config
-  (setq calctex-additional-latex-packages "
-\\usepackage[usenames]{xcolor}
-\\usepackage{soul}
-\\usepackage{adjustbox}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\usepackage{siunitx}
-\\usepackage{cancel}
-\\usepackage{mathtools}
-\\usepackage{mathalpha}
-\\usepackage{xparse}
-\\usepackage{arevmath}"
-        calctex-additional-latex-macros
-        (concat calctex-additional-latex-macros
-                "\n\\let\\evalto\\Rightarrow"))
-  (defadvice! no-messaging-a (orig-fn &rest args)
-    :around #'calctex-default-dispatching-render-process
-    (let ((inhibit-message t) message-log-max)
-      (apply orig-fn args)))
-  ;; Fix hardcoded dvichop path (whyyyyyyy)
-  (let ((vendor-folder (concat (file-truename doom-local-dir)
-                               "straight/"
-                               (format "build-%s" emacs-version)
-                               "/calctex/vendor/")))
-    (setq calctex-dvichop-sty (concat vendor-folder "texd/dvichop")
-          calctex-dvichop-bin (concat vendor-folder "texd/dvichop")))
-  (unless (file-exists-p calctex-dvichop-bin)
-    (message "CalcTeX: Building dvichop binary")
-    (let ((default-directory (file-name-directory calctex-dvichop-bin)))
-      (call-process "make" nil nil nil))))
-#+end_src
-*** Embedded calc
-
-Embedded calc is a lovely feature which let's us use calc to operate on LaTeX
-maths expressions. The standard keybinding is a bit janky however (=C-x * e=), so
-we'll add a localleader-based alternative.
-
-#+begin_src emacs-lisp
-(map! :map calc-mode-map
-      :after calc
-      :localleader
-      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
-(map! :map org-mode-map
-      :after org
-      :localleader
-      :desc "Embedded calc (toggle)" "E" #'calc-embedded)
-(map! :map latex-mode-map
-      :after latex
-      :localleader
-      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
-#+end_src
-
-Unfortunately this operates without the (rather informative) calculator and
-trail buffers, but we can advice it that we would rather like those in a side
-panel.
-
-#+begin_src emacs-lisp
-(defvar calc-embedded-trail-window nil)
-(defvar calc-embedded-calculator-window nil)
-
-(defadvice! calc-embedded-with-side-pannel (&rest _)
-  :after #'calc-do-embedded
-  (when calc-embedded-trail-window
-    (ignore-errors
-      (delete-window calc-embedded-trail-window))
-    (setq calc-embedded-trail-window nil))
-  (when calc-embedded-calculator-window
-    (ignore-errors
-      (delete-window calc-embedded-calculator-window))
-    (setq calc-embedded-calculator-window nil))
-  (when (and calc-embedded-info
-             (> (* (window-width) (window-height)) 1200))
-    (let ((main-window (selected-window))
-          (vertical-p (> (window-width) 80)))
-      (select-window
-       (setq calc-embedded-trail-window
-             (if vertical-p
-                 (split-window-horizontally (- (max 30 (/ (window-width) 3))))
-               (split-window-vertically (- (max 8 (/ (window-height) 4)))))))
-      (switch-to-buffer "*Calc Trail*")
-      (select-window
-       (setq calc-embedded-calculator-window
-             (if vertical-p
-                 (split-window-vertically -6)
-               (split-window-horizontally (- (/ (window-width) 2))))))
-      (switch-to-buffer "*Calculator*")
-      (select-window main-window))))
-#+end_src
-** IRC
-=circe= is a client for IRC in Emacs (hey, isn't that a nice project
-name+acronym), and a greek enchantress who turned humans into animals.
-
-Let's use the former to chat to +recluses+ discerning individuals online.
-
-[[xkcd:1782]]
-
-Before we start seeing and sending messages, we need to authenticate with our
-IRC servers. The circe manual provided a snippet for putting some of the auth
-details in =.authinfo.gpg= --- but I think we should go further than that: have
-the entire server info in our authinfo.
-
-First, a reasonable format by which we can specify:
-+ server
-+ port
-+ SASL username
-+ SASL password
-+ channels to join
-
-We can have these stored like so
-#+begin_src authinfo
-machine chat.freenode.net login USERNAME password PASSWORD port PORT for irc channels emacs,org-mode
-#+end_src
-
-The ~for irc~ bit is used so we can uniquely identify all IRC auth info. By
-omitting the =#= in channel names we can have a list of channels comma-separated
-(no space!) which the secrets API will return as a single string.
-
-#+name: irc-authinfo-reader
-#+begin_src emacs-lisp :tangle no
-(defun auth-server-pass (server)
-  (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
-      (if (functionp secret)
-          (funcall secret) secret)
-    (error "Could not fetch password for host %s" server)))
-
-(defun register-irc-auths ()
-  (require 'circe)
-  (require 'dash)
-  (let ((accounts (-filter (lambda (a) (string= "irc" (plist-get a :for)))
-                           (auth-source-search :require '(:for) :max 10))))
-    (appendq! circe-network-options
-              (mapcar (lambda (entry)
-                        (let* ((host (plist-get entry :host))
-                               (label (or (plist-get entry :label) host))
-                               (_ports (mapcar #'string-to-number
-                                               (s-split "," (plist-get entry :port))))
-                               (port (if (= 1 (length _ports)) (car _ports) _ports))
-                               (user (plist-get entry :user))
-                               (nick (or (plist-get entry :nick) user))
-                               (channels (mapcar (lambda (c) (concat "#" c))
-                                                 (s-split "," (plist-get entry :channels)))))
-                          `(,label
-                            :host ,host :port ,port :nick ,nick
-                            :sasl-username ,user :sasl-password auth-server-pass
-                            :channels ,channels)))
-                      accounts))))
-#+end_src
-
-We'll just call src_elisp{(register-irc-auths)} on a hook when we start Circe
-up.
-
-Now we're ready to go, let's actually wire-up Circe, with one or two
-configuration tweaks.
-#+begin_src emacs-lisp :noweb no-export
-(after! circe
-  (setq-default circe-use-tls t)
-  (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
-        lui-logging-directory "~/.emacs.d/.local/etc/irc"
-        lui-logging-file-format "{buffer}/%Y/%m-%d.txt"
-        circe-format-self-say "{nick:+13s} ┃ {body}")
-
-  (custom-set-faces!
-    '(circe-my-message-face :weight unspecified))
-
-  (enable-lui-logging-globally)
-  (enable-circe-display-images)
-
-  <<org-emph-to-irc>>
-
-  <<circe-emojis>>
-  <<circe-emoji-alists>>
-
-  (defun named-circe-prompt ()
-    (lui-set-prompt
-     (concat (propertize (format "%13s > " (circe-nick))
-                         'face 'circe-prompt-face)
-             "")))
-  (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
-
-  (appendq! all-the-icons-mode-icon-alist
-            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
-              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
-
-<<irc-authinfo-reader>>
-
-(add-transient-hook! #'=irc (register-irc-auths))
-#+end_src
-
-*** Org-style emphasis
-Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control characters.
-#+name: org-emph-to-irc
-#+begin_src emacs-lisp
-(defun lui-org-to-irc ()
-  "Examine a buffer with simple org-mode formatting, and converts the empasis:
-,*bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
-=code= is converted to inverse (highlighted) text."
-  (goto-char (point-min))
-  (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
-    (replace-match
-     (concat (pcase (match-string 1)
-               ("*" "")
-               ("/" "")
-               ("_" "")
-               ("=" ""))
-             (match-string 2)
-             "") nil nil)))
-
-(add-hook 'lui-pre-input-hook #'lui-org-to-irc)
-#+end_src
-*** Emojis
-Let's setup Circe to use some emojis
-#+name: circe-emojis
-#+begin_src emacs-lisp :tangle no
-(defun lui-ascii-to-emoji ()
-  (goto-char (point-min))
-  (while (re-search-forward "\\( \\)?::?\\([^[:space:]:]+\\):\\( \\)?" nil t)
-    (replace-match
-     (concat
-      (match-string 1)
-      (or (cdr (assoc (match-string 2) lui-emojis-alist))
-          (concat ":" (match-string 2) ":"))
-      (match-string 3))
-     nil nil)))
-
-(defun lui-emoticon-to-emoji ()
-  (dolist (emoticon lui-emoticons-alist)
-    (goto-char (point-min))
-    (while (re-search-forward (concat " " (car emoticon) "\\( \\)?") nil t)
-      (replace-match (concat " "
-                             (cdr (assoc (cdr emoticon) lui-emojis-alist))
-                             (match-string 1))))))
-
-(define-minor-mode lui-emojify
-  "Replace :emojis: and ;) emoticons with unicode emoji chars."
-  :global t
-  :init-value t
-  (if lui-emojify
-      (add-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)
-    (remove-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)))
-#+end_src
-
-Now, some actual emojis to use.
-#+name: circe-emoji-alists
-#+begin_src emacs-lisp :tangle no
-(defvar lui-emojis-alist
-  '(("grinning"                      . "😀")
-    ("smiley"                        . "😃")
-    ("smile"                         . "😄")
-    ("grin"                          . "😁")
-    ("laughing"                      . "😆")
-    ("sweat_smile"                   . "😅")
-    ("joy"                           . "😂")
-    ("rofl"                          . "🤣")
-    ("relaxed"                       . "☺️")
-    ("blush"                         . ":)")
-    ("innocent"                      . "😇")
-    ("slight_smile"                  . ":)")
-    ("upside_down"                   . "🙃")
-    ("wink"                          . "😉")
-    ("relieved"                      . "😌")
-    ("heart_eyes"                    . "😍")
-    ("yum"                           . "😋")
-    ("stuck_out_tongue"              . "😛")
-    ("stuck_out_tongue_closed_eyes"  . "😝")
-    ("stuck_out_tongue_wink"         . "😜")
-    ("zanzy"                         . "🤪")
-    ("raised_eyebrow"                . "🤨")
-    ("monocle"                       . "🧐")
-    ("nerd"                          . "🤓")
-    ("cool"                          . "😎")
-    ("star_struck"                   . "🤩")
-    ("party"                         . "🥳")
-    ("smirk"                         . "😏")
-    ("unamused"                      . "😒")
-    ("disapointed"                   . "😞")
-    ("pensive"                       . "😔")
-    ("worried"                       . "😟")
-    ("confused"                      . "😕")
-    ("slight_frown"                  . "🙁")
-    ("frown"                         . "☹️")
-    ("persevere"                     . "😣")
-    ("confounded"                    . "😖")
-    ("tired"                         . "😫")
-    ("weary"                         . "😩")
-    ("pleading"                      . "🥺")
-    ("tear"                          . "😢")
-    ("cry"                           . "😢")
-    ("sob"                           . "😭")
-    ("triumph"                       . "😤")
-    ("angry"                         . "😠")
-    ("rage"                          . "😡")
-    ("exploding_head"                . "🤯")
-    ("flushed"                       . "😳")
-    ("hot"                           . "🥵")
-    ("cold"                          . "🥶")
-    ("scream"                        . "😱")
-    ("fearful"                       . "😨")
-    ("disapointed"                   . "😰")
-    ("relieved"                      . "😥")
-    ("sweat"                         . "😓")
-    ("thinking"                      . "🤔")
-    ("shush"                         . "🤫")
-    ("liar"                          . "🤥")
-    ("blank_face"                    . "😶")
-    ("neutral"                       . "😐")
-    ("expressionless"                . "😑")
-    ("grimace"                       . "😬")
-    ("rolling_eyes"                  . "🙄")
-    ("hushed"                        . "😯")
-    ("frowning"                      . "😦")
-    ("anguished"                     . "😧")
-    ("wow"                           . "😮")
-    ("astonished"                    . "😲")
-    ("sleeping"                      . "😴")
-    ("drooling"                      . "🤤")
-    ("sleepy"                        . "😪")
-    ("dizzy"                         . "😵")
-    ("zipper_mouth"                  . "🤐")
-    ("woozy"                         . "🥴")
-    ("sick"                          . "🤢")
-    ("vomiting"                      . "🤮")
-    ("sneeze"                        . "🤧")
-    ("mask"                          . "😷")
-    ("bandaged_head"                 . "🤕")
-    ("money_face"                    . "🤑")
-    ("cowboy"                        . "🤠")
-    ("imp"                           . "😈")
-    ("ghost"                         . "👻")
-    ("alien"                         . "👽")
-    ("robot"                         . "🤖")
-    ("clap"                          . "👏")
-    ("thumpup"                       . "👍")
-    ("+1"                            . "👍")
-    ("thumbdown"                     . "👎")
-    ("-1"                            . "👎")
-    ("ok"                            . "👌")
-    ("pinch"                         . "🤏")
-    ("left"                          . "👈")
-    ("right"                         . "👉")
-    ("down"                          . "👇")
-    ("wave"                          . "👋")
-    ("pray"                          . "🙏")
-    ("eyes"                          . "👀")
-    ("brain"                         . "🧠")
-    ("facepalm"                      . "🤦")
-    ("tada"                          . "🎉")
-    ("fire"                          . "🔥")
-    ("flying_money"                  . "💸")
-    ("lighbulb"                      . "💡")
-    ("heart"                         . "❤️")
-    ("sparkling_heart"               . "💖")
-    ("heartbreak"                    . "💔")
-    ("100"                           . "💯")))
-
-(defvar lui-emoticons-alist
-  '((":)"   . "slight_smile")
-    (";)"   . "wink")
-    (":D"   . "smile")
-    ("=D"   . "grin")
-    ("xD"   . "laughing")
-    (";("   . "joy")
-    (":P"   . "stuck_out_tongue")
-    (";D"   . "stuck_out_tongue_wink")
-    ("xP"   . "stuck_out_tongue_closed_eyes")
-    (":("   . "slight_frown")
-    (";("   . "cry")
-    (";'("  . "sob")
-    (">:("  . "angry")
-    (">>:(" . "rage")
-    (":o"   . "wow")
-    (":O"   . "astonished")
-    (":/"   . "confused")
-    (":-/"  . "thinking")
-    (":|"   . "neutral")
-    (":-|"  . "expressionless")))
-#+end_src
-** Newsfeed
-RSS feeds are still a thing. Why not make use of them with =elfeed=.
-I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
-module. Let's just try to patch on the main things I like the look of.
-
-#+attr_html: :class invertible :alt Example elfeed entry
-[[https://tecosaur.com/lfs/emacs-config/screenshots/elfeed.png]]
-
-*** Keybindings
-#+begin_src emacs-lisp
-(map! :map elfeed-search-mode-map
-      :after elfeed-search
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :n "q" #'+rss/quit
-      :n "e" #'elfeed-update
-      :n "r" #'elfeed-search-untag-all-unread
-      :n "u" #'elfeed-search-tag-all-unread
-      :n "s" #'elfeed-search-live-filter
-      :n "RET" #'elfeed-search-show-entry
-      :n "p" #'elfeed-show-pdf
-      :n "+" #'elfeed-search-tag-all
-      :n "-" #'elfeed-search-untag-all
-      :n "S" #'elfeed-search-set-filter
-      :n "b" #'elfeed-search-browse-url
-      :n "y" #'elfeed-search-yank)
-(map! :map elfeed-show-mode-map
-      :after elfeed-show
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :nm "q" #'+rss/delete-pane
-      :nm "o" #'ace-link-elfeed
-      :nm "RET" #'org-ref-elfeed-add
-      :nm "n" #'elfeed-show-next
-      :nm "N" #'elfeed-show-prev
-      :nm "p" #'elfeed-show-pdf
-      :nm "+" #'elfeed-show-tag
-      :nm "-" #'elfeed-show-untag
-      :nm "s" #'elfeed-show-new-live-search
-      :nm "y" #'elfeed-show-yank)
-#+end_src
-*** Usability enhancements
-#+begin_src emacs-lisp
-(after! elfeed-search
-  (set-evil-initial-state! 'elfeed-search-mode 'normal))
-(after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
-
-(after! evil-snipe
-  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
-  (push 'elfeed-search-mode evil-snipe-disabled-modes))
-#+end_src
-*** Visual enhancements
-#+begin_src emacs-lisp
-(after! elfeed
-
-  (elfeed-org)
-  (use-package! elfeed-link)
-
-  (setq elfeed-search-filter "@1-week-ago +unread"
-        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-        elfeed-search-title-min-width 80
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.6)
-
-  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (defface elfeed-show-author-face `((t (:weight light)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (set-face-attribute 'elfeed-search-title-face nil
-                      :foreground 'nil
-                      :weight 'light)
-
-  (defadvice! +rss-elfeed-wrap-h-nicer ()
-    "Enhances an elfeed entry's readability by wrapping it to a width of
-`fill-column' and centering it with `visual-fill-column-mode'."
-    :override #'+rss-elfeed-wrap-h
-    (setq-local truncate-lines nil
-                shr-width 120
-                visual-fill-column-center-text t
-                default-text-properties '(line-height 1.1))
-    (let ((inhibit-read-only t)
-          (inhibit-modification-hooks t))
-      (visual-fill-column-mode)
-      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
-
-  (defun +rss/elfeed-search-print-entry (entry)
-    "Print ENTRY to the buffer."
-    (let* ((elfeed-goodies/tag-column-width 40)
-           (elfeed-goodies/feed-source-column-width 30)
-           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-           (feed (elfeed-entry-feed entry))
-           (feed-title
-            (when feed
-              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-           (tags-str (concat (mapconcat 'identity tags ",")))
-           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                           elfeed-goodies/tag-column-width 4))
-
-           (tag-column (elfeed-format-column
-                        tags-str (elfeed-clamp (length tags-str)
-                                               elfeed-goodies/tag-column-width
-                                               elfeed-goodies/tag-column-width)
-                        :left))
-           (feed-column (elfeed-format-column
-                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width)
-                         :left)))
-
-      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-      (insert (propertize title 'face title-faces 'kbd-help title))
-      (setq-local line-spacing 0.2)))
-
-  (defun +rss/elfeed-show-refresh--better-style ()
-    "Update the buffer to match the selected entry, using a mail-style."
-    (interactive)
-    (let* ((inhibit-read-only t)
-           (title (elfeed-entry-title elfeed-show-entry))
-           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-           (author (elfeed-meta elfeed-show-entry :author))
-           (link (elfeed-entry-link elfeed-show-entry))
-           (tags (elfeed-entry-tags elfeed-show-entry))
-           (tagsstr (mapconcat #'symbol-name tags ", "))
-           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-           (type (elfeed-entry-content-type elfeed-show-entry))
-           (feed (elfeed-entry-feed elfeed-show-entry))
-           (feed-title (elfeed-feed-title feed))
-           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-      (erase-buffer)
-      (insert "\n")
-      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-      (when (and author elfeed-show-entry-author)
-        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-      (when tags
-        (insert (format "%s\n"
-                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
-      ;; (insert (propertize "Link: " 'face 'message-header-name))
-      ;; (elfeed-insert-link link link)
-      ;; (insert "\n")
-      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-               do (insert (propertize "Enclosure: " 'face 'message-header-name))
-               do (elfeed-insert-link (car enclosure))
-               do (insert "\n"))
-      (insert "\n")
-      (if content
-          (if (eq type 'html)
-              (elfeed-insert-html content base)
-            (insert content))
-        (insert (propertize "(empty)\n" 'face 'italic)))
-      (goto-char (point-min))))
-
-  )
-#+end_src
-*** Functionality enhancements
-#+begin_src emacs-lisp
-(after! elfeed-show
-  (require 'url)
-
-  (defvar elfeed-pdf-dir
-    (expand-file-name "pdfs/"
-                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
-
-  (defvar elfeed-link-pdfs
-    '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
-      ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
-    "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
-
-  (defun elfeed-show-pdf (entry)
-    (interactive
-     (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
-    (let ((link (elfeed-entry-link entry))
-          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
-          (title (elfeed-entry-title entry))
-          (file-view-function
-           (lambda (f)
-             (when elfeed-show-entry
-               (elfeed-kill-buffer))
-             (pop-to-buffer (find-file-noselect f))))
-          pdf)
-
-      (let ((file (expand-file-name
-                   (concat (subst-char-in-string ?/ ?, title) ".pdf")
-                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
-                                     elfeed-pdf-dir))))
-        (if (file-exists-p file)
-            (funcall file-view-function file)
-          (dolist (link-pdf elfeed-link-pdfs)
-            (when (and (string-match-p (car link-pdf) link)
-                       (not pdf))
-              (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
-          (if (not pdf)
-              (message "No associated PDF for entry")
-            (message "Fetching %s" pdf)
-            (unless (file-exists-p (file-name-directory file))
-              (make-directory (file-name-directory file) t))
-            (url-copy-file pdf file)
-            (funcall file-view-function file))))))
-
-  )
-#+end_src
-** Dictionary
-Doom already loads =define-word=, and provides it's own definition service using
-[[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
-advantages, namely:
-+ speed
-+ integration of multiple dictionaries
-[[http://goldendict.org/][GoldenDict]] seems like the best option currently available, but lacks a CLI.
-Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
-To interface with this, we'll use a my =lexic= package.
-
-#+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
-[[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
-
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
-;;(package! lexic :recipe (:local-repo "lisp/lexic"))
-#+end_src
-
-Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
-GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
-
-Since GoldenDict supports StarDict files, I expect this will be a relatively
-painless switch.
-
-We start off by loading =lexic=, then we'll integrate it into pre-existing
-definition functionality (like ~+lookup/dictionary-definition~).
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
-(use-package! lexic
-  :commands lexic-search lexic-list-dictionary
-  :config
-  (map! :map lexic-mode-map
-        :n "q" #'lexic-return-from-lexic
-        :nv "RET" #'lexic-search-word-at-point
-        :n "a" #'outline-show-all
-        :n "h" (cmd! (outline-hide-sublevels 3))
-        :n "o" #'lexic-toggle-entry
-        :n "n" #'lexic-next-entry
-        :n "N" (cmd! (lexic-next-entry t))
-        :n "p" #'lexic-previous-entry
-        :n "P" (cmd! (lexic-previous-entry t))
-        :n "E" (cmd! (lexic-return-from-lexic) ; expand
-                     (switch-to-buffer (lexic-get-buffer)))
-        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
-                     (lexic-goto-lexic))
-        :n "C-p" #'lexic-search-history-backwards
-        :n "C-n" #'lexic-search-history-forwards
-        :n "/" (cmd! (call-interactively #'lexic-search))))
-#+end_src
-
-Now let's use this instead of wordnet.
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
-(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
-  "Look up the definition of the word at point (or selection) using `lexic-search'."
-  :override #'+lookup/dictionary-definition
-  (interactive
-   (list (or (doom-thing-at-point-or-region 'word)
-             (read-string "Look up in dictionary: "))
-         current-prefix-arg))
-  (lexic-search identifier nil nil t))
-#+end_src
-
-Lastly, I want to make sure I have some dictionaries set up. I've put a tarball
-of dictionaries online which we can download if none seem to be present on the
-system.
-#+begin_src shell :tangle (if (and (executable-find "sdsv") (not (file-exists-p (concat (or (getenv "STARDICT_DATA_DIR") (concat (or "~/.local/share" (getenv "XDG_DATA_HOME")) "/stardict")) "/dic")))) "setup.sh" "no")
-DIC_FOLDER=${STARDICT_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/stardict}/dic
-if [ ! -d "$DIC_FOLDER" ]; then
-    TMP="$(mktemp -d /tmp/dict-XXX)"
-    cd "$TMP"
-    curl -A "Mozilla/4.0" -o "stardict.tar.gz" "https://tecosaur.com/resources/config/stardict.tar.gz"
-    tar -xf "stardict.tar.gz"
-    rm "stardict.tar.gz"
-    mkdir -p "$DIC_FOLDER"
-    mv * "$DIC_FOLDER"
-fi
-#+end_src
-
-** Mail
-[[xkcd:1467]]
-
-*** Fetching
-The contenders for this seem to be:
-+ [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
-+ [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
-
-From perusing r/emacs the prevailing opinion seems to be that
-+ isync is faster
-+ isync works more reliably
-So let's use that.
-
-The config was straightforward, and is located at [[file:~/.mbsyncrc][~/.mbsyncrc]].
-I'm currently successfully connecting to: Gmail, office365mail, and dovecot.
-I'm also shoving passwords in my [[file:~/.authinfo.gpg][authinfo.gpg]] and fetching them using ~PassCmd~:
-#+begin_src shell :tangle no :eval no
-gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine IMAP_SERCER login EMAIL_ADDR/ {print $NF}'
-#+end_src
-
-We can run ~mbsync -a~ in a systemd service file or something, but we can do
-better than that. [[https://github.com/vsemyonoff/easymail#usage][vsemyonoff/easymail]] seems like the sort of thing we want, but
-is written for =notmuch= unfortunately. We can still use it for inspiration though.
-Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be able to sync just after new
-mail. Unfortunately this means /yet another/ config file :(
-
-We install with
-#+begin_src shell :eval no :tangle (if (or (not (executable-find "mu")) (executable-find "goimapnotify")) "no" "setup.sh")
-go get -u gitlab.com/shackra/goimapnotify
-ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
-#+end_src
-
-Here's the general plan:
-1. Use ~goimapnotify~ to monitor mailboxes
-   This needs it's own set of configs, and =systemd= services, which is a pain. We
-   remove this pain by writing a python script (found below) to setup these
-   config files, and systemd services by parsing the  [[file:~/.mbsyncrc][~/.mbsyncrc]] file.
-2. On new mail, call ~mbsync --pull --new ACCOUNT:BOX~
-   We try to be as specific as possible, so ~mbsync~ returns as soon as possible,
-   and we can /get those emails as soon as possible/.
-3. Try to call ~mu index --lazy-fetch~.
-   This fails if mu4e is already open (due to a write lock on the database), so
-   in that case we just ~touch~ a tmp file (=/tmp/mu_reindex_now=).
-4. Separately, we set up Emacs to check for the existance of
-   =/tmp/mu_reindex_now= once a second while mu4e is
-   running, and (after deleting the file) call ~mu4e-update-index~.
-
-Let's start off by handling the elisp side of things
-
-**** Rebuild mail index while using mu4e
-#+begin_src emacs-lisp
-(after! mu4e
-  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
-    "Location of the reindex request, signaled by existance")
-  (defvar mu4e-reindex-request-min-seperation 5.0
-    "Don't refresh again until this many second have elapsed.
-Prevents a series of redisplays from being called (when set to an appropriate value)")
-
-  (defvar mu4e-reindex-request--file-watcher nil)
-  (defvar mu4e-reindex-request--file-just-deleted nil)
-  (defvar mu4e-reindex-request--last-time 0)
-
-  (defun mu4e-reindex-request--add-watcher ()
-    (setq mu4e-reindex-request--file-just-deleted nil)
-    (setq mu4e-reindex-request--file-watcher
-          (file-notify-add-watch mu4e-reindex-request-file
-                                 '(change)
-                                 #'mu4e-file-reindex-request)))
-
-  (defadvice! mu4e-stop-watching-for-reindex-request ()
-    :after #'mu4e~proc-kill
-    (if mu4e-reindex-request--file-watcher
-        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
-
-  (defadvice! mu4e-watch-for-reindex-request ()
-    :after #'mu4e~proc-start
-    (mu4e-stop-watching-for-reindex-request)
-    (when (file-exists-p mu4e-reindex-request-file)
-      (delete-file mu4e-reindex-request-file))
-    (mu4e-reindex-request--add-watcher))
-
-  (defun mu4e-file-reindex-request (event)
-    "Act based on the existance of `mu4e-reindex-request-file'"
-    (if mu4e-reindex-request--file-just-deleted
-        (mu4e-reindex-request--add-watcher)
-      (when (equal (nth 1 event) 'created)
-        (delete-file mu4e-reindex-request-file)
-        (setq mu4e-reindex-request--file-just-deleted t)
-        (mu4e-reindex-maybe t))))
-
-  (defun mu4e-reindex-maybe (&optional new-request)
-    "Run `mu4e~proc-index' if it's been more than
-`mu4e-reindex-request-min-seperation'seconds since the last request,"
-    (let ((time-since-last-request (- (float-time)
-                                      mu4e-reindex-request--last-time)))
-      (when new-request
-        (setq mu4e-reindex-request--last-time (float-time)))
-      (if (> time-since-last-request mu4e-reindex-request-min-seperation)
-          (mu4e~proc-index nil t)
-        (when new-request
-          (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
-                       #'mu4e-reindex-maybe))))))
-#+end_src
-
-**** Config transcoding & service management
-As long as the =mbsyncrc= file exists, this is as easy as running
-#+begin_src shell :tangle (if (or (not (executable-find "mu")) (file-exists-p "~/.config/imapnotify")) "no" "setup.sh")
-~/.config/doom/misc/mbsync-imapnotify.py
-#+end_src
-
-When run without flags this will perform the following actions
-+ Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
-  - ~IMAPAccount~
-  - ~Host~
-  - ~Port~
-  - ~User~
-  - ~Password~
-  - ~PassCmd~
-  - ~Patterns~
-+ Call ~mbsync --list ACCOUNT~, and filter results according to ~Patterns~
-+ Construct a imapnotify config for each account, with the following hooks
-  - onNewMail :: src_shell{mbsync --pull ACCOUNT:MAILBOX}
-  - onNewMailPost :: src_shell{if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi}
-+ Compare accounts list to previous accounts, enable/disable the relevant
-  systemd services, called with the ~--now~ flag (start/stop services as well)
-
-This script also supports the following flags
-+ ~--status~ to get the status of the relevant systemd services supports =active=,
-  =failing=, and =disabled=
-+ ~--enable~ to enable all relevant systemd services
-+ ~--disable~ to disable all relevant systemd services
-#+begin_src python :tangle misc/mbsync-imapnotify.py :shebang "#!/usr/bin/env python3"
-from pathlib import Path
-import json
-import re
-import shutil
-import subprocess
-import sys
-import fnmatch
-
-mbsyncFile = Path("~/.mbsyncrc").expanduser()
-
-imapnotifyConfigFolder = Path("~/.config/imapnotify/").expanduser()
-imapnotifyConfigFolder.mkdir(exist_ok=True)
-imapnotifyConfigFilename = "notify.conf"
-
-imapnotifyDefault = {
-    "host": "",
-    "port": 993,
-    "tls": True,
-    "tlsOptions": {"rejectUnauthorized": True},
-    "onNewMail": "",
-    "onNewMailPost": "if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi",
-}
-
-
-def stripQuotes(string):
-    if string[0] == '"' and string[-1] == '"':
-        return string[1:-1].replace('\\"', '"')
-
-
-mbsyncInotifyMapping = {
-    "Host": (str, "host"),
-    "Port": (int, "port"),
-    "User": (str, "username"),
-    "Password": (str, "password"),
-    "PassCmd": (stripQuotes, "passwordCmd"),
-    "Patterns": (str, "_patterns"),
-}
-
-oldAccounts = [d.name for d in imapnotifyConfigFolder.iterdir() if d.is_dir()]
-
-currentAccount = ""
-currentAccountData = {}
-
-successfulAdditions = []
-
-
-def processLine(line):
-    newAcc = re.match(r"^IMAPAccount ([^#]+)", line)
-
-    linecontent = re.sub(r"(^|[^\\])#.*", "", line).split(" ", 1)
-    if len(linecontent) != 2:
-        return
-
-    parameter, value = linecontent
-
-    if parameter == "IMAPAccount":
-        if currentAccountNumber > 0:
-            finaliseAccount()
-        newAccount(value)
-    elif parameter in mbsyncInotifyMapping.keys():
-        parser, key = mbsyncInotifyMapping[parameter]
-        currentAccountData[key] = parser(value)
-    elif parameter == "Channel":
-        currentAccountData["onNewMail"] = f"mbsync --pull --new {value}:'%s'"
-
-
-def newAccount(name):
-    global currentAccountNumber
-    global currentAccount
-    global currentAccountData
-    currentAccountNumber += 1
-    currentAccount = name
-    currentAccountData = {}
-    print(f"\n\033[1;32m{currentAccountNumber}\033[0;32m - {name}\033[0;37m")
-
-
-def accountToFoldername(name):
-    return re.sub(r"[^A-Za-z0-9]", "", name)
-
-
-def finaliseAccount():
-    if currentAccountNumber == 0:
-        return
-
-    global currentAccountData
-    try:
-        currentAccountData["boxes"] = getMailBoxes(currentAccount)
-    except subprocess.CalledProcessError as e:
-        print(
-            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
-            + f"`{' '.join(e.cmd)}' returned code {e.returncode}\033[0;37m"
-        )
-        return
-    except subprocess.TimeoutExpired as e:
-        print(
-            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
-            + f"`{' '.join(e.cmd)}' timed out after {e.timeout:.2f} seconds\033[0;37m"
-        )
-        return
-
-    if "_patterns" in currentAccountData:
-        currentAccountData["boxes"] = applyPatternFilter(
-            currentAccountData["_patterns"], currentAccountData["boxes"]
-        )
-
-    # strip not-to-be-exported data
-    currentAccountData = {
-        k: currentAccountData[k] for k in currentAccountData if k[0] != "_"
-    }
-
-    parametersSet = currentAccountData.keys()
-    currentAccountData = {**imapnotifyDefault, **currentAccountData}
-    for key, val in currentAccountData.items():
-        valColor = "\033[0;33m" if key in parametersSet else "\033[0;37m"
-        print(f"  \033[1;37m{key:<13} {valColor}{val}\033[0;37m")
-
-    if (
-            len(currentAccountData["boxes"]) > 15
-            and "@gmail.com" in currentAccountData["username"]
-    ):
-        print(
-            "  \033[1;31mWarning:\033[0;31m Gmail raises an error when more than"
-            + "\033[1;31m15\033[0;31m simultanious connections are attempted."
-            + "\n           You are attempting to monitor "
-            + f"\033[1;31m{len(currentAccountData['boxes'])}\033[0;31m mailboxes.\033[0;37m"
-        )
-
-    configFile = (
-        imapnotifyConfigFolder
-        / accountToFoldername(currentAccount)
-        / imapnotifyConfigFilename
-    )
-    configFile.parent.mkdir(exist_ok=True)
-
-    json.dump(currentAccountData, open(configFile, "w"), indent=2)
-    print(f" \033[0;35mConfig generated and saved to {configFile}\033[0;37m")
-
-    global successfulAdditions
-    successfulAdditions.append(accountToFoldername(currentAccount))
-
-
-def getMailBoxes(account):
-    boxes = subprocess.run(
-        ["mbsync", "--list", account], check=True, stdout=subprocess.PIPE, timeout=10.0
-    )
-    return boxes.stdout.decode("utf-8").strip().split("\n")
-
-
-def applyPatternFilter(pattern, mailboxes):
-    patternRegexs = getPatternRegexes(pattern)
-    return [m for m in mailboxes if testPatternRegexs(patternRegexs, m)]
-
-
-def getPatternRegexes(pattern):
-    def addGlob(b):
-        blobs.append(b.replace('\\"', '"'))
-        return ""
-
-    blobs = []
-    pattern = re.sub(r' ?"([^"]+)"', lambda m: addGlob(m.groups()[0]), pattern)
-    blobs.extend(pattern.split(" "))
-    blobs = [
-        (-1, fnmatch.translate(b[1::])) if b[0] == "!" else (1, fnmatch.translate(b))
-        for b in blobs
-    ]
-    return blobs
-
-
-def testPatternRegexs(regexCond, case):
-    for factor, regex in regexCond:
-        if factor * bool(re.match(regex, case)) < 0:
-            return False
-    return True
-
-
-def processSystemdServices():
-    keptAccounts = [acc for acc in successfulAdditions if acc in oldAccounts]
-    freshAccounts = [acc for acc in successfulAdditions if acc not in oldAccounts]
-    staleAccounts = [acc for acc in oldAccounts if acc not in successfulAdditions]
-
-    if keptAccounts:
-        print(f"\033[1;34m{len(keptAccounts)}\033[0;34m kept accounts:\033[0;37m")
-        restartAccountSystemdServices(keptAccounts)
-
-    if freshAccounts:
-        print(f"\033[1;32m{len(freshAccounts)}\033[0;32m new accounts:\033[0;37m")
-        enableAccountSystemdServices(freshAccounts)
-    else:
-        print(f"\033[0;32mNo new accounts.\033[0;37m")
-
-    notActuallyEnabledAccounts = [
-        acc for acc in successfulAdditions if not getAccountServiceState(acc)["enabled"]
-    ]
-    if notActuallyEnabledAccounts:
-        print(
-            f"\033[1;32m{len(notActuallyEnabledAccounts)}\033[0;32m accounts need re-enabling:\033[0;37m"
-        )
-        enableAccountSystemdServices(notActuallyEnabledAccounts)
-
-    if staleAccounts:
-        print(f"\033[1;33m{len(staleAccounts)}\033[0;33m removed accounts:\033[0;37m")
-        disableAccountSystemdServices(staleAccounts)
-    else:
-        print(f"\033[0;33mNo removed accounts.\033[0;37m")
-
-
-def enableAccountSystemdServices(accounts):
-    for account in accounts:
-        print(f" \033[0;32m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
-        if setSystemdServiceState(
-                "enable", f"goimapnotify@{accountToFoldername(account)}.service"
-        ):
-            print("\033[1;32m enabled")
-
-
-def disableAccountSystemdServices(accounts):
-    for account in accounts:
-        print(f" \033[0;33m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
-        if setSystemdServiceState(
-                "disable", f"goimapnotify@{accountToFoldername(account)}.service"
-        ):
-            print("\033[1;33m disabled")
-
-
-def restartAccountSystemdServices(accounts):
-    for account in accounts:
-        print(f" \033[0;34m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
-        if setSystemdServiceState(
-                "restart", f"goimapnotify@{accountToFoldername(account)}.service"
-        ):
-            print("\033[1;34m restarted")
-
-
-def setSystemdServiceState(state, service):
-    try:
-        enabler = subprocess.run(
-            ["systemctl", "--user", state, service, "--now"],
-            check=True,
-            stderr=subprocess.DEVNULL,
-            timeout=5.0,
-        )
-        return True
-    except subprocess.CalledProcessError as e:
-        print(
-            f" \033[1;31mfailed\033[0;31m to {state}, `{' '.join(e.cmd)}'"
-            + f"returned code {e.returncode}\033[0;37m"
-        )
-    except subprocess.TimeoutExpired as e:
-        print(f" \033[1;31mtimed out after {e.timeout:.2f} seconds\033[0;37m")
-        return False
-
-
-def getAccountServiceState(account):
-    return {
-        state: bool(
-            1
-            - subprocess.run(
-                [
-                    "systemctl",
-                    "--user",
-                    f"is-{state}",
-                    "--quiet",
-                    f"goimapnotify@{accountToFoldername(account)}.service",
-                ],
-                stderr=subprocess.DEVNULL,
-            ).returncode
-        )
-        for state in ("enabled", "active", "failing")
-    }
-
-
-def getAccountServiceStates(accounts):
-    for account in accounts:
-        enabled, active, failing = getAccountServiceState(account).values()
-        print(f"  - \033[1;37m{account:<18}\033[0;37m ", end="", flush=True)
-        if not enabled:
-            print("\033[1;33mdisabled\033[0;37m")
-        elif active:
-            print("\033[1;32mactive\033[0;37m")
-        elif failing:
-            print("\033[1;31mfailing\033[0;37m")
-        else:
-            print("\033[1;35min an unrecognised state\033[0;37m")
-
-
-if len(sys.argv) > 1:
-    if sys.argv[1]   in ["-e", "--enable"]:
-        enableAccountSystemdServices(oldAccounts)
-        exit()
-    elif sys.argv[1] in ["-d", "--disable"]:
-        disableAccountSystemdServices(oldAccounts)
-        exit()
-    elif sys.argv[1] in ["-r", "--restart"]:
-        restartAccountSystemdServices(oldAccounts)
-        exit()
-    elif sys.argv[1] in ["-s", "--status"]:
-        getAccountServiceStates(oldAccounts)
-        exit()
-    elif sys.argv[1] in ["-h", "--help"]:
-        print("""\033[1;37mMbsync to IMAP Notify config generator.\033[0;37m
-
-Usage: mbsync-imapnotify [options]
-
-Options:
-    -e, --enable       enable all services
-    -d, --disable      disable all services
-    -r, --restart      restart all services
-    -s, --status       fetch the status for all services
-    -h, --help         show this help
-""", end='')
-        exit()
-    else:
-        print(f"\033[0;31mFlag {sys.argv[1]} not recognised, try --help\033[0;37m")
-        exit()
-
-
-mbsyncData = open(mbsyncFile, "r").read()
-
-currentAccountNumber = 0
-
-totalAccounts = len(re.findall(r"^IMAPAccount", mbsyncData, re.M))
-
-
-def main():
-    print("\033[1;34m:: MbSync to Go IMAP notify config file creator ::\033[0;37m")
-
-    shutil.rmtree(imapnotifyConfigFolder)
-    imapnotifyConfigFolder.mkdir(exist_ok=False)
-    print("\033[1;30mImap Notify config dir purged\033[0;37m")
-
-    print(f"Identified \033[1;32m{totalAccounts}\033[0;32m accounts.\033[0;37m")
-
-    for line in mbsyncData.split("\n"):
-        processLine(line)
-
-    finaliseAccount()
-
-    print(
-        f"\nConfig files generated for \033[1;36m{len(successfulAdditions)}\033[0;36m"
-        + f" out of \033[1;36m{totalAccounts}\033[0;37m accounts.\n"
-    )
-
-    processSystemdServices()
-
-
-if __name__ == "__main__":
-    main()
-#+end_src
-
-**** Systemd
-We then have a service file to run ~goimapnotify~ on all of these generated config files.
-We'll use a template service file so we can enable a unit per-account.
-#+begin_src systemd :tangle ~/.config/systemd/user/goimapnotify@.service
-[Unit]
-Description=IMAP notifier using IDLE, golang version.
-ConditionPathExists=%h/.config/imapnotify/%I/notify.conf
-After=network.target
-
-[Service]
-ExecStart=%h/.local/bin/goimapnotify -conf %h/.config/imapnotify/%I/notify.conf
-Restart=always
-RestartSec=30
-
-[Install]
-WantedBy=default.target
-#+end_src
-
-Enabling the service is actually taken care of by that python script.
-
-From one or two small tests, this can bring the delay down to as low as five
-seconds, which I'm quite happy with.
-
-This works well for fetching new mail, but we also want to propagate other
-changes (e.g. marking mail as read), and make sure we're up to date at the
-start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so often
---- let's say five minutes.
-
-We can accomplish this via a systemd timer, and service file.
-#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.timer" "no")
-[Unit]
-Description=call mbsync on all accounts every 5 minutes
-ConditionPathExists=%h/.mbsyncrc
-
-[Timer]
-OnBootSec=5m
-OnUnitInactiveSec=5m
-
-[Install]
-WantedBy=default.target
-#+end_src
-
-#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.service" "no")
-[Unit]
-Description=mbsync service, sync all mail
-Documentation=man:mbsync(1)
-ConditionPathExists=%h/.mbsyncrc
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/mbsync -c %h/.mbsyncrc --all
-
-[Install]
-WantedBy=mail.target
-#+end_src
-
-Enabling (and starting) this is as simple as
-#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
-systemctl --user enable mbsync.timer --now
-#+end_src
-*** Indexing/Searching
-This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
-According to the homepage, it's main features are
-+ Fast indexing
-+ Good searching
-+ Support for encrypted and signed messages
-+ Rich CLI tooling
-+ accent/case normalisation
-+ strong integration with email clients
-
-Unfortunately ~mu~ is not currently packaged from me. Oh well, I guess I'm
-building it from source then. I needed to install these packages
-+ =gmime-devel=
-+ =xapian-core-devel=
-
-#+name: Install mu from source
-#+begin_src shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
-cd ~/.local/lib/
-git clone https://github.com/djcb/mu.git
-cd ./mu
-./autogen.sh
-make
-sudo make install
-#+end_src
-
-To check how my version compares to the latest published:
-
-#+begin_src shell :tangle no
-curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-mu --version | head -n 1 | sed 's/.* version //'
-#+end_src
-
-#+results:
-| 1.4.6 |
-| 1.4.6 |
-*** Sending
-[[https://www.nongnu.org/smtpmail/][SmtpMail]] seems to be the 'default' starting point, but that's not packaged for
-me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
-"msmtp vs sendmail" for example) almost every comparison mentioned seems to
-suggest msmtp to be a better choice. I have seen the following points raised
-+ ~sendmail~ has several vulnerabilities
-+ ~sendmail~ is tedious to configure
-+ ~ssmtp~ is no longer maintained
-+ ~msmtp~ is a maintained alternative to ~ssmtp~
-+ ~msmtp~ is easier to configure
-
-The config file is [[file:~/.config/msmtp/config][~/.config/msmtp/config]].
-
-**** System hackery
-Unfortunately, I seem to have run into a [[https://bugs.archlinux.org/task/44994][bug]] present in my packaged version, so
-we'll just install the latest from source.
-
-For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
-I don't think I want it, but in case I do, I'll need to do this.
-#+name: Install gsasl from source
-#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
-export GSASL_VERSION=1.8.1
-cd ~/.local/lib/
-curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
-curl "ftp://ftp.gnu.org/gnu/gsasl/gsasl-$GSASL_VERSION.tar.gz" | tar xz
-cd "./libgsasl-$GSASL_VERSION"
-./configure
-make
-sudo make install
-cd ..
-cd "./gsasl-$VERSION"
-./configure
-make
-sudo make install
-cd ..
-#+end_src
-
-Now actually compile ~msmtp~.
-#+name: Install msmtp from source
-#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
-cd ~/.local/lib/
-git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
-cd ./msmtp
-libtoolize --force
-aclocal
-autoheader
-automake --force-missing --add-missing
-autoconf
-# if using GSASL
-# PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --with-libgsasl
-./configure
-make
-sudo make install
-#+end_src
-
-If using =GSASL= (from earlier) we need to make ensure that the dynamic library in
-in the library path. We can do by adding an executable with the same name
-earlier on in my ~$PATH~.
-#+begin_src sh :tangle no :shebang "#!/bin/sh"
-LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
-#+end_src
-
-*** Mu4e
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle no :noweb-ref mu4e-conf
-:END:
-
-Webmail clients are nice and all, but I still don't believe that SPAs in my
-browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
-and less.
-
-Mailspring is a decent desktop client, quite lightweight for electron
-(apparently the backend is in =C=, which probably helps), however I miss Emacs
-stuff.
-
-While =Notmuch= seems very promising, and I've heard good things about it, it
-doesn't seem to make any changes to the emails themselves. All data is stored in
-Notmuch's database. While this is a very interesting model, occasionally I need
-to pull up an email on say my phone, and so not I want the tagging/folders etc.
-to be applied to the mail itself --- not stored in a database.
-
-On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
-to possess a similarly strong feature set --- and modifies the mail itself (I.e.
-information is accessible without the database). =Mu4e= also seems to have a large
-user base, which tends to correlate with better support and attention.
-
-As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
-#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-#+end_src
-
-Alternatively, I may need to add the =/usr/share/= path.
-#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/share/emacs/site-lisp/mu4e") "yes" "no")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-#+end_src
-
-Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
-(after! mu4e
-  <<mu4e-conf>>
-)
-#+end_src
-
-**** Viewing Mail
-There seem to be some advantages with using Gnus' article view (such as inline
-images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
-the future' for mu4e.
-
-There are some all-the-icons font related issues, so we need to redefine the
-fancy chars, and make sure they get the correct width.
-
-To account for the increase width of each flag character, and make perform a
-few more visual tweaks, we'll tweak the headers a bit
-#+begin_src emacs-lisp
-(setq mu4e-headers-fields
-      '((:flags . 6)
-        (:account-stripe . 2)
-        (:from-or-to . 25)
-        (:folder . 10)
-        (:recipnum . 2)
-        (:subject . 80)
-        (:human-date . 8))
-      +mu4e-min-header-frame-width 142
-      mu4e-headers-date-format "%d/%m/%y"
-      mu4e-headers-time-format "⧖ %H:%M"
-      mu4e-headers-results-limit 1000
-      mu4e-index-cleanup t)
-
-(add-to-list 'mu4e-bookmarks
-             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
-
-(defvar +mu4e-header--folder-colors nil)
-(appendq! mu4e-header-info-custom
-          '((:folder .
-             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-              (lambda (msg)
-                (+mu4e-colorize-str
-                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
-                 '+mu4e-header--folder-colors))))))
-#+end_src
-
-We'll also use a nicer alert icon
-#+begin_src emacs-lisp
-(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
-#+end_src
-**** Sending Mail
-Let's send emails too.
-#+begin_src emacs-lisp
-(setq sendmail-program "/usr/bin/msmtp"
-      send-mail-function #'smtpmail-send-it
-      message-sendmail-f-is-evil t
-      message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
-      message-send-mail-function #'message-send-mail-with-sendmail)
-#+end_src
-
-It's also nice to avoid accidentally sending emails with the wrong account. If
-we can send from the address in the ~To~ field, let's do that. Opening a prompt
-otherwise also seems sensible.
-
-We can register Emacs as a potential email client with a desktop file. We could
-put an =emacsclient ...= entry in the =Exec= field, but I've found this a bit dodgy.
-Instead let's package the =emacslient= behaviour in a little executable
-=~/.local/bin/emacsmail=.
-
-#+begin_src shell :tangle ~/.local/bin/emacsmail :shebang "#!/usr/bin/env sh" :mkdirp yes :tangle-mode (identity #o755) :comments no
-emacsclient -create-frame --alternate-editor='' --no-wait --eval \
-"(progn (x-focus-frame nil) (mu4e-compose-from-mailto \"$1\" t))"
-#+end_src
-
-Now we can just call that in a desktop file.
-
-#+begin_src conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
-[Desktop Entry]
-Name=Mu4e
-GenericName=Compose a new message with Mu4e in Emacs
-Comment=Open mu4e compose window
-MimeType=x-scheme-handler/mailto;
-Exec=emacsmail %u
-Icon=emacs
-Type=Application
-Terminal=false
-Categories=Network;Email;
-StartupWMClass=Emacs
-#+end_src
-
-To register this, just call
-#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
-update-desktop-database ~/.local/share/applications
-#+end_src
-
-We also want to define ~mu4e-compose-from-mailto~.
-#+begin_src emacs-lisp
-(defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
-  (require 'mu4e)
-  (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
-  (let* ((mailto (message-parse-mailto-url mailto-string))
-         (to (cdr (assoc "To" mailto)))
-         (subject (or (cdr (assoc "Subject" mailto)) ""))
-         (body (cdr (assoc "Body" mailto)))
-         (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
-    (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
-      (switch-to-buffer mu4e-main))
-    (mu4e~compose-mail to subject headers)
-    (when body
-      (goto-char (point-min))
-      (if (eq major-mode 'org-msg-edit-mode)
-          (org-msg-goto-body)
-        (mu4e-compose-goto-bottom))
-      (insert body))
-    (goto-char (point-min))
-    (cond ((null to) (search-forward "To: "))
-          ((string= "" subject) (search-forward "Subject: "))
-          (t (if (eq major-mode 'org-msg-edit-mode)
-                 (org-msg-goto-body)
-               (mu4e-compose-goto-bottom))))
-    (font-lock-ensure)
-    (when evil-normal-state-minor-mode
-      (evil-append 1))
-    (when quit-frame-after
-      (add-hook 'kill-buffer-hook
-                `(lambda ()
-                   (when (eq (selected-frame) ,(selected-frame))
-                     (delete-frame)))))))
-#+end_src
-
-It would also be nice to change the name pre-filled in =From:= when drafting.
-#+begin_src emacs-lisp
-(defvar mu4e-from-name "Timothy"
-  "Name used in \"From:\" template.")
-(defadvice! mu4e~draft-from-construct-renamed (orig-fn)
-  "Wrap `mu4e~draft-from-construct-renamed' to change the name."
-  :around #'mu4e~draft-from-construct
-  (let ((user-full-name mu4e-from-name))
-    (funcall orig-fn)))
-#+end_src
-
-We can also use this a signature,
-#+begin_src emacs-lisp
-(setq message-signature mu4e-from-name)
-#+end_src
-**** Working with the Org mailing list
-***** Adding =X-Woof= headers
-
-I'm fairly active on the Org mailing list (ML). The Org ML has a linked
-bug/patch tracker, https://updates.orgmode.org/ managed by [[https://github.com/bzg/woof][Woof]]. However, I feel
-like I spend too much time looking up what the appropriate headers are for
-updating the status of bugs and patches. What I need, is some sort of convenient
-tool. Let's write one.
-
-First, a function that asks what I want to do and returns the appropriate =X-Woof=
-header.
-#+begin_src emacs-lisp
-(defun +mu4e-get-woof-header ()
-  (pcase (read-char
-          (format "\
-%s
-  %s Declare %s Applied %s Aborted
-%s
-  %s Confirm %s Fixed
-%s
-  %s Request %s Resolved
-
-%s remove X-Woof header"
-                  (propertize "Patch" 'face 'outline-3)
-                  (propertize "p" 'face '(bold consult-key))
-                  (propertize "a" 'face '(bold consult-key))
-                  (propertize "c" 'face '(bold consult-key))
-                  (propertize "Bug" 'face 'outline-3)
-                  (propertize "b" 'face '(bold consult-key))
-                  (propertize "f" 'face '(bold consult-key))
-                  (propertize "Help" 'face 'outline-3)
-                  (propertize "h" 'face '(bold consult-key))
-                  (propertize "r" 'face '(bold consult-key))
-                  (propertize "x" 'face '(bold error))))
-    (?p "X-Woof-Patch: confirmed")
-    (?a "X-Woof-Patch: applied")
-    (?c "X-Woof-Patch: cancelled")
-    (?b "X-Woof-Bug: confirmed")
-    (?f "X-Woof-Bug: fixed")
-    (?h "X-Woof-Help: confirmed")
-    (?r "X-Woof-Help: cancelled")
-    (?x 'delete)))
-#+end_src
-
-Now we just need a function which will add such a header to a buffer
-#+begin_src emacs-lisp
-(defun +mu4e-insert-woof-header ()
-  "Insert an X-Woof header into the current message."
-  (interactive)
-  (when-let ((header (+mu4e-get-woof-header)))
-    (save-excursion
-      (goto-char (point-min))
-      (search-forward "--text follows this line--")
-      (unless (eq header 'delete)
-        (beginning-of-line)
-        (insert header "\n")
-        (forward-line -1))
-      (when (re-search-backward "^X-Woof-" nil t)
-        (kill-whole-line)))))
-
-(map! :map mu4e-compose-mode-map
-      :localleader
-      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
-
-(map! :map org-msg-edit-mode-map
-      :after org-msg
-      :localleader
-      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
-#+end_src
-
-Lovely! That should make adding these headers a breeze.
-
-***** Patch workflow
-
-Testing patches from the ML is currently more hassle than it needs to be. Let's
-change that.
-
-#+begin_src emacs-lisp
-(after! mu4e
-  (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
-  (defvar +org-ml-max-age 600
-    "Maximum permissible age in seconds.")
-  (defvar +org-ml--cache-timestamp 0)
-  (defvar +org-ml--cache nil)
-
-  (define-minor-mode +org-ml-patchy-mood-mode
-    "Apply patches to Org in bulk."
-    :global t
-    (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
-      (if +org-ml-patchy-mood-mode
-          (add-to-list 'mu4e-view-actions action)
-        (setq mu4e-view-actions (delete action mu4e-view-actions)))))
-
-  (defun +org-ml-apply-patch (msg)
-    "Apply the patch in the current message to Org."
-    (interactive)
-    (unless msg (setq msg (mu4e-message-at-point)))
-    (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
-      (erase-buffer)
-      (let* ((default-directory +org-ml-target-dir)
-             (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
-        (magit-refresh)
-        (when (not (= 0 exit-code))
-          (+popup/buffer)))))
-
-  (defun +org-ml-current-patches ()
-    "Get the currently open patches, as a list of alists.
-Entries of the form (subject . id)."
-    (delq nil
-          (mapcar
-           (lambda (entry)
-             (unless (plist-get entry :fixed)
-               (cons
-                (format "%-8s  %s"
-                        (propertize
-                         (replace-regexp-in-string "T.*" ""
-                                                   (plist-get entry :date))
-                         'face 'font-lock-doc-face)
-                        (propertize
-                         (replace-regexp-in-string "\\[PATCH\\] ?" ""
-                                                   (plist-get entry :summary))
-                         'face 'font-lock-keyword-face))
-                (plist-get entry :id))))
-           (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
-             (goto-char url-http-end-of-headers)
-             (json-parse-buffer :object-type 'plist)))))
-
-  (defun +org-ml-select-patch-thread ()
-    "Find and apply a proposed Org patch."
-    (interactive)
-    (let* ((current-workspace (+workspace-current))
-           (patches (progn
-                      (when (or (not +org-ml--cache)
-                                (> (- (float-time) +org-ml--cache-timestamp)
-                                   +org-ml-max-age))
-                        (setq +org-ml--cache (+org-ml-current-patches)
-                              +org-ml--cache-timestamp (float-time)))
-                      +org-ml--cache))
-           (msg-id (cdr (assoc (completing-read
-                                "Thread: " (mapcar #'car patches))
-                               patches))))
-      (+workspace-switch +mu4e-workspace-name)
-      (mu4e-view-message-with-message-id msg-id)
-      (unless +org-ml-patchy-mood-mode
-        (add-to-list 'mu4e-view-actions
-                     (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
-
-  (defun +org-ml-transient-mu4e-action (msg)
-    (setq mu4e-view-actions
-          (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
-                  mu4e-view-actions))
-    (+workspace/other)
-    (magit-status +org-ml-target-dir)
-    (+org-ml-apply-patch msg)))
-#+end_src
-
-***** Mail list archive links
-
-The other thing which it's good to be easily able to do is grab a link to the
-current message on https://list.orgmode.org.
-
-#+begin_src emacs-lisp
-(after! mu4e
-  (defun +mu4e-ml-message-link (msg)
-    "Copy the link to MSG on the mailing list archives."
-    (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
-                          (cdar (mu4e-message-field-raw msg :list-post))
-                          (thread-last (append (mu4e-message-field msg :to)
-                                               (mu4e-message-field msg :cc))
-                            (mapcar #'last)
-                            (mapcar #'cdr)
-                            (mapcar (lambda (addr)
-                                      (when (string-match-p "emacs.*@gnu\\.org$" addr)
-                                        (replace-regexp-in-string "@" "." addr))))
-                            (delq nil)
-                            (car))))
-           (msg-url
-            (cond
-             ((string= "emacs-orgmode.gnu.org" list-addr)
-              (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
-             (t (user-error "Mailing list %s not supported" list-addr)))))
-      (message "Link %s copied to clipboard" (gui-select-text msg-url))
-      msg-url))
-
-  (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
-#+end_src
-
-*** Org Msg
-Doom does a fantastic stuff with the defaults with this, so we only make a few
-minor tweaks.
-#+begin_src emacs-lisp
-(setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi %s,\n\n"
-      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
-(map! :map org-msg-edit-mode-map
-      :after org-msg
-      :n "G" #'org-msg-goto-body)
-#+end_src
 * Language configuration
 ** General
 *** File Templates
@@ -6158,16 +4298,15 @@ no modeline.
 #+end_src
 **** Roam
 ***** Basic settings
-I'll just set this to be within =Organisation= folder for now, in the future it
-could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
+Set this to be within =org mode= folders.
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
-(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
+(setq org-roam-directory org-directory)
 #+end_src
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
 Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
-#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
+#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
 ***** Modeline file name
@@ -7194,6 +5333,59 @@ have this be performed automatically with =xenops=.
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   )
+(setq xenops-reveal-on-entry t
+      xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
+      xenops-math-latex-process 'tectonic
+      )
+(setq xenops-math-latex-process-alist
+      '((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f"))
+        (lualatex :programs ("lualatex" "dvisvgm")
+                  :description "dvi > svg"
+                  :use-xcolor t
+                  :message "you need to install the programs: lualatex and dvisvgm."
+                  :image-input-type "dvi"
+                  :image-output-type "svg"
+                  :image-size-adjust (1.0 . 1.0)
+                  :latex-compiler
+                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (tectonic :programs
+                  ("latex" "dvisvgm")
+                  :description "xdv > svg"
+                  :message "you need to install the programs: tectonic and dvisvgm."
+                  :image-input-type "xdv"
+                  :image-output-type "svg"
+                  :image-size-adjust (0.75 . 0.75)
+                  :latex-compiler
+                  ("tectonic -X compile %f -Z shell-escape --outfmt xdv --outdir %o")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
+        (dvisvgm :programs ("xelatex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: xelatex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (0.52 . 0.52)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 #+end_src
 
 ***** Prettier rendering
@@ -8297,6 +6489,7 @@ simply superior combination.
 #+begin_src emacs-lisp
 ;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
 (setq org-latex-pdf-process '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+(setq org-latex-compiler 'xelatex)
 #+end_src
 
 While ~org-latex-pdf-process~ does support a function, and we could use that
@@ -10769,4 +8962,1911 @@ Of course, there's an Emacs mode for this.
   (map! :map beancount-mode-map
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
+#+end_src
+* Applications
+** Input Method
+I can't go out without my favorite input method: [[https://fcitx-im.org/][fcitx5]]
+, especially within Emacs. Let's add =smart-input-source=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! sis)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package sis
+  ;;:hook
+  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
+  :config
+  (sis-ism-lazyman-config "1" "2" 'fcitx5)
+  ;; enable the /cursor color/ mode
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode
+  (sis-global-respect-mode t)
+  ;; enable the /follow context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  ;; (sis-global-inline-mode t)
+  )
+#+end_src
+** Ebooks
+[[xkcd:548]]
+
+For managing my ebooks, I'll hook into the well-established ebook library
+manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
+good option.
+#+begin_src emacs-lisp :tangle packages.el
+(package! calibredb)
+#+end_src
+
+Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
+#+begin_src emacs-lisp :tangle packages.el
+(package! nov)
+#+end_src
+
+Together these should give me a rather good experience reading ebooks.
+
+=calibredb= lets us use calibre through Emacs, because who wouldn't want to use
+something through Emacs?
+#+begin_src emacs-lisp
+(use-package! calibredb
+  :commands calibredb
+  :config
+  (setq calibredb-root-dir "~/nutstore_files/Books"
+        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
+  (map! :map calibredb-show-mode-map
+        :ne "?" #'calibredb-entry-dispatch
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "q" #'calibredb-entry-quit
+        :ne "." #'calibredb-open-dired
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments)
+  (map! :map calibredb-search-mode-map
+        :ne [mouse-3] #'calibredb-search-mouse
+        :ne "RET" #'calibredb-find-file
+        :ne "?" #'calibredb-dispatch
+        :ne "a" #'calibredb-add
+        :ne "A" #'calibredb-add-dir
+        :ne "c" #'calibredb-clone
+        :ne "d" #'calibredb-remove
+        :ne "D" #'calibredb-remove-marked-items
+        :ne "j" #'calibredb-next-entry
+        :ne "k" #'calibredb-previous-entry
+        :ne "l" #'calibredb-virtual-library-list
+        :ne "L" #'calibredb-library-list
+        :ne "n" #'calibredb-virtual-library-next
+        :ne "N" #'calibredb-library-next
+        :ne "p" #'calibredb-virtual-library-previous
+        :ne "P" #'calibredb-library-previous
+        :ne "s" #'calibredb-set-metadata-dispatch
+        :ne "S" #'calibredb-switch-library
+        :ne "o" #'calibredb-find-file
+        :ne "O" #'calibredb-find-file-other-frame
+        :ne "v" #'calibredb-view
+        :ne "V" #'calibredb-open-file-with-default-tool
+        :ne "." #'calibredb-open-dired
+        :ne "b" #'calibredb-catalog-bib-dispatch
+        :ne "e" #'calibredb-export-dispatch
+        :ne "r" #'calibredb-search-refresh-and-clear-filter
+        :ne "R" #'calibredb-search-clear-filter
+        :ne "q" #'calibredb-search-quit
+        :ne "m" #'calibredb-mark-and-forward
+        :ne "f" #'calibredb-toggle-favorite-at-point
+        :ne "x" #'calibredb-toggle-archive-at-point
+        :ne "h" #'calibredb-toggle-highlight-at-point
+        :ne "u" #'calibredb-unmark-and-forward
+        :ne "i" #'calibredb-edit-annotation
+        :ne "DEL" #'calibredb-unmark-and-backward
+        :ne [backtab] #'calibredb-toggle-view
+        :ne [tab] #'calibredb-toggle-view-at-point
+        :ne "M-n" #'calibredb-show-next-entry
+        :ne "M-p" #'calibredb-show-previous-entry
+        :ne "/" #'calibredb-search-live-filter
+        :ne "M-t" #'calibredb-set-metadata--tags
+        :ne "M-a" #'calibredb-set-metadata--author_sort
+        :ne "M-A" #'calibredb-set-metadata--authors
+        :ne "M-T" #'calibredb-set-metadata--title
+        :ne "M-c" #'calibredb-set-metadata--comments))
+#+end_src
+
+Then, to actually read the ebooks we use =nov=.
+
+#+attr_html: :class invertible :alt Excerpt of the GNU Emacs manual viewed through nov.el
+[[https://tecosaur.com/lfs/emacs-config/screenshots/nov.png]]
+
+#+begin_src emacs-lisp
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (map! :map nov-mode-map
+        :n "RET" #'nov-scroll-up)
+
+  (defun doom-modeline-segment--nov-info ()
+    (concat
+     " "
+     (propertize
+      (cdr (assoc 'creator nov-metadata))
+      'face 'doom-modeline-project-parent-dir)
+     " "
+     (cdr (assoc 'title nov-metadata))
+     " "
+     (propertize
+      (format "%d/%d"
+              (1+ nov-documents-index)
+              (length nov-documents))
+      'face 'doom-modeline-info)))
+
+  (advice-add 'nov-render-title :override #'ignore)
+
+  (defun +nov-mode-setup ()
+    (face-remap-add-relative 'variable-pitch
+                             :family "Merriweather"
+                             :height 1.4
+                             :width 'semi-expanded)
+    (face-remap-add-relative 'default :height 1.3)
+    (setq-local line-spacing 0.2
+                next-screen-context-lines 4
+                shr-use-colors nil)
+    (require 'visual-fill-column nil t)
+    (setq-local visual-fill-column-center-text t
+                visual-fill-column-width 81
+                nov-text-width 80)
+    (visual-fill-column-mode 1)
+    (hl-line-mode -1)
+
+    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
+
+    (setq-local mode-line-format
+                `((:eval
+                   (doom-modeline-segment--workspace-name))
+                  (:eval
+                   (doom-modeline-segment--window-number))
+                  (:eval
+                   (doom-modeline-segment--nov-info))
+                  ,(propertize
+                    " %P "
+                    'face 'doom-modeline-buffer-minor-mode)
+                  ,(propertize
+                    " "
+                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
+                    'display `((space
+                                :align-to
+                                (- (+ right right-fringe right-margin)
+                                   ,(* (let ((width (doom-modeline--font-width)))
+                                         (or (and (= width 1) 1)
+                                             (/ width (frame-char-width) 1.0)))
+                                       (string-width
+                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
+                  (:eval (doom-modeline-segment--major-mode)))))
+
+  (add-hook 'nov-mode-hook #'+nov-mode-setup))
+#+end_src
+** Calculator
+Emacs includes the venerable =calc=, which is a pretty impressive RPN (Reverse
+Polish Notation) calculator. However, we can do a bit to improve the experience.
+
+*** Defaults
+
+Any sane person prefers radians and exact values.
+
+#+begin_src emacs-lisp
+(setq calc-angle-mode 'rad  ; radians are rad
+      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
+#+end_src
+
+*** CalcTeX
+
+Everybody knows that mathematical expressions look best with LaTeX, so =calc='s
+ability to create LaTeX representations of its expressions provides a lovely
+opportunity which is taken advantage of in the CalcTeX package.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
+#+end_src
+
+#+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/calc-with-calctex.png]]
+
+We'd like to use CalcTeX too, so let's set that up, and fix some glaring
+inadequacies --- why on earth would you commit a hard-coded path to an executable
+that /only works on your local machine/, consequently breaking the package for
+everyone else!?
+
+#+begin_src emacs-lisp
+(use-package! calctex
+  :commands calctex-mode
+  :init
+  (add-hook 'calc-mode-hook #'calctex-mode)
+  :config
+  (setq calctex-additional-latex-packages "
+\\usepackage[usenames]{xcolor}
+\\usepackage{soul}
+\\usepackage{adjustbox}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{siunitx}
+\\usepackage{cancel}
+\\usepackage{mathtools}
+\\usepackage{mathalpha}
+\\usepackage{xparse}
+\\usepackage{arevmath}"
+        calctex-additional-latex-macros
+        (concat calctex-additional-latex-macros
+                "\n\\let\\evalto\\Rightarrow"))
+  (defadvice! no-messaging-a (orig-fn &rest args)
+    :around #'calctex-default-dispatching-render-process
+    (let ((inhibit-message t) message-log-max)
+      (apply orig-fn args)))
+  ;; Fix hardcoded dvichop path (whyyyyyyy)
+  (let ((vendor-folder (concat (file-truename doom-local-dir)
+                               "straight/"
+                               (format "build-%s" emacs-version)
+                               "/calctex/vendor/")))
+    (setq calctex-dvichop-sty (concat vendor-folder "texd/dvichop")
+          calctex-dvichop-bin (concat vendor-folder "texd/dvichop")))
+  (unless (file-exists-p calctex-dvichop-bin)
+    (message "CalcTeX: Building dvichop binary")
+    (let ((default-directory (file-name-directory calctex-dvichop-bin)))
+      (call-process "make" nil nil nil))))
+#+end_src
+*** Embedded calc
+
+Embedded calc is a lovely feature which let's us use calc to operate on LaTeX
+maths expressions. The standard keybinding is a bit janky however (=C-x * e=), so
+we'll add a localleader-based alternative.
+
+#+begin_src emacs-lisp
+(map! :map calc-mode-map
+      :after calc
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Embedded calc (toggle)" "E" #'calc-embedded)
+(map! :map latex-mode-map
+      :after latex
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+#+end_src
+
+Unfortunately this operates without the (rather informative) calculator and
+trail buffers, but we can advice it that we would rather like those in a side
+panel.
+
+#+begin_src emacs-lisp
+(defvar calc-embedded-trail-window nil)
+(defvar calc-embedded-calculator-window nil)
+
+(defadvice! calc-embedded-with-side-pannel (&rest _)
+  :after #'calc-do-embedded
+  (when calc-embedded-trail-window
+    (ignore-errors
+      (delete-window calc-embedded-trail-window))
+    (setq calc-embedded-trail-window nil))
+  (when calc-embedded-calculator-window
+    (ignore-errors
+      (delete-window calc-embedded-calculator-window))
+    (setq calc-embedded-calculator-window nil))
+  (when (and calc-embedded-info
+             (> (* (window-width) (window-height)) 1200))
+    (let ((main-window (selected-window))
+          (vertical-p (> (window-width) 80)))
+      (select-window
+       (setq calc-embedded-trail-window
+             (if vertical-p
+                 (split-window-horizontally (- (max 30 (/ (window-width) 3))))
+               (split-window-vertically (- (max 8 (/ (window-height) 4)))))))
+      (switch-to-buffer "*Calc Trail*")
+      (select-window
+       (setq calc-embedded-calculator-window
+             (if vertical-p
+                 (split-window-vertically -6)
+               (split-window-horizontally (- (/ (window-width) 2))))))
+      (switch-to-buffer "*Calculator*")
+      (select-window main-window))))
+#+end_src
+** IRC
+=circe= is a client for IRC in Emacs (hey, isn't that a nice project
+name+acronym), and a greek enchantress who turned humans into animals.
+
+Let's use the former to chat to +recluses+ discerning individuals online.
+
+[[xkcd:1782]]
+
+Before we start seeing and sending messages, we need to authenticate with our
+IRC servers. The circe manual provided a snippet for putting some of the auth
+details in =.authinfo.gpg= --- but I think we should go further than that: have
+the entire server info in our authinfo.
+
+First, a reasonable format by which we can specify:
++ server
++ port
++ SASL username
++ SASL password
++ channels to join
+
+We can have these stored like so
+#+begin_src authinfo
+machine chat.freenode.net login USERNAME password PASSWORD port PORT for irc channels emacs,org-mode
+#+end_src
+
+The ~for irc~ bit is used so we can uniquely identify all IRC auth info. By
+omitting the =#= in channel names we can have a list of channels comma-separated
+(no space!) which the secrets API will return as a single string.
+
+#+name: irc-authinfo-reader
+#+begin_src emacs-lisp :tangle no
+(defun auth-server-pass (server)
+  (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
+      (if (functionp secret)
+          (funcall secret) secret)
+    (error "Could not fetch password for host %s" server)))
+
+(defun register-irc-auths ()
+  (require 'circe)
+  (require 'dash)
+  (let ((accounts (-filter (lambda (a) (string= "irc" (plist-get a :for)))
+                           (auth-source-search :require '(:for) :max 10))))
+    (appendq! circe-network-options
+              (mapcar (lambda (entry)
+                        (let* ((host (plist-get entry :host))
+                               (label (or (plist-get entry :label) host))
+                               (_ports (mapcar #'string-to-number
+                                               (s-split "," (plist-get entry :port))))
+                               (port (if (= 1 (length _ports)) (car _ports) _ports))
+                               (user (plist-get entry :user))
+                               (nick (or (plist-get entry :nick) user))
+                               (channels (mapcar (lambda (c) (concat "#" c))
+                                                 (s-split "," (plist-get entry :channels)))))
+                          `(,label
+                            :host ,host :port ,port :nick ,nick
+                            :sasl-username ,user :sasl-password auth-server-pass
+                            :channels ,channels)))
+                      accounts))))
+#+end_src
+
+We'll just call src_elisp{(register-irc-auths)} on a hook when we start Circe
+up.
+
+Now we're ready to go, let's actually wire-up Circe, with one or two
+configuration tweaks.
+#+begin_src emacs-lisp :noweb no-export
+(after! circe
+  (setq-default circe-use-tls t)
+  (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
+        lui-logging-directory "~/.emacs.d/.local/etc/irc"
+        lui-logging-file-format "{buffer}/%Y/%m-%d.txt"
+        circe-format-self-say "{nick:+13s} ┃ {body}")
+
+  (custom-set-faces!
+    '(circe-my-message-face :weight unspecified))
+
+  (enable-lui-logging-globally)
+  (enable-circe-display-images)
+
+  <<org-emph-to-irc>>
+
+  <<circe-emojis>>
+  <<circe-emoji-alists>>
+
+  (defun named-circe-prompt ()
+    (lui-set-prompt
+     (concat (propertize (format "%13s > " (circe-nick))
+                         'face 'circe-prompt-face)
+             "")))
+  (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
+
+  (appendq! all-the-icons-mode-icon-alist
+            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
+              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
+
+<<irc-authinfo-reader>>
+
+(add-transient-hook! #'=irc (register-irc-auths))
+#+end_src
+
+*** Org-style emphasis
+Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control characters.
+#+name: org-emph-to-irc
+#+begin_src emacs-lisp
+(defun lui-org-to-irc ()
+  "Examine a buffer with simple org-mode formatting, and converts the empasis:
+,*bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
+=code= is converted to inverse (highlighted) text."
+  (goto-char (point-min))
+  (while (re-search-forward "\\_<\\(?1:[*/_=]\\)\\(?2:[^[:space:]]\\(?:.*?[^[:space:]]\\)?\\)\\1\\_>" nil t)
+    (replace-match
+     (concat (pcase (match-string 1)
+               ("*" "")
+               ("/" "")
+               ("_" "")
+               ("=" ""))
+             (match-string 2)
+             "") nil nil)))
+
+(add-hook 'lui-pre-input-hook #'lui-org-to-irc)
+#+end_src
+*** Emojis
+Let's setup Circe to use some emojis
+#+name: circe-emojis
+#+begin_src emacs-lisp :tangle no
+(defun lui-ascii-to-emoji ()
+  (goto-char (point-min))
+  (while (re-search-forward "\\( \\)?::?\\([^[:space:]:]+\\):\\( \\)?" nil t)
+    (replace-match
+     (concat
+      (match-string 1)
+      (or (cdr (assoc (match-string 2) lui-emojis-alist))
+          (concat ":" (match-string 2) ":"))
+      (match-string 3))
+     nil nil)))
+
+(defun lui-emoticon-to-emoji ()
+  (dolist (emoticon lui-emoticons-alist)
+    (goto-char (point-min))
+    (while (re-search-forward (concat " " (car emoticon) "\\( \\)?") nil t)
+      (replace-match (concat " "
+                             (cdr (assoc (cdr emoticon) lui-emojis-alist))
+                             (match-string 1))))))
+
+(define-minor-mode lui-emojify
+  "Replace :emojis: and ;) emoticons with unicode emoji chars."
+  :global t
+  :init-value t
+  (if lui-emojify
+      (add-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)
+    (remove-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)))
+#+end_src
+
+Now, some actual emojis to use.
+#+name: circe-emoji-alists
+#+begin_src emacs-lisp :tangle no
+(defvar lui-emojis-alist
+  '(("grinning"                      . "😀")
+    ("smiley"                        . "😃")
+    ("smile"                         . "😄")
+    ("grin"                          . "😁")
+    ("laughing"                      . "😆")
+    ("sweat_smile"                   . "😅")
+    ("joy"                           . "😂")
+    ("rofl"                          . "🤣")
+    ("relaxed"                       . "☺️")
+    ("blush"                         . ":)")
+    ("innocent"                      . "😇")
+    ("slight_smile"                  . ":)")
+    ("upside_down"                   . "🙃")
+    ("wink"                          . "😉")
+    ("relieved"                      . "😌")
+    ("heart_eyes"                    . "😍")
+    ("yum"                           . "😋")
+    ("stuck_out_tongue"              . "😛")
+    ("stuck_out_tongue_closed_eyes"  . "😝")
+    ("stuck_out_tongue_wink"         . "😜")
+    ("zanzy"                         . "🤪")
+    ("raised_eyebrow"                . "🤨")
+    ("monocle"                       . "🧐")
+    ("nerd"                          . "🤓")
+    ("cool"                          . "😎")
+    ("star_struck"                   . "🤩")
+    ("party"                         . "🥳")
+    ("smirk"                         . "😏")
+    ("unamused"                      . "😒")
+    ("disapointed"                   . "😞")
+    ("pensive"                       . "😔")
+    ("worried"                       . "😟")
+    ("confused"                      . "😕")
+    ("slight_frown"                  . "🙁")
+    ("frown"                         . "☹️")
+    ("persevere"                     . "😣")
+    ("confounded"                    . "😖")
+    ("tired"                         . "😫")
+    ("weary"                         . "😩")
+    ("pleading"                      . "🥺")
+    ("tear"                          . "😢")
+    ("cry"                           . "😢")
+    ("sob"                           . "😭")
+    ("triumph"                       . "😤")
+    ("angry"                         . "😠")
+    ("rage"                          . "😡")
+    ("exploding_head"                . "🤯")
+    ("flushed"                       . "😳")
+    ("hot"                           . "🥵")
+    ("cold"                          . "🥶")
+    ("scream"                        . "😱")
+    ("fearful"                       . "😨")
+    ("disapointed"                   . "😰")
+    ("relieved"                      . "😥")
+    ("sweat"                         . "😓")
+    ("thinking"                      . "🤔")
+    ("shush"                         . "🤫")
+    ("liar"                          . "🤥")
+    ("blank_face"                    . "😶")
+    ("neutral"                       . "😐")
+    ("expressionless"                . "😑")
+    ("grimace"                       . "😬")
+    ("rolling_eyes"                  . "🙄")
+    ("hushed"                        . "😯")
+    ("frowning"                      . "😦")
+    ("anguished"                     . "😧")
+    ("wow"                           . "😮")
+    ("astonished"                    . "😲")
+    ("sleeping"                      . "😴")
+    ("drooling"                      . "🤤")
+    ("sleepy"                        . "😪")
+    ("dizzy"                         . "😵")
+    ("zipper_mouth"                  . "🤐")
+    ("woozy"                         . "🥴")
+    ("sick"                          . "🤢")
+    ("vomiting"                      . "🤮")
+    ("sneeze"                        . "🤧")
+    ("mask"                          . "😷")
+    ("bandaged_head"                 . "🤕")
+    ("money_face"                    . "🤑")
+    ("cowboy"                        . "🤠")
+    ("imp"                           . "😈")
+    ("ghost"                         . "👻")
+    ("alien"                         . "👽")
+    ("robot"                         . "🤖")
+    ("clap"                          . "👏")
+    ("thumpup"                       . "👍")
+    ("+1"                            . "👍")
+    ("thumbdown"                     . "👎")
+    ("-1"                            . "👎")
+    ("ok"                            . "👌")
+    ("pinch"                         . "🤏")
+    ("left"                          . "👈")
+    ("right"                         . "👉")
+    ("down"                          . "👇")
+    ("wave"                          . "👋")
+    ("pray"                          . "🙏")
+    ("eyes"                          . "👀")
+    ("brain"                         . "🧠")
+    ("facepalm"                      . "🤦")
+    ("tada"                          . "🎉")
+    ("fire"                          . "🔥")
+    ("flying_money"                  . "💸")
+    ("lighbulb"                      . "💡")
+    ("heart"                         . "❤️")
+    ("sparkling_heart"               . "💖")
+    ("heartbreak"                    . "💔")
+    ("100"                           . "💯")))
+
+(defvar lui-emoticons-alist
+  '((":)"   . "slight_smile")
+    (";)"   . "wink")
+    (":D"   . "smile")
+    ("=D"   . "grin")
+    ("xD"   . "laughing")
+    (";("   . "joy")
+    (":P"   . "stuck_out_tongue")
+    (";D"   . "stuck_out_tongue_wink")
+    ("xP"   . "stuck_out_tongue_closed_eyes")
+    (":("   . "slight_frown")
+    (";("   . "cry")
+    (";'("  . "sob")
+    (">:("  . "angry")
+    (">>:(" . "rage")
+    (":o"   . "wow")
+    (":O"   . "astonished")
+    (":/"   . "confused")
+    (":-/"  . "thinking")
+    (":|"   . "neutral")
+    (":-|"  . "expressionless")))
+#+end_src
+** Newsfeed
+RSS feeds are still a thing. Why not make use of them with =elfeed=.
+I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
+module. Let's just try to patch on the main things I like the look of.
+
+#+attr_html: :class invertible :alt Example elfeed entry
+[[https://tecosaur.com/lfs/emacs-config/screenshots/elfeed.png]]
+
+*** Keybindings
+#+begin_src emacs-lisp
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :n "q" #'+rss/quit
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "p" #'elfeed-show-pdf
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank)
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-pdf
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank)
+#+end_src
+*** Usability enhancements
+#+begin_src emacs-lisp
+(after! elfeed-search
+  (set-evil-initial-state! 'elfeed-search-mode 'normal))
+(after! elfeed-show-mode
+  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+
+(after! evil-snipe
+  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
+  (push 'elfeed-search-mode evil-snipe-disabled-modes))
+#+end_src
+*** Visual enhancements
+#+begin_src emacs-lisp
+(after! elfeed
+
+  (elfeed-org)
+  (use-package! elfeed-link)
+
+  (setq elfeed-search-filter "@1-week-ago +unread"
+        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.6)
+
+  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (defface elfeed-show-author-face `((t (:weight light)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      :foreground 'nil
+                      :weight 'light)
+
+  (defadvice! +rss-elfeed-wrap-h-nicer ()
+    "Enhances an elfeed entry's readability by wrapping it to a width of
+`fill-column' and centering it with `visual-fill-column-mode'."
+    :override #'+rss-elfeed-wrap-h
+    (setq-local truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
+    (let ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (visual-fill-column-mode)
+      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+      (set-buffer-modified-p nil)))
+
+  (defun +rss/elfeed-search-print-entry (entry)
+    "Print ENTRY to the buffer."
+    (let* ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags ",")))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        :left))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         :left)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (setq-local line-spacing 0.2)))
+
+  (defun +rss/elfeed-show-refresh--better-style ()
+    "Update the buffer to match the selected entry, using a mail-style."
+    (interactive)
+    (let* ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry :author))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags ", "))
+           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert "\n")
+      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (when (and author elfeed-show-entry-author)
+        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+      (when tags
+        (insert (format "%s\n"
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      ;; (insert (propertize "Link: " 'face 'message-header-name))
+      ;; (elfeed-insert-link link link)
+      ;; (insert "\n")
+      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize "Enclosure: " 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert "\n"))
+      (insert "\n")
+      (if content
+          (if (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize "(empty)\n" 'face 'italic)))
+      (goto-char (point-min))))
+
+  )
+#+end_src
+*** Functionality enhancements
+#+begin_src emacs-lisp
+(after! elfeed-show
+  (require 'url)
+
+  (defvar elfeed-pdf-dir
+    (expand-file-name "pdfs/"
+                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
+
+  (defvar elfeed-link-pdfs
+    '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
+      ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
+    "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
+
+  (defun elfeed-show-pdf (entry)
+    (interactive
+     (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+    (let ((link (elfeed-entry-link entry))
+          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
+          (title (elfeed-entry-title entry))
+          (file-view-function
+           (lambda (f)
+             (when elfeed-show-entry
+               (elfeed-kill-buffer))
+             (pop-to-buffer (find-file-noselect f))))
+          pdf)
+
+      (let ((file (expand-file-name
+                   (concat (subst-char-in-string ?/ ?, title) ".pdf")
+                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
+                                     elfeed-pdf-dir))))
+        (if (file-exists-p file)
+            (funcall file-view-function file)
+          (dolist (link-pdf elfeed-link-pdfs)
+            (when (and (string-match-p (car link-pdf) link)
+                       (not pdf))
+              (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
+          (if (not pdf)
+              (message "No associated PDF for entry")
+            (message "Fetching %s" pdf)
+            (unless (file-exists-p (file-name-directory file))
+              (make-directory (file-name-directory file) t))
+            (url-copy-file pdf file)
+            (funcall file-view-function file))))))
+
+  )
+#+end_src
+** Dictionary
+Doom already loads =define-word=, and provides it's own definition service using
+[[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
+advantages, namely:
++ speed
++ integration of multiple dictionaries
+[[http://goldendict.org/][GoldenDict]] seems like the best option currently available, but lacks a CLI.
+Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
+To interface with this, we'll use a my =lexic= package.
+
+#+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
+[[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
+
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
+;;(package! lexic :recipe (:local-repo "lisp/lexic"))
+#+end_src
+
+Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
+GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
+
+Since GoldenDict supports StarDict files, I expect this will be a relatively
+painless switch.
+
+We start off by loading =lexic=, then we'll integrate it into pre-existing
+definition functionality (like ~+lookup/dictionary-definition~).
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+  :config
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "E" (cmd! (lexic-return-from-lexic) ; expand
+                     (switch-to-buffer (lexic-get-buffer)))
+        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
+                     (lexic-goto-lexic))
+        :n "C-p" #'lexic-search-history-backwards
+        :n "C-n" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
+#+end_src
+
+Now let's use this instead of wordnet.
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
+(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `lexic-search'."
+  :override #'+lookup/dictionary-definition
+  (interactive
+   (list (or (doom-thing-at-point-or-region 'word)
+             (read-string "Look up in dictionary: "))
+         current-prefix-arg))
+  (lexic-search identifier nil nil t))
+#+end_src
+
+Lastly, I want to make sure I have some dictionaries set up. I've put a tarball
+of dictionaries online which we can download if none seem to be present on the
+system.
+#+begin_src shell :tangle (if (and (executable-find "sdsv") (not (file-exists-p (concat (or (getenv "STARDICT_DATA_DIR") (concat (or "~/.local/share" (getenv "XDG_DATA_HOME")) "/stardict")) "/dic")))) "setup.sh" "no")
+DIC_FOLDER=${STARDICT_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/stardict}/dic
+if [ ! -d "$DIC_FOLDER" ]; then
+    TMP="$(mktemp -d /tmp/dict-XXX)"
+    cd "$TMP"
+    curl -A "Mozilla/4.0" -o "stardict.tar.gz" "https://tecosaur.com/resources/config/stardict.tar.gz"
+    tar -xf "stardict.tar.gz"
+    rm "stardict.tar.gz"
+    mkdir -p "$DIC_FOLDER"
+    mv * "$DIC_FOLDER"
+fi
+#+end_src
+
+** Mail
+[[xkcd:1467]]
+
+*** Fetching
+The contenders for this seem to be:
++ [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
++ [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
+
+From perusing r/emacs the prevailing opinion seems to be that
++ isync is faster
++ isync works more reliably
+So let's use that.
+
+The config was straightforward, and is located at [[file:~/.mbsyncrc][~/.mbsyncrc]].
+I'm currently successfully connecting to: Gmail, office365mail, and dovecot.
+I'm also shoving passwords in my [[file:~/.authinfo.gpg][authinfo.gpg]] and fetching them using ~PassCmd~:
+#+begin_src shell :tangle no :eval no
+gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine IMAP_SERCER login EMAIL_ADDR/ {print $NF}'
+#+end_src
+
+We can run ~mbsync -a~ in a systemd service file or something, but we can do
+better than that. [[https://github.com/vsemyonoff/easymail#usage][vsemyonoff/easymail]] seems like the sort of thing we want, but
+is written for =notmuch= unfortunately. We can still use it for inspiration though.
+Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be able to sync just after new
+mail. Unfortunately this means /yet another/ config file :(
+
+We install with
+#+begin_src shell :eval no :tangle (if (or (not (executable-find "mu")) (executable-find "goimapnotify")) "no" "setup.sh")
+go get -u gitlab.com/shackra/goimapnotify
+ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
+#+end_src
+
+Here's the general plan:
+1. Use ~goimapnotify~ to monitor mailboxes
+   This needs it's own set of configs, and =systemd= services, which is a pain. We
+   remove this pain by writing a python script (found below) to setup these
+   config files, and systemd services by parsing the  [[file:~/.mbsyncrc][~/.mbsyncrc]] file.
+2. On new mail, call ~mbsync --pull --new ACCOUNT:BOX~
+   We try to be as specific as possible, so ~mbsync~ returns as soon as possible,
+   and we can /get those emails as soon as possible/.
+3. Try to call ~mu index --lazy-fetch~.
+   This fails if mu4e is already open (due to a write lock on the database), so
+   in that case we just ~touch~ a tmp file (=/tmp/mu_reindex_now=).
+4. Separately, we set up Emacs to check for the existance of
+   =/tmp/mu_reindex_now= once a second while mu4e is
+   running, and (after deleting the file) call ~mu4e-update-index~.
+
+Let's start off by handling the elisp side of things
+
+**** Rebuild mail index while using mu4e
+#+begin_src emacs-lisp
+(after! mu4e
+  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
+    "Location of the reindex request, signaled by existance")
+  (defvar mu4e-reindex-request-min-seperation 5.0
+    "Don't refresh again until this many second have elapsed.
+Prevents a series of redisplays from being called (when set to an appropriate value)")
+
+  (defvar mu4e-reindex-request--file-watcher nil)
+  (defvar mu4e-reindex-request--file-just-deleted nil)
+  (defvar mu4e-reindex-request--last-time 0)
+
+  (defun mu4e-reindex-request--add-watcher ()
+    (setq mu4e-reindex-request--file-just-deleted nil)
+    (setq mu4e-reindex-request--file-watcher
+          (file-notify-add-watch mu4e-reindex-request-file
+                                 '(change)
+                                 #'mu4e-file-reindex-request)))
+
+  (defadvice! mu4e-stop-watching-for-reindex-request ()
+    :after #'mu4e~proc-kill
+    (if mu4e-reindex-request--file-watcher
+        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
+
+  (defadvice! mu4e-watch-for-reindex-request ()
+    :after #'mu4e~proc-start
+    (mu4e-stop-watching-for-reindex-request)
+    (when (file-exists-p mu4e-reindex-request-file)
+      (delete-file mu4e-reindex-request-file))
+    (mu4e-reindex-request--add-watcher))
+
+  (defun mu4e-file-reindex-request (event)
+    "Act based on the existance of `mu4e-reindex-request-file'"
+    (if mu4e-reindex-request--file-just-deleted
+        (mu4e-reindex-request--add-watcher)
+      (when (equal (nth 1 event) 'created)
+        (delete-file mu4e-reindex-request-file)
+        (setq mu4e-reindex-request--file-just-deleted t)
+        (mu4e-reindex-maybe t))))
+
+  (defun mu4e-reindex-maybe (&optional new-request)
+    "Run `mu4e~proc-index' if it's been more than
+`mu4e-reindex-request-min-seperation'seconds since the last request,"
+    (let ((time-since-last-request (- (float-time)
+                                      mu4e-reindex-request--last-time)))
+      (when new-request
+        (setq mu4e-reindex-request--last-time (float-time)))
+      (if (> time-since-last-request mu4e-reindex-request-min-seperation)
+          (mu4e~proc-index nil t)
+        (when new-request
+          (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
+                       #'mu4e-reindex-maybe))))))
+#+end_src
+
+**** Config transcoding & service management
+As long as the =mbsyncrc= file exists, this is as easy as running
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (file-exists-p "~/.config/imapnotify")) "no" "setup.sh")
+~/.config/doom/misc/mbsync-imapnotify.py
+#+end_src
+
+When run without flags this will perform the following actions
++ Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
+  - ~IMAPAccount~
+  - ~Host~
+  - ~Port~
+  - ~User~
+  - ~Password~
+  - ~PassCmd~
+  - ~Patterns~
++ Call ~mbsync --list ACCOUNT~, and filter results according to ~Patterns~
++ Construct a imapnotify config for each account, with the following hooks
+  - onNewMail :: src_shell{mbsync --pull ACCOUNT:MAILBOX}
+  - onNewMailPost :: src_shell{if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi}
++ Compare accounts list to previous accounts, enable/disable the relevant
+  systemd services, called with the ~--now~ flag (start/stop services as well)
+
+This script also supports the following flags
++ ~--status~ to get the status of the relevant systemd services supports =active=,
+  =failing=, and =disabled=
++ ~--enable~ to enable all relevant systemd services
++ ~--disable~ to disable all relevant systemd services
+#+begin_src python :tangle misc/mbsync-imapnotify.py :shebang "#!/usr/bin/env python3"
+from pathlib import Path
+import json
+import re
+import shutil
+import subprocess
+import sys
+import fnmatch
+
+mbsyncFile = Path("~/.mbsyncrc").expanduser()
+
+imapnotifyConfigFolder = Path("~/.config/imapnotify/").expanduser()
+imapnotifyConfigFolder.mkdir(exist_ok=True)
+imapnotifyConfigFilename = "notify.conf"
+
+imapnotifyDefault = {
+    "host": "",
+    "port": 993,
+    "tls": True,
+    "tlsOptions": {"rejectUnauthorized": True},
+    "onNewMail": "",
+    "onNewMailPost": "if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi",
+}
+
+
+def stripQuotes(string):
+    if string[0] == '"' and string[-1] == '"':
+        return string[1:-1].replace('\\"', '"')
+
+
+mbsyncInotifyMapping = {
+    "Host": (str, "host"),
+    "Port": (int, "port"),
+    "User": (str, "username"),
+    "Password": (str, "password"),
+    "PassCmd": (stripQuotes, "passwordCmd"),
+    "Patterns": (str, "_patterns"),
+}
+
+oldAccounts = [d.name for d in imapnotifyConfigFolder.iterdir() if d.is_dir()]
+
+currentAccount = ""
+currentAccountData = {}
+
+successfulAdditions = []
+
+
+def processLine(line):
+    newAcc = re.match(r"^IMAPAccount ([^#]+)", line)
+
+    linecontent = re.sub(r"(^|[^\\])#.*", "", line).split(" ", 1)
+    if len(linecontent) != 2:
+        return
+
+    parameter, value = linecontent
+
+    if parameter == "IMAPAccount":
+        if currentAccountNumber > 0:
+            finaliseAccount()
+        newAccount(value)
+    elif parameter in mbsyncInotifyMapping.keys():
+        parser, key = mbsyncInotifyMapping[parameter]
+        currentAccountData[key] = parser(value)
+    elif parameter == "Channel":
+        currentAccountData["onNewMail"] = f"mbsync --pull --new {value}:'%s'"
+
+
+def newAccount(name):
+    global currentAccountNumber
+    global currentAccount
+    global currentAccountData
+    currentAccountNumber += 1
+    currentAccount = name
+    currentAccountData = {}
+    print(f"\n\033[1;32m{currentAccountNumber}\033[0;32m - {name}\033[0;37m")
+
+
+def accountToFoldername(name):
+    return re.sub(r"[^A-Za-z0-9]", "", name)
+
+
+def finaliseAccount():
+    if currentAccountNumber == 0:
+        return
+
+    global currentAccountData
+    try:
+        currentAccountData["boxes"] = getMailBoxes(currentAccount)
+    except subprocess.CalledProcessError as e:
+        print(
+            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
+            + f"`{' '.join(e.cmd)}' returned code {e.returncode}\033[0;37m"
+        )
+        return
+    except subprocess.TimeoutExpired as e:
+        print(
+            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
+            + f"`{' '.join(e.cmd)}' timed out after {e.timeout:.2f} seconds\033[0;37m"
+        )
+        return
+
+    if "_patterns" in currentAccountData:
+        currentAccountData["boxes"] = applyPatternFilter(
+            currentAccountData["_patterns"], currentAccountData["boxes"]
+        )
+
+    # strip not-to-be-exported data
+    currentAccountData = {
+        k: currentAccountData[k] for k in currentAccountData if k[0] != "_"
+    }
+
+    parametersSet = currentAccountData.keys()
+    currentAccountData = {**imapnotifyDefault, **currentAccountData}
+    for key, val in currentAccountData.items():
+        valColor = "\033[0;33m" if key in parametersSet else "\033[0;37m"
+        print(f"  \033[1;37m{key:<13} {valColor}{val}\033[0;37m")
+
+    if (
+            len(currentAccountData["boxes"]) > 15
+            and "@gmail.com" in currentAccountData["username"]
+    ):
+        print(
+            "  \033[1;31mWarning:\033[0;31m Gmail raises an error when more than"
+            + "\033[1;31m15\033[0;31m simultanious connections are attempted."
+            + "\n           You are attempting to monitor "
+            + f"\033[1;31m{len(currentAccountData['boxes'])}\033[0;31m mailboxes.\033[0;37m"
+        )
+
+    configFile = (
+        imapnotifyConfigFolder
+        / accountToFoldername(currentAccount)
+        / imapnotifyConfigFilename
+    )
+    configFile.parent.mkdir(exist_ok=True)
+
+    json.dump(currentAccountData, open(configFile, "w"), indent=2)
+    print(f" \033[0;35mConfig generated and saved to {configFile}\033[0;37m")
+
+    global successfulAdditions
+    successfulAdditions.append(accountToFoldername(currentAccount))
+
+
+def getMailBoxes(account):
+    boxes = subprocess.run(
+        ["mbsync", "--list", account], check=True, stdout=subprocess.PIPE, timeout=10.0
+    )
+    return boxes.stdout.decode("utf-8").strip().split("\n")
+
+
+def applyPatternFilter(pattern, mailboxes):
+    patternRegexs = getPatternRegexes(pattern)
+    return [m for m in mailboxes if testPatternRegexs(patternRegexs, m)]
+
+
+def getPatternRegexes(pattern):
+    def addGlob(b):
+        blobs.append(b.replace('\\"', '"'))
+        return ""
+
+    blobs = []
+    pattern = re.sub(r' ?"([^"]+)"', lambda m: addGlob(m.groups()[0]), pattern)
+    blobs.extend(pattern.split(" "))
+    blobs = [
+        (-1, fnmatch.translate(b[1::])) if b[0] == "!" else (1, fnmatch.translate(b))
+        for b in blobs
+    ]
+    return blobs
+
+
+def testPatternRegexs(regexCond, case):
+    for factor, regex in regexCond:
+        if factor * bool(re.match(regex, case)) < 0:
+            return False
+    return True
+
+
+def processSystemdServices():
+    keptAccounts = [acc for acc in successfulAdditions if acc in oldAccounts]
+    freshAccounts = [acc for acc in successfulAdditions if acc not in oldAccounts]
+    staleAccounts = [acc for acc in oldAccounts if acc not in successfulAdditions]
+
+    if keptAccounts:
+        print(f"\033[1;34m{len(keptAccounts)}\033[0;34m kept accounts:\033[0;37m")
+        restartAccountSystemdServices(keptAccounts)
+
+    if freshAccounts:
+        print(f"\033[1;32m{len(freshAccounts)}\033[0;32m new accounts:\033[0;37m")
+        enableAccountSystemdServices(freshAccounts)
+    else:
+        print(f"\033[0;32mNo new accounts.\033[0;37m")
+
+    notActuallyEnabledAccounts = [
+        acc for acc in successfulAdditions if not getAccountServiceState(acc)["enabled"]
+    ]
+    if notActuallyEnabledAccounts:
+        print(
+            f"\033[1;32m{len(notActuallyEnabledAccounts)}\033[0;32m accounts need re-enabling:\033[0;37m"
+        )
+        enableAccountSystemdServices(notActuallyEnabledAccounts)
+
+    if staleAccounts:
+        print(f"\033[1;33m{len(staleAccounts)}\033[0;33m removed accounts:\033[0;37m")
+        disableAccountSystemdServices(staleAccounts)
+    else:
+        print(f"\033[0;33mNo removed accounts.\033[0;37m")
+
+
+def enableAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;32m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+                "enable", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;32m enabled")
+
+
+def disableAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;33m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+                "disable", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;33m disabled")
+
+
+def restartAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;34m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+                "restart", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;34m restarted")
+
+
+def setSystemdServiceState(state, service):
+    try:
+        enabler = subprocess.run(
+            ["systemctl", "--user", state, service, "--now"],
+            check=True,
+            stderr=subprocess.DEVNULL,
+            timeout=5.0,
+        )
+        return True
+    except subprocess.CalledProcessError as e:
+        print(
+            f" \033[1;31mfailed\033[0;31m to {state}, `{' '.join(e.cmd)}'"
+            + f"returned code {e.returncode}\033[0;37m"
+        )
+    except subprocess.TimeoutExpired as e:
+        print(f" \033[1;31mtimed out after {e.timeout:.2f} seconds\033[0;37m")
+        return False
+
+
+def getAccountServiceState(account):
+    return {
+        state: bool(
+            1
+            - subprocess.run(
+                [
+                    "systemctl",
+                    "--user",
+                    f"is-{state}",
+                    "--quiet",
+                    f"goimapnotify@{accountToFoldername(account)}.service",
+                ],
+                stderr=subprocess.DEVNULL,
+            ).returncode
+        )
+        for state in ("enabled", "active", "failing")
+    }
+
+
+def getAccountServiceStates(accounts):
+    for account in accounts:
+        enabled, active, failing = getAccountServiceState(account).values()
+        print(f"  - \033[1;37m{account:<18}\033[0;37m ", end="", flush=True)
+        if not enabled:
+            print("\033[1;33mdisabled\033[0;37m")
+        elif active:
+            print("\033[1;32mactive\033[0;37m")
+        elif failing:
+            print("\033[1;31mfailing\033[0;37m")
+        else:
+            print("\033[1;35min an unrecognised state\033[0;37m")
+
+
+if len(sys.argv) > 1:
+    if sys.argv[1]   in ["-e", "--enable"]:
+        enableAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] in ["-d", "--disable"]:
+        disableAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] in ["-r", "--restart"]:
+        restartAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] in ["-s", "--status"]:
+        getAccountServiceStates(oldAccounts)
+        exit()
+    elif sys.argv[1] in ["-h", "--help"]:
+        print("""\033[1;37mMbsync to IMAP Notify config generator.\033[0;37m
+
+Usage: mbsync-imapnotify [options]
+
+Options:
+    -e, --enable       enable all services
+    -d, --disable      disable all services
+    -r, --restart      restart all services
+    -s, --status       fetch the status for all services
+    -h, --help         show this help
+""", end='')
+        exit()
+    else:
+        print(f"\033[0;31mFlag {sys.argv[1]} not recognised, try --help\033[0;37m")
+        exit()
+
+
+mbsyncData = open(mbsyncFile, "r").read()
+
+currentAccountNumber = 0
+
+totalAccounts = len(re.findall(r"^IMAPAccount", mbsyncData, re.M))
+
+
+def main():
+    print("\033[1;34m:: MbSync to Go IMAP notify config file creator ::\033[0;37m")
+
+    shutil.rmtree(imapnotifyConfigFolder)
+    imapnotifyConfigFolder.mkdir(exist_ok=False)
+    print("\033[1;30mImap Notify config dir purged\033[0;37m")
+
+    print(f"Identified \033[1;32m{totalAccounts}\033[0;32m accounts.\033[0;37m")
+
+    for line in mbsyncData.split("\n"):
+        processLine(line)
+
+    finaliseAccount()
+
+    print(
+        f"\nConfig files generated for \033[1;36m{len(successfulAdditions)}\033[0;36m"
+        + f" out of \033[1;36m{totalAccounts}\033[0;37m accounts.\n"
+    )
+
+    processSystemdServices()
+
+
+if __name__ == "__main__":
+    main()
+#+end_src
+
+**** Systemd
+We then have a service file to run ~goimapnotify~ on all of these generated config files.
+We'll use a template service file so we can enable a unit per-account.
+#+begin_src systemd :tangle ~/.config/systemd/user/goimapnotify@.service
+[Unit]
+Description=IMAP notifier using IDLE, golang version.
+ConditionPathExists=%h/.config/imapnotify/%I/notify.conf
+After=network.target
+
+[Service]
+ExecStart=%h/.local/bin/goimapnotify -conf %h/.config/imapnotify/%I/notify.conf
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target
+#+end_src
+
+Enabling the service is actually taken care of by that python script.
+
+From one or two small tests, this can bring the delay down to as low as five
+seconds, which I'm quite happy with.
+
+This works well for fetching new mail, but we also want to propagate other
+changes (e.g. marking mail as read), and make sure we're up to date at the
+start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so often
+--- let's say five minutes.
+
+We can accomplish this via a systemd timer, and service file.
+#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.timer" "no")
+[Unit]
+Description=call mbsync on all accounts every 5 minutes
+ConditionPathExists=%h/.mbsyncrc
+
+[Timer]
+OnBootSec=5m
+OnUnitInactiveSec=5m
+
+[Install]
+WantedBy=default.target
+#+end_src
+
+#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.service" "no")
+[Unit]
+Description=mbsync service, sync all mail
+Documentation=man:mbsync(1)
+ConditionPathExists=%h/.mbsyncrc
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mbsync -c %h/.mbsyncrc --all
+
+[Install]
+WantedBy=mail.target
+#+end_src
+
+Enabling (and starting) this is as simple as
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
+systemctl --user enable mbsync.timer --now
+#+end_src
+*** Indexing/Searching
+This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
+According to the homepage, it's main features are
++ Fast indexing
++ Good searching
++ Support for encrypted and signed messages
++ Rich CLI tooling
++ accent/case normalisation
++ strong integration with email clients
+
+Unfortunately ~mu~ is not currently packaged from me. Oh well, I guess I'm
+building it from source then. I needed to install these packages
++ =gmime-devel=
++ =xapian-core-devel=
+
+#+name: Install mu from source
+#+begin_src shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
+cd ~/.local/lib/
+git clone https://github.com/djcb/mu.git
+cd ./mu
+./autogen.sh
+make
+sudo make install
+#+end_src
+
+To check how my version compares to the latest published:
+
+#+begin_src shell :tangle no
+curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+mu --version | head -n 1 | sed 's/.* version //'
+#+end_src
+
+#+results:
+| 1.4.6 |
+| 1.4.6 |
+*** Sending
+[[https://www.nongnu.org/smtpmail/][SmtpMail]] seems to be the 'default' starting point, but that's not packaged for
+me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
+"msmtp vs sendmail" for example) almost every comparison mentioned seems to
+suggest msmtp to be a better choice. I have seen the following points raised
++ ~sendmail~ has several vulnerabilities
++ ~sendmail~ is tedious to configure
++ ~ssmtp~ is no longer maintained
++ ~msmtp~ is a maintained alternative to ~ssmtp~
++ ~msmtp~ is easier to configure
+
+The config file is [[file:~/.config/msmtp/config][~/.config/msmtp/config]].
+
+**** System hackery
+Unfortunately, I seem to have run into a [[https://bugs.archlinux.org/task/44994][bug]] present in my packaged version, so
+we'll just install the latest from source.
+
+For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
+I don't think I want it, but in case I do, I'll need to do this.
+#+name: Install gsasl from source
+#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+export GSASL_VERSION=1.8.1
+cd ~/.local/lib/
+curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
+curl "ftp://ftp.gnu.org/gnu/gsasl/gsasl-$GSASL_VERSION.tar.gz" | tar xz
+cd "./libgsasl-$GSASL_VERSION"
+./configure
+make
+sudo make install
+cd ..
+cd "./gsasl-$VERSION"
+./configure
+make
+sudo make install
+cd ..
+#+end_src
+
+Now actually compile ~msmtp~.
+#+name: Install msmtp from source
+#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+cd ~/.local/lib/
+git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
+cd ./msmtp
+libtoolize --force
+aclocal
+autoheader
+automake --force-missing --add-missing
+autoconf
+# if using GSASL
+# PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --with-libgsasl
+./configure
+make
+sudo make install
+#+end_src
+
+If using =GSASL= (from earlier) we need to make ensure that the dynamic library in
+in the library path. We can do by adding an executable with the same name
+earlier on in my ~$PATH~.
+#+begin_src sh :tangle no :shebang "#!/bin/sh"
+LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
+#+end_src
+
+*** Mu4e
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no :noweb-ref mu4e-conf
+:END:
+
+Webmail clients are nice and all, but I still don't believe that SPAs in my
+browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
+and less.
+
+Mailspring is a decent desktop client, quite lightweight for electron
+(apparently the backend is in =C=, which probably helps), however I miss Emacs
+stuff.
+
+While =Notmuch= seems very promising, and I've heard good things about it, it
+doesn't seem to make any changes to the emails themselves. All data is stored in
+Notmuch's database. While this is a very interesting model, occasionally I need
+to pull up an email on say my phone, and so not I want the tagging/folders etc.
+to be applied to the mail itself --- not stored in a database.
+
+On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
+to possess a similarly strong feature set --- and modifies the mail itself (I.e.
+information is accessible without the database). =Mu4e= also seems to have a large
+user base, which tends to correlate with better support and attention.
+
+As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
+#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+#+end_src
+
+Alternatively, I may need to add the =/usr/share/= path.
+#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/share/emacs/site-lisp/mu4e") "yes" "no")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+#+end_src
+
+Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+(after! mu4e
+  <<mu4e-conf>>
+)
+#+end_src
+
+**** Viewing Mail
+There seem to be some advantages with using Gnus' article view (such as inline
+images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
+the future' for mu4e.
+
+There are some all-the-icons font related issues, so we need to redefine the
+fancy chars, and make sure they get the correct width.
+
+To account for the increase width of each flag character, and make perform a
+few more visual tweaks, we'll tweak the headers a bit
+#+begin_src emacs-lisp
+(setq mu4e-headers-fields
+      '((:flags . 6)
+        (:account-stripe . 2)
+        (:from-or-to . 25)
+        (:folder . 10)
+        (:recipnum . 2)
+        (:subject . 80)
+        (:human-date . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format "%d/%m/%y"
+      mu4e-headers-time-format "⧖ %H:%M"
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
+
+(add-to-list 'mu4e-bookmarks
+             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+
+(defvar +mu4e-header--folder-colors nil)
+(appendq! mu4e-header-info-custom
+          '((:folder .
+             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+              (lambda (msg)
+                (+mu4e-colorize-str
+                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                 '+mu4e-header--folder-colors))))))
+#+end_src
+
+We'll also use a nicer alert icon
+#+begin_src emacs-lisp
+(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+#+end_src
+**** Sending Mail
+Let's send emails too.
+#+begin_src emacs-lisp
+(setq sendmail-program "/usr/bin/msmtp"
+      send-mail-function #'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
+      message-send-mail-function #'message-send-mail-with-sendmail)
+#+end_src
+
+It's also nice to avoid accidentally sending emails with the wrong account. If
+we can send from the address in the ~To~ field, let's do that. Opening a prompt
+otherwise also seems sensible.
+
+We can register Emacs as a potential email client with a desktop file. We could
+put an =emacsclient ...= entry in the =Exec= field, but I've found this a bit dodgy.
+Instead let's package the =emacslient= behaviour in a little executable
+=~/.local/bin/emacsmail=.
+
+#+begin_src shell :tangle ~/.local/bin/emacsmail :shebang "#!/usr/bin/env sh" :mkdirp yes :tangle-mode (identity #o755) :comments no
+emacsclient -create-frame --alternate-editor='' --no-wait --eval \
+"(progn (x-focus-frame nil) (mu4e-compose-from-mailto \"$1\" t))"
+#+end_src
+
+Now we can just call that in a desktop file.
+
+#+begin_src conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
+[Desktop Entry]
+Name=Mu4e
+GenericName=Compose a new message with Mu4e in Emacs
+Comment=Open mu4e compose window
+MimeType=x-scheme-handler/mailto;
+Exec=emacsmail %u
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Network;Email;
+StartupWMClass=Emacs
+#+end_src
+
+To register this, just call
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
+update-desktop-database ~/.local/share/applications
+#+end_src
+
+We also want to define ~mu4e-compose-from-mailto~.
+#+begin_src emacs-lisp
+(defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
+  (require 'mu4e)
+  (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
+  (let* ((mailto (message-parse-mailto-url mailto-string))
+         (to (cdr (assoc "To" mailto)))
+         (subject (or (cdr (assoc "Subject" mailto)) ""))
+         (body (cdr (assoc "Body" mailto)))
+         (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
+    (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+      (switch-to-buffer mu4e-main))
+    (mu4e~compose-mail to subject headers)
+    (when body
+      (goto-char (point-min))
+      (if (eq major-mode 'org-msg-edit-mode)
+          (org-msg-goto-body)
+        (mu4e-compose-goto-bottom))
+      (insert body))
+    (goto-char (point-min))
+    (cond ((null to) (search-forward "To: "))
+          ((string= "" subject) (search-forward "Subject: "))
+          (t (if (eq major-mode 'org-msg-edit-mode)
+                 (org-msg-goto-body)
+               (mu4e-compose-goto-bottom))))
+    (font-lock-ensure)
+    (when evil-normal-state-minor-mode
+      (evil-append 1))
+    (when quit-frame-after
+      (add-hook 'kill-buffer-hook
+                `(lambda ()
+                   (when (eq (selected-frame) ,(selected-frame))
+                     (delete-frame)))))))
+#+end_src
+
+It would also be nice to change the name pre-filled in =From:= when drafting.
+#+begin_src emacs-lisp
+(defvar mu4e-from-name "Timothy"
+  "Name used in \"From:\" template.")
+(defadvice! mu4e~draft-from-construct-renamed (orig-fn)
+  "Wrap `mu4e~draft-from-construct-renamed' to change the name."
+  :around #'mu4e~draft-from-construct
+  (let ((user-full-name mu4e-from-name))
+    (funcall orig-fn)))
+#+end_src
+
+We can also use this a signature,
+#+begin_src emacs-lisp
+(setq message-signature mu4e-from-name)
+#+end_src
+**** Working with the Org mailing list
+***** Adding =X-Woof= headers
+
+I'm fairly active on the Org mailing list (ML). The Org ML has a linked
+bug/patch tracker, https://updates.orgmode.org/ managed by [[https://github.com/bzg/woof][Woof]]. However, I feel
+like I spend too much time looking up what the appropriate headers are for
+updating the status of bugs and patches. What I need, is some sort of convenient
+tool. Let's write one.
+
+First, a function that asks what I want to do and returns the appropriate =X-Woof=
+header.
+#+begin_src emacs-lisp
+(defun +mu4e-get-woof-header ()
+  (pcase (read-char
+          (format "\
+%s
+  %s Declare %s Applied %s Aborted
+%s
+  %s Confirm %s Fixed
+%s
+  %s Request %s Resolved
+
+%s remove X-Woof header"
+                  (propertize "Patch" 'face 'outline-3)
+                  (propertize "p" 'face '(bold consult-key))
+                  (propertize "a" 'face '(bold consult-key))
+                  (propertize "c" 'face '(bold consult-key))
+                  (propertize "Bug" 'face 'outline-3)
+                  (propertize "b" 'face '(bold consult-key))
+                  (propertize "f" 'face '(bold consult-key))
+                  (propertize "Help" 'face 'outline-3)
+                  (propertize "h" 'face '(bold consult-key))
+                  (propertize "r" 'face '(bold consult-key))
+                  (propertize "x" 'face '(bold error))))
+    (?p "X-Woof-Patch: confirmed")
+    (?a "X-Woof-Patch: applied")
+    (?c "X-Woof-Patch: cancelled")
+    (?b "X-Woof-Bug: confirmed")
+    (?f "X-Woof-Bug: fixed")
+    (?h "X-Woof-Help: confirmed")
+    (?r "X-Woof-Help: cancelled")
+    (?x 'delete)))
+#+end_src
+
+Now we just need a function which will add such a header to a buffer
+#+begin_src emacs-lisp
+(defun +mu4e-insert-woof-header ()
+  "Insert an X-Woof header into the current message."
+  (interactive)
+  (when-let ((header (+mu4e-get-woof-header)))
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward "--text follows this line--")
+      (unless (eq header 'delete)
+        (beginning-of-line)
+        (insert header "\n")
+        (forward-line -1))
+      (when (re-search-backward "^X-Woof-" nil t)
+        (kill-whole-line)))))
+
+(map! :map mu4e-compose-mode-map
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+#+end_src
+
+Lovely! That should make adding these headers a breeze.
+
+***** Patch workflow
+
+Testing patches from the ML is currently more hassle than it needs to be. Let's
+change that.
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+  (defvar +org-ml-max-age 600
+    "Maximum permissible age in seconds.")
+  (defvar +org-ml--cache-timestamp 0)
+  (defvar +org-ml--cache nil)
+
+  (define-minor-mode +org-ml-patchy-mood-mode
+    "Apply patches to Org in bulk."
+    :global t
+    (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
+      (if +org-ml-patchy-mood-mode
+          (add-to-list 'mu4e-view-actions action)
+        (setq mu4e-view-actions (delete action mu4e-view-actions)))))
+
+  (defun +org-ml-apply-patch (msg)
+    "Apply the patch in the current message to Org."
+    (interactive)
+    (unless msg (setq msg (mu4e-message-at-point)))
+    (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+      (erase-buffer)
+      (let* ((default-directory +org-ml-target-dir)
+             (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
+        (magit-refresh)
+        (when (not (= 0 exit-code))
+          (+popup/buffer)))))
+
+  (defun +org-ml-current-patches ()
+    "Get the currently open patches, as a list of alists.
+Entries of the form (subject . id)."
+    (delq nil
+          (mapcar
+           (lambda (entry)
+             (unless (plist-get entry :fixed)
+               (cons
+                (format "%-8s  %s"
+                        (propertize
+                         (replace-regexp-in-string "T.*" ""
+                                                   (plist-get entry :date))
+                         'face 'font-lock-doc-face)
+                        (propertize
+                         (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                                   (plist-get entry :summary))
+                         'face 'font-lock-keyword-face))
+                (plist-get entry :id))))
+           (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+             (goto-char url-http-end-of-headers)
+             (json-parse-buffer :object-type 'plist)))))
+
+  (defun +org-ml-select-patch-thread ()
+    "Find and apply a proposed Org patch."
+    (interactive)
+    (let* ((current-workspace (+workspace-current))
+           (patches (progn
+                      (when (or (not +org-ml--cache)
+                                (> (- (float-time) +org-ml--cache-timestamp)
+                                   +org-ml-max-age))
+                        (setq +org-ml--cache (+org-ml-current-patches)
+                              +org-ml--cache-timestamp (float-time)))
+                      +org-ml--cache))
+           (msg-id (cdr (assoc (completing-read
+                                "Thread: " (mapcar #'car patches))
+                               patches))))
+      (+workspace-switch +mu4e-workspace-name)
+      (mu4e-view-message-with-message-id msg-id)
+      (unless +org-ml-patchy-mood-mode
+        (add-to-list 'mu4e-view-actions
+                     (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
+
+  (defun +org-ml-transient-mu4e-action (msg)
+    (setq mu4e-view-actions
+          (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
+                  mu4e-view-actions))
+    (+workspace/other)
+    (magit-status +org-ml-target-dir)
+    (+org-ml-apply-patch msg)))
+#+end_src
+
+***** Mail list archive links
+
+The other thing which it's good to be easily able to do is grab a link to the
+current message on https://list.orgmode.org.
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (defun +mu4e-ml-message-link (msg)
+    "Copy the link to MSG on the mailing list archives."
+    (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
+                          (cdar (mu4e-message-field-raw msg :list-post))
+                          (thread-last (append (mu4e-message-field msg :to)
+                                               (mu4e-message-field msg :cc))
+                            (mapcar #'last)
+                            (mapcar #'cdr)
+                            (mapcar (lambda (addr)
+                                      (when (string-match-p "emacs.*@gnu\\.org$" addr)
+                                        (replace-regexp-in-string "@" "." addr))))
+                            (delq nil)
+                            (car))))
+           (msg-url
+            (cond
+             ((string= "emacs-orgmode.gnu.org" list-addr)
+              (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+             (t (user-error "Mailing list %s not supported" list-addr)))))
+      (message "Link %s copied to clipboard" (gui-select-text msg-url))
+      msg-url))
+
+  (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
+#+end_src
+
+*** Org Msg
+Doom does a fantastic stuff with the defaults with this, so we only make a few
+minor tweaks.
+#+begin_src emacs-lisp
+(setq +org-msg-accent-color "#1a5fb4"
+      org-msg-greeting-fmt "\nHi %s,\n\n"
+      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :n "G" #'org-msg-goto-body)
 #+end_src
