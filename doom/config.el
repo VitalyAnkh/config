@@ -84,18 +84,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-		 (lambda nil
-		   (message "%s missing the following fonts: %s"
-			    (propertize "Warning!" 'face
-					'(bold warning))
-			    (mapconcat
-			     (lambda
-			       (font)
-			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather")
-			     ", "))
-		   (sleep-for 0.5)))))
+	     (run-at-time nil nil
+			  (lambda nil
+			    (message "%s missing the following fonts: %s"
+				     (propertize "Warning!" 'face
+						 '(bold warning))
+				     (mapconcat
+				      (lambda
+					(font)
+					(propertize font 'face 'font-lock-variable-name-face))
+				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather")
+				      ", "))
+			    (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -474,7 +474,7 @@
 	  (yes-or-no-p "Would you like to run this script?")
 	(async-shell-command "./setup.sh"))))
   (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil #'+config-run-setup)))
+	     (run-at-time nil nil #'+config-run-setup)))
 ;; Prompt to run setup script:2 ends here
 
 ;; [[file:config.org::*Which-key][Which-key:1]]
@@ -1420,11 +1420,34 @@ SQL can be either the emacsql vector representation, or a string."
   :defer t)
 ;; Systemd:2 ends here
 
+;; [[file:config.org::*Input Method][Input Method:1]]
+(package! sis)
+;; Input Method:1 ends here
+
+;; [[file:config.org::*Input Method][Input Method:2]]
+(use-package sis
+  ;;:hook
+  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
+  :config
+  (sis-ism-lazyman-config "1" "2" 'fcitx5)
+  ;; enable the /cursor color/ mode
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode
+  (sis-global-respect-mode t)
+  ;; enable the /follow context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  ;; (sis-global-inline-mode t)
+  )
+;; Input Method:2 ends here
+
 ;; [[file:config.org::*Ebooks][Ebooks:3]]
 (use-package! calibredb
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Desktop/TEC/Other/Ebooks"
+  (setq calibredb-root-dir "~/nutstore_files/Books"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
   (map! :map calibredb-show-mode-map
         :ne "?" #'calibredb-entry-dispatch
@@ -3572,7 +3595,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
     :priority_d    "[#D]"
     :priority_e    "[#E]")
   (plist-put +ligatures-extra-symbols :name "⁍")
-  ;; (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+  ;; (package! org-pretty-tags)
   ;; (use-package org-pretty-tags
   ;; :config
   ;;  (setq org-pretty-tags-surrogate-strings
@@ -5486,6 +5509,12 @@ Prevents a series of redisplays from being called (when set to an appropriate va
        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 
 (use-package! citar
+  :config
+  (setq citar-bibliography "~/org/library.bib")
+  (setq citar-templates
+      '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
+        (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
+        (note . "#+title: Notes on ${author editor}, ${title}")))
   :when (featurep! :completion vertico))
 
 (use-package! citeproc
@@ -5584,7 +5613,12 @@ Prevents a series of redisplays from being called (when set to an appropriate va
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 
 (use-package! org-fragtog
-  :hook (org-mode . org-fragtog-mode))
+  :hook (org-mode . xenops-mode)
+  :config
+  (add-hook 'latex-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  )
 
 (after! ox-ascii
   (defvar org-ascii-convert-latex t

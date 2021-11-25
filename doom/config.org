@@ -786,7 +786,7 @@ listing the missing fonts should appear for at least half a second.
 
 **** Theme and modeline
 
-I find the ~doom-solarized-light~ variant nicer. Oh, and with the nice selection doom provides there's no reason for me to want the defaults.
+I find the ~doom-solarized-light~ really nice. Oh, and with the nice selection doom provides there's no reason for me to want the defaults.
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-solarized-light)
@@ -1620,7 +1620,7 @@ The =rotate= package just adds the ability to rotate window layouts, but that
 sounds nice to me.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! rotate :pin "4e9ac3ff800880bd9b705794ef0f7c99d72900a6")
+(package! rotate)
 #+end_src
 
 *** Emacs Everywhere
@@ -1695,8 +1695,7 @@ have the following.
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
-  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c" :disable t)
+(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")) :disable t)
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
@@ -1861,7 +1860,7 @@ cargo install git-delta
 
 Now we can make use of the package for this.
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "56cdffd377279589aa0cb1df99455c098f1848cf")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 #+end_src
 
 All that's left is to hook it into magit
@@ -2048,8 +2047,7 @@ That's no problem though, we just need to help TRAMP find them.
 
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
-(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "1699bec4d244a1f62af29fe4eb8b79b6d2fccf7d")
+(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2106,7 +2104,7 @@ Nested snippets are good, so let's enable that.
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
-(package! string-inflection :pin "fd7926ac17293e9124b31f706a4e8f38f6a9b855")
+(package! string-inflection)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2160,7 +2158,7 @@ and colouring :).
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
+(package! info-colors)
 #+end_src
 
 To use this we'll just hook it into =Info=.
@@ -2181,14 +2179,14 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "392ebb115b07f8052d512ec847619387d109edd6")
+(package! modus-themes)
 #+end_src
 
 *** Theme magic
 
 With all our fancy Emacs themes, my terminal is missing out!
 #+begin_src emacs-lisp :tangle packages.el
-(package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
+(package! theme-magic)
 #+end_src
 
 This operates using =pywal=, which is present in some repositories, but most
@@ -2370,7 +2368,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
+(package! keycast)
 #+end_src
 
 Let's just make sure this is lazy-loaded appropriately.
@@ -2399,7 +2397,7 @@ Let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
-(package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
+(package! gif-screencast)
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -2752,7 +2750,7 @@ Now, we just identify the files in question.
 *** xkcd
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! xkcd :pin "66e928706fd660cfdab204c98a347b49c4267bdf")
+(package! xkcd)
 #+end_src
 
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
@@ -3044,7 +3042,7 @@ SQL can be either the emacsql vector representation, or a string."
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+begin_src emacs-lisp :tangle packages.el
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
+(package! selectric-mode)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3070,7 +3068,7 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
+(package! spray)
 #+end_src
 
 It would be nice if Spray's default speed suited me better, and the keybindings
@@ -3107,7 +3105,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "64545671174f9ae307c0bd0aa9f1304d04236421")
+(package! elcord)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3136,7 +3134,7 @@ Now we just need to load it appropriately.
 *** Systemd
 For editing systemd unit files
 #+begin_src emacs-lisp :tangle packages.el
-(package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
+(package! systemd)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3152,14 +3150,39 @@ Anyway, the [[https://github.com/stan-dev/stan-mode][stan-dev/stan-mode]] reposi
 working with Stan code. Let's grab them all.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! stan-mode :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! company-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! eldoc-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! flycheck-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! stan-snippets :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+(package! stan-mode)
+(package! company-stan)
+(package! eldoc-stan)
+(package! flycheck-stan)
+(package! stan-snippets)
 #+end_src
 
 * Applications
+** Input Method
+I can't go out without my favorite input method: [[https://fcitx-im.org/][fcitx5]]
+, especially within Emacs. Let's add =smart-input-source=.
+#+begin_src emacs-lisp
+(package! sis)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package sis
+  ;;:hook
+  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
+  :config
+  (sis-ism-lazyman-config "1" "2" 'fcitx5)
+  ;; enable the /cursor color/ mode
+  (sis-global-cursor-color-mode t)
+  ;; enable the /respect/ mode
+  (sis-global-respect-mode t)
+  ;; enable the /follow context/ mode for all buffers
+  (sis-global-context-mode t)
+  ;; enable the /inline english/ mode for all buffers
+  ;; (sis-global-inline-mode t)
+  )
+#+end_src
 ** Ebooks
 [[xkcd:548]]
 
@@ -3167,12 +3190,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
+(package! calibredb)
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "b3c7cc28e95fe25ce7b443e5f49e2e45360944a3")
+(package! nov)
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -3183,7 +3206,7 @@ something through Emacs?
 (use-package! calibredb
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Desktop/TEC/Other/Ebooks"
+  (setq calibredb-root-dir "~/nutstore_files/Books"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
   (map! :map calibredb-show-mode-map
         :ne "?" #'calibredb-entry-dispatch
@@ -3341,8 +3364,7 @@ opportunity which is taken advantage of in the CalcTeX package.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor"))
-  :pin "784cf911bc96aac0f47d529e8cee96ebd7cc31c9")
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
 #+end_src
 
 #+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
@@ -5225,8 +5247,7 @@ correct package statement needed.
 (unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
-           :files ("lisp/*.el"))
-  :pin "b8012e759bd5bf5da802b0b41734a8fec218323c")
+           :files ("lisp/*.el")))
 #+end_src
 
 **** Visuals
@@ -5236,7 +5257,7 @@ redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! We'll make use of this with =writeroom-mode=.
 #+begin_src emacs-lisp
 (package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
+  :recipe (:host github :repo "Fuco1/org-pretty-table"))
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-pretty-table
@@ -5248,8 +5269,7 @@ While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits whic
 occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp
-(package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "148aa124901ae598f69320e3dcada6325cdc2cf0")
+(package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5268,8 +5288,7 @@ sacrificing visual amenities with the =org-appear= package.
 Speaking of headlines, a nice package for viewing and managing the heading
 structure has come to my attention.
 #+begin_src emacs-lisp
-(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
-  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5286,7 +5305,7 @@ structure has come to my attention.
 ***** Org ref
 Now and then citations need to happen
 #+begin_src emacs-lisp :tangle no
-(package! org-ref :pin "3ca9beb744621f007d932deb8a4197467012c23a")
+(package! org-ref)
 #+end_src
 
 ***** Julia support
@@ -5312,7 +5331,7 @@ Now and then citations need to happen
 
 I like the idea of being able to make HTTP requests with Babel.
 #+begin_src emacs-lisp
-(package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
+(package! ob-http)
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5323,8 +5342,7 @@ I like the idea of being able to make HTTP requests with Babel.
 ***** Transclusion
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
-(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "8cbbade1e3237200c2140741f39ff60176e703e7")
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5338,14 +5356,14 @@ There's a really cool package in development to /transclude/ Org document conten
 ***** Heading graph
 Came across this and ... it's cool
 #+begin_src emacs-lisp
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
 #+end_src
 
 ***** Cooking recipes
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp
-(package! org-chef :pin "a97232b4706869ecae16a1352487a99bc3cf97af")
+(package! org-chef)
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
@@ -5559,6 +5577,12 @@ To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! citar
+  :config
+  (setq citar-bibliography "~/org/library.bib")
+  (setq citar-templates
+      '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
+        (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
+        (note . "#+title: Notes on ${author editor}, ${title}")))
   :when (featurep! :completion vertico))
 
 (use-package! citeproc
@@ -7109,7 +7133,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+;; (package! org-pretty-tags)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7156,15 +7180,20 @@ passed, and so we can override the background as discussed above.
 
 ***** More eager rendering
 What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
-have this be performed automatically with =org-fragtog=.
+have this be performed automatically with =xenops=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-fragtog :pin "479e0a1c3610dfe918d89a5f5a92c8aec37f131d")
+(package! xenops)
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! org-fragtog
-  :hook (org-mode . org-fragtog-mode))
+  :hook (org-mode . xenops-mode)
+  :config
+  (add-hook 'latex-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  )
 #+end_src
 
 ***** Prettier rendering
@@ -10031,7 +10060,7 @@ elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all t
 features that GitHub has.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
+(package! ox-gfm)
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -10669,7 +10698,7 @@ Julia server. The pseudo-fix is rather simple at least
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+(package! graphviz-dot-mode)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -10717,8 +10746,7 @@ I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io
 Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
+(package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
 #+end_src
 
 #+begin_src emacs-lisp
