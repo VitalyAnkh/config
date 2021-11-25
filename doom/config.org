@@ -825,6 +825,11 @@ then =ESC 12 <UP>= gets you exactly where you think.
 ;;(setq display-line-numbers-type 'relative)
 #+end_src
 
+Add this hook to eleminate doom emacs errors:
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
+#+end_src
+
 I'd like some slightly nicer default buffer names
 #+begin_src emacs-lisp
 (setq doom-fallback-buffer-name "► Doom"
@@ -5419,7 +5424,7 @@ It's nice to be able to link to music
 [[xkcd:1319]]
 **** Tweaking defaults
 #+begin_src emacs-lisp
-(setq org-directory "~/.org"                      ; let's put files here
+(setq org-directory "~/org"                       ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
       org-log-done 'time                          ; having the time a item is done sounds convenient
       org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
@@ -5447,7 +5452,7 @@ markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
 specific modes as desired.
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook #'auto-fill-mode)
+;;(add-hook 'text-mode-hook #'auto-fill-mode)
 #+end_src
 
 There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
@@ -5550,9 +5555,9 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "a6926650114a8091f98bff8c7fd00add82043190")
-(package! citeproc :pin "38e70c0a94eeefe86ddefc38dfa8ab2311008774")
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "8f49ccbd337edda01e52da0c75f6a76e2cc976f7")
+(package! citar)
+(package! citeproc)
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5582,7 +5587,7 @@ To improve =org-cite=.
   (setq org-cite-export-processors
         '((t csl))))
 
-  ;;; Org-cite processors
+  ;; Org-cite processors
 (use-package! oc-biblatex
   :after oc)
 
@@ -5752,7 +5757,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-super-agenda :pin "a5557ea4f51571ee9def3cd9a1ab1c38f1a27af7")
+(package! org-super-agenda)
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5841,8 +5846,7 @@ Let's setup some org-capture templates, and make them visually nice to access.
 set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
-  :recipe (:host github :repo "progfolio/doct")
-  :pin "67fc46c8a68989b932bce879fbaa62c6a2456a1f")
+  :recipe (:host github :repo "progfolio/doct"))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5876,7 +5880,7 @@ set up org-capture.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (defvar +org-capture-recipies  "~/org/recipies.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -6164,8 +6168,8 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "cd1aefd56f648d32a25aae672ac1ab90893c0133")
-(package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(package! websocket) ; dependency of `org-roam-ui'
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes

@@ -127,9 +127,13 @@
 ;; Miscellaneous:1 ends here
 
 ;; [[file:config.org::*Miscellaneous][Miscellaneous:2]]
+(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
+;; Miscellaneous:2 ends here
+
+;; [[file:config.org::*Miscellaneous][Miscellaneous:3]]
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
-;; Miscellaneous:2 ends here
+;; Miscellaneous:3 ends here
 
 ;; [[file:config.org::*Asynchronous config tangling][Asynchronous config tangling:1]]
 (defvar +literate-tangle--proc nil)
@@ -2420,7 +2424,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 ;; Plaintext:1 ends here
 
 (after! org
-  (setq org-directory "~/.org"                      ; let's put files here
+  (setq org-directory "~/org"                       ; let's put files here
         org-use-property-inheritance t              ; it's convenient to have properties inherited
         org-log-done 'time                          ; having the time a item is done sounds convenient
         org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
@@ -2437,7 +2441,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
           (:tangle . "no")
           (:comments . "link")))
   (remove-hook 'text-mode-hook #'visual-line-mode)
-  (add-hook 'text-mode-hook #'auto-fill-mode)
+  ;;(add-hook 'text-mode-hook #'auto-fill-mode)
   (map! :map evil-org-mode-map
         :after evil-org
         :n "g <up>" #'org-backward-heading-same-level
@@ -2741,7 +2745,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
   
     (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
   
-    (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+    (defvar +org-capture-recipies  "~/org/recipies.org")
   
     (defun set-org-capture-templates ()
       (setq org-capture-templates
