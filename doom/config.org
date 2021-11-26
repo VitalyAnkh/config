@@ -524,7 +524,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-(emoji +unicode)             ; :)
+;;(emoji +unicode)           ; :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -562,7 +562,7 @@ multiple-cursors             ; editing in many places at once
 ;;parinfer                   ; turn lisp into python, sort of
 rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
-word-wrap                  ; soft wrapping with language-aware indent
+word-wrap                    ; soft wrapping with language-aware indent
 #+end_src
 
 #+name: doom-emacs
@@ -584,7 +584,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 
 #+name: doom-checkers
 #+begin_src emacs-lisp
-syntax                       ; tasing you for every semicolon you forget
+;;syntax                     ; tasing you for every semicolon you forget
 (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
 grammar                      ; tasing grammar mistake every you make
 #+end_src
@@ -630,11 +630,11 @@ associated file.
 #+name: doom-lang
 #+begin_src emacs-lisp
 (agda +local)                ; types of types of types of types...
-;;beancount                  ; mind the GAAP
-cc                         ; C/C++/Obj-C madness
-clojure                    ; java with a lisp
-common-lisp                ; if you've seen one lisp, you've seen them all
-coq                        ; proofs-as-programs
+beancount                    ; mind the GAAP
+cc                           ; C/C++/Obj-C madness
+clojure                      ; java with a lisp
+common-lisp                  ; if you've seen one lisp, you've seen them all
+coq                          ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
 ;;csharp                     ; unity, .NET, and mono shenanigans
 data                         ; config/data formats
@@ -643,7 +643,7 @@ data                         ; config/data formats
 ;;elixir                     ; erlang done right
 ;;elm                        ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
-;;erlang                     ; an elegant language for a more civilized age
+erlang                       ; an elegant language for a more civilized age
 ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
@@ -652,7 +652,7 @@ ess                          ; emacs speaks statistics
 (go +lsp)                    ; the hipster dialect
 (haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
-;;idris                      ;
+idris                        ;
 json                         ; At least it ain't XML
 ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
@@ -662,9 +662,9 @@ json                         ; At least it ain't XML
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
  +fold)                      ; fold the clutter away nicities
-;;lean                       ; proof that mathematicians need help
+lean                         ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
-ledger                     ; an accounting system in Emacs
+;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
@@ -673,6 +673,7 @@ ocaml                        ; an objective camel
 (org                         ; organize your plain life in plain text
  +pretty                     ; yessss my pretties! (nice unicode symbols)
  +dragndrop                  ; drag & drop files/images into org buffers
+ +journal
  +hugo                       ; use Emacs for hugo blogging
  +noter                      ; enhanced PDF notetaking
  +jupyter                    ; ipython/jupyter support for babel
@@ -732,8 +733,8 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer Fira.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "mononoki" :size 22)
-      doom-big-font (font-spec :family "mononoki" :size 36)
+(setq doom-font (font-spec :family "mononoki" :weight 'light :size 22)
+      doom-big-font (font-spec :family "mononoki" :weight 'light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
@@ -1314,7 +1315,7 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
-(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+;;(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
 
@@ -2264,60 +2265,60 @@ For starters, twitter's emojis look nicer than emoji-one.
 Other than that, this is pretty great OOTB 😀.
 
 #+begin_src emacs-lisp
-(setq emojify-emoji-set "twemoji-v2")
+;;(setq emojify-emoji-set "twemoji-v2")
 #+end_src
+
+We can accommodate our preferences by deleting those entries from the emoji hash
+table
 
 One minor annoyance is the use of emojis over the default character
 when the default is actually preferred. This occurs with overlay symbols I use
 in Org mode, such as checkbox state, and a few other miscellaneous cases.
 
-We can accommodate our preferences by deleting those entries from the emoji hash
-table
+#+begin_src emacs-lisp :tangle no
+;; (defvar emojify-disabled-emojis
+;;   '(;; Org
+;;     "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+;;     ;; Terminal powerline
+;;     "✔"
+;;     ;; Box drawing
+;;     "▶" "◀")
+;;   "Characters that should never be affected by `emojify-mode'.")
 
-#+begin_src emacs-lisp
-(defvar emojify-disabled-emojis
-  '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
-    ;; Terminal powerline
-    "✔"
-    ;; Box drawing
-    "▶" "◀")
-  "Characters that should never be affected by `emojify-mode'.")
-
-(defadvice! emojify-delete-from-data ()
-  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
-  :after #'emojify-set-emoji-data
-  (dolist (emoji emojify-disabled-emojis)
-    (remhash emoji emojify-emojis)))
+;; (defadvice! emojify-delete-from-data ()
+;;   "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+;;   :after #'emojify-set-emoji-data
+;;   (dolist (emoji emojify-disabled-emojis)
+;;     (remhash emoji emojify-emojis)))
 #+end_src
 
 Now, it would be good to have a minor mode which allowed you to type ascii/gh
 emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp
-(defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
-  "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
-  (if (or (not emoticon-to-emoji) (= 1 (length text)))
-      (funcall orig-fn emoji text buffer start end target)
-    (delete-region start end)
-    (insert (ht-get emoji "unicode"))))
+#+begin_src emacs-lisp :tangle no
+;; (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
+;;   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
+;;   (if (or (not emoticon-to-emoji) (= 1 (length text)))
+;;       (funcall orig-fn emoji text buffer start end target)
+;;     (delete-region start end)
+;;     (insert (ht-get emoji "unicode"))))
 
-(define-minor-mode emoticon-to-emoji
-  "Write ascii/gh emojis, and have them converted to unicode live."
-  :global nil
-  :init-value nil
-  (if emoticon-to-emoji
-      (progn
-        (setq-local emojify-emoji-styles '(ascii github unicode))
-        (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
-        (unless emojify-mode
-          (emojify-turn-on-emojify-mode)))
-    (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
-    (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
+;; (define-minor-mode emoticon-to-emoji
+;;   "Write ascii/gh emojis, and have them converted to unicode live."
+;;   :global nil
+;;   :init-value nil
+;;   (if emoticon-to-emoji
+;;       (progn
+;;         (setq-local emojify-emoji-styles '(ascii github unicode))
+;;         (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
+;;         (unless emojify-mode
+;;           (emojify-turn-on-emojify-mode)))
+;;     (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
+;;     (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
 #+end_src
 
 This new minor mode of ours will be nice for messages, so let's hook it in for
 Email and IRC.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
 *** Doom modeline
@@ -2334,7 +2335,7 @@ here we are.
 First up I'm going to want a segment for just the buffer file name, and a PDF
 icon. Then we'll redefine two functions used to generate the modeline.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (after! doom-modeline
   (doom-modeline-def-segment buffer-name
     "Display the current buffer's name, without any other information."
@@ -3351,7 +3352,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
-(unpin! org-mode) ; there be bugs
+;;(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -3400,8 +3401,9 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 (use-package! valign
   :init
   (require 'valign)
-  :hook
-  ('org-mode . #'valign-mode))
+  ;; No hook, open this manually when needed
+  ;;:hook
+  ;;('org-mode . #'valign-mode))
 #+end_src
 
 ***** Heading structure
@@ -7675,61 +7677,61 @@ Now all that remains is to hook this into the preamble generation.
 #+end_src
 
 **** Emojis
+First up, we want to detect when emojis are actually present. We can try
+checking the unicode ranges with a collection of =[?-?]= regex groups, but Emojis
+are actually spread around a fair bit and so this isn't very straightfor    ward.
+Instead I can iterate thorough non-ASCII characters and check if any have the
+text property =emojified=.
+
 It would be nice to actually include emojis where used.
 Thanks to =emojify=, we have a folder of emoji images just sitting and waiting to
 be used :).
 
-First up, we want to detect when emojis are actually present. We can try
-checking the unicode ranges with a collection of =[?-?]= regex groups, but Emojis
-are actually spread around a fair bit and so this isn't very straightforward.
-Instead I can iterate thorough non-ASCII characters and check if any have the
-text property =emojified=.
-
-#+begin_src emacs-lisp
-(defun emojify-emoji-in-buffer-p ()
-  "Determine if any emojis are present in the current buffer, using `emojify-mode'."
-  (unless emojify-mode
-    (emojify-mode 1)
-    (emojify-display-emojis-in-region (point-min) (point-max)))
-  (let (emoji-found end)
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (or emoji-found end))
-        (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
-            (when (get-text-property (1- pos) 'emojified)
-              (setq emoji-found t))
-          (setq end t))))
-    emoji-found))
+#+begin_src emacs-lisp :tangle no
+;; (defun emojify-emoji-in-buffer-p ()
+;;   "Determine if any emojis are present in the current buffer, using `emojify-mode'."
+;;   (unless emojify-mode
+;;     (emojify-mode 1)
+;;     (emojify-display-emojis-in-region (point-min) (point-max)))
+;;   (let (emoji-found end)
+;;     (save-excursion
+;;       (goto-char (point-min))
+;;       (while (not (or emoji-found end))
+;;         (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
+;;             (when (get-text-property (1- pos) 'emojified)
+;;               (setq emoji-found t))
+;;           (setq end t))))
+;;     emoji-found))
 #+end_src
 
 Once we know that there are emojis present we can add a bit of preamble to the
 buffer to make insertion easier.
 
-#+begin_src emacs-lisp
-(defun org-latex-emoji-setup ()
-  (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
+#+begin_src emacs-lisp :tangle no
+;; (defun org-latex-emoji-setup ()
+;;   (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
 
-(add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
-(add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
+;; (add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
+;; (add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
 #+end_src
 
 Once again making use of =emojify=, we can generate LaTeX commands for our emojis
 fairly easily.
 
-#+begin_src emacs-lisp
-(defun emojify-latexify-emoji-in-buffer ()
-  (unless emojify-mode
-    (emojify-mode 1)
-    (emojify-display-emojis-in-region (point-min) (point-max)))
-  (let (end)
-    (save-excursion
-      (goto-char (point-min))
-      (while (not end)
-        (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
-            (when-let ((char (get-text-property (1- pos) 'emojify-text))
-                       (emoji (emojify-get-emoji char)))
-              (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
-          (setq end t))))))
+#+begin_src emacs-lisp :tangle no
+;; (defun emojify-latexify-emoji-in-buffer ()
+;;   (unless emojify-mode
+;;     (emojify-mode 1)
+;;     (emojify-display-emojis-in-region (point-min) (point-max)))
+;;   (let (end)
+;;     (save-excursion
+;;       (goto-char (point-min))
+;;       (while (not end)
+;;         (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
+;;             (when-let ((char (get-text-property (1- pos) 'emojify-text))
+;;                        (emoji (emojify-get-emoji char)))
+;;               (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
+;;           (setq end t))))))
 #+end_src
 
 Now we just need to hook this handy function into Org's export.
@@ -7741,16 +7743,16 @@ information outside of src_elisp{(org-latex-generate-features-preamble)}, we'll
 use the same check before attempting to LaTeXify emojis and hope that nothing
 strange happens.
 
-#+begin_src emacs-lisp
-(defun +org-latex-convert-emojis (text backend _info)
-  (when (org-export-derived-backend-p backend 'latex)
-    (with-temp-buffer
-      (insert text)
-      (when (emojify-emoji-in-buffer-p)
-        (emojify-latexify-emoji-in-buffer)
-        (buffer-string)))))
+#+begin_src emacs-lisp :tangle no
+;; (defun +org-latex-convert-emojis (text backend _info)
+;;   (when (org-export-derived-backend-p backend 'latex)
+;;     (with-temp-buffer
+;;       (insert text)
+;;       (when (emojify-emoji-in-buffer-p)
+;;         (emojify-latexify-emoji-in-buffer)
+;;         (buffer-string)))))
 
-(add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+;; (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
 #+end_src
 
 This works fairly nicely, there's just one little QOL upgrade that we can
@@ -7762,7 +7764,7 @@ First, it's worth checking whether =.pdf= graphics files will be prioritised ove
 =.png= files. If so, that would be ideal as no extra effort is required past
 fetching and converting the files.
 
-#+begin_src shell :tangle no :exports both :results output verbatim :wrap example
+#+begin_src shell :exports both :results output verbatim :wrap example
 texdef -t pdflatex -p graphicx Gin@extensions
 #+end_src
 
@@ -7776,59 +7778,60 @@ Fantastic! We can see that =.pdf= actually comes first in the priority list. So
 now we just need to fetch and convert those SVGs --- ideally with a handy
 command to do so for us.
 
-#+begin_src emacs-lisp
-(defun org-latex-emoji-install-vector-graphics ()
-  "Dowload, convert, and install vector emojis for use with LaTeX."
-  (interactive)
-  (let ((dir (org-latex-emoji-install-vector-graphics--download)))
-    (org-latex-emoji-install-vector-graphics--convert dir)
-    (org-latex-emoji-install-vector-graphics--install dir))
-  (message "Vector emojis installed."))
+#+begin_src emacs-lisp :tangle no
+;; (defun org-latex-emoji-install-vector-graphics ()
+;;   "Dowload, convert, and install vector emojis for use with LaTeX."
+;;   (interactive)
+;;   (let ((dir (org-latex-emoji-install-vector-graphics--download)))
+;;     (org-latex-emoji-install-vector-graphics--convert dir)
+;;     (org-latex-emoji-install-vector-graphics--install dir))
+;;   (message "Vector emojis installed."))
 
-(defun org-latex-emoji-install-vector-graphics--download ()
-  (message "Locating latest emojis...")
-  (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
-         (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
-         (twemoji-dest-folder (make-temp-file "twemoji-" t)))
-    (message "Downloading Twemoji v%s" twemoji-version)
-    (let ((default-directory twemoji-dest-folder))
-      (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
-      (message "Unzipping")
-      (call-process "unzip" nil nil nil "twemoji.zip")
-      (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
+;; (defun org-latex-emoji-install-vector-graphics--download ()
+;;   (message "Locating latest emojis...")
+;;   (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
+;;          (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
+;;          (twemoji-dest-folder (make-temp-file "twemoji-" t)))
+;;     (message "Downloading Twemoji v%s" twemoji-version)
+;;     (let ((default-directory twemoji-dest-folder))
+;;       (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
+;;       (message "Unzipping")
+;;       (call-process "unzip" nil nil nil "twemoji.zip")
+;;       (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
 
-(defun org-latex-emoji-install-vector-graphics--convert (dir)
-  (let ((default-directory dir))
-    (if (executable-find "cairosvg") ; cairo's PDFs are ~10% smaller
-        (let* ((images (directory-files dir nil ".*.svg"))
-               (num-images (length images))
-               (index 0)
-               (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
-               (threads 0))
-          (while (< index num-images)
-            (setf threads (1+ threads))
-            (message "Converting emoji %d/%d (%s)" (1+ index) num-images (nth index images))
-            (make-process :name "cairosvg"
-                          :command (list "cairosvg" (nth index images) "-o" (concat (file-name-sans-extension (nth index images)) ".pdf"))
-                          :sentinel (lambda (proc msg)
-                                      (when (memq (process-status proc) '(exit signal))
-                                        (setf threads (1- threads)))))
-            (setq index (1+ index))
-            (while (> threads max-threads)
-              (sleep-for 0.01)))
-          (while (> threads 0)
-            (sleep-for 0.01))
-          (message "Finished conversion!")))
-    (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
+;; (defun org-latex-emoji-install-vector-graphics--convert (dir)
+;;   (let ((default-directory dir))
+;;     (if (executable-find "cairosvg") ; cairo's PDFs are ~10% smaller
+;;         (let* ((images (directory-files dir nil ".*.svg"))
+;;                (num-images (length images))
+;;                (index 0)
+;;                (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
+;;                (threads 0))
+;;           (while (< index num-images)
+;;             (setf threads (1+ threads))
+;;             (message "Converting emoji %d/%d (%s)" (1+ index) num-images (nth index images))
+;;             (make-process :name "cairosvg"
+;;                           :command (list "cairosvg" (nth index images) "-o" (concat (file-name-sans-extension (nth index images)) ".pdf"))
+;;                           :sentinel (lambda (proc msg)
+;;                                       (when (memq (process-status proc) '(exit signal))
+;;                                         (setf threads (1- threads)))))
+;;             (setq index (1+ index))
+;;             (while (> threads max-threads)
+;;               (sleep-for 0.01)))
+;;           (while (> threads 0)
+;;             (sleep-for 0.01))
+;;           (message "Finished conversion!")))
+;;     (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
 
-(defun org-latex-emoji-install-vector-graphics--install (dir)
-  (message "Installing vector emojis into emoji directory")
-  (let ((images (directory-files dir t ".*.pdf"))
-        (emoji-dir (concat (emojify-image-dir) "/")))
-    (mapcar
-     (lambda (image)
-       (rename-file image emoji-dir t))
-     images)))
+;; (defun org-latex-emoji-install-vector-graphics--install (dir)
+;;   (message "Installing vector emojis into emoji directory")
+;;   (let ((images (directory-files dir t ".*.pdf"))
+;;         (emoji-dir (concat (emojify-image-dir) "/")))
+;;     (mapcar
+;;      (lambda (image)
+;;        (rename-file image emoji-dir t))
+;;      images)))
+
 #+end_src
 
 **** Remove non-ascii chars
@@ -7870,51 +7873,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX       |
-|-----------+-------------|
-| ɑ         | \(\alpha\)       |
-| β         | \(\beta\)       |
-| γ         | \(\gamma\)       |
-| δ         | \(\delta\)       |
-| ε         | \(\epsilon\)       |
-| ϵ         | \(\varepsilon\)       |
-| ζ         | \(\zeta\)       |
-| η         | \(\eta\)       |
-| θ         | \(\theta\)       |
-| ϑ         | \(\vartheta\)       |
-| ι         | \(\iota\)       |
-| κ         | \(\kappa\)       |
-| λ         | \(\lambda\)       |
-| μ         | \(\mu\)       |
-| ν         | \(\nu\)       |
-| ξ         | \(\xi\)       |
-| π         | \(\pi\)       |
-| ϖ         | \(\varpi\)       |
-| ρ         | \(\rho\)       |
+| Character | LaTeX |
+|-----------+-------|
+| ɑ         | \(\alpha\) |
+| β         | \(\beta\) |
+| γ         | \(\gamma\) |
+| δ         | \(\delta\) |
+| ε         | \(\epsilon\) |
+| ϵ         | \(\varepsilon\) |
+| ζ         | \(\zeta\) |
+| η         | \(\eta\) |
+| θ         | \(\theta\) |
+| ϑ         | \(\vartheta\) |
+| ι         | \(\iota\) |
+| κ         | \(\kappa\) |
+| λ         | \(\lambda\) |
+| μ         | \(\mu\) |
+| ν         | \(\nu\) |
+| ξ         | \(\xi\) |
+| π         | \(\pi\) |
+| ϖ         | \(\varpi\) |
+| ρ         | \(\rho\) |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\)       |
-| ς         | \(\varsigma\)       |
-| τ         | \(\tau\)       |
-| υ         | \(\upsilon\)       |
-| ϕ         | \(\phi\)       |
-| φ         | \(\varphi\)       |
-| ψ         | \(\psi\)       |
-| ω         | \(\omega\)       |
-| Γ         | \(\Gamma\)       |
-| Δ         | \(\Delta\)       |
-| Θ         | \(\Theta\)       |
-| Λ         | \(\Lambda\)       |
-| Ξ         | \(\Xi\)       |
-| Π         | \(\Pi\)       |
-| Σ         | \(\Sigma\)       |
-| Υ         | \(\Upsilon\)       |
-| Φ         | \(\Phi\)       |
-| Ψ         | \(\Psi\)       |
-| Ω         | \(\Omega\)       |
-| א         | \(\aleph\)       |
-| ב         | \(\beth\)       |
+| σ         | \(\sigma\) |
+| ς         | \(\varsigma\) |
+| τ         | \(\tau\) |
+| υ         | \(\upsilon\) |
+| ϕ         | \(\phi\) |
+| φ         | \(\varphi\) |
+| ψ         | \(\psi\) |
+| ω         | \(\omega\) |
+| Γ         | \(\Gamma\) |
+| Δ         | \(\Delta\) |
+| Θ         | \(\Theta\) |
+| Λ         | \(\Lambda\) |
+| Ξ         | \(\Xi\) |
+| Π         | \(\Pi\) |
+| Σ         | \(\Sigma\) |
+| Υ         | \(\Upsilon\) |
+| Φ         | \(\Phi\) |
+| Ψ         | \(\Psi\) |
+| Ω         | \(\Omega\) |
+| א         | \(\aleph\) |
+| ב         | \(\beth\) |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\)       |
+| ג         | \(\gimel\) |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

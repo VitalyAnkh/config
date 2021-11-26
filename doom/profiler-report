@@ -1,0 +1,85 @@
+                                                              1,324,450,104  88% - timer-event-handler
+                                                              1,324,449,936  88%  - apply
+                                                              1,324,400,293  88%   - TeX-fold-buffer
+                                                              1,324,381,637  88%    - jit-lock-fontify-now
+                                                              1,324,381,637  88%     - jit-lock--run-functions
+                                                              1,324,381,637  88%      - #<compiled 0x19b679eb02c5fafd>
+                                                                934,099,504  62%       - font-lock-fontify-region
+                                                                934,099,504  62%        - font-lock-default-fontify-region
+                                                                933,565,331  62%         - font-lock-fontify-keywords-region
+                                                                714,736,943  47%          - xenops-src-apply-syntax-highlighting
+                                                                614,011,175  40%           - xenops-src-parse-at-point
+                                                                569,699,981  38%            - org-mode
+                                                                473,737,984  31%             - run-mode-hooks
+                                                                473,735,872  31%              - apply
+                                                                473,733,760  31%               - run-hooks
+                                                                473,733,760  31%                - apply
+                                                                473,728,480  31%                 - doom-run-hooks
+                                                                473,728,480  31%                  - let
+                                                                473,728,480  31%                   - while
+                                                                473,728,480  31%                    + let
+                                                                      1,056   0%              + run-hooks
+                                                                 37,691,604   2%             + org-install-agenda-files-menu
+                                                                 25,113,799   1%             + org-set-regexps-and-options
+                                                                 12,475,781   0%             + org-element-cache-reset
+                                                                  6,407,495   0%             + org-indent-mode
+                                                                  3,889,872   0%             + org-macro-initialize-templates
+                                                                  3,673,112   0%             + org-set-startup-visibility
+                                                                  2,368,587   0%             + org-persist-read
+                                                                     69,952   0%             + outline-mode
+                                                                     14,672   0%               org-set-font-lock-defaults
+                                                                     10,560   0%             + org--set-faces-extend
+                                                                      7,527   0%             + define-key
+                                                                      3,168   0%               org-find-invisible-foreground
+                                                                      1,056   0%               set-face-foreground
+                                                                 29,202,727   1%            + org-babel-get-src-block-info
+                                                                 12,663,026   0%            + org-element-context
+                                                                  1,480,808   0%            + org-narrow-to-block
+                                                                    574,600   0%            + xenops-parse-element-at-point
+                                                                     14,624   0%            + #<compiled -0x1c8b064bd8345413>
+                                                                      5,280   0%            + xenops-util-plist-update
+                                                                      1,137   0%              generate-new-buffer
+                                                                 94,334,428   6%           + org-src-font-lock-fontify-block
+                                                                    983,035   0%           + xenops-minted-parse-at-point
+                                                                 99,809,648   6%          + org-fontify-inline-src-blocks
+                                                                 76,925,281   5%          + org-do-latex-and-related
+                                                                 40,272,919   2%          + org-fontify-meta-lines-and-blocks
+                                                                    856,369   0%          + org-do-emphasis-faces
+                                                                    582,264   0%            org-fontify-entities
+                                                                    140,882   0%          + org-activate-links
+                                                                     36,008   0%          + xenops-math-inline-math-font-lock-handler
+                                                                     32,736   0%            prettify-symbols--compose-symbol
+                                                                      9,208   0%          + org-superstar--prettify-ibullets
+                                                                      8,184   0%            org-superstar--prettify-other-lbullet
+                                                                      1,120   0%          + org-fontify-drawers
+                                                                      1,024   0%          + org-activate-footnote-links
+                                                                      1,024   0%          + org-superstar--prettify-main-hbullet
+                                                                        560   0%          + org-fontify-macros
+                                                                        170   0%          + progn
+                                                                390,282,133  26%       + valign-region
+                                                                     18,656   0%      TeX-fold-clearout-region
+                                                                     17,327   0%   + sis--auto-refresh-timer-function
+                                                                     11,416   0%   + sis--respect-post-cmd-timer-fn
+                                                                      7,397   0%   + display-time-event-handler
+                                                                      7,195   0%   + gcmh-idle-garbage-collect
+                                                                      5,924   0%   + sis--auto-refresh-timer-restart
+                                                                         48   0%    timer-inc-time
+                                                                164,075,032  10% + command-execute
+                                                                  7,070,816   0% + evil-normal-post-command
+                                                                  1,779,258   0% + flycheck-perform-deferred-syntax-check
+                                                                    505,050   0% + flyspell-post-command-hook
+                                                                    217,242   0% + redisplay_internal (C function)
+                                                                     35,374   0% + org-appear--post-cmd
+                                                                     28,698   0% + ...
+                                                                     14,784   0% + emojify-update-visible-emojis-background-after-command
+                                                                      5,280   0% + winner-save-old-configurations
+                                                                      4,080   0% + gcmh-register-idle-gc
+                                                                      2,433   0% + doom-first-input-hook-init-on-pre-command-hook-h
+                                                                      1,696   0% + sis--respect-post-command-handler
+                                                                      1,351   0% + undefined
+                                                                      1,056   0% + sp--save-pre-command-state
+                                                                        320   0%   flycheck-maybe-display-error-at-point-soon
+                                                                        192   0%   evil-esc
+                                                                         42   0% + tooltip-show-help-non-mode
+                                                                         24   0% + eldoc-schedule-timer
+                                                                         21   0%   substitute-command-keys

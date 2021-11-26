@@ -18,7 +18,7 @@
        doom                         ; what makes DOOM look the way it does
        doom-dashboard               ; a nifty splash screen for Emacs
        ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-       (emoji +unicode)             ; :)
+       ;;(emoji +unicode)           ; :)
        ;;fill-column                ; a `fill-column' indicator
        hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        ;;hydra                      ; quick documentation for related commands
@@ -54,7 +54,7 @@
        ;;parinfer                   ; turn lisp into python, sort of
        rotate-text                  ; cycle region at point between text candidates
        snippets                     ; my elves. They type so I don't have to
-       word-wrap                  ; soft wrapping with language-aware indent
+       word-wrap                    ; soft wrapping with language-aware indent
 
        :emacs
        (dired +icons)               ; making dired pretty [functional]
@@ -70,7 +70,7 @@
        ;;vterm                      ; the best terminal emulation in Emacs
 
        :checkers
-       syntax                       ; tasing you for every semicolon you forget
+       ;;syntax                     ; tasing you for every semicolon you forget
        (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
        grammar                      ; tasing grammar mistake every you make
 
@@ -105,11 +105,11 @@
 
        :lang
        (agda +local)                ; types of types of types of types...
-       ;;beancount                  ; mind the GAAP
-       cc                         ; C/C++/Obj-C madness
-       clojure                    ; java with a lisp
-       common-lisp                ; if you've seen one lisp, you've seen them all
-       coq                        ; proofs-as-programs
+       beancount                    ; mind the GAAP
+       cc                           ; C/C++/Obj-C madness
+       clojure                      ; java with a lisp
+       common-lisp                  ; if you've seen one lisp, you've seen them all
+       coq                          ; proofs-as-programs
        ;;crystal                    ; ruby at the speed of c
        ;;csharp                     ; unity, .NET, and mono shenanigans
        data                         ; config/data formats
@@ -118,7 +118,7 @@
        ;;elixir                     ; erlang done right
        ;;elm                        ; care for a cup of TEA?
        emacs-lisp                   ; drown in parentheses
-       ;;erlang                     ; an elegant language for a more civilized age
+       erlang                       ; an elegant language for a more civilized age
        ess                          ; emacs speaks statistics
        ;;faust                      ; dsp, but you get to keep your soul
        ;;fsharp                     ; ML stands for Microsoft's Language
@@ -127,7 +127,7 @@
        (go +lsp)                    ; the hipster dialect
        (haskell +lsp)               ; a language that's lazier than I am
        ;;hy                         ; readability of scheme w/ speed of python
-       ;;idris                      ;
+       idris                        ;
        json                         ; At least it ain't XML
        ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
        (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
@@ -137,9 +137,9 @@
         +latexmk                    ; what else would you use?
         +cdlatex                    ; quick maths symbols
         +fold)                      ; fold the clutter away nicities
-       ;;lean                       ; proof that mathematicians need help
+       lean                         ; proof that mathematicians need help
        ;;factor                     ; for when scripts are stacked against you
-       ledger                     ; an accounting system in Emacs
+       ;;ledger                     ; an accounting system in Emacs
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
        ;;nim                        ; python + lisp at the speed of c
@@ -148,6 +148,7 @@
        (org                         ; organize your plain life in plain text
         +pretty                     ; yessss my pretties! (nice unicode symbols)
         +dragndrop                  ; drag & drop files/images into org buffers
+        +journal
         +hugo                       ; use Emacs for hugo blogging
         +noter                      ; enhanced PDF notetaking
         +jupyter                    ; ipython/jupyter support for babel

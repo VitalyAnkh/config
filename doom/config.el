@@ -78,8 +78,8 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "mononoki" :size 22)
-      doom-big-font (font-spec :family "mononoki" :size 36)
+(setq doom-font (font-spec :family "mononoki" :weight 'light :size 22)
+      doom-big-font (font-spec :family "mononoki" :weight 'light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
@@ -88,18 +88,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-		 (lambda nil
-		   (message "%s missing the following fonts: %s"
-			    (propertize "Warning!" 'face
-					'(bold warning))
-			    (mapconcat
-			     (lambda
-			       (font)
-			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-			     ", "))
-		   (sleep-for 0.5)))))
+	     (run-at-time nil nil
+			  (lambda nil
+			    (message "%s missing the following fonts: %s"
+				     (propertize "Warning!" 'face
+						 '(bold warning))
+				     (mapconcat
+				      (lambda
+					(font)
+					(propertize font 'face 'font-lock-variable-name-face))
+				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+				      ", "))
+			    (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -427,7 +427,7 @@
 ;; [[file:config.org::*Splash screen][Splash screen:3]]
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
-(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+;;(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
@@ -755,91 +755,8 @@ nil
 ;; Theme magic:4 ends here
 
 ;; [[file:config.org::*Emojify][Emojify:1]]
-(setq emojify-emoji-set "twemoji-v2")
+;;(setq emojify-emoji-set "twemoji-v2")
 ;; Emojify:1 ends here
-
-;; [[file:config.org::*Emojify][Emojify:2]]
-(defvar emojify-disabled-emojis
-  '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
-    ;; Terminal powerline
-    "✔"
-    ;; Box drawing
-    "▶" "◀")
-  "Characters that should never be affected by `emojify-mode'.")
-
-(defadvice! emojify-delete-from-data ()
-  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
-  :after #'emojify-set-emoji-data
-  (dolist (emoji emojify-disabled-emojis)
-    (remhash emoji emojify-emojis)))
-;; Emojify:2 ends here
-
-;; [[file:config.org::*Emojify][Emojify:3]]
-(defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
-  "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
-  (if (or (not emoticon-to-emoji) (= 1 (length text)))
-      (funcall orig-fn emoji text buffer start end target)
-    (delete-region start end)
-    (insert (ht-get emoji "unicode"))))
-
-(define-minor-mode emoticon-to-emoji
-  "Write ascii/gh emojis, and have them converted to unicode live."
-  :global nil
-  :init-value nil
-  (if emoticon-to-emoji
-      (progn
-        (setq-local emojify-emoji-styles '(ascii github unicode))
-        (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
-        (unless emojify-mode
-          (emojify-turn-on-emojify-mode)))
-    (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
-    (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
-;; Emojify:3 ends here
-
-;; [[file:config.org::*Emojify][Emojify:4]]
-(add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
-;; Emojify:4 ends here
-
-;; [[file:config.org::*Doom modeline][Doom modeline:1]]
-(after! doom-modeline
-  (doom-modeline-def-segment buffer-name
-    "Display the current buffer's name, without any other information."
-    (concat
-     (doom-modeline-spc)
-     (doom-modeline--buffer-name)))
-
-  (doom-modeline-def-segment pdf-icon
-    "PDF icon from all-the-icons."
-    (concat
-     (doom-modeline-spc)
-     (doom-modeline-icon 'octicon "file-pdf" nil nil
-                         :face (if (doom-modeline--active)
-                                   'all-the-icons-red
-                                 'mode-line-inactive)
-                         :v-adjust 0.02)))
-
-  (defun doom-modeline-update-pdf-pages ()
-    "Update PDF pages."
-    (setq doom-modeline--pdf-pages
-          (let ((current-page-str (number-to-string (eval `(pdf-view-current-page))))
-                (total-page-str (number-to-string (pdf-cache-number-of-pages))))
-            (concat
-             (propertize
-              (concat (make-string (- (length total-page-str) (length current-page-str)) ? )
-                      " P" current-page-str)
-              'face 'mode-line)
-             (propertize (concat "/" total-page-str) 'face 'doom-modeline-buffer-minor-mode)))))
-
-  (doom-modeline-def-segment pdf-pages
-    "Display PDF pages."
-    (if (doom-modeline--active) doom-modeline--pdf-pages
-      (propertize doom-modeline--pdf-pages 'face 'mode-line-inactive)))
-
-  (doom-modeline-def-modeline 'pdf
-    '(bar window-number pdf-pages pdf-icon buffer-name)
-    '(misc-info matches major-mode process vcs)))
-;; Doom modeline:1 ends here
 
 ;; [[file:config.org::*Keycast][Keycast:2]]
 (use-package! keycast
@@ -4166,99 +4083,100 @@ SQL can be either the emacsql vector representation, or a string."
   
   (add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
   (add-to-list 'org-latex-feature-implementations '(.custom-font-no-mono :eager t :prevents custom-font :order 0 :snippet (org-latex-fontset :serif :sans)) t)
-  (defun emojify-emoji-in-buffer-p ()
-    "Determine if any emojis are present in the current buffer, using `emojify-mode'."
-    (unless emojify-mode
-      (emojify-mode 1)
-      (emojify-display-emojis-in-region (point-min) (point-max)))
-    (let (emoji-found end)
-      (save-excursion
-        (goto-char (point-min))
-        (while (not (or emoji-found end))
-          (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
-              (when (get-text-property (1- pos) 'emojified)
-                (setq emoji-found t))
-            (setq end t))))
-      emoji-found))
-  (defun org-latex-emoji-setup ()
-    (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
+  ;; (defun emojify-emoji-in-buffer-p ()
+  ;;   "Determine if any emojis are present in the current buffer, using `emojify-mode'."
+  ;;   (unless emojify-mode
+  ;;     (emojify-mode 1)
+  ;;     (emojify-display-emojis-in-region (point-min) (point-max)))
+  ;;   (let (emoji-found end)
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (while (not (or emoji-found end))
+  ;;         (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
+  ;;             (when (get-text-property (1- pos) 'emojified)
+  ;;               (setq emoji-found t))
+  ;;           (setq end t))))
+  ;;     emoji-found))
+  ;; (defun org-latex-emoji-setup ()
+  ;;   (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
   
-  (add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
-  (add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
-  (defun emojify-latexify-emoji-in-buffer ()
-    (unless emojify-mode
-      (emojify-mode 1)
-      (emojify-display-emojis-in-region (point-min) (point-max)))
-    (let (end)
-      (save-excursion
-        (goto-char (point-min))
-        (while (not end)
-          (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
-              (when-let ((char (get-text-property (1- pos) 'emojify-text))
-                         (emoji (emojify-get-emoji char)))
-                (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
-            (setq end t))))))
-  (defun +org-latex-convert-emojis (text backend _info)
-    (when (org-export-derived-backend-p backend 'latex)
-      (with-temp-buffer
-        (insert text)
-        (when (emojify-emoji-in-buffer-p)
-          (emojify-latexify-emoji-in-buffer)
-          (buffer-string)))))
+  ;; (add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
+  ;; (add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
+  ;; (defun emojify-latexify-emoji-in-buffer ()
+  ;;   (unless emojify-mode
+  ;;     (emojify-mode 1)
+  ;;     (emojify-display-emojis-in-region (point-min) (point-max)))
+  ;;   (let (end)
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (while (not end)
+  ;;         (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
+  ;;             (when-let ((char (get-text-property (1- pos) 'emojify-text))
+  ;;                        (emoji (emojify-get-emoji char)))
+  ;;               (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
+  ;;           (setq end t))))))
+  ;; (defun +org-latex-convert-emojis (text backend _info)
+  ;;   (when (org-export-derived-backend-p backend 'latex)
+  ;;     (with-temp-buffer
+  ;;       (insert text)
+  ;;       (when (emojify-emoji-in-buffer-p)
+  ;;         (emojify-latexify-emoji-in-buffer)
+  ;;         (buffer-string)))))
   
-  (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
-  (defun org-latex-emoji-install-vector-graphics ()
-    "Dowload, convert, and install vector emojis for use with LaTeX."
-    (interactive)
-    (let ((dir (org-latex-emoji-install-vector-graphics--download)))
-      (org-latex-emoji-install-vector-graphics--convert dir)
-      (org-latex-emoji-install-vector-graphics--install dir))
-    (message "Vector emojis installed."))
+  ;; (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+  ;; (defun org-latex-emoji-install-vector-graphics ()
+  ;;   "Dowload, convert, and install vector emojis for use with LaTeX."
+  ;;   (interactive)
+  ;;   (let ((dir (org-latex-emoji-install-vector-graphics--download)))
+  ;;     (org-latex-emoji-install-vector-graphics--convert dir)
+  ;;     (org-latex-emoji-install-vector-graphics--install dir))
+  ;;   (message "Vector emojis installed."))
   
-  (defun org-latex-emoji-install-vector-graphics--download ()
-    (message "Locating latest emojis...")
-    (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
-           (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
-           (twemoji-dest-folder (make-temp-file "twemoji-" t)))
-      (message "Downloading Twemoji v%s" twemoji-version)
-      (let ((default-directory twemoji-dest-folder))
-        (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
-        (message "Unzipping")
-        (call-process "unzip" nil nil nil "twemoji.zip")
-        (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
+  ;; (defun org-latex-emoji-install-vector-graphics--download ()
+  ;;   (message "Locating latest emojis...")
+  ;;   (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
+  ;;          (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
+  ;;          (twemoji-dest-folder (make-temp-file "twemoji-" t)))
+  ;;     (message "Downloading Twemoji v%s" twemoji-version)
+  ;;     (let ((default-directory twemoji-dest-folder))
+  ;;       (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
+  ;;       (message "Unzipping")
+  ;;       (call-process "unzip" nil nil nil "twemoji.zip")
+  ;;       (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
   
-  (defun org-latex-emoji-install-vector-graphics--convert (dir)
-    (let ((default-directory dir))
-      (if (executable-find "cairosvg") ; cairo's PDFs are ~10% smaller
-          (let* ((images (directory-files dir nil ".*.svg"))
-                 (num-images (length images))
-                 (index 0)
-                 (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
-                 (threads 0))
-            (while (< index num-images)
-              (setf threads (1+ threads))
-              (message "Converting emoji %d/%d (%s)" (1+ index) num-images (nth index images))
-              (make-process :name "cairosvg"
-                            :command (list "cairosvg" (nth index images) "-o" (concat (file-name-sans-extension (nth index images)) ".pdf"))
-                            :sentinel (lambda (proc msg)
-                                        (when (memq (process-status proc) '(exit signal))
-                                          (setf threads (1- threads)))))
-              (setq index (1+ index))
-              (while (> threads max-threads)
-                (sleep-for 0.01)))
-            (while (> threads 0)
-              (sleep-for 0.01))
-            (message "Finished conversion!")))
-      (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
+  ;; (defun org-latex-emoji-install-vector-graphics--convert (dir)
+  ;;   (let ((default-directory dir))
+  ;;     (if (executable-find "cairosvg") ; cairo's PDFs are ~10% smaller
+  ;;         (let* ((images (directory-files dir nil ".*.svg"))
+  ;;                (num-images (length images))
+  ;;                (index 0)
+  ;;                (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
+  ;;                (threads 0))
+  ;;           (while (< index num-images)
+  ;;             (setf threads (1+ threads))
+  ;;             (message "Converting emoji %d/%d (%s)" (1+ index) num-images (nth index images))
+  ;;             (make-process :name "cairosvg"
+  ;;                           :command (list "cairosvg" (nth index images) "-o" (concat (file-name-sans-extension (nth index images)) ".pdf"))
+  ;;                           :sentinel (lambda (proc msg)
+  ;;                                       (when (memq (process-status proc) '(exit signal))
+  ;;                                         (setf threads (1- threads)))))
+  ;;             (setq index (1+ index))
+  ;;             (while (> threads max-threads)
+  ;;               (sleep-for 0.01)))
+  ;;           (while (> threads 0)
+  ;;             (sleep-for 0.01))
+  ;;           (message "Finished conversion!")))
+  ;;     (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
   
-  (defun org-latex-emoji-install-vector-graphics--install (dir)
-    (message "Installing vector emojis into emoji directory")
-    (let ((images (directory-files dir t ".*.pdf"))
-          (emoji-dir (concat (emojify-image-dir) "/")))
-      (mapcar
-       (lambda (image)
-         (rename-file image emoji-dir t))
-       images)))
+  ;; (defun org-latex-emoji-install-vector-graphics--install (dir)
+  ;;   (message "Installing vector emojis into emoji directory")
+  ;;   (let ((images (directory-files dir t ".*.pdf"))
+  ;;         (emoji-dir (concat (emojify-image-dir) "/")))
+  ;;     (mapcar
+  ;;      (lambda (image)
+  ;;        (rename-file image emoji-dir t))
+  ;;      images)))
+  
   (defvar +org-pdflatex-inputenc-encoded-chars
     "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06]")
   
@@ -4511,8 +4429,9 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! valign
   :init
   (require 'valign)
-  :hook
-  ('org-mode . #'valign-mode))
+  ;; No hook, open this manually when needed
+  ;;:hook
+  ;;('org-mode . #'valign-mode))
 
 (use-package! org-ol-tree
   :commands org-ol-tree)
