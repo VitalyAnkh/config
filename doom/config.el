@@ -857,8 +857,7 @@ nil
     '(keycast-command :inherit doom-modeline-debug
                       :height 0.9)
     '(keycast-key :inherit custom-modified
-                  :height 1.1
-                  :weight bold)))
+                  :height 1.1)))
 ;; Keycast:2 ends here
 
 ;; [[file:config.org::*Screencast][Screencast:2]]
@@ -2417,14 +2416,15 @@ SQL can be either the emacsql vector representation, or a string."
    ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
    )
   (custom-set-faces!
-    '(outline-1 :weight extra-bold :height 1.25)
-    '(outline-2 :weight bold :height 1.15)
-    '(outline-3 :weight bold :height 1.12)
-    '(outline-4 :weight semi-bold :height 1.09)
-    '(outline-5 :weight semi-bold :height 1.06)
-    '(outline-6 :weight semi-bold :height 1.03)
-    '(outline-8 :weight semi-bold)
-    '(outline-9 :weight semi-bold))
+    '(outline-1 :height 1.25)
+    '(outline-2 :height 1.15)
+    '(outline-3 :height 1.12)
+    '(outline-4 :height 1.09)
+    '(outline-5 :height 1.06)
+    '(outline-6 :height 1.03)
+    '(outline-8 :height 1.01)
+    '(outline-9 )
+    )
   (custom-set-faces!
     '(org-document-title :height 1.2))
   (setq org-agenda-deadline-faces
@@ -5155,12 +5155,12 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*Markdown][Markdown:2]]
 (custom-set-faces!
-  '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
-  '(markdown-header-face-2 :height 1.15 :weight bold       :inherit markdown-header-face)
-  '(markdown-header-face-3 :height 1.08 :weight bold       :inherit markdown-header-face)
-  '(markdown-header-face-4 :height 1.00 :weight bold       :inherit markdown-header-face)
-  '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
-  '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
+  '(markdown-header-face-1 :height 1.25 :inherit markdown-header-face)
+  '(markdown-header-face-2 :height 1.15 :inherit markdown-header-face)
+  '(markdown-header-face-3 :height 1.08 :inherit markdown-header-face)
+  '(markdown-header-face-4 :height 1.00 :inherit markdown-header-face)
+  '(markdown-header-face-5 :height 0.90 :inherit markdown-header-face)
+  '(markdown-header-face-6 :height 0.75 :inherit markdown-header-face))
 ;; Markdown:2 ends here
 
 ;; [[file:config.org::*Beancount][Beancount:2]]
