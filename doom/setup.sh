@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+systemctl --user disable emacs.service
+
 xdg-mime default emacs.desktop text/org
 
 go get -u gitlab.com/shackra/goimapnotify

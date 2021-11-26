@@ -6,7 +6,7 @@ set -x PATH /home/vitalyr/.opam/default/bin /home/vitalyr/sdk/lib/flutter/bin /h
 set -x SDK_DIR $HOME/sdk
 set -x PUB_HOSTED_URL https://pub.flutter-io.cn
 set -x FLUTTER_STORAGE_BASE_URL https://storage.flutter-io.cn
-# set -x DOOMDIR $HOME/.config/emacs/doom.d-vitalyr
+set -x DOOMDIR $HOME/.config/doom
 set -x CHROME_EXECUTABLE google-chrome-stable
 set -x WGPU_BACKEND vulkan
 # erase the GDK_BACKEND variable

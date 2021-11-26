@@ -420,6 +420,12 @@ navigation/swapping commands.
       "C-<up>"         #'+evil/window-move-up
       "C-<right>"      #'+evil/window-move-right)
 #+end_src
+
+*** Mouse
+I love mouse menus.
+#+begin_src emacs-lisp
+(setq mouse-yank-at-point nil)
+#+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+begin_src emacs-lisp
@@ -658,7 +664,7 @@ json                         ; At least it ain't XML
  +fold)                      ; fold the clutter away nicities
 ;;lean                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
-;;ledger                     ; an accounting system in Emacs
+ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
@@ -681,15 +687,15 @@ ocaml                        ; an objective camel
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
 racket                       ; a DSL for DSLs
-;;raku                       ; the artist formerly known as perl6
+raku                         ; the artist formerly known as perl6
 ;;rest                       ; Emacs as a REST client
 ;;rst                        ; ReST in peace
-;;(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+(ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
 (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
 scala                        ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
-sml                        ; no, the /other/ ML
+sml                          ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
@@ -704,9 +710,9 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
 #+begin_src emacs-lisp :tangle no
-;;(:if (executable-find "mu") (mu4e +org +gmail))
-;;notmuch
-;;(wanderlust +gmail)
+(:if (executable-find "mu") (mu4e +org +gmail))
+notmuch
+(wanderlust +gmail)
 #+end_src
 
 #+name: doom-app
@@ -736,7 +742,7 @@ aspects are nice, but on others I prefer Fira.
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/font-face.png]]
 
-In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
+In addition to these fonts, Merriweather is used with =nov.el=, and CMU Typewirter Text as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
 files.
 
@@ -1072,8 +1078,8 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
 *** Editor interaction
 **** Mouse buttons
 #+begin_src emacs-lisp
-(map! :n [mouse-8] #'better-jumper-jump-backward
-      :n [mouse-9] #'better-jumper-jump-forward)
+;;(map! :n [mouse-8] #'better-jumper-jump-backward
+;;      :n [mouse-9] #'better-jumper-jump-forward)
 #+end_src
 *** Window title
 I'd like to have just the buffer name, then if applicable the project folder
@@ -1307,7 +1313,7 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
+(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
 
@@ -1361,7 +1367,7 @@ WantedBy=default.target
 
 which is then enabled by
 #+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
-systemctl --user enable emacs.service
+systemctl --user disable emacs.service
 #+end_src
 
 For some reason if a frame isn't opened early in the initialisation process, the
@@ -1524,24 +1530,24 @@ anything to be run.
 
 #+name: run-setup
 #+begin_src emacs-lisp :tangle no
-(if (file-exists-p "setup.sh")
-    (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
-        (message ";; Setup script is empty")
-      (message ";; Detected content in the setup script")
-      (pp-to-string
-       `(unless noninteractive
-          (defun +config-run-setup ()
-            (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
-                                       (propertize "Warning!" 'face '(bold warning))))
-              (find-file (expand-file-name "setup.sh" doom-private-dir))
-              (when (yes-or-no-p "Would you like to run this script?")
-                (async-shell-command "./setup.sh"))))
-          (add-hook! 'doom-init-ui-hook
-            (run-at-time nil nil #'+config-run-setup)))))
-  (message ";; setup.sh did not exist during tangle. Tangle again.")
-  (pp-to-string
-   `(unless noninteractive
-      (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
+;; (if (file-exists-p "setup.sh")
+;;     (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
+;;         (message ";; Setup script is empty")
+;;       (message ";; Detected content in the setup script")
+;;       (pp-to-string
+;;        `(unless noninteractive
+;;           (defun +config-run-setup ()
+;;             (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
+;;                                        (propertize "Warning!" 'face '(bold warning))))
+;;               (find-file (expand-file-name "setup.sh" doom-private-dir))
+;;               (when (yes-or-no-p "Would you like to run this script?")
+;;                 (async-shell-command "./setup.sh"))))
+;;           (add-hook! 'doom-init-ui-hook
+;;             (run-at-time nil nil #'+config-run-setup)))))
+;;   (message ";; setup.sh did not exist during tangle. Tangle again.")
+;;   (pp-to-string
+;;    `(unless noninteractive
+;;       (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
@@ -2158,45 +2164,6 @@ From the =:core packages= module.
 #+end_src
 
 ** Visuals
-*** Org Mode Visual Effects
-
-#+begin_src emacs-lisp
-;; disable =hl-line-mode= and =solaire-mode= for org-mode
-(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
-(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
-(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-
-(custom-set-faces
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
- ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
- ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
- ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
- ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
-
- ;;'(org-list-dt ((t (:foreground "#7382a0"))))
- ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
- ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- ;;'(org-block ((t (:inherit fixed-pitch))))
- ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- ;; TODO set the color following this
- ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
- ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
- '(fixed-pitch ((t (:family "mononoki" :height 160))))
- ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
- '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
-                    "CMU Typewriter Text"))))
- '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
-                    :height 1.75 :family "CMU Typewriter Text"))))
- '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
-
-#+end_src
 *** Info colours
 This makes manual pages nicer to look at by adding variable pitch fontification
 and colouring :).
@@ -5005,6 +4972,28 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 
 Let's make headings a bit bigger
 #+begin_src emacs-lisp
+;; disable =hl-line-mode= and =solaire-mode= for org-mode
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+(custom-set-faces
+ ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+ ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+ ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
+ ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+ ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+
+ ;;'(org-list-dt ((t (:foreground "#7382a0"))))
+ ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+ ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ ;;'(org-block ((t (:inherit fixed-pitch))))
+ ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ ;;'(fixed-pitch ((t (:family "mononoki" :height 160))))
+ ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+ )
 (custom-set-faces!
   '(outline-1 :weight extra-bold :height 1.25)
   '(outline-2 :weight bold :height 1.15)
@@ -5331,11 +5320,11 @@ have this be performed automatically with =xenops=.
   :config
   (add-hook 'latex-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
-      xenops-math-latex-process 'tectonic
+      xenops-math-latex-process 'xelatex
       )
 (setq xenops-math-latex-process-alist
       '((dvipng :programs
@@ -5363,17 +5352,17 @@ have this be performed automatically with =xenops=.
                   :message "you need to install the programs: tectonic and dvisvgm."
                   :image-input-type "xdv"
                   :image-output-type "svg"
-                  :image-size-adjust (0.75 . 0.75)
+                  :image-size-adjust (1.0 . 1.0)
                   :latex-compiler
                   ("tectonic -X compile %f -Z shell-escape --outfmt xdv --outdir %o")
                   :image-converter
                   ("dvisvgm %f -n -b min -c %S -o %O"))
-        (dvisvgm :programs ("xelatex" "dvisvgm")
+        (xelatex :programs ("xelatex" "dvisvgm")
                  :description "xdv > svg"
                  :message "you need to install the programs: xelatex and dvisvgm."
                  :image-input-type "xdv"
                  :image-output-type "svg"
-                 :image-size-adjust (0.52 . 0.52)
+                 :image-size-adjust (0.75 . 0.75)
                  :latex-compiler
                  ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
                  :image-converter
@@ -5417,16 +5406,27 @@ functionality from =bmc-maths=, so we'll load that too.
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
 % my custom stuff
-\\usepackage[nofont,plaindd]{bmc-maths}
-\\usepackage{arev}
+%\\usepackage[nofont,plaindd]{bmc-maths}
+%\\usepackage{arev}
 ")
 #+end_src
+
 
 Since we can, instead of making the background colour match the =default= face,
 let's make it transparent.
 #+begin_src emacs-lisp
-(setq org-format-latex-options
-      (plist-put org-format-latex-options :background "Transparent"))
+;; (setq org-format-latex-options
+;;      (plist-put org-format-latex-options :background "Transparent"))
+;; (with-eval-after-load 'font-latex
+;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+;;   )
+;; (defun set-latex-background-same-with-default ()
+;;   "Set inline latex color correctly"
+;;   (interactive)
+;;   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
+;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+;;   ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
+;;   )
 #+end_src
 
 ***** Rendering speed tests
@@ -6489,7 +6489,7 @@ simply superior combination.
 #+begin_src emacs-lisp
 ;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
 (setq org-latex-pdf-process '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
-(setq org-latex-compiler 'xelatex)
+(setq org-latex-compiler "xelatex")
 #+end_src
 
 While ~org-latex-pdf-process~ does support a function, and we could use that
@@ -6584,12 +6584,13 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
     (add-to-list 'org-latex-classes
                  `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
                    ,@article-sections))
-    (add-to-list 'org-latex-classes
-                 `("bmc-article" "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                   ,@article-sections))
-    (add-to-list 'org-latex-classes
-                 `("bmc" "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                   ,@book-sections))))
+    ;; (add-to-list 'org-latex-classes
+    ;;              `("bmc-article" "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+    ;;                ,@article-sections))
+    ;; (add-to-list 'org-latex-classes
+    ;;              `("bmc" "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+    ;;                ,@book-sections))
+    ))
 
 (setq org-latex-tables-booktabs t
       org-latex-hyperref-template "
@@ -6901,7 +6902,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 (defvar org-latex-feature-implementations
   '((image         :snippet "\\usepackage{graphicx}" :order 2)
     (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-    (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
+    ;;(maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -7854,51 +7855,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX |
-|-----------+-------|
-| ɑ         | \(\alpha\) |
-| β         | \(\beta\) |
-| γ         | \(\gamma\) |
-| δ         | \(\delta\) |
-| ε         | \(\epsilon\) |
-| ϵ         | \(\varepsilon\) |
-| ζ         | \(\zeta\) |
-| η         | \(\eta\) |
-| θ         | \(\theta\) |
-| ϑ         | \(\vartheta\) |
-| ι         | \(\iota\) |
-| κ         | \(\kappa\) |
-| λ         | \(\lambda\) |
-| μ         | \(\mu\) |
-| ν         | \(\nu\) |
-| ξ         | \(\xi\) |
-| π         | \(\pi\) |
-| ϖ         | \(\varpi\) |
-| ρ         | \(\rho\) |
+| Character | LaTeX       |
+|-----------+-------------|
+| ɑ         | \(\alpha\)       |
+| β         | \(\beta\)       |
+| γ         | \(\gamma\)       |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ         | \(\varepsilon\)       |
+| ζ         | \(\zeta\)       |
+| η         | \(\eta\)       |
+| θ         | \(\theta\)       |
+| ϑ         | \(\vartheta\)       |
+| ι         | \(\iota\)       |
+| κ         | \(\kappa\)       |
+| λ         | \(\lambda\)       |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
+| π         | \(\pi\)       |
+| ϖ         | \(\varpi\)       |
+| ρ         | \(\rho\)       |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\) |
-| ς         | \(\varsigma\) |
-| τ         | \(\tau\) |
-| υ         | \(\upsilon\) |
-| ϕ         | \(\phi\) |
-| φ         | \(\varphi\) |
-| ψ         | \(\psi\) |
-| ω         | \(\omega\) |
-| Γ         | \(\Gamma\) |
-| Δ         | \(\Delta\) |
-| Θ         | \(\Theta\) |
-| Λ         | \(\Lambda\) |
-| Ξ         | \(\Xi\) |
-| Π         | \(\Pi\) |
-| Σ         | \(\Sigma\) |
-| Υ         | \(\Upsilon\) |
-| Φ         | \(\Phi\) |
-| Ψ         | \(\Psi\) |
-| Ω         | \(\Omega\) |
-| א         | \(\aleph\) |
-| ב         | \(\beth\) |
+| σ         | \(\sigma\)       |
+| ς         | \(\varsigma\)       |
+| τ         | \(\tau\)       |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)       |
+| φ         | \(\varphi\)       |
+| ψ         | \(\psi\)       |
+| ω         | \(\omega\)       |
+| Γ         | \(\Gamma\)       |
+| Δ         | \(\Delta\)       |
+| Θ         | \(\Theta\)       |
+| Λ         | \(\Lambda\)       |
+| Ξ         | \(\Xi\)       |
+| Π         | \(\Pi\)       |
+| Σ         | \(\Sigma\)       |
+| Υ         | \(\Upsilon\)       |
+| Φ         | \(\Phi\)       |
+| Ψ         | \(\Psi\)       |
+| Ω         | \(\Omega\)       |
+| א         | \(\aleph\)       |
+| ב         | \(\beth\)       |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\) |
+| ג         | \(\gimel\)       |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions
@@ -8552,8 +8553,8 @@ Then let's bind the content to a function, and define some nice helpers.
 
 Let's enhance ~TeX-fold-math~ a bit
 #+begin_src emacs-lisp
-(after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+;;(after! latex
+;;  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
@@ -8996,19 +8997,19 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb)
+;;(package! calibredb)
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov)
+;;(package! nov)
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
 
 =calibredb= lets us use calibre through Emacs, because who wouldn't want to use
 something through Emacs?
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! calibredb
   :commands calibredb
   :config
@@ -9082,7 +9083,7 @@ Then, to actually read the ebooks we use =nov=.
 #+attr_html: :class invertible :alt Excerpt of the GNU Emacs manual viewed through nov.el
 [[https://tecosaur.com/lfs/emacs-config/screenshots/nov.png]]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode)
   :config

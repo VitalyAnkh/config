@@ -139,7 +139,7 @@
         +fold)                      ; fold the clutter away nicities
        ;;lean                       ; proof that mathematicians need help
        ;;factor                     ; for when scripts are stacked against you
-       ;;ledger                     ; an accounting system in Emacs
+       ledger                     ; an accounting system in Emacs
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
        ;;nim                        ; python + lisp at the speed of c
@@ -162,15 +162,15 @@
        (python +lsp +pyright)       ; beautiful is better than ugly
        ;;qt                         ; the 'cutest' gui framework ever
        racket                       ; a DSL for DSLs
-       ;;raku                       ; the artist formerly known as perl6
+       raku                         ; the artist formerly known as perl6
        ;;rest                       ; Emacs as a REST client
        ;;rst                        ; ReST in peace
-       ;;(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       (ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        scala                        ; java, but good
        scheme                       ; a fully conniving family of lisps
        sh                           ; she sells {ba,z,fi}sh shells on the C xor
-       sml                        ; no, the /other/ ML
+       sml                          ; no, the /other/ ML
        ;;solidity                   ; do you need a blockchain? No.
        ;;swift                      ; who asked for emoji variables?
        ;;terra                      ; Earth and Moon in alignment for performance.
@@ -179,9 +179,9 @@
        ;;zig                        ; C, but simpler
 
        :email
-       ;;(:if (executable-find "mu") (mu4e +org +gmail))
-       ;;notmuch
-       ;;(wanderlust +gmail)
+       (:if (executable-find "mu") (mu4e +org +gmail))
+       notmuch
+       (wanderlust +gmail)
 
        :app
        calendar                   ; A dated approach to timetabling

@@ -69,6 +69,10 @@
       "C-<right>"      #'+evil/window-move-right)
 ;; Windows:3 ends here
 
+;; [[file:config.org::*Mouse][Mouse:1]]
+(setq mouse-yank-at-point nil)
+;; Mouse:1 ends here
+
 ;; [[file:config.org::*Buffer defaults][Buffer defaults:1]]
 ;; (setq-default major-mode 'org-mode)
 ;; Buffer defaults:1 ends here
@@ -93,7 +97,7 @@
 			     (lambda
 			       (font)
 			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather")
+			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
 			     ", "))
 		   (sleep-for 0.5)))))
 ;; Font Face:3 ends here
@@ -215,8 +219,8 @@
 ;; Dashboard quick actions:1 ends here
 
 ;; [[file:config.org::*Mouse buttons][Mouse buttons:1]]
-(map! :n [mouse-8] #'better-jumper-jump-backward
-      :n [mouse-9] #'better-jumper-jump-forward)
+;;(map! :n [mouse-8] #'better-jumper-jump-backward
+;;      :n [mouse-9] #'better-jumper-jump-forward)
 ;; Mouse buttons:1 ends here
 
 ;; [[file:config.org::*Window title][Window title:1]]
@@ -422,7 +426,7 @@
 
 ;; [[file:config.org::*Splash screen][Splash screen:3]]
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
+(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
@@ -469,20 +473,7 @@
 ;; daemon initialisation ends here
 
 ;; [[file:config.org::*Prompt to run setup script][Prompt to run setup script:2]]
-(unless noninteractive
-  (defun +config-run-setup nil
-    (when
-	(yes-or-no-p
-	 (format "%s The setup script has content. Check and run the script?"
-		 (propertize "Warning!" 'face
-			     '(bold warning))))
-      (find-file
-       (expand-file-name "setup.sh" doom-private-dir))
-      (when
-	  (yes-or-no-p "Would you like to run this script?")
-	(async-shell-command "./setup.sh"))))
-  (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil #'+config-run-setup)))
+nil
 ;; Prompt to run setup script:2 ends here
 
 ;; [[file:config.org::*Which-key][Which-key:1]]
@@ -725,43 +716,6 @@
  "<<" ">>"
  :actions '(insert))
 ;; Smart parentheses:1 ends here
-
-;; [[file:config.org::*Org Mode Visual Effects][Org Mode Visual Effects:1]]
-;; disable =hl-line-mode= and =solaire-mode= for org-mode
-(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
-(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
-(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-
-(custom-set-faces
- '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
- ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
- ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
- ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
- ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
-
- ;;'(org-list-dt ((t (:foreground "#7382a0"))))
- ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
- ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- ;;'(org-block ((t (:inherit fixed-pitch))))
- ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- ;; TODO set the color following this
- ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
- ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
- '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
- '(fixed-pitch ((t (:family "mononoki" :height 160))))
- ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
- '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
-                    "CMU Typewriter Text"))))
- '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
-                    :height 1.75 :family "CMU Typewriter Text"))))
- '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
-;; Org Mode Visual Effects:1 ends here
 
 ;; [[file:config.org::*Info colours][Info colours:2]]
 (use-package! info-colors
@@ -2440,6 +2394,28 @@ SQL can be either the emacsql vector representation, or a string."
        (cl-pushnew '(:latex-font-set nil "fontset" nil)
                    (org-export-backend-options (org-export-get-backend 'latex)))))
   (add-hook 'org-mode-hook #'+org-pretty-mode)
+  ;; disable =hl-line-mode= and =solaire-mode= for org-mode
+  (add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+  (add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+  (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (custom-set-faces
+   ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+   ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+   ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+   ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
+   ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+   ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+  
+   ;;'(org-list-dt ((t (:foreground "#7382a0"))))
+   ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+   ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+   ;;'(org-block ((t (:inherit fixed-pitch))))
+   ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+   ;;'(fixed-pitch ((t (:family "mononoki" :height 160))))
+   ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+   ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+   ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+   )
   (custom-set-faces!
     '(outline-1 :weight extra-bold :height 1.25)
     '(outline-2 :weight bold :height 1.15)
@@ -2683,11 +2659,21 @@ SQL can be either the emacsql vector representation, or a string."
   \\setlength{\\topmargin}{1.5cm}
   \\addtolength{\\topmargin}{-2.54cm}
   % my custom stuff
-  \\usepackage[nofont,plaindd]{bmc-maths}
-  \\usepackage{arev}
+  %\\usepackage[nofont,plaindd]{bmc-maths}
+  %\\usepackage{arev}
   ")
-  (setq org-format-latex-options
-        (plist-put org-format-latex-options :background "Transparent"))
+  ;; (setq org-format-latex-options
+  ;;      (plist-put org-format-latex-options :background "Transparent"))
+  ;; (with-eval-after-load 'font-latex
+  ;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+  ;;   )
+  ;; (defun set-latex-background-same-with-default ()
+  ;;   "Set inline latex color correctly"
+  ;;   (interactive)
+  ;;   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
+  ;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+  ;;   ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
+  ;;   )
   (defun scimax-org-latex-fragment-justify (justification)
     "Justify the latex fragment at point with JUSTIFICATION.
   JUSTIFICATION is a symbol for 'left, 'center or 'right."
@@ -3461,7 +3447,7 @@ SQL can be either the emacsql vector representation, or a string."
   )
   ;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
   (setq org-latex-pdf-process '("latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
-  (setq org-latex-compiler 'xelatex)
+  (setq org-latex-compiler "xelatex")
   (defun +org-export-latex-fancy-item-checkboxes (text backend info)
     (when (org-export-derived-backend-p backend 'latex)
       (replace-regexp-in-string
@@ -3514,12 +3500,13 @@ SQL can be either the emacsql vector representation, or a string."
       (add-to-list 'org-latex-classes
                    `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
                      ,@article-sections))
-      (add-to-list 'org-latex-classes
-                   `("bmc-article" "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                     ,@article-sections))
-      (add-to-list 'org-latex-classes
-                   `("bmc" "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                     ,@book-sections))))
+      ;; (add-to-list 'org-latex-classes
+      ;;              `("bmc-article" "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+      ;;                ,@article-sections))
+      ;; (add-to-list 'org-latex-classes
+      ;;              `("bmc" "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+      ;;                ,@book-sections))
+      ))
   
   (setq org-latex-tables-booktabs t
         org-latex-hyperref-template "
@@ -3655,7 +3642,7 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-feature-implementations
     '((image         :snippet "\\usepackage{graphicx}" :order 2)
       (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-      (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
+      ;;(maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
       (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
       (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
       (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -4662,11 +4649,11 @@ SQL can be either the emacsql vector representation, or a string."
   :config
   (add-hook 'latex-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
-      xenops-math-latex-process 'tectonic
+      xenops-math-latex-process 'xelatex
       )
 (setq xenops-math-latex-process-alist
       '((dvipng :programs
@@ -4694,17 +4681,17 @@ SQL can be either the emacsql vector representation, or a string."
                   :message "you need to install the programs: tectonic and dvisvgm."
                   :image-input-type "xdv"
                   :image-output-type "svg"
-                  :image-size-adjust (0.75 . 0.75)
+                  :image-size-adjust (1.0 . 1.0)
                   :latex-compiler
                   ("tectonic -X compile %f -Z shell-escape --outfmt xdv --outdir %o")
                   :image-converter
                   ("dvisvgm %f -n -b min -c %S -o %O"))
-        (dvisvgm :programs ("xelatex" "dvisvgm")
+        (xelatex :programs ("xelatex" "dvisvgm")
                  :description "xdv > svg"
                  :message "you need to install the programs: xelatex and dvisvgm."
                  :image-input-type "xdv"
                  :image-output-type "svg"
-                 :image-size-adjust (0.52 . 0.52)
+                 :image-size-adjust (0.75 . 0.75)
                  :latex-compiler
                  ("xelatex -no-pdf -interaction nonstopmode -shell-escape -output-directory %o %f")
                  :image-converter
@@ -4863,8 +4850,8 @@ information."
 ;; Deliminators:1 ends here
 
 ;; [[file:config.org::*Editor visuals][Editor visuals:1]]
-(after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+;;(after! latex
+;;  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
@@ -5216,143 +5203,6 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   ;; (sis-global-inline-mode t)
   )
 ;; Input Method:2 ends here
-
-;; [[file:config.org::*Ebooks][Ebooks:3]]
-(use-package! calibredb
-  :commands calibredb
-  :config
-  (setq calibredb-root-dir "~/nutstore_files/Books"
-        calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
-  (map! :map calibredb-show-mode-map
-        :ne "?" #'calibredb-entry-dispatch
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "q" #'calibredb-entry-quit
-        :ne "." #'calibredb-open-dired
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments)
-  (map! :map calibredb-search-mode-map
-        :ne [mouse-3] #'calibredb-search-mouse
-        :ne "RET" #'calibredb-find-file
-        :ne "?" #'calibredb-dispatch
-        :ne "a" #'calibredb-add
-        :ne "A" #'calibredb-add-dir
-        :ne "c" #'calibredb-clone
-        :ne "d" #'calibredb-remove
-        :ne "D" #'calibredb-remove-marked-items
-        :ne "j" #'calibredb-next-entry
-        :ne "k" #'calibredb-previous-entry
-        :ne "l" #'calibredb-virtual-library-list
-        :ne "L" #'calibredb-library-list
-        :ne "n" #'calibredb-virtual-library-next
-        :ne "N" #'calibredb-library-next
-        :ne "p" #'calibredb-virtual-library-previous
-        :ne "P" #'calibredb-library-previous
-        :ne "s" #'calibredb-set-metadata-dispatch
-        :ne "S" #'calibredb-switch-library
-        :ne "o" #'calibredb-find-file
-        :ne "O" #'calibredb-find-file-other-frame
-        :ne "v" #'calibredb-view
-        :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "." #'calibredb-open-dired
-        :ne "b" #'calibredb-catalog-bib-dispatch
-        :ne "e" #'calibredb-export-dispatch
-        :ne "r" #'calibredb-search-refresh-and-clear-filter
-        :ne "R" #'calibredb-search-clear-filter
-        :ne "q" #'calibredb-search-quit
-        :ne "m" #'calibredb-mark-and-forward
-        :ne "f" #'calibredb-toggle-favorite-at-point
-        :ne "x" #'calibredb-toggle-archive-at-point
-        :ne "h" #'calibredb-toggle-highlight-at-point
-        :ne "u" #'calibredb-unmark-and-forward
-        :ne "i" #'calibredb-edit-annotation
-        :ne "DEL" #'calibredb-unmark-and-backward
-        :ne [backtab] #'calibredb-toggle-view
-        :ne [tab] #'calibredb-toggle-view-at-point
-        :ne "M-n" #'calibredb-show-next-entry
-        :ne "M-p" #'calibredb-show-previous-entry
-        :ne "/" #'calibredb-search-live-filter
-        :ne "M-t" #'calibredb-set-metadata--tags
-        :ne "M-a" #'calibredb-set-metadata--author_sort
-        :ne "M-A" #'calibredb-set-metadata--authors
-        :ne "M-T" #'calibredb-set-metadata--title
-        :ne "M-c" #'calibredb-set-metadata--comments))
-;; Ebooks:3 ends here
-
-;; [[file:config.org::*Ebooks][Ebooks:4]]
-(use-package! nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map! :map nov-mode-map
-        :n "RET" #'nov-scroll-up)
-
-  (defun doom-modeline-segment--nov-info ()
-    (concat
-     " "
-     (propertize
-      (cdr (assoc 'creator nov-metadata))
-      'face 'doom-modeline-project-parent-dir)
-     " "
-     (cdr (assoc 'title nov-metadata))
-     " "
-     (propertize
-      (format "%d/%d"
-              (1+ nov-documents-index)
-              (length nov-documents))
-      'face 'doom-modeline-info)))
-
-  (advice-add 'nov-render-title :override #'ignore)
-
-  (defun +nov-mode-setup ()
-    (face-remap-add-relative 'variable-pitch
-                             :family "Merriweather"
-                             :height 1.4
-                             :width 'semi-expanded)
-    (face-remap-add-relative 'default :height 1.3)
-    (setq-local line-spacing 0.2
-                next-screen-context-lines 4
-                shr-use-colors nil)
-    (require 'visual-fill-column nil t)
-    (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 81
-                nov-text-width 80)
-    (visual-fill-column-mode 1)
-    (hl-line-mode -1)
-
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-
-    (setq-local mode-line-format
-                `((:eval
-                   (doom-modeline-segment--workspace-name))
-                  (:eval
-                   (doom-modeline-segment--window-number))
-                  (:eval
-                   (doom-modeline-segment--nov-info))
-                  ,(propertize
-                    " %P "
-                    'face 'doom-modeline-buffer-minor-mode)
-                  ,(propertize
-                    " "
-                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-                    'display `((space
-                                :align-to
-                                (- (+ right right-fringe right-margin)
-                                   ,(* (let ((width (doom-modeline--font-width)))
-                                         (or (and (= width 1) 1)
-                                             (/ width (frame-char-width) 1.0)))
-                                       (string-width
-                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-                  (:eval (doom-modeline-segment--major-mode)))))
-
-  (add-hook 'nov-mode-hook #'+nov-mode-setup))
-;; Ebooks:4 ends here
 
 ;; [[file:config.org::*Defaults][Defaults:1]]
 (setq calc-angle-mode 'rad  ; radians are rad
@@ -5959,6 +5809,8 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 ;; Rebuild mail index while using mu4e:1 ends here
 
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 
 (after! mu4e
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")

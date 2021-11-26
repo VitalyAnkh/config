@@ -170,11 +170,11 @@
 ;; Input Method:1 ends here
 
 ;; [[file:config.org::*Ebooks][Ebooks:1]]
-(package! calibredb)
+;;(package! calibredb)
 ;; Ebooks:1 ends here
 
 ;; [[file:config.org::*Ebooks][Ebooks:2]]
-(package! nov)
+;;(package! nov)
 ;; Ebooks:2 ends here
 
 ;; [[file:config.org::*CalcTeX][CalcTeX:1]]

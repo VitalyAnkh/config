@@ -65,8 +65,6 @@
              mac-option-modifier       'alt
              mac-right-option-modifier 'alt)))
 
-(setq kill-whole-line t)
-
 ;;(setq ivy-use-selectable-prompt t)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -937,8 +935,6 @@ headlines tagged with :noexport:"
 (add-hook 'prog-mode-hook #'wucuo-start)
 (add-hook 'text-mode-hook #'wucuo-start)
 
-;; to speed up company
-(setq company-idle-delay 0)
 
 ;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)
