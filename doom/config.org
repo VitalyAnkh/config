@@ -1314,6 +1314,7 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
 
@@ -3389,6 +3390,19 @@ sacrificing visual amenities with the =org-appear= package.
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
+***** =Valign= for Org Mode tables
+Use [[https://github.com/casouri/valign][valign]] for tables alignments.
+#+begin_src emacs-lisp :tangle packages.el
+(package! valign :recipe (:host github :repo "casouri/valign"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! valign
+  :init
+  (require 'valign)
+  :hook
+  ('org-mode . #'valign-mode))
+#+end_src
 
 ***** Heading structure
 Speaking of headlines, a nice package for viewing and managing the heading
@@ -4975,6 +4989,7 @@ Let's make headings a bit bigger
 (add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
 (add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
 (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+(global-hl-line-mode nil)
 (custom-set-faces
  ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
  ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"

@@ -427,6 +427,7 @@
 ;; [[file:config.org::*Splash screen][Splash screen:3]]
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
@@ -2397,6 +2398,7 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
   (add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
   (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (global-hl-line-mode nil)
   (custom-set-faces
    ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
    ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
