@@ -3396,7 +3396,7 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 (package! valign :recipe (:host github :repo "casouri/valign"))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (use-package! valign
   :init
   (require 'valign)

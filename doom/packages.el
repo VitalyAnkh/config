@@ -114,12 +114,6 @@
 
 (package! valign :recipe (:host github :repo "casouri/valign"))
 
-(use-package! valign
-  :init
-  (require 'valign)
-  :hook
-  ('org-mode . #'valign-mode))
-
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
 
 ;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))

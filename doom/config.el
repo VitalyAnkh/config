@@ -4508,6 +4508,12 @@ SQL can be either the emacsql vector representation, or a string."
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-elements))
 
+(use-package! valign
+  :init
+  (require 'valign)
+  :hook
+  ('org-mode . #'valign-mode))
+
 (use-package! org-ol-tree
   :commands org-ol-tree)
 (map! :map org-mode-map
