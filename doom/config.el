@@ -2222,18 +2222,21 @@ SQL can be either the emacsql vector representation, or a string."
            (alt (plist-get xkcd-info :alt))
            (title (plist-get xkcd-info :title))
            (file (xkcd-download img (string-to-number num))))
-      (cond ((org-export-derived-backend-p backend 'html)
-             (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
-            ((org-export-derived-backend-p backend 'latex)
-             (format "\\begin{figure}[!htb]
+      (cond
+       ; FIXME The html backend will cause emacs-lisp indent work abnormally
+       ;;((org-export-derived-backend-p backend 'html)
+       ;;      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
+  
+       ((org-export-derived-backend-p backend 'latex)
+        (format "\\begin{figure}[!htb]
              \\centering
              \\includegraphics[scale=0.4]{%s}%s
              \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
-                        (format "\n  \\caption*{\\label{xkcd:%s} %s}"
-                                num
-                                (or desc
-                                    (format "\\textbf{%s} %s" title alt))))))
-            (t (format "https://xkcd.com/%s" num)))))
+                                   (format "\n  \\caption*{\\label{xkcd:%s} %s}"
+                                           num
+                                           (or desc
+                                               (format "\\textbf{%s} %s" title alt))))))
+       (t (format "https://xkcd.com/%s" num)))))
   
   (defun +org-xkcd-complete (&optional arg)
     "Complete xkcd using `+xkcd-stored-info'"
@@ -3748,11 +3751,11 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-fontsets
     '((cm nil) ; computer modern
       (## nil) ; no font set
-      (cmu-typewriter-text ; FIXME
+      (cmu-typewriter-text
        :serif "\\usepackage[osf]{Alegreya}"
        :sans "\\usepackage{AlegreyaSans}"
        :mono "\\usepackage[scale=0.88]{sourcecodepro}"
-       :maths "\\usepackage[varbb]{newpxmath}")
+       :maths "\\usepackage[varbb]{newpxmath}") ;FIXME
       (alegreya
        :serif "\\usepackage[osf]{Alegreya}"
        :sans "\\usepackage{AlegreyaSans}"
@@ -4582,7 +4585,7 @@ SQL can be either the emacsql vector representation, or a string."
     (unless org-roam-ui-mode (org-roam-ui-mode 1))
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 
-(use-package! org-fragtog
+(use-package! xenops
   :hook (org-mode . xenops-mode)
   :config
   (add-hook 'latex-mode-hook #'xenops-mode)
