@@ -3182,6 +3182,17 @@ need to have a template assigned.
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 #+end_src
+
+Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp client in Emacs has some nuisances. Let's tweak it.
+#+begin_src emacs-lisp
+(setq lsp-file-watch-threshold 1000
+      lsp-ui-doc-position "Bottom"
+      lsp-ui-peek-enable t
+      lsp-ui-doc-enable nil
+      lsp-ui-imenu-enable t
+      lsp-ui-sideline-enable nil
+      lsp-ui-sideline-ignore-duplicate t)
+#+end_src
 ** Plaintext
 It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
 possible to do this without modifying the buffer, so let's condition this block
@@ -4829,10 +4840,8 @@ Saving seconds adds up after all! (but only so much)
          (title (plist-get xkcd-info :title))
          (file (xkcd-download img (string-to-number num))))
     (cond
-     ; FIXME The html backend will cause emacs-lisp indent work abnormally
-     ;;((org-export-derived-backend-p backend 'html)
-     ;;      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
-
+     ((org-export-derived-backend-p backend 'html)
+           (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
      ((org-export-derived-backend-p backend 'latex)
       (format "\\begin{figure}[!htb]
            \\centering

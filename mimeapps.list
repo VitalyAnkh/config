@@ -186,6 +186,7 @@ text/x-c++src=visual-studio-code.desktop;code-oss.desktop;
 image/webp=org.gnome.eog.desktop;
 application/x-bzpdf=okularApplication_pdf.desktop;
 application/wps-office.ppt=libreoffice-impress.desktop;
+text/x-tex=visual-studio-code.desktop;
 
 [Default Applications]
 x-scheme-handler/jetbrains=jetbrains-toolbox.desktop

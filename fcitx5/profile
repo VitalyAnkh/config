@@ -4,7 +4,7 @@ Name=Lang
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=skk
+DefaultIM=keyboard-fr-latin9
 
 [Groups/0/Items/0]
 # Name

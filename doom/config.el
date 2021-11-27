@@ -88,18 +88,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-	     (run-at-time nil nil
-			  (lambda nil
-			    (message "%s missing the following fonts: %s"
-				     (propertize "Warning!" 'face
-						 '(bold warning))
-				     (mapconcat
-				      (lambda
-					(font)
-					(propertize font 'face 'font-lock-variable-name-face))
-				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-				      ", "))
-			    (sleep-for 0.5)))))
+    (run-at-time nil nil
+		 (lambda nil
+		   (message "%s missing the following fonts: %s"
+			    (propertize "Warning!" 'face
+					'(bold warning))
+			    (mapconcat
+			     (lambda
+			       (font)
+			       (propertize font 'face 'font-lock-variable-name-face))
+			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+			     ", "))
+		   (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -1342,6 +1342,16 @@ SQL can be either the emacsql vector representation, or a string."
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 ;; File Templates:1 ends here
 
+;; [[file:config.org::*File Templates][File Templates:2]]
+(setq lsp-file-watch-threshold 1000
+      lsp-ui-doc-position "Bottom"
+      lsp-ui-peek-enable t
+      lsp-ui-doc-enable nil
+      lsp-ui-imenu-enable t
+      lsp-ui-sideline-enable nil
+      lsp-ui-sideline-ignore-duplicate t)
+;; File Templates:2 ends here
+
 ;; [[file:config.org::*Plaintext][Plaintext:1]]
 (after! text-mode
   (add-hook! 'text-mode-hook
@@ -2223,10 +2233,8 @@ SQL can be either the emacsql vector representation, or a string."
            (title (plist-get xkcd-info :title))
            (file (xkcd-download img (string-to-number num))))
       (cond
-       ; FIXME The html backend will cause emacs-lisp indent work abnormally
-       ;;((org-export-derived-backend-p backend 'html)
-       ;;      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
-  
+       ((org-export-derived-backend-p backend 'html)
+             (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
        ((org-export-derived-backend-p backend 'latex)
         (format "\\begin{figure}[!htb]
              \\centering
