@@ -1315,7 +1315,7 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
-;;(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
 
@@ -2490,7 +2490,7 @@ for writeroom mode.
     "A variable-pitch face with serifs."
     :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+  (setq variable-pitch-serif-font (font-spec :family "CMU Typewriter Text" :size 27))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -3191,7 +3191,8 @@ on that.
   (add-hook! 'text-mode-hook
              ;; Apply ANSI color codes
              (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max) t))))
+               (ansi-color-apply-on-region (point-min) (point-max) t)))
+  )
 #+end_src
 ** Org
 :PROPERTIES:
@@ -3352,7 +3353,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
-;;(unpin! org-mode) ; there be bugs
+(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -3393,7 +3394,7 @@ sacrificing visual amenities with the =org-appear= package.
 #+end_src
 ***** =Valign= for Org Mode tables
 Use [[https://github.com/casouri/valign][valign]] for tables alignments.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp
 (package! valign :recipe (:host github :repo "casouri/valign"))
 #+end_src
 
@@ -3403,7 +3404,8 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
   (require 'valign)
   ;; No hook, open this manually when needed
   ;;:hook
-  ;;('org-mode . #'valign-mode))
+  ;;('org-mode . #'valign-mode)
+  )
 #+end_src
 
 ***** Heading structure
@@ -3426,7 +3428,7 @@ structure has come to my attention.
 
 ***** Org ref
 Now and then citations need to happen
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-ref)
 #+end_src
 
@@ -3549,12 +3551,12 @@ It's nice to be able to link to music
 ;;(package! org-music :recipe (:local-repo "lisp/org-music"))
 #+end_src
 #+begin_src emacs-lisp :tangle no
-(use-package! org-music
-  :after org
-  :config
-  (setq org-music-mpris-player "Lollypop"
-        org-music-track-search-method 'beets
-        org-music-beets-db "~/Music/library.db"))
+;; (use-package! org-music
+;;   :after org
+;;   :config
+;;   (setq org-music-mpris-player "Lollypop"
+;;         org-music-track-search-method 'beets
+;;        org-music-beets-db "~/Music/library.db"))
 #+end_src
 
 *** Behaviour
@@ -3830,7 +3832,7 @@ Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][t
 ***** Spellcheck
 My spelling is atrocious, so let's get flycheck going.
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'turn-on-flyspell)
+;;(add-hook 'org-mode-hook 'turn-on-flyspell)
 #+end_src
 ***** LSP support in ~src~ blocks
 Now, by default, LSPs don't really function at all in ~src~ blocks.
@@ -4830,9 +4832,9 @@ Saving seconds adds up after all! (but only so much)
            (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
           ((org-export-derived-backend-p backend 'latex)
            (format "\\begin{figure}[!htb]
-  \\centering
-  \\includegraphics[scale=0.4]{%s}%s
-\\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
+           \\centering
+           \\includegraphics[scale=0.4]{%s}%s
+           \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
                       (format "\n  \\caption*{\\label{xkcd:%s} %s}"
                               num
                               (or desc
@@ -5401,10 +5403,14 @@ Let's start by adding a sans font. I'd also like to use some of the
 functionality from =bmc-maths=, so we'll load that too.
 
 #+begin_src emacs-lisp
-(setq org-format-latex-header "\\documentclass{article}
+(setq org-format-latex-header "\\documentclass[utf8]{article}
 \\usepackage[usenames]{xcolor}
 
 \\usepackage[T1]{fontenc}
+
+% 中文支持
+% Chinese support
+\\usepackage{ctex}
 
 \\usepackage{booktabs}
 
@@ -7117,7 +7123,7 @@ To start with I'll create a default state variable and register =fontset= as par
 of =#+options=.
 
 #+begin_src emacs-lisp
-(defvar org-latex-default-fontset 'alegreya
+(defvar org-latex-default-fontset 'noto
   "Fontset from `org-latex-fontsets' to use by default.
 As cm (computer modern) is TeX's default, that causes nothing
 to be added to the document.
@@ -7190,6 +7196,11 @@ Finally, we just need to add some fonts.
 (defvar org-latex-fontsets
   '((cm nil) ; computer modern
     (## nil) ; no font set
+    (cmu-typewriter-text ; FIXME
+     :serif "\\usepackage[osf]{Alegreya}"
+     :sans "\\usepackage{AlegreyaSans}"
+     :mono "\\usepackage[scale=0.88]{sourcecodepro}"
+     :maths "\\usepackage[varbb]{newpxmath}")
     (alegreya
      :serif "\\usepackage[osf]{Alegreya}"
      :sans "\\usepackage{AlegreyaSans}"
@@ -7416,10 +7427,10 @@ The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting
 exporting that as LaTeX commands.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-;;(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
+(package! engrave-faces)
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (use-package! engrave-faces-latex
   :after ox-latex)
 #+end_src
@@ -7873,51 +7884,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX |
-|-----------+-------|
-| ɑ         | \(\alpha\) |
-| β         | \(\beta\) |
-| γ         | \(\gamma\) |
-| δ         | \(\delta\) |
-| ε         | \(\epsilon\) |
-| ϵ         | \(\varepsilon\) |
-| ζ         | \(\zeta\) |
-| η         | \(\eta\) |
-| θ         | \(\theta\) |
-| ϑ         | \(\vartheta\) |
-| ι         | \(\iota\) |
-| κ         | \(\kappa\) |
-| λ         | \(\lambda\) |
-| μ         | \(\mu\) |
-| ν         | \(\nu\) |
-| ξ         | \(\xi\) |
-| π         | \(\pi\) |
-| ϖ         | \(\varpi\) |
-| ρ         | \(\rho\) |
+| Character | LaTeX       |
+|-----------+-------------|
+| ɑ         | \(\alpha\)       |
+| β         | \(\beta\)       |
+| γ         | \(\gamma\)       |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ         | \(\varepsilon\)       |
+| ζ         | \(\zeta\)       |
+| η         | \(\eta\)       |
+| θ         | \(\theta\)       |
+| ϑ         | \(\vartheta\)       |
+| ι         | \(\iota\)       |
+| κ         | \(\kappa\)       |
+| λ         | \(\lambda\)       |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
+| π         | \(\pi\)       |
+| ϖ         | \(\varpi\)       |
+| ρ         | \(\rho\)       |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\) |
-| ς         | \(\varsigma\) |
-| τ         | \(\tau\) |
-| υ         | \(\upsilon\) |
-| ϕ         | \(\phi\) |
-| φ         | \(\varphi\) |
-| ψ         | \(\psi\) |
-| ω         | \(\omega\) |
-| Γ         | \(\Gamma\) |
-| Δ         | \(\Delta\) |
-| Θ         | \(\Theta\) |
-| Λ         | \(\Lambda\) |
-| Ξ         | \(\Xi\) |
-| Π         | \(\Pi\) |
-| Σ         | \(\Sigma\) |
-| Υ         | \(\Upsilon\) |
-| Φ         | \(\Phi\) |
-| Ψ         | \(\Psi\) |
-| Ω         | \(\Omega\) |
-| א         | \(\aleph\) |
-| ב         | \(\beth\) |
+| σ         | \(\sigma\)       |
+| ς         | \(\varsigma\)       |
+| τ         | \(\tau\)       |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)       |
+| φ         | \(\varphi\)       |
+| ψ         | \(\psi\)       |
+| ω         | \(\omega\)       |
+| Γ         | \(\Gamma\)       |
+| Δ         | \(\Delta\)       |
+| Θ         | \(\Theta\)       |
+| Λ         | \(\Lambda\)       |
+| Ξ         | \(\Xi\)       |
+| Π         | \(\Pi\)       |
+| Σ         | \(\Sigma\)       |
+| Υ         | \(\Upsilon\)       |
+| Φ         | \(\Phi\)       |
+| Ψ         | \(\Psi\)       |
+| Ω         | \(\Omega\)       |
+| א         | \(\aleph\)       |
+| ב         | \(\beth\)       |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\) |
+| ג         | \(\gimel\)       |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions
@@ -8783,7 +8794,10 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 
 #+begin_src emacs-lisp
 (use-package! laas
-  :hook (LaTeX-mode . laas-mode)
+  :hook
+  ((LaTeX-mode . laas-mode)
+  (latex-mode . laas-mode)
+  (org-mode . laas-mode))
   :config
   (defun laas-tex-fold-maybe ()
     (unless (equal "/" aas-transient-snippet-key)

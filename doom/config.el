@@ -427,7 +427,7 @@
 ;; [[file:config.org::*Splash screen][Splash screen:3]]
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
-;;(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
@@ -825,7 +825,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     "A variable-pitch face with serifs."
     :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+  (setq variable-pitch-serif-font (font-spec :family "CMU Typewriter Text" :size 27))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -1347,7 +1347,8 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook! 'text-mode-hook
              ;; Apply ANSI color codes
              (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max) t))))
+               (ansi-color-apply-on-region (point-min) (point-max) t)))
+  )
 ;; Plaintext:1 ends here
 
 (after! org
@@ -1415,7 +1416,7 @@ SQL can be either the emacsql vector representation, or a string."
   (defadvice! org-edit-latex-emv-after-insert ()
     :after #'org-cdlatex-environment-indent
     (org-edit-latex-environment))
-  (add-hook 'org-mode-hook 'turn-on-flyspell)
+  ;;(add-hook 'org-mode-hook 'turn-on-flyspell)
   (cl-defmacro lsp-org-babel-enable (lang)
     "Support LANG in org source code block."
     (setq centaur-lsp 'lsp-mode)
@@ -2225,9 +2226,9 @@ SQL can be either the emacsql vector representation, or a string."
              (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
             ((org-export-derived-backend-p backend 'latex)
              (format "\\begin{figure}[!htb]
-    \\centering
-    \\includegraphics[scale=0.4]{%s}%s
-  \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
+             \\centering
+             \\includegraphics[scale=0.4]{%s}%s
+             \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
                         (format "\n  \\caption*{\\label{xkcd:%s} %s}"
                                 num
                                 (or desc
@@ -2556,10 +2557,14 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-highlight-latex-and-related '(native script entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
-  (setq org-format-latex-header "\\documentclass{article}
+  (setq org-format-latex-header "\\documentclass[utf8]{article}
   \\usepackage[usenames]{xcolor}
   
   \\usepackage[T1]{fontenc}
+  
+  % 中文支持
+  % Chinese support
+  \\usepackage{ctex}
   
   \\usepackage{booktabs}
   
@@ -3693,7 +3698,7 @@ SQL can be either the emacsql vector representation, or a string."
           ("T1" "fontenc" t ("pdflatex"))
           ("" "xcolor" nil) ; Generally useful
           ("" "hyperref" nil)))
-  (defvar org-latex-default-fontset 'alegreya
+  (defvar org-latex-default-fontset 'noto
     "Fontset from `org-latex-fontsets' to use by default.
   As cm (computer modern) is TeX's default, that causes nothing
   to be added to the document.
@@ -3743,6 +3748,11 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-fontsets
     '((cm nil) ; computer modern
       (## nil) ; no font set
+      (cmu-typewriter-text ; FIXME
+       :serif "\\usepackage[osf]{Alegreya}"
+       :sans "\\usepackage{AlegreyaSans}"
+       :mono "\\usepackage[scale=0.88]{sourcecodepro}"
+       :maths "\\usepackage[varbb]{newpxmath}")
       (alegreya
        :serif "\\usepackage[osf]{Alegreya}"
        :sans "\\usepackage{AlegreyaSans}"
@@ -4431,7 +4441,8 @@ SQL can be either the emacsql vector representation, or a string."
   (require 'valign)
   ;; No hook, open this manually when needed
   ;;:hook
-  ;;('org-mode . #'valign-mode))
+  ;;('org-mode . #'valign-mode)
+  )
 
 (use-package! org-ol-tree
   :commands org-ol-tree)
@@ -4975,7 +4986,10 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*LAAS][LAAS:2]]
 (use-package! laas
-  :hook (LaTeX-mode . laas-mode)
+  :hook
+  ((LaTeX-mode . laas-mode)
+  (latex-mode . laas-mode)
+  (org-mode . laas-mode))
   :config
   (defun laas-tex-fold-maybe ()
     (unless (equal "/" aas-transient-snippet-key)

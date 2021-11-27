@@ -102,7 +102,7 @@
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
 ")) :includes org) :pin nil)
-;;(unpin! org-mode) ; there be bugs
+(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -115,6 +115,8 @@
 (package! valign :recipe (:host github :repo "casouri/valign"))
 
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
+
+(package! org-ref)
 
 ;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 
@@ -149,7 +151,7 @@
 
 (package! xenops)
 
-;;(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
+(package! engrave-faces)
 
 ;;(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 
