@@ -3701,6 +3701,7 @@ SQL can be either the emacsql vector representation, or a string."
           ("T1" "fontenc" t ("pdflatex"))
           ("" "xcolor" nil) ; Generally useful
           ("" "hyperref" nil)))
+  (setq org-export-async-debug t)
   (defvar org-latex-default-fontset 'noto
     "Fontset from `org-latex-fontsets' to use by default.
   As cm (computer modern) is TeX's default, that causes nothing

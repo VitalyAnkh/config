@@ -102,7 +102,7 @@
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
 ")) :includes org) :pin nil)
-(unpin! org-mode) ; there be bugs
+;;(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))

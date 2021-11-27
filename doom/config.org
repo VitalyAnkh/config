@@ -3353,7 +3353,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
-(unpin! org-mode) ; there be bugs
+;;(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -7121,6 +7121,11 @@ There are also some obsolete entries in the default value, specifically
 Using the lovely conditional preamble, I'll define a number of font collections
 that can be used for LaTeX exports. Who knows, maybe I'll use it with other
 export formats too at some point.
+
+For debug:
+#+begin_src emacs-lisp
+(setq org-export-async-debug t)
+#+end_src
 
 To start with I'll create a default state variable and register =fontset= as part
 of =#+options=.
