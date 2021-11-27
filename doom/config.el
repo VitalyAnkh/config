@@ -88,18 +88,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-		 (lambda nil
-		   (message "%s missing the following fonts: %s"
-			    (propertize "Warning!" 'face
-					'(bold warning))
-			    (mapconcat
-			     (lambda
-			       (font)
-			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-			     ", "))
-		   (sleep-for 0.5)))))
+	     (run-at-time nil nil
+			  (lambda nil
+			    (message "%s missing the following fonts: %s"
+				     (propertize "Warning!" 'face
+						 '(bold warning))
+				     (mapconcat
+				      (lambda
+					(font)
+					(propertize font 'face 'font-lock-variable-name-face))
+				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+				      ", "))
+			    (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -1821,6 +1821,7 @@ SQL can be either the emacsql vector representation, or a string."
           (interactive)
           (set-window-parameter nil 'mode-line-format 'none)
           (org-capture)))
+  (setq org-id-method 'ts)
   (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
     :around #'doom-modeline-buffer-file-name ; takes no args
     (if (s-contains-p org-roam-directory (or buffer-file-name ""))
@@ -4701,6 +4702,10 @@ information."
 
 ;; [[file:config.org::*Compilation][Compilation:2]]
 (setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
+(use-package pdf-tools
+  :config
+  (setq-default pdf-view-display-size 'fit-width)
+  )
 ;; Compilation:2 ends here
 
 ;; [[file:config.org::*Template][Template:2]]

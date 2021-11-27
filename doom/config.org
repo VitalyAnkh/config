@@ -4304,6 +4304,12 @@ to initialise), let's not load roam.
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
+Let =org-id-method= be time stamp. =uuid= is not informative for humans.
+#+begin_src emacs-lisp
+(setq org-id-method 'ts)
+#+end_src
+
+
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
 the [[*Window title][Window title]].
@@ -8491,6 +8497,10 @@ to be nice in recognising that I have some PDF viewing apps installed, I'd
 rather not have it default to using them, so let's re-order the preferences.
 #+begin_src emacs-lisp
 (setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
+(use-package pdf-tools
+  :config
+  (setq-default pdf-view-display-size 'fit-width)
+  )
 #+end_src
 *** Snippet helpers
 **** Template
