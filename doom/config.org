@@ -1108,7 +1108,7 @@ blackhole image, but as I've stripped down the splash screen I've switched to
 just using the /E/.
 
 #+attr_latex: :width 0.2\linewidth
-#+attr_html: :style width:20% :alt Fancy Emacs "E"
+#+attr_html: :style width:10% :alt Fancy Emacs "E"
 [[file:misc/splash-images/emacs-e.svg]]
 
 Now we just make it theme-appropriate, and resize with the frame.
@@ -4343,6 +4343,7 @@ with it.
   :hook (org-roam . org-roam-ui-mode)
   :config
   (require 'org-roam) ; in case autoloaded
+  (setq org-roam-directory org-directory)
   (defun org-roam-ui-open ()
     "Ensure the server is active, then open the roam graph."
     (interactive)
@@ -5375,7 +5376,8 @@ have this be performed automatically with =xenops=.
         (lualatex :programs ("lualatex" "dvisvgm")
                   :description "dvi > svg"
                   :use-xcolor t
-                  :message "you need to install the programs: lualatex and dvisvgm."
+                  :message
+                  "you need to install the programs: lualatex and dvisvgm. add --jiton option to use luajittex"
                   :image-input-type "dvi"
                   :image-output-type "svg"
                   :image-size-adjust (1.0 . 1.0)

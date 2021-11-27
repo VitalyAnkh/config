@@ -4589,6 +4589,7 @@ SQL can be either the emacsql vector representation, or a string."
   :hook (org-roam . org-roam-ui-mode)
   :config
   (require 'org-roam) ; in case autoloaded
+  (setq org-roam-directory org-directory)
   (defun org-roam-ui-open ()
     "Ensure the server is active, then open the roam graph."
     (interactive)
@@ -4618,7 +4619,8 @@ SQL can be either the emacsql vector representation, or a string."
         (lualatex :programs ("lualatex" "dvisvgm")
                   :description "dvi > svg"
                   :use-xcolor t
-                  :message "you need to install the programs: lualatex and dvisvgm."
+                  :message
+                  "you need to install the programs: lualatex and dvisvgm. add --jiton option to use luajittex"
                   :image-input-type "dvi"
                   :image-output-type "svg"
                   :image-size-adjust (1.0 . 1.0)
