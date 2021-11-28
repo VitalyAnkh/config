@@ -5358,13 +5358,14 @@ have this be performed automatically with =xenops=.
 (use-package! xenops
   :hook (org-mode . xenops-mode)
   :config
+  ;;test, compare it with org-fragtog and pdfaltex
   (add-hook 'latex-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
-      xenops-math-latex-process 'xelatex
+      xenops-math-latex-process 'pdflatex
       )
 (setq xenops-math-latex-process-alist
       '((dvipng :programs
@@ -5375,6 +5376,18 @@ have this be performed automatically with =xenops=.
                 ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
                 :image-converter
                 ("dvipng -D %D -T tight -o %O %f"))
+        (pdflatex :programs
+                  ("latex" "dvisvgm")
+                  :description "dvi > svg"
+                  :message "you need to install the programs: latex and dvisvgm."
+                  :image-input-type "dvi"
+                  :image-output-type "svg"
+                  :image-size-adjust
+                  (1.0 . 1.0)
+                  :latex-compiler
+                  ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
         (lualatex :programs ("lualatex" "dvisvgm")
                   :description "dvi > svg"
                   :use-xcolor t
@@ -5383,8 +5396,7 @@ have this be performed automatically with =xenops=.
                   :image-input-type "dvi"
                   :image-output-type "svg"
                   :image-size-adjust (1.0 . 1.0)
-                  :latex-compiler
-                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
+                  :latex-compiler                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
                   :image-converter
                   ("dvisvgm %f -n -b min -c %S -o %O"))
         (tectonic :programs
@@ -5417,6 +5429,50 @@ have this be performed automatically with =xenops=.
                      :image-converter
                      ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 #+end_src
+OK, let's customize the default inline rendering a bit.
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-fragtog)
+#+end_src
+
+#+begin_src emacs-lisp
+;;(add-hook 'org-mode-hook 'org-fragtog-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-process-alist
+      '((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f")
+                :transparent-image-converter
+                ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+        (dvisvgm :programs
+                 ("latex" "dvisvgm")
+                 :description "dvi > svg"
+                 :message "you need to install the programs: latex and dvisvgm."
+                 :image-input-type "dvi"
+                 :image-output-type "svg"
+                 :image-size-adjust
+                 (0.6 . 0.6)
+                 :latex-compiler
+                 ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
+      )
+#+end_src
 
 ***** Prettier rendering
 It's nice to customise the look of LaTeX fragments so they fit better in the
@@ -5427,15 +5483,12 @@ functionality from =bmc-maths=, so we'll load that too.
 #+begin_src emacs-lisp
 (setq org-format-latex-header "\\documentclass[utf8]{article}
 \\usepackage[usenames]{xcolor}
-
 \\usepackage[T1]{fontenc}
 
-% 中文支持
-% Chinese support
-\\usepackage{ctex}
+% Chinese support, don't add this when not necessary
+%\\usepackage{ctex}
 
 \\usepackage{booktabs}
-
 \\pagestyle{empty}             % do not remove
 % The settings below are copied from fullpage.sty
 \\setlength{\\textwidth}{\\paperwidth}
@@ -5450,9 +5503,8 @@ functionality from =bmc-maths=, so we'll load that too.
 \\addtolength{\\textheight}{-3cm}
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
-% my custom stuff
-%\\usepackage[nofont,plaindd]{bmc-maths}
-%\\usepackage{arev}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
 ")
 #+end_src
 
@@ -6949,7 +7001,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
   '((image         :snippet "\\usepackage{graphicx}" :order 2)
     (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
     ;; replace bmc with amsmath here
-    (maths         :snippet "\\usepackage{amsmath}" :order 0.2)
+    (maths         :snippet "\\usepackage{amsmath}\n\\usepackage{amssymb}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -7913,51 +7965,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX       |
-|-----------+-------------|
-| ɑ         | \(\alpha\)       |
-| β         | \(\beta\)       |
-| γ         | \(\gamma\)       |
-| δ         | \(\delta\)       |
-| ε         | \(\epsilon\)       |
-| ϵ         | \(\varepsilon\)       |
-| ζ         | \(\zeta\)       |
-| η         | \(\eta\)       |
-| θ         | \(\theta\)       |
-| ϑ         | \(\vartheta\)       |
-| ι         | \(\iota\)       |
-| κ         | \(\kappa\)       |
-| λ         | \(\lambda\)       |
-| μ         | \(\mu\)       |
-| ν         | \(\nu\)       |
-| ξ         | \(\xi\)       |
-| π         | \(\pi\)       |
-| ϖ         | \(\varpi\)       |
-| ρ         | \(\rho\)       |
+| Character | LaTeX |
+|-----------+-------|
+| ɑ         | \(\alpha\) |
+| β         | \(\beta\) |
+| γ         | \(\gamma\) |
+| δ         | \(\delta\) |
+| ε         | \(\epsilon\) |
+| ϵ         | \(\varepsilon\) |
+| ζ         | \(\zeta\) |
+| η         | \(\eta\) |
+| θ         | \(\theta\) |
+| ϑ         | \(\vartheta\) |
+| ι         | \(\iota\) |
+| κ         | \(\kappa\) |
+| λ         | \(\lambda\) |
+| μ         | \(\mu\) |
+| ν         | \(\nu\) |
+| ξ         | \(\xi\) |
+| π         | \(\pi\) |
+| ϖ         | \(\varpi\) |
+| ρ         | \(\rho\) |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\)       |
-| ς         | \(\varsigma\)       |
-| τ         | \(\tau\)       |
-| υ         | \(\upsilon\)       |
-| ϕ         | \(\phi\)       |
-| φ         | \(\varphi\)       |
-| ψ         | \(\psi\)       |
-| ω         | \(\omega\)       |
-| Γ         | \(\Gamma\)       |
-| Δ         | \(\Delta\)       |
-| Θ         | \(\Theta\)       |
-| Λ         | \(\Lambda\)       |
-| Ξ         | \(\Xi\)       |
-| Π         | \(\Pi\)       |
-| Σ         | \(\Sigma\)       |
-| Υ         | \(\Upsilon\)       |
-| Φ         | \(\Phi\)       |
-| Ψ         | \(\Psi\)       |
-| Ω         | \(\Omega\)       |
-| א         | \(\aleph\)       |
-| ב         | \(\beth\)       |
+| σ         | \(\sigma\) |
+| ς         | \(\varsigma\) |
+| τ         | \(\tau\) |
+| υ         | \(\upsilon\) |
+| ϕ         | \(\phi\) |
+| φ         | \(\varphi\) |
+| ψ         | \(\psi\) |
+| ω         | \(\omega\) |
+| Γ         | \(\Gamma\) |
+| Δ         | \(\Delta\) |
+| Θ         | \(\Theta\) |
+| Λ         | \(\Lambda\) |
+| Ξ         | \(\Xi\) |
+| Π         | \(\Pi\) |
+| Σ         | \(\Sigma\) |
+| Υ         | \(\Upsilon\) |
+| Φ         | \(\Phi\) |
+| Ψ         | \(\Psi\) |
+| Ω         | \(\Omega\) |
+| א         | \(\aleph\) |
+| ב         | \(\beth\) |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\)       |
+| ג         | \(\gimel\) |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

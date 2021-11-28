@@ -90,18 +90,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-		 (lambda nil
-		   (message "%s missing the following fonts: %s"
-			    (propertize "Warning!" 'face
-					'(bold warning))
-			    (mapconcat
-			     (lambda
-			       (font)
-			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-			     ", "))
-		   (sleep-for 0.5)))))
+	     (run-at-time nil nil
+			  (lambda nil
+			    (message "%s missing the following fonts: %s"
+				     (propertize "Warning!" 'face
+						 '(bold warning))
+				     (mapconcat
+				      (lambda
+					(font)
+					(propertize font 'face 'font-lock-variable-name-face))
+				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+				      ", "))
+			    (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -2571,17 +2571,49 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-highlight-latex-and-related '(native script entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+  (package! org-fragtog)
+  ;;(add-hook 'org-mode-hook 'org-fragtog-mode)
+  (setq org-preview-latex-default-process 'dvisvgm)
+  (setq org-preview-latex-process-alist
+        '((dvipng :programs
+                  ("latex" "dvipng")
+                  :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                  (1.0 . 1.0)
+                  :latex-compiler
+                  ("latex -interaction nonstopmode -output-directory %o %f")
+                  :image-converter
+                  ("dvipng -D %D -T tight -o %O %f")
+                  :transparent-image-converter
+                  ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+          (dvisvgm :programs
+                   ("latex" "dvisvgm")
+                   :description "dvi > svg"
+                   :message "you need to install the programs: latex and dvisvgm."
+                   :image-input-type "dvi"
+                   :image-output-type "svg"
+                   :image-size-adjust
+                   (0.6 . 0.6)
+                   :latex-compiler
+                   ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                   :image-converter
+                   ("dvisvgm %f -n -b min -c %S -o %O"))
+          (imagemagick :programs
+                       ("latex" "convert")
+                       :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                       (1.0 . 1.0)
+                       :latex-compiler
+                       ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                       :image-converter
+                       ("convert -density %D -trim -antialias %f -quality 100 %O")))
+        )
   (setq org-format-latex-header "\\documentclass[utf8]{article}
   \\usepackage[usenames]{xcolor}
-  
   \\usepackage[T1]{fontenc}
   
-  % 中文支持
-  % Chinese support
-  \\usepackage{ctex}
+  % Chinese support, don't add this when not necessary
+  %\\usepackage{ctex}
   
   \\usepackage{booktabs}
-  
   \\pagestyle{empty}             % do not remove
   % The settings below are copied from fullpage.sty
   \\setlength{\\textwidth}{\\paperwidth}
@@ -2596,9 +2628,8 @@ SQL can be either the emacsql vector representation, or a string."
   \\addtolength{\\textheight}{-3cm}
   \\setlength{\\topmargin}{1.5cm}
   \\addtolength{\\topmargin}{-2.54cm}
-  % my custom stuff
-  %\\usepackage[nofont,plaindd]{bmc-maths}
-  %\\usepackage{arev}
+  \\usepackage{amsmath}
+  \\usepackage{amssymb}
   ")
   ;; (setq org-format-latex-options
   ;;      (plist-put org-format-latex-options :background "Transparent"))
@@ -3581,7 +3612,7 @@ SQL can be either the emacsql vector representation, or a string."
     '((image         :snippet "\\usepackage{graphicx}" :order 2)
       (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
       ;; replace bmc with amsmath here
-      (maths         :snippet "\\usepackage{amsmath}" :order 0.2)
+      (maths         :snippet "\\usepackage{amsmath}\n\\usepackage{amssymb}" :order 0.2)
       (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
       (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
       (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -4602,13 +4633,14 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! xenops
   :hook (org-mode . xenops-mode)
   :config
+  ;;test, compare it with org-fragtog and pdfaltex
   (add-hook 'latex-mode-hook #'xenops-mode)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
-      xenops-math-latex-process 'xelatex
+      xenops-math-latex-process 'pdflatex
       )
 (setq xenops-math-latex-process-alist
       '((dvipng :programs
@@ -4619,6 +4651,18 @@ SQL can be either the emacsql vector representation, or a string."
                 ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
                 :image-converter
                 ("dvipng -D %D -T tight -o %O %f"))
+        (pdflatex :programs
+                  ("latex" "dvisvgm")
+                  :description "dvi > svg"
+                  :message "you need to install the programs: latex and dvisvgm."
+                  :image-input-type "dvi"
+                  :image-output-type "svg"
+                  :image-size-adjust
+                  (1.0 . 1.0)
+                  :latex-compiler
+                  ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                  :image-converter
+                  ("dvisvgm %f -n -b min -c %S -o %O"))
         (lualatex :programs ("lualatex" "dvisvgm")
                   :description "dvi > svg"
                   :use-xcolor t
@@ -4627,8 +4671,7 @@ SQL can be either the emacsql vector representation, or a string."
                   :image-input-type "dvi"
                   :image-output-type "svg"
                   :image-size-adjust (1.0 . 1.0)
-                  :latex-compiler
-                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
+                  :latex-compiler                  ("lualatex --interaction=nonstopmode --shell-escape --output-format=dvi --output-directory=%o %f")
                   :image-converter
                   ("dvisvgm %f -n -b min -c %S -o %O"))
         (tectonic :programs

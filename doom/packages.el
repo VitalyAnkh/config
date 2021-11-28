@@ -151,6 +151,8 @@
 
 (package! xenops)
 
+(package! org-fragtog)
+
 (package! engrave-faces)
 
 ;;(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
