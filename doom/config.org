@@ -3399,7 +3399,7 @@ sacrificing visual amenities with the =org-appear= package.
   :hook (org-mode . org-appear-mode)
   :config
   (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
+        ;;org-appear-autosubmarkers t
         org-appear-autolinks nil)
   ;; for proper first-time setup, `org-appear--set-elements'
   ;; needs to be run after other hooks have acted.
@@ -5356,12 +5356,12 @@ have this be performed automatically with =xenops=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! xenops
-  :hook (org-mode . xenops-mode)
+  ;;:hook (org-mode . xenops-mode)
   :config
   ;;test, compare it with org-fragtog and pdfaltex
-  (add-hook 'latex-mode-hook #'xenops-mode)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;;(add-hook 'latex-mode-hook #'xenops-mode)
+  ;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;;(add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
@@ -5435,7 +5435,7 @@ OK, let's customize the default inline rendering a bit.
 #+end_src
 
 #+begin_src emacs-lisp
-;;(add-hook 'org-mode-hook 'org-fragtog-mode)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7965,51 +7965,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX |
-|-----------+-------|
-| ɑ         | \(\alpha\) |
-| β         | \(\beta\) |
-| γ         | \(\gamma\) |
-| δ         | \(\delta\) |
-| ε         | \(\epsilon\) |
-| ϵ         | \(\varepsilon\) |
-| ζ         | \(\zeta\) |
-| η         | \(\eta\) |
-| θ         | \(\theta\) |
-| ϑ         | \(\vartheta\) |
-| ι         | \(\iota\) |
-| κ         | \(\kappa\) |
-| λ         | \(\lambda\) |
-| μ         | \(\mu\) |
-| ν         | \(\nu\) |
-| ξ         | \(\xi\) |
-| π         | \(\pi\) |
-| ϖ         | \(\varpi\) |
-| ρ         | \(\rho\) |
+| Character | LaTeX       |
+|-----------+-------------|
+| ɑ         | \(\alpha\)       |
+| β         | \(\beta\)       |
+| γ         | \(\gamma\)       |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ         | \(\varepsilon\)       |
+| ζ         | \(\zeta\)       |
+| η         | \(\eta\)       |
+| θ         | \(\theta\)       |
+| ϑ         | \(\vartheta\)       |
+| ι         | \(\iota\)       |
+| κ         | \(\kappa\)       |
+| λ         | \(\lambda\)       |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
+| π         | \(\pi\)       |
+| ϖ         | \(\varpi\)       |
+| ρ         | \(\rho\)       |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\) |
-| ς         | \(\varsigma\) |
-| τ         | \(\tau\) |
-| υ         | \(\upsilon\) |
-| ϕ         | \(\phi\) |
-| φ         | \(\varphi\) |
-| ψ         | \(\psi\) |
-| ω         | \(\omega\) |
-| Γ         | \(\Gamma\) |
-| Δ         | \(\Delta\) |
-| Θ         | \(\Theta\) |
-| Λ         | \(\Lambda\) |
-| Ξ         | \(\Xi\) |
-| Π         | \(\Pi\) |
-| Σ         | \(\Sigma\) |
-| Υ         | \(\Upsilon\) |
-| Φ         | \(\Phi\) |
-| Ψ         | \(\Psi\) |
-| Ω         | \(\Omega\) |
-| א         | \(\aleph\) |
-| ב         | \(\beth\) |
+| σ         | \(\sigma\)       |
+| ς         | \(\varsigma\)       |
+| τ         | \(\tau\)       |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)       |
+| φ         | \(\varphi\)       |
+| ψ         | \(\psi\)       |
+| ω         | \(\omega\)       |
+| Γ         | \(\Gamma\)       |
+| Δ         | \(\Delta\)       |
+| Θ         | \(\Theta\)       |
+| Λ         | \(\Lambda\)       |
+| Ξ         | \(\Xi\)       |
+| Π         | \(\Pi\)       |
+| Σ         | \(\Sigma\)       |
+| Υ         | \(\Upsilon\)       |
+| Φ         | \(\Phi\)       |
+| Ψ         | \(\Psi\)       |
+| Ω         | \(\Omega\)       |
+| א         | \(\aleph\)       |
+| ב         | \(\beth\)       |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\) |
+| ג         | \(\gimel\)       |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

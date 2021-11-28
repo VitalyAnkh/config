@@ -90,18 +90,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-	     (run-at-time nil nil
-			  (lambda nil
-			    (message "%s missing the following fonts: %s"
-				     (propertize "Warning!" 'face
-						 '(bold warning))
-				     (mapconcat
-				      (lambda
-					(font)
-					(propertize font 'face 'font-lock-variable-name-face))
-				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-				      ", "))
-			    (sleep-for 0.5)))))
+    (run-at-time nil nil
+		 (lambda nil
+		   (message "%s missing the following fonts: %s"
+			    (propertize "Warning!" 'face
+					'(bold warning))
+			    (mapconcat
+			     (lambda
+			       (font)
+			       (propertize font 'face 'font-lock-variable-name-face))
+			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+			     ", "))
+		   (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -2572,7 +2572,7 @@ SQL can be either the emacsql vector representation, or a string."
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
   (package! org-fragtog)
-  ;;(add-hook 'org-mode-hook 'org-fragtog-mode)
+  (add-hook 'org-mode-hook 'org-fragtog-mode)
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-preview-latex-process-alist
         '((dvipng :programs
@@ -4477,7 +4477,7 @@ SQL can be either the emacsql vector representation, or a string."
   :hook (org-mode . org-appear-mode)
   :config
   (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
+        ;;org-appear-autosubmarkers t
         org-appear-autolinks nil)
   ;; for proper first-time setup, `org-appear--set-elements'
   ;; needs to be run after other hooks have acted.
@@ -4631,12 +4631,12 @@ SQL can be either the emacsql vector representation, or a string."
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 
 (use-package! xenops
-  :hook (org-mode . xenops-mode)
+  ;;:hook (org-mode . xenops-mode)
   :config
   ;;test, compare it with org-fragtog and pdfaltex
-  (add-hook 'latex-mode-hook #'xenops-mode)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;;(add-hook 'latex-mode-hook #'xenops-mode)
+  ;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;;(add-hook 'org-mode-hook #'xenops-mode)
   )
 (setq xenops-reveal-on-entry t
       xenops-image-directory (expand-file-name "xenops/image" user-emacs-directory)
