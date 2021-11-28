@@ -22,10 +22,12 @@
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
-      scroll-margin 2)                            ; It's nice to maintain a little margin
+      scroll-margin 2                             ; It's nice to maintain a little margin
+      word-wrap-by-category t)                    ; Different languages live together happily
 
 (display-time-mode 1)                             ; Enable time in the mode-line
-;; This mess things up, disable for now
+
+;; This messes things up, disable for now
 ;;(unless (string-match-p "^Power N/A" (battery)) ; On laptops...
 ;;  (display-battery-mode 1))                     ; it's nice to know how much power you have
 
@@ -88,18 +90,18 @@
 ;; [[file:config.org::*Font Face][Font Face:3]]
 (unless noninteractive
   (add-hook! 'doom-init-ui-hook
-	     (run-at-time nil nil
-			  (lambda nil
-			    (message "%s missing the following fonts: %s"
-				     (propertize "Warning!" 'face
-						 '(bold warning))
-				     (mapconcat
-				      (lambda
-					(font)
-					(propertize font 'face 'font-lock-variable-name-face))
-				      '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-				      ", "))
-			    (sleep-for 0.5)))))
+    (run-at-time nil nil
+		 (lambda nil
+		   (message "%s missing the following fonts: %s"
+			    (propertize "Warning!" 'face
+					'(bold warning))
+			    (mapconcat
+			     (lambda
+			       (font)
+			       (propertize font 'face 'font-lock-variable-name-face))
+			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
+			     ", "))
+		   (sleep-for 0.5)))))
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -3466,8 +3468,8 @@ SQL can be either the emacsql vector representation, or a string."
   "
         org-latex-reference-command "\\cref{%s}")
   (defvar org-latex-embed-files-preamble "
-  \\usepackage[main,include]{embedall}
-  \\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
+  %\\usepackage[main,include]{embedall}
+  %\\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
   "
     "Preamble that embeds files within the pdf.")
   
@@ -3578,7 +3580,8 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-feature-implementations
     '((image         :snippet "\\usepackage{graphicx}" :order 2)
       (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-      ;;(maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
+      ;; replace bmc with amsmath here
+      (maths         :snippet "\\usepackage{amsmath}" :order 0.2)
       (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
       (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
       (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
