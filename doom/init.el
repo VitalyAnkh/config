@@ -43,7 +43,8 @@
        zen                          ; distraction-free coding or writing
 
        :editor
-       (evil +everywhere)           ; come to the dark side, we have cookies
+       ;; Use meow, not evil!
+       (evil +everywhere)         ; come to the dark side, we have cookies
        file-templates               ; auto-snippets for empty files
        fold                         ; (nigh) universal code folding
        (format)                     ; automated prettiness
@@ -106,7 +107,7 @@
        :lang
        (agda +local)                ; types of types of types of types...
        beancount                    ; mind the GAAP
-       cc                           ; C/C++/Obj-C madness
+       (cc +lsp)                    ; C/C++/Obj-C madness
        clojure                      ; java with a lisp
        common-lisp                  ; if you've seen one lisp, you've seen them all
        coq                          ; proofs-as-programs
@@ -129,7 +130,7 @@
        ;;hy                         ; readability of scheme w/ speed of python
        idris                        ;
        json                         ; At least it ain't XML
-       ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
+       ;;(java +meghanada)         ; the poster child for carpal tunnel syndrome
        (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
        (julia +lsp)                 ; Python, R, and MATLAB in a blender
        ;;kotlin                     ; a better, slicker Java(Script)
@@ -162,7 +163,7 @@
        ;;purescript                 ; javascript, but functional
        (python +lsp +pyright)       ; beautiful is better than ugly
        ;;qt                         ; the 'cutest' gui framework ever
-       racket                       ; a DSL for DSLs
+       (racket +lsp +xp)            ; a DSL for DSLs
        raku                         ; the artist formerly known as perl6
        ;;rest                       ; Emacs as a REST client
        ;;rst                        ; ReST in peace

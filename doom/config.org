@@ -345,7 +345,8 @@ the following:
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      ;; Use meow!
+      evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -553,7 +554,8 @@ zen                          ; distraction-free coding or writing
 
 #+name: doom-editor
 #+begin_src emacs-lisp
-(evil +everywhere)           ; come to the dark side, we have cookies
+;; Use meow, not evil!
+(evil +everywhere)         ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format)                     ; automated prettiness
@@ -633,7 +635,7 @@ associated file.
 #+begin_src emacs-lisp
 (agda +local)                ; types of types of types of types...
 beancount                    ; mind the GAAP
-cc                           ; C/C++/Obj-C madness
+(cc +lsp)                    ; C/C++/Obj-C madness
 clojure                      ; java with a lisp
 common-lisp                  ; if you've seen one lisp, you've seen them all
 coq                          ; proofs-as-programs
@@ -656,7 +658,7 @@ ess                          ; emacs speaks statistics
 ;;hy                         ; readability of scheme w/ speed of python
 idris                        ;
 json                         ; At least it ain't XML
-;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
+;;(java +meghanada)         ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp)                 ; Python, R, and MATLAB in a blender
 ;;kotlin                     ; a better, slicker Java(Script)
@@ -689,7 +691,7 @@ ocaml                        ; an objective camel
 ;;purescript                 ; javascript, but functional
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-racket                       ; a DSL for DSLs
+(racket +lsp +xp)            ; a DSL for DSLs
 raku                         ; the artist formerly known as perl6
 ;;rest                       ; Emacs as a REST client
 ;;rst                        ; ReST in peace
@@ -1761,6 +1763,132 @@ the mode on startup, let's prevent installation of the package.
 (package! evil-escape :disable t)
 #+end_src
 
+*** Meow
+Modal editing on the wheel! Use =moew= for modal life.
+#+begin_src emacs-lisp :tangle packages.el
+(package! meow)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (defun meow-setup ()
+;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+;;   (meow-motion-overwrite-define-key
+;;    '("j" . meow-next)
+;;    '("k" . meow-prev))
+
+;;   (meow-leader-define-key
+;;    ;; SPC j/k will run the original command in MOTION state.
+;;    '("j" . "H-j")
+;;    '("k" . "H-k")
+;;    ;; Use SPC (0-9) for digit arguments.
+;;    '("1" . meow-digit-argument)
+;;    '("2" . meow-digit-argument)
+;;    '("3" . meow-digit-argument)
+;;    '("4" . meow-digit-argument)
+;;    '("5" . meow-digit-argument)
+;;    '("6" . meow-digit-argument)
+;;    '("7" . meow-digit-argument)
+;;    '("8" . meow-digit-argument)
+;;    '("9" . meow-digit-argument)
+;;    '("0" . meow-digit-argument)
+;;    '("/" . meow-keypad-describe-key)
+;;    '("?" . meow-cheatsheet))
+
+;;   (meow-normal-define-key
+;;    '("0" . meow-expand-0)
+;;    '("9" . meow-expand-9)
+;;    '("8" . meow-expand-8)
+;;    '("7" . meow-expand-7)
+;;    '("6" . meow-expand-6)
+;;    '("5" . meow-expand-5)
+;;    '("4" . meow-expand-4)
+;;    '("3" . meow-expand-3)
+;;    '("2" . meow-expand-2)
+;;    '("1" . meow-expand-1)
+;;    '("-" . negative-argument)
+;;    '(";" . meow-reverse)
+;;    '("," . meow-inner-of-thing)
+;;    '("." . meow-bounds-of-thing)
+;;    '("[" . meow-beginning-of-thing)
+;;    '("]" . meow-end-of-thing)
+;;    '("a" . meow-append)
+;;    '("A" . meow-open-below)
+;;    '("b" . meow-back-word)
+;;    '("B" . meow-back-symbol)
+;;    '("c" . meow-change)
+;;    '("d" . meow-delete)
+;;    '("D" . meow-backward-delete)
+;;    '("e" . meow-next-word)
+;;    '("E" . meow-next-symbol)
+;;    '("f" . meow-find)
+;;    '("g" . meow-cancel-selection)
+;;    '("G" . meow-grab)
+;;    '("h" . meow-left)
+;;    '("H" . meow-left-expand)
+;;    '("i" . meow-insert)
+;;    '("I" . meow-open-above)
+;;    '("j" . meow-next)
+;;    '("J" . meow-next-expand)
+;;    '("k" . meow-prev)
+;;    '("K" . meow-prev-expand)
+;;    '("l" . meow-right)
+;;    '("L" . meow-right-expand)
+;;    '("m" . meow-join)
+;;    '("n" . meow-search)
+;;    '("o" . meow-block)
+;;    '("O" . meow-to-block)
+;;    '("p" . meow-yank)
+;;    '("q" . meow-quit)
+;;    '("Q" . meow-goto-line)
+;;    '("r" . meow-replace)
+;;    '("R" . meow-swap-grab)
+;;    '("s" . meow-kill)
+;;    '("t" . meow-till)
+;;    '("u" . meow-undo)
+;;    '("U" . meow-undo-in-selection)
+;;    '("v" . meow-visit)
+;;    '("w" . meow-mark-word)
+;;    '("W" . meow-mark-symbol)
+;;    '("x" . meow-line)
+;;    '("X" . meow-goto-line)
+;;    '("y" . meow-save)
+;;    '("Y" . meow-sync-grab)
+;;    '("z" . meow-pop-selection)
+;;    '("'" . repeat)
+;;    '("<escape>" . mode-line-other-buffer)))
+;; (use-package meow
+;;   :config
+;;   (require 'meow)
+;;   ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
+;;   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
+;;   (meow-setup)
+;;   (meow-global-mode 1)
+;;   )
+#+end_src
+
+Mimic the =%= key in meow:
+#+begin_src emacs-lisp
+
+
+#+end_src
+
+Let =C-[= be the =ESC= of =evil= in =meow=:
+#+begin_src emacs-lisp
+;; (defun meow-insert-define-key (&rest keybindings)
+;;   "Define key for insert state.
+
+;; Usage:
+;;   (meow-insert-define-key
+;;    '(\"C-<space>\" . meow-insert-exit))"
+;;   (mapcar (lambda (key-ref)
+;;             (define-key meow-insert-state-keymap
+;;               (kbd (car key-ref))
+;;               (meow--parse-key-def (cdr key-ref))))
+;;           keybindings))
+;; (meow-insert-define-key
+;;    '("C-[" . meow-insert-exit))
+#+end_src
+
 *** Consult
 #+begin_quote
 From the =:completion vertico= module.
@@ -1934,7 +2062,8 @@ are just waiting to be saved!
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+  (add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+  )
 #+end_src
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
@@ -2153,7 +2282,8 @@ For when you want to change the case pattern for a symbol.
       (interactive "<R>")
       (string-inflection-all-cycle)
       (setq evil-repeat-info '([?g ?~])))
-    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
+    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
+  )
 #+end_src
 *** Smart parentheses
 #+begin_quote
@@ -2785,7 +2915,7 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
   (after! evil-snipe
-    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+   (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -3413,12 +3543,15 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
-(use-package! valign
+(use-package valign
   :init
   (require 'valign)
   ;; No hook, open this manually when needed
   ;;:hook
-  ;;('org-mode . #'valign-mode)
+  ;;(org-mode . valign-mode)
+  ;;(markdown-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar 1)
   )
 #+end_src
 
@@ -8918,9 +9051,9 @@ priority of =mypyls=
 =pdf-tools= is nice, but a =mupdf=-based solution is nicer.
 
 #+begin_src emacs-lisp :tangle no
-(package! paper :recipe (:host github :repo "ymarco/paper-mode"
-                         :files ("*.el" ".so")
-                         :pre-build ("make")))
+;; (package! paper :recipe (:host github :repo "ymarco/paper-mode"
+;;                          :files ("*.el" ".so")
+;;                          :pre-build ("make")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes

@@ -17,7 +17,8 @@
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      ;; Use meow!
+      evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -509,6 +510,123 @@ nil
         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 ;; EVIL:1 ends here
 
+;; [[file:config.org::*Meow][Meow:2]]
+;; (defun meow-setup ()
+;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+;;   (meow-motion-overwrite-define-key
+;;    '("j" . meow-next)
+;;    '("k" . meow-prev))
+
+;;   (meow-leader-define-key
+;;    ;; SPC j/k will run the original command in MOTION state.
+;;    '("j" . "H-j")
+;;    '("k" . "H-k")
+;;    ;; Use SPC (0-9) for digit arguments.
+;;    '("1" . meow-digit-argument)
+;;    '("2" . meow-digit-argument)
+;;    '("3" . meow-digit-argument)
+;;    '("4" . meow-digit-argument)
+;;    '("5" . meow-digit-argument)
+;;    '("6" . meow-digit-argument)
+;;    '("7" . meow-digit-argument)
+;;    '("8" . meow-digit-argument)
+;;    '("9" . meow-digit-argument)
+;;    '("0" . meow-digit-argument)
+;;    '("/" . meow-keypad-describe-key)
+;;    '("?" . meow-cheatsheet))
+
+;;   (meow-normal-define-key
+;;    '("0" . meow-expand-0)
+;;    '("9" . meow-expand-9)
+;;    '("8" . meow-expand-8)
+;;    '("7" . meow-expand-7)
+;;    '("6" . meow-expand-6)
+;;    '("5" . meow-expand-5)
+;;    '("4" . meow-expand-4)
+;;    '("3" . meow-expand-3)
+;;    '("2" . meow-expand-2)
+;;    '("1" . meow-expand-1)
+;;    '("-" . negative-argument)
+;;    '(";" . meow-reverse)
+;;    '("," . meow-inner-of-thing)
+;;    '("." . meow-bounds-of-thing)
+;;    '("[" . meow-beginning-of-thing)
+;;    '("]" . meow-end-of-thing)
+;;    '("a" . meow-append)
+;;    '("A" . meow-open-below)
+;;    '("b" . meow-back-word)
+;;    '("B" . meow-back-symbol)
+;;    '("c" . meow-change)
+;;    '("d" . meow-delete)
+;;    '("D" . meow-backward-delete)
+;;    '("e" . meow-next-word)
+;;    '("E" . meow-next-symbol)
+;;    '("f" . meow-find)
+;;    '("g" . meow-cancel-selection)
+;;    '("G" . meow-grab)
+;;    '("h" . meow-left)
+;;    '("H" . meow-left-expand)
+;;    '("i" . meow-insert)
+;;    '("I" . meow-open-above)
+;;    '("j" . meow-next)
+;;    '("J" . meow-next-expand)
+;;    '("k" . meow-prev)
+;;    '("K" . meow-prev-expand)
+;;    '("l" . meow-right)
+;;    '("L" . meow-right-expand)
+;;    '("m" . meow-join)
+;;    '("n" . meow-search)
+;;    '("o" . meow-block)
+;;    '("O" . meow-to-block)
+;;    '("p" . meow-yank)
+;;    '("q" . meow-quit)
+;;    '("Q" . meow-goto-line)
+;;    '("r" . meow-replace)
+;;    '("R" . meow-swap-grab)
+;;    '("s" . meow-kill)
+;;    '("t" . meow-till)
+;;    '("u" . meow-undo)
+;;    '("U" . meow-undo-in-selection)
+;;    '("v" . meow-visit)
+;;    '("w" . meow-mark-word)
+;;    '("W" . meow-mark-symbol)
+;;    '("x" . meow-line)
+;;    '("X" . meow-goto-line)
+;;    '("y" . meow-save)
+;;    '("Y" . meow-sync-grab)
+;;    '("z" . meow-pop-selection)
+;;    '("'" . repeat)
+;;    '("<escape>" . mode-line-other-buffer)))
+;; (use-package meow
+;;   :config
+;;   (require 'meow)
+;;   ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
+;;   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
+;;   (meow-setup)
+;;   (meow-global-mode 1)
+;;   )
+;; Meow:2 ends here
+
+;; [[file:config.org::*Meow][Meow:3]]
+
+;; Meow:3 ends here
+
+;; [[file:config.org::*Meow][Meow:4]]
+;; (defun meow-insert-define-key (&rest keybindings)
+;;   "Define key for insert state.
+
+;; Usage:
+;;   (meow-insert-define-key
+;;    '(\"C-<space>\" . meow-insert-exit))"
+;;   (mapcar (lambda (key-ref)
+;;             (define-key meow-insert-state-keymap
+;;               (kbd (car key-ref))
+;;               (meow--parse-key-def (cdr key-ref))))
+;;           keybindings))
+;; (meow-insert-define-key
+;;    '("C-[" . meow-insert-exit))
+;; Meow:4 ends here
+
 ;; [[file:config.org::*Consult][Consult:1]]
 (after! consult
   (set-face-attribute 'consult-file nil :inherit 'consult-buffer)
@@ -621,7 +739,8 @@ nil
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+  (add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+  )
 ;; Company:1 ends here
 
 ;; [[file:config.org::*Company][Company:2]]
@@ -711,7 +830,8 @@ nil
       (interactive "<R>")
       (string-inflection-all-cycle)
       (setq evil-repeat-info '([?g ?~])))
-    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
+    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
+  )
 ;; String inflection:2 ends here
 
 ;; [[file:config.org::*Smart parentheses][Smart parentheses:1]]
@@ -1028,7 +1148,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
   (after! evil-snipe
-    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+   (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -4486,12 +4606,15 @@ SQL can be either the emacsql vector representation, or a string."
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-elements))
 
-(use-package! valign
+(use-package valign
   :init
   (require 'valign)
   ;; No hook, open this manually when needed
   ;;:hook
-  ;;('org-mode . #'valign-mode)
+  ;;(org-mode . valign-mode)
+  ;;(markdown-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar 1)
   )
 
 (use-package! org-ol-tree
