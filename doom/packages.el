@@ -171,6 +171,10 @@
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
 ;; Beancount:1 ends here
 
+;; [[file:config.org::*wakatime][wakatime:1]]
+(package! wakatime-mode)
+;; wakatime:1 ends here
+
 ;; [[file:config.org::*Input Method][Input Method:1]]
 (package! sis)
 ;; Input Method:1 ends here

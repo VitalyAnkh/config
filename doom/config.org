@@ -2070,7 +2070,8 @@ Sometimes pressing =TAB= is just too much.
 
 #+begin_src emacs-lisp
 (use-package! aas
-  :commands aas-mode)
+  :commands aas-mode
+ )
 #+end_src
 
 *** Screenshot
@@ -3830,6 +3831,7 @@ I think it would be nice to have a function to convert =org-ref= citations to
 It's also nice to be able to use ~cdlatex~.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+;;(setq cdlatex-takeover-subsuperscript nil)
 #+end_src
 
 It's handy to be able to quickly insert environments with =C-c }=. I almost always
@@ -5503,8 +5505,9 @@ functionality from =bmc-maths=, so we'll load that too.
 \\addtolength{\\textheight}{-3cm}
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
-\\usepackage{amsmath}
+%\\usepackage{amsmath}
 \\usepackage{amssymb}
+\\usepackage{unicode-math}
 ")
 #+end_src
 
@@ -7000,8 +7003,8 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 (defvar org-latex-feature-implementations
   '((image         :snippet "\\usepackage{graphicx}" :order 2)
     (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-    ;; replace bmc with amsmath here
-    (maths         :snippet "\\usepackage{amsmath}\n\\usepackage{amssymb}" :order 0.2)
+    ;; replace bmc with unicode-math here
+    (maths         :snippet "\\usepackage{unicode-math}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -9082,6 +9085,21 @@ Of course, there's an Emacs mode for this.
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 #+end_src
 * Applications
+** Tracking Time System
+*** wakatime
+Use wakatime to track your coding time!
+#+begin_src emacs-lisp :tangle packages.el
+(package! wakatime-mode)
+#+end_src
+
+Start =wakatime= at when emacs launches:
+#+begin_src emacs-lisp
+(use-package wakatime-mode
+  :config
+  (global-wakatime-mode)
+  )
+#+end_src
+
 ** Input Method
 I can't go out without my favorite input method: [[https://fcitx-im.org/][fcitx5]]
 , especially within Emacs. Let's add =smart-input-source=.
@@ -9309,8 +9327,9 @@ everyone else!?
 \\usepackage[usenames]{xcolor}
 \\usepackage{soul}
 \\usepackage{adjustbox}
-\\usepackage{amsmath}
+%\\usepackage{amsmath}
 \\usepackage{amssymb}
+\\usepackage{unicode-math}
 \\usepackage{siunitx}
 \\usepackage{cancel}
 \\usepackage{mathtools}

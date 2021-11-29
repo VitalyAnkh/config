@@ -676,7 +676,8 @@ nil
 
 ;; [[file:config.org::*Auto activating snippets][Auto activating snippets:2]]
 (use-package! aas
-  :commands aas-mode)
+  :commands aas-mode
+ )
 ;; Auto activating snippets:2 ends here
 
 ;; [[file:config.org::*YASnippet][YASnippet:1]]
@@ -1425,6 +1426,7 @@ SQL can be either the emacsql vector representation, or a string."
                                    (cdr (assoc (match-string 1) cite-conversions))
                                    (match-string 2))))))))
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  ;;(setq cdlatex-takeover-subsuperscript nil)
   (defadvice! org-edit-latex-emv-after-insert ()
     :after #'org-cdlatex-environment-indent
     (org-edit-latex-environment))
@@ -2628,8 +2630,9 @@ SQL can be either the emacsql vector representation, or a string."
   \\addtolength{\\textheight}{-3cm}
   \\setlength{\\topmargin}{1.5cm}
   \\addtolength{\\topmargin}{-2.54cm}
-  \\usepackage{amsmath}
+  %\\usepackage{amsmath}
   \\usepackage{amssymb}
+  \\usepackage{unicode-math}
   ")
   ;; (setq org-format-latex-options
   ;;      (plist-put org-format-latex-options :background "Transparent"))
@@ -3611,8 +3614,8 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-feature-implementations
     '((image         :snippet "\\usepackage{graphicx}" :order 2)
       (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-      ;; replace bmc with amsmath here
-      (maths         :snippet "\\usepackage{amsmath}\n\\usepackage{amssymb}" :order 0.2)
+      ;; replace bmc with unicode-math here
+      (maths         :snippet "\\usepackage{unicode-math}" :order 0.2)
       (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
       (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
       (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -5191,6 +5194,13 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 ;; Beancount:2 ends here
 
+;; [[file:config.org::*wakatime][wakatime:2]]
+(use-package wakatime-mode
+  :config
+  (global-wakatime-mode)
+  )
+;; wakatime:2 ends here
+
 ;; [[file:config.org::*Input Method][Input Method:2]]
 (use-package sis
   ;;:hook
@@ -5225,8 +5235,9 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 \\usepackage[usenames]{xcolor}
 \\usepackage{soul}
 \\usepackage{adjustbox}
-\\usepackage{amsmath}
+%\\usepackage{amsmath}
 \\usepackage{amssymb}
+\\usepackage{unicode-math}
 \\usepackage{siunitx}
 \\usepackage{cancel}
 \\usepackage{mathtools}
