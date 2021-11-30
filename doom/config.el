@@ -81,28 +81,15 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "mononoki" :weight 'light :size 22)
-      doom-big-font (font-spec :family "mononoki" :weight 'light :size 36)
+(setq doom-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 22)
+      doom-big-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
 ;; Font Face:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:3]]
-(unless noninteractive
-  (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-		 (lambda nil
-		   (message "%s missing the following fonts: %s"
-			    (propertize "Warning!" 'face
-					'(bold warning))
-			    (mapconcat
-			     (lambda
-			       (font)
-			       (propertize font 'face 'font-lock-variable-name-face))
-			     '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono")
-			     ", "))
-		   (sleep-for 0.5)))))
+nil
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
@@ -1491,7 +1478,8 @@ SQL can be either the emacsql vector representation, or a string."
         org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
         org-export-in-background t                  ; run export processes in external emacs process
         org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
-        org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+        org-export-with-sub-superscripts '{}       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+        org-footnote-auto-adjust t)                ; let org orgnize footnotes autometely
   (setq org-babel-default-header-args
         '((:session . "none")
           (:results . "replace")
@@ -2449,8 +2437,8 @@ SQL can be either the emacsql vector representation, or a string."
                    (org-export-backend-options (org-export-get-backend 'latex)))))
   (add-hook 'org-mode-hook #'+org-pretty-mode)
   ;; disable =hl-line-mode= and =solaire-mode= for org-mode
-  (add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
-  (add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+  (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
+  (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
   (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (global-hl-line-mode nil)
   (custom-set-faces
@@ -2482,7 +2470,7 @@ SQL can be either the emacsql vector representation, or a string."
     '(outline-9 )
     )
   (custom-set-faces!
-    '(org-document-title :height 1.2))
+    '(org-document-title :height 1.3))
   (setq org-agenda-deadline-faces
         '((1.001 . error)
           (1.0 . org-warning)
@@ -2597,7 +2585,7 @@ SQL can be either the emacsql vector representation, or a string."
               :em_dash       "-"
               :ellipses      "…"
               :arrow_right   "→"
-              :arrow_left    "←"
+              :arrow_left   "←"
               :title         "𝙏"
               :subtitle      "𝙩"
               :author        "𝘼"
@@ -2638,7 +2626,7 @@ SQL can be either the emacsql vector representation, or a string."
     :em_dash       "---"
     :ellipsis      "..."
     :arrow_right   "->"
-    :arrow_left    "<-"
+    :arrow_left   "<-"
     :title         "#+title:"
     :subtitle      "#+subtitle:"
     :author        "#+author:"
@@ -2699,8 +2687,12 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-preview-latex-process-alist
         '((dvipng :programs
                   ("latex" "dvipng")
-                  :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
-                  (1.0 . 1.0)
+                  :description "dvi > png"
+                  :message "you need to install the programs: latex and dvipng."
+                  :image-input-type "dvi"
+                  :image-output-type "png"
+                  :image-size-adjust
+                  (0.35 . 0.35)
                   :latex-compiler
                   ("latex -interaction nonstopmode -output-directory %o %f")
                   :image-converter
@@ -2714,9 +2706,9 @@ SQL can be either the emacsql vector representation, or a string."
                    :image-input-type "dvi"
                    :image-output-type "svg"
                    :image-size-adjust
-                   (0.6 . 0.6)
+                   (0.55 . 0.55)
                    :latex-compiler
-                   ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                   ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
                    :image-converter
                    ("dvisvgm %f -n -b min -c %S -o %O"))
           (imagemagick :programs
@@ -4738,7 +4730,8 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! doct
   :commands doct)
 
-(setq org-roam-directory org-directory)
+(setq org-directory "~/org"
+      org-roam-directory org-directory)
 
 (use-package! websocket
   :after org-roam)
@@ -4777,7 +4770,7 @@ SQL can be either the emacsql vector representation, or a string."
                 ("latex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
                 :image-converter
                 ("dvipng -D %D -T tight -o %O %f"))
-        (pdflatex :programs
+        (latex :programs
                   ("latex" "dvisvgm")
                   :description "dvi > svg"
                   :message "you need to install the programs: latex and dvisvgm."
@@ -4786,7 +4779,7 @@ SQL can be either the emacsql vector representation, or a string."
                   :image-size-adjust
                   (1.0 . 1.0)
                   :latex-compiler
-                  ("pdflatex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                  ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
                   :image-converter
                   ("dvisvgm %f -n -b min -c %S -o %O"))
         (lualatex :programs ("lualatex" "dvisvgm")
@@ -5203,6 +5196,15 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 (after! lsp-python-ms
   (set-lsp-priority! 'mspyls 1))
 ;; Python:1 ends here
+
+;; [[file:config.org::*Haskell][Haskell:1]]
+(setq
+ ghc-ghc-options '("-fno-warn-missing-signatures")
+ haskell-interactive-popup-errors nil
+ )
+(after! lsp-haskell
+  (setq lsp-haskell-formatting-provider "ormolu"))
+;; Haskell:1 ends here
 
 ;; [[file:config.org::*MuPDF][MuPDF:2]]
 ;; (use-package paper
