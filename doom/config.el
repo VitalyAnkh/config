@@ -10,6 +10,11 @@
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 ;; Personal Information:2 ends here
 
+;; [[file:config.org::*Workaround][Workaround:1]]
+(general-auto-unbind-keys :off)
+(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
+;; Workaround:1 ends here
+
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
@@ -18,7 +23,7 @@
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       ;; Use meow!
-      evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
+      ;;evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -47,34 +52,38 @@
 ;; Auto-customisations:1 ends here
 
 ;; [[file:config.org::*Windows][Windows:1]]
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
+;; (setq evil-vsplit-window-right t
+;;       evil-split-window-below t)
 ;; Windows:1 ends here
 
 ;; [[file:config.org::*Windows][Windows:2]]
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (consult-buffer))
+;; (defadvice! prompt-for-buffer (&rest _)
+;;   :after '(evil-window-split evil-window-vsplit)
+;;   (consult-buffer))
 ;; Windows:2 ends here
 
 ;; [[file:config.org::*Windows][Windows:3]]
-(map! :map evil-window-map
-      "SPC" #'rotate-layout
-      ;; Navigation
-      "<left>"     #'evil-window-left
-      "<down>"     #'evil-window-down
-      "<up>"       #'evil-window-up
-      "<right>"    #'evil-window-right
-      ;; Swapping windows
-      "C-<left>"       #'+evil/window-move-left
-      "C-<down>"       #'+evil/window-move-down
-      "C-<up>"         #'+evil/window-move-up
-      "C-<right>"      #'+evil/window-move-right)
+;; (map! :map evil-window-map
+;;       "SPC" #'rotate-layout
+;;       ;; Navigation
+;;       "<left>"     #'evil-window-left
+;;       "<down>"     #'evil-window-down
+;;       "<up>"       #'evil-window-up
+;;       "<right>"    #'evil-window-right
+;;       ;; Swapping windows
+;;       "C-<left>"       #'+evil/window-move-left
+;;       "C-<down>"       #'+evil/window-move-down
+;;       "C-<up>"         #'+evil/window-move-up
+;;       "C-<right>"      #'+evil/window-move-right)
 ;; Windows:3 ends here
 
 ;; [[file:config.org::*Mouse][Mouse:1]]
 (setq mouse-yank-at-point nil)
 ;; Mouse:1 ends here
+
+;; [[file:config.org::*Mouse][Mouse:2]]
+;;(pixel-scroll-precision-mode 1)
+;; Mouse:2 ends here
 
 ;; [[file:config.org::*Buffer defaults][Buffer defaults:1]]
 ;; (setq-default major-mode 'org-mode)
@@ -418,7 +427,7 @@ nil
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+;;(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
 ;; [[file:config.org::*Splash screen][Splash screen:4]]
@@ -491,107 +500,107 @@ nil
 ;; Eros:1 ends here
 
 ;; [[file:config.org::*EVIL][EVIL:1]]
-(after! evil
-  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
+;; (after! evil
+;;   (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+;;         evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+;;         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 ;; EVIL:1 ends here
 
 ;; [[file:config.org::*Meow][Meow:2]]
-;; (defun meow-setup ()
-;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-;;   (meow-motion-overwrite-define-key
-;;    '("j" . meow-next)
-;;    '("k" . meow-prev))
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev))
 
-;;   (meow-leader-define-key
-;;    ;; SPC j/k will run the original command in MOTION state.
-;;    '("j" . "H-j")
-;;    '("k" . "H-k")
-;;    ;; Use SPC (0-9) for digit arguments.
-;;    '("1" . meow-digit-argument)
-;;    '("2" . meow-digit-argument)
-;;    '("3" . meow-digit-argument)
-;;    '("4" . meow-digit-argument)
-;;    '("5" . meow-digit-argument)
-;;    '("6" . meow-digit-argument)
-;;    '("7" . meow-digit-argument)
-;;    '("8" . meow-digit-argument)
-;;    '("9" . meow-digit-argument)
-;;    '("0" . meow-digit-argument)
-;;    '("/" . meow-keypad-describe-key)
-;;    '("?" . meow-cheatsheet))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
 
-;;   (meow-normal-define-key
-;;    '("0" . meow-expand-0)
-;;    '("9" . meow-expand-9)
-;;    '("8" . meow-expand-8)
-;;    '("7" . meow-expand-7)
-;;    '("6" . meow-expand-6)
-;;    '("5" . meow-expand-5)
-;;    '("4" . meow-expand-4)
-;;    '("3" . meow-expand-3)
-;;    '("2" . meow-expand-2)
-;;    '("1" . meow-expand-1)
-;;    '("-" . negative-argument)
-;;    '(";" . meow-reverse)
-;;    '("," . meow-inner-of-thing)
-;;    '("." . meow-bounds-of-thing)
-;;    '("[" . meow-beginning-of-thing)
-;;    '("]" . meow-end-of-thing)
-;;    '("a" . meow-append)
-;;    '("A" . meow-open-below)
-;;    '("b" . meow-back-word)
-;;    '("B" . meow-back-symbol)
-;;    '("c" . meow-change)
-;;    '("d" . meow-delete)
-;;    '("D" . meow-backward-delete)
-;;    '("e" . meow-next-word)
-;;    '("E" . meow-next-symbol)
-;;    '("f" . meow-find)
-;;    '("g" . meow-cancel-selection)
-;;    '("G" . meow-grab)
-;;    '("h" . meow-left)
-;;    '("H" . meow-left-expand)
-;;    '("i" . meow-insert)
-;;    '("I" . meow-open-above)
-;;    '("j" . meow-next)
-;;    '("J" . meow-next-expand)
-;;    '("k" . meow-prev)
-;;    '("K" . meow-prev-expand)
-;;    '("l" . meow-right)
-;;    '("L" . meow-right-expand)
-;;    '("m" . meow-join)
-;;    '("n" . meow-search)
-;;    '("o" . meow-block)
-;;    '("O" . meow-to-block)
-;;    '("p" . meow-yank)
-;;    '("q" . meow-quit)
-;;    '("Q" . meow-goto-line)
-;;    '("r" . meow-replace)
-;;    '("R" . meow-swap-grab)
-;;    '("s" . meow-kill)
-;;    '("t" . meow-till)
-;;    '("u" . meow-undo)
-;;    '("U" . meow-undo-in-selection)
-;;    '("v" . meow-visit)
-;;    '("w" . meow-mark-word)
-;;    '("W" . meow-mark-symbol)
-;;    '("x" . meow-line)
-;;    '("X" . meow-goto-line)
-;;    '("y" . meow-save)
-;;    '("Y" . meow-sync-grab)
-;;    '("z" . meow-pop-selection)
-;;    '("'" . repeat)
-;;    '("<escape>" . mode-line-other-buffer)))
-;; (use-package meow
-;;   :config
-;;   (require 'meow)
-;;   ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
-;;   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
-;;   (meow-setup)
-;;   (meow-global-mode 1)
-;;   )
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . mode-line-other-buffer)))
+(use-package meow
+  :config
+  (require 'meow)
+  ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
+  ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
+  (meow-setup)
+  (meow-global-mode 1)
+  )
 ;; Meow:2 ends here
 
 ;; [[file:config.org::*Meow][Meow:3]]
@@ -599,19 +608,19 @@ nil
 ;; Meow:3 ends here
 
 ;; [[file:config.org::*Meow][Meow:4]]
-;; (defun meow-insert-define-key (&rest keybindings)
-;;   "Define key for insert state.
+(defun meow-insert-define-key (&rest keybindings)
+  "Define key for insert state.
 
-;; Usage:
-;;   (meow-insert-define-key
-;;    '(\"C-<space>\" . meow-insert-exit))"
-;;   (mapcar (lambda (key-ref)
-;;             (define-key meow-insert-state-keymap
-;;               (kbd (car key-ref))
-;;               (meow--parse-key-def (cdr key-ref))))
-;;           keybindings))
-;; (meow-insert-define-key
-;;    '("C-[" . meow-insert-exit))
+Usage:
+  (meow-insert-define-key
+   '(\"C-<space>\" . meow-insert-exit))"
+  (mapcar (lambda (key-ref)
+            (define-key meow-insert-state-keymap
+              (kbd (car key-ref))
+              (meow--parse-key-def (cdr key-ref))))
+          keybindings))
+(meow-insert-define-key
+ '("C-[" . meow-insert-exit))
 ;; Meow:4 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
@@ -726,7 +735,7 @@ nil
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+  ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
   )
 ;; Company:1 ends here
 
@@ -810,14 +819,14 @@ nil
         :desc "under_score" "_" #'string-inflection-underscore
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
-  (after! evil
-    (evil-define-operator evil-operator-string-inflection (beg end _type)
-      "Define a new evil operator that cycles symbol casing."
-      :move-point nil
-      (interactive "<R>")
-      (string-inflection-all-cycle)
-      (setq evil-repeat-info '([?g ?~])))
-    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
+  ;; (after! evil
+  ;;   (evil-define-operator evil-operator-string-inflection (beg end _type)
+  ;;     "Define a new evil operator that cycles symbol casing."
+  ;;     :move-point nil
+  ;;     (interactive "<R>")
+  ;;     (string-inflection-all-cycle)
+  ;;     (setq evil-repeat-info '([?g ?~])))
+  ;;   (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
   )
 ;; String inflection:2 ends here
 
@@ -1134,8 +1143,8 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         xkcd-cache-latest (concat xkcd-cache-dir "latest"))
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
-  (after! evil-snipe
-   (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+  ;; (after! evil-snipe
+  ;;  (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -1417,10 +1426,11 @@ SQL can be either the emacsql vector representation, or a string."
         spray-height 800)
   (defun spray-mode-hide-cursor ()
     "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+    ;;(if spray-mode
+    ;; (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+    ;;             evil-normal-state-cursor '(nil))
+    ;;(setq-local evil-normal-state-cursor spray--last-evil-cursor-state))
+    )
   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
   (map! :map spray-mode-map
         "<return>" #'spray-start/stop
@@ -1491,12 +1501,12 @@ SQL can be either the emacsql vector representation, or a string."
           (:comments . "link")))
   (remove-hook 'text-mode-hook #'visual-line-mode)
   ;;(add-hook 'text-mode-hook #'auto-fill-mode)
-  (map! :map evil-org-mode-map
-        :after evil-org
-        :n "g <up>" #'org-backward-heading-same-level
-        :n "g <down>" #'org-forward-heading-same-level
-        :n "g <left>" #'org-up-element
-        :n "g <right>" #'org-down-element)
+  ;; (map! :map evil-org-mode-map
+  ;;       :after evil-org
+  ;;       :n "g <up>" #'org-backward-heading-same-level
+  ;;       :n "g <down>" #'org-forward-heading-same-level
+  ;;       :n "g <left>" #'org-up-element
+  ;;       :n "g <right>" #'org-down-element)
   (map! :map org-mode-map
         :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
   (defun +org-export-remove-zero-width-space (text _backend _info)
@@ -1715,7 +1725,7 @@ SQL can be either the emacsql vector representation, or a string."
           (unwind-protect
               (catch 'exit
                 (while t
-                  (setq-local evil-normal-state-cursor (list nil))
+                  ;;(setq-local evil-normal-state-cursor (list nil))
                   (erase-buffer)
                   (insert title "\n\n")
                   (let ((des-keys nil)
@@ -2225,10 +2235,10 @@ SQL can be either the emacsql vector representation, or a string."
         ;; All other cases: call `org-return-indent'.
         (org-return t)))))
   
-  (map!
-   :after evil-org
-   :map evil-org-mode-map
-   :i [return] #'unpackaged/org-return-dwim)
+  ;; (map!
+  ;;  :after evil-org
+  ;;  :map evil-org-mode-map
+  ;;  :i [return] #'unpackaged/org-return-dwim)
   (defun +yas/org-src-header-p ()
     "Determine whether `point' is within a src-block header or header-args."
     (pcase (org-element-type (org-element-context))
@@ -2347,12 +2357,12 @@ SQL can be either the emacsql vector representation, or a string."
            (file (xkcd-download img (string-to-number num))))
       (cond
        ((org-export-derived-backend-p backend 'html)
-             (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
+        (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
        ((org-export-derived-backend-p backend 'latex)
         (format "\\begin{figure}[!htb]
-             \\centering
-             \\includegraphics[scale=0.4]{%s}%s
-             \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
+        \\centering
+        \\includegraphics[scale=0.4]{%s}%s
+        \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
                                    (format "\n  \\caption*{\\label{xkcd:%s} %s}"
                                            num
                                            (or desc
@@ -4628,20 +4638,20 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
 
-(evil-define-command evil-buffer-org-new (count file)
-  "Creates a new ORG buffer replacing the current window, optionally
-   editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)))))
-(map! :leader
-      (:prefix "b"
-       :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
+;; (evil-define-command evil-buffer-org-new (count file)
+;;   "Creates a new ORG buffer replacing the current window, optionally
+;;    editing a certain FILE"
+;;   :repeat nil
+;;   (interactive "P<f>")
+;;   (if file
+;;       (evil-edit file)
+;;     (let ((buffer (generate-new-buffer "*new org*")))
+;;       (set-window-buffer nil buffer)
+;;       (with-current-buffer buffer
+;;         (org-mode)))))
+;; (map! :leader
+;;       (:prefix "b"
+;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 
 (use-package! citar
   :config
@@ -5723,10 +5733,10 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; Keybindings:1 ends here
 
 ;; [[file:config.org::*Usability enhancements][Usability enhancements:1]]
-(after! elfeed-search
-  (set-evil-initial-state! 'elfeed-search-mode 'normal))
-(after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+;; (after! elfeed-search
+;;   (set-evil-initial-state! 'elfeed-search-mode 'normal))
+;; (after! elfeed-show-mode
+;;   (set-evil-initial-state! 'elfeed-show-mode   'normal))
 
 (after! evil-snipe
   (push 'elfeed-show-mode   evil-snipe-disabled-modes)
@@ -6012,8 +6022,8 @@ Prevents a series of redisplays from being called (when set to an appropriate va
                    (org-msg-goto-body)
                  (mu4e-compose-goto-bottom))))
       (font-lock-ensure)
-      (when evil-normal-state-minor-mode
-        (evil-append 1))
+      ;; (when evil-normal-state-minor-mode
+      ;;   (evil-append 1))
       (when quit-frame-after
         (add-hook 'kill-buffer-hook
                   `(lambda ()

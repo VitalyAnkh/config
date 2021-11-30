@@ -306,6 +306,7 @@ to write to a temporary file, and having a file watcher started in other Emacs
 instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e]].
 
 * Rudimentary configuration
+
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
 #+begin_src emacs-lisp :comments no
@@ -332,6 +333,12 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 #+end_src
+** Workaround
+This is a place I put workarounds. It should be empty in the best scenarios.
+#+begin_src emacs-lisp
+(general-auto-unbind-keys :off)
+(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
+#+end_src
 ** Better defaults
 *** Simple settings
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
@@ -346,7 +353,7 @@ the following:
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       ;; Use meow!
-      evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
+      ;;evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -392,15 +399,15 @@ the window. Let's make that happen.
 
 First, we'll enter the new window
 #+begin_src emacs-lisp
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
+;; (setq evil-vsplit-window-right t
+;;       evil-split-window-below t)
 #+end_src
 
 Then, we'll pull up a buffer prompt.
 #+begin_src emacs-lisp
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (consult-buffer))
+;; (defadvice! prompt-for-buffer (&rest _)
+;;   :after '(evil-window-split evil-window-vsplit)
+;;   (consult-buffer))
 #+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
@@ -410,24 +417,28 @@ by Tmux's use of =C-b SPC= to rotate windows.
 We could also do with adding the missing arrow-key variants of the window
 navigation/swapping commands.
 #+begin_src emacs-lisp
-(map! :map evil-window-map
-      "SPC" #'rotate-layout
-      ;; Navigation
-      "<left>"     #'evil-window-left
-      "<down>"     #'evil-window-down
-      "<up>"       #'evil-window-up
-      "<right>"    #'evil-window-right
-      ;; Swapping windows
-      "C-<left>"       #'+evil/window-move-left
-      "C-<down>"       #'+evil/window-move-down
-      "C-<up>"         #'+evil/window-move-up
-      "C-<right>"      #'+evil/window-move-right)
+;; (map! :map evil-window-map
+;;       "SPC" #'rotate-layout
+;;       ;; Navigation
+;;       "<left>"     #'evil-window-left
+;;       "<down>"     #'evil-window-down
+;;       "<up>"       #'evil-window-up
+;;       "<right>"    #'evil-window-right
+;;       ;; Swapping windows
+;;       "C-<left>"       #'+evil/window-move-left
+;;       "C-<down>"       #'+evil/window-move-down
+;;       "C-<up>"         #'+evil/window-move-up
+;;       "C-<right>"      #'+evil/window-move-right)
 #+end_src
 
 *** Mouse
 I love mouse menus.
 #+begin_src emacs-lisp
 (setq mouse-yank-at-point nil)
+#+end_src
+Thanks to Pu Lo, scrolling in emacs is great again!
+#+begin_src emacs-lisp
+;;(pixel-scroll-precision-mode 1)
 #+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
@@ -555,8 +566,8 @@ zen                          ; distraction-free coding or writing
 #+name: doom-editor
 #+begin_src emacs-lisp
 ;; Use meow, not evil!
-;; Not now.
-(evil +everywhere)           ; come to the dark side, we have cookies
+;; Just now.
+;;(evil +everywhere)           ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format)                     ; automated prettiness
@@ -1321,7 +1332,7 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+;;(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
 
 At the end, we have a minimal but rather nice splash screen.
@@ -1749,10 +1760,10 @@ behaviour. I don't. There are some particular settings that I'd rather be
 something else, so let's change them.
 
 #+begin_src emacs-lisp
-(after! evil
-  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
+;; (after! evil
+;;   (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+;;         evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+;;         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 #+end_src
 
 I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
@@ -1771,100 +1782,100 @@ Modal editing on the wheel! Use =moew= for modal life.
 #+end_src
 
 #+begin_src emacs-lisp
-;; (defun meow-setup ()
-;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-;;   (meow-motion-overwrite-define-key
-;;    '("j" . meow-next)
-;;    '("k" . meow-prev))
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev))
 
-;;   (meow-leader-define-key
-;;    ;; SPC j/k will run the original command in MOTION state.
-;;    '("j" . "H-j")
-;;    '("k" . "H-k")
-;;    ;; Use SPC (0-9) for digit arguments.
-;;    '("1" . meow-digit-argument)
-;;    '("2" . meow-digit-argument)
-;;    '("3" . meow-digit-argument)
-;;    '("4" . meow-digit-argument)
-;;    '("5" . meow-digit-argument)
-;;    '("6" . meow-digit-argument)
-;;    '("7" . meow-digit-argument)
-;;    '("8" . meow-digit-argument)
-;;    '("9" . meow-digit-argument)
-;;    '("0" . meow-digit-argument)
-;;    '("/" . meow-keypad-describe-key)
-;;    '("?" . meow-cheatsheet))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
 
-;;   (meow-normal-define-key
-;;    '("0" . meow-expand-0)
-;;    '("9" . meow-expand-9)
-;;    '("8" . meow-expand-8)
-;;    '("7" . meow-expand-7)
-;;    '("6" . meow-expand-6)
-;;    '("5" . meow-expand-5)
-;;    '("4" . meow-expand-4)
-;;    '("3" . meow-expand-3)
-;;    '("2" . meow-expand-2)
-;;    '("1" . meow-expand-1)
-;;    '("-" . negative-argument)
-;;    '(";" . meow-reverse)
-;;    '("," . meow-inner-of-thing)
-;;    '("." . meow-bounds-of-thing)
-;;    '("[" . meow-beginning-of-thing)
-;;    '("]" . meow-end-of-thing)
-;;    '("a" . meow-append)
-;;    '("A" . meow-open-below)
-;;    '("b" . meow-back-word)
-;;    '("B" . meow-back-symbol)
-;;    '("c" . meow-change)
-;;    '("d" . meow-delete)
-;;    '("D" . meow-backward-delete)
-;;    '("e" . meow-next-word)
-;;    '("E" . meow-next-symbol)
-;;    '("f" . meow-find)
-;;    '("g" . meow-cancel-selection)
-;;    '("G" . meow-grab)
-;;    '("h" . meow-left)
-;;    '("H" . meow-left-expand)
-;;    '("i" . meow-insert)
-;;    '("I" . meow-open-above)
-;;    '("j" . meow-next)
-;;    '("J" . meow-next-expand)
-;;    '("k" . meow-prev)
-;;    '("K" . meow-prev-expand)
-;;    '("l" . meow-right)
-;;    '("L" . meow-right-expand)
-;;    '("m" . meow-join)
-;;    '("n" . meow-search)
-;;    '("o" . meow-block)
-;;    '("O" . meow-to-block)
-;;    '("p" . meow-yank)
-;;    '("q" . meow-quit)
-;;    '("Q" . meow-goto-line)
-;;    '("r" . meow-replace)
-;;    '("R" . meow-swap-grab)
-;;    '("s" . meow-kill)
-;;    '("t" . meow-till)
-;;    '("u" . meow-undo)
-;;    '("U" . meow-undo-in-selection)
-;;    '("v" . meow-visit)
-;;    '("w" . meow-mark-word)
-;;    '("W" . meow-mark-symbol)
-;;    '("x" . meow-line)
-;;    '("X" . meow-goto-line)
-;;    '("y" . meow-save)
-;;    '("Y" . meow-sync-grab)
-;;    '("z" . meow-pop-selection)
-;;    '("'" . repeat)
-;;    '("<escape>" . mode-line-other-buffer)))
-;; (use-package meow
-;;   :config
-;;   (require 'meow)
-;;   ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
-;;   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
-;;   (meow-setup)
-;;   (meow-global-mode 1)
-;;   )
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . mode-line-other-buffer)))
+(use-package meow
+  :config
+  (require 'meow)
+  ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
+  ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
+  (meow-setup)
+  (meow-global-mode 1)
+  )
 #+end_src
 
 Mimic the =%= key in meow:
@@ -1875,19 +1886,19 @@ Mimic the =%= key in meow:
 
 Let =C-[= be the =ESC= of =evil= in =meow=:
 #+begin_src emacs-lisp
-;; (defun meow-insert-define-key (&rest keybindings)
-;;   "Define key for insert state.
+(defun meow-insert-define-key (&rest keybindings)
+  "Define key for insert state.
 
-;; Usage:
-;;   (meow-insert-define-key
-;;    '(\"C-<space>\" . meow-insert-exit))"
-;;   (mapcar (lambda (key-ref)
-;;             (define-key meow-insert-state-keymap
-;;               (kbd (car key-ref))
-;;               (meow--parse-key-def (cdr key-ref))))
-;;           keybindings))
-;; (meow-insert-define-key
-;;    '("C-[" . meow-insert-exit))
+Usage:
+  (meow-insert-define-key
+   '(\"C-<space>\" . meow-insert-exit))"
+  (mapcar (lambda (key-ref)
+            (define-key meow-insert-state-keymap
+              (kbd (car key-ref))
+              (meow--parse-key-def (cdr key-ref))))
+          keybindings))
+(meow-insert-define-key
+ '("C-[" . meow-insert-exit))
 #+end_src
 
 *** Consult
@@ -2063,7 +2074,7 @@ are just waiting to be saved!
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+  ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
   )
 #+end_src
 Now, the improvements from ~precedent~ are mostly from remembering history, so
@@ -2276,14 +2287,14 @@ For when you want to change the case pattern for a symbol.
         :desc "under_score" "_" #'string-inflection-underscore
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
-  (after! evil
-    (evil-define-operator evil-operator-string-inflection (beg end _type)
-      "Define a new evil operator that cycles symbol casing."
-      :move-point nil
-      (interactive "<R>")
-      (string-inflection-all-cycle)
-      (setq evil-repeat-info '([?g ?~])))
-    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
+  ;; (after! evil
+  ;;   (evil-define-operator evil-operator-string-inflection (beg end _type)
+  ;;     "Define a new evil operator that cycles symbol casing."
+  ;;     :move-point nil
+  ;;     (interactive "<R>")
+  ;;     (string-inflection-all-cycle)
+  ;;     (setq evil-repeat-info '([?g ?~])))
+  ;;   (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
   )
 #+end_src
 *** Smart parentheses
@@ -2915,8 +2926,8 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
         xkcd-cache-latest (concat xkcd-cache-dir "latest"))
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
-  (after! evil-snipe
-   (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+  ;; (after! evil-snipe
+  ;;  (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -3232,10 +3243,11 @@ we're at it.
         spray-height 800)
   (defun spray-mode-hide-cursor ()
     "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
+    ;;(if spray-mode
+    ;; (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
+    ;;             evil-normal-state-cursor '(nil))
+    ;;(setq-local evil-normal-state-cursor spray--last-evil-cursor-state))
+    )
   (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
   (map! :map spray-mode-map
         "<return>" #'spray-start/stop
@@ -3746,31 +3758,31 @@ specific modes as desired.
 
 There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
 #+begin_src emacs-lisp
-(map! :map evil-org-mode-map
-      :after evil-org
-      :n "g <up>" #'org-backward-heading-same-level
-      :n "g <down>" #'org-forward-heading-same-level
-      :n "g <left>" #'org-up-element
-      :n "g <right>" #'org-down-element)
+;; (map! :map evil-org-mode-map
+;;       :after evil-org
+;;       :n "g <up>" #'org-backward-heading-same-level
+;;       :n "g <down>" #'org-forward-heading-same-level
+;;       :n "g <left>" #'org-up-element
+;;       :n "g <right>" #'org-down-element)
 #+end_src
 **** Extra functionality
 ***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
 #+begin_src emacs-lisp :tangle yes :noweb-ref none
-(evil-define-command evil-buffer-org-new (count file)
-  "Creates a new ORG buffer replacing the current window, optionally
-   editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)))))
-(map! :leader
-      (:prefix "b"
-       :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
+;; (evil-define-command evil-buffer-org-new (count file)
+;;   "Creates a new ORG buffer replacing the current window, optionally
+;;    editing a certain FILE"
+;;   :repeat nil
+;;   (interactive "P<f>")
+;;   (if file
+;;       (evil-edit file)
+;;     (let ((buffer (generate-new-buffer "*new org*")))
+;;       (set-window-buffer nil buffer)
+;;       (with-current-buffer buffer
+;;         (org-mode)))))
+;; (map! :leader
+;;       (:prefix "b"
+;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+end_src
 ***** The utility of zero-width spaces
 Occasionally in Org you run into annoyances where you want to have two seperate
@@ -4362,7 +4374,7 @@ is selected, only the bare key is returned."
       (unwind-protect
           (catch 'exit
             (while t
-              (setq-local evil-normal-state-cursor (list nil))
+              ;;(setq-local evil-normal-state-cursor (list nil))
               (erase-buffer)
               (insert title "\n\n")
               (let ((des-keys nil)
@@ -4804,10 +4816,10 @@ appropriate.  In tables, insert a new row or end the table."
       ;; All other cases: call `org-return-indent'.
       (org-return t)))))
 
-(map!
- :after evil-org
- :map evil-org-mode-map
- :i [return] #'unpackaged/org-return-dwim)
+;; (map!
+;;  :after evil-org
+;;  :map evil-org-mode-map
+;;  :i [return] #'unpackaged/org-return-dwim)
 #+end_src
 **** Snippet Helpers
 
@@ -4987,12 +4999,12 @@ Saving seconds adds up after all! (but only so much)
          (file (xkcd-download img (string-to-number num))))
     (cond
      ((org-export-derived-backend-p backend 'html)
-           (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
+      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
      ((org-export-derived-backend-p backend 'latex)
       (format "\\begin{figure}[!htb]
-           \\centering
-           \\includegraphics[scale=0.4]{%s}%s
-           \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
+      \\centering
+      \\includegraphics[scale=0.4]{%s}%s
+      \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
                                  (format "\n  \\caption*{\\label{xkcd:%s} %s}"
                                          num
                                          (or desc
@@ -9894,10 +9906,10 @@ module. Let's just try to patch on the main things I like the look of.
 #+end_src
 *** Usability enhancements
 #+begin_src emacs-lisp
-(after! elfeed-search
-  (set-evil-initial-state! 'elfeed-search-mode 'normal))
-(after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+;; (after! elfeed-search
+;;   (set-evil-initial-state! 'elfeed-search-mode 'normal))
+;; (after! elfeed-show-mode
+;;   (set-evil-initial-state! 'elfeed-show-mode   'normal))
 
 (after! evil-snipe
   (push 'elfeed-show-mode   evil-snipe-disabled-modes)
@@ -10934,8 +10946,8 @@ We also want to define ~mu4e-compose-from-mailto~.
                  (org-msg-goto-body)
                (mu4e-compose-goto-bottom))))
     (font-lock-ensure)
-    (when evil-normal-state-minor-mode
-      (evil-append 1))
+    ;; (when evil-normal-state-minor-mode
+    ;;   (evil-append 1))
     (when quit-frame-after
       (add-hook 'kill-buffer-hook
                 `(lambda ()
