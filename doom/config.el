@@ -29,7 +29,8 @@
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
-      word-wrap-by-category t)                    ; Different languages live together happily
+      word-wrap-by-category t                     ; Different languages live together happily
+      org-return-follows-link t)                  ; Organise it!
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -41,8 +42,9 @@
 ;; Simple settings:1 ends here
 
 ;; [[file:config.org::*Frame sizing][Frame sizing:1]]
-(add-to-list 'default-frame-alist '(height . 24))
-(add-to-list 'default-frame-alist '(width . 80))
+;;(add-to-list 'default-frame-alist '(height . 24))
+;;(add-to-list 'default-frame-alist '(width . 80))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Frame sizing:1 ends here
 
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
@@ -546,7 +548,8 @@ nil
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
    (cons "f" doom-leader-file-map)
-   (cons "C" doom-leader-code-map)
+   ;;(cons "a" org-agenda-keymap )
+   (cons "d" doom-leader-code-map)
    (cons "s" doom-leader-search-map)
    ;;(cons "b" doom-leader-buffer-map)
    (cons "o" doom-leader-open-map)
@@ -803,7 +806,7 @@ Usage:
     markdown-mode
     gfm-mode)
   '(:seperate
-    company-ispell
+    ;;company-ispell
     company-files
     company-yasnippet))
 ;; Plain Text:1 ends here
@@ -2626,6 +2629,15 @@ SQL can be either the emacsql vector representation, or a string."
   
   (add-hook 'org-font-lock-set-keywords-hook #'org-fontify-inline-src-blocks-enable)
   (setq doom-themes-org-fontify-special-tags nil)
+  (package! seperate-inline :recipe
+    (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
+  (use-package seperate-inline
+    :hook ((org-mode-hook . separate-inline-mode)
+           (org-mode-hook . (lambda ()
+                              (add-hook 'separate-inline-mode-hook
+                                        'separate-inline-use-default-rules-for-org-local
+                                        nil 'make-it-local))))
+    )
   (after! org-superstar
     (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
           org-superstar-prettify-item-bullets t ))
@@ -2670,7 +2682,7 @@ SQL can be either the emacsql vector representation, or a string."
               :end_quote     "❞"
               :caption       "☰"
               :header        "›"
-              :results       "🠶"
+              :results       "⇒"
               :begin_export  "⏩"
               :end_export    "⏪"
               :properties    "⚙"

@@ -359,7 +359,8 @@ the following:
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
-      word-wrap-by-category t)                    ; Different languages live together happily
+      word-wrap-by-category t                     ; Different languages live together happily
+      org-return-follows-link t)                  ; Organise it!
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -381,8 +382,9 @@ Then, for creating new frames within the same Emacs instance, we'll just set the
 default to be something roughly 80% of that size.
 
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(height . 24))
-(add-to-list 'default-frame-alist '(width . 80))
+;;(add-to-list 'default-frame-alist '(height . 24))
+;;(add-to-list 'default-frame-alist '(width . 80))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 *** Auto-customisations
 By default changes made via a customisation interface are added to =init.el=.
@@ -670,7 +672,7 @@ ess                          ; emacs speaks statistics
 ;;hy                         ; readability of scheme w/ speed of python
 idris                        ;
 json                         ; At least it ain't XML
-;;(java +meghanada)         ; the poster child for carpal tunnel syndrome
+;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp)                 ; Python, R, and MATLAB in a blender
 ;;kotlin                     ; a better, slicker Java(Script)
@@ -1766,17 +1768,8 @@ something else, so let's change them.
 ;;         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 #+end_src
 
-I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
-contributes a typing delay. I'm not sure it's much, but it is an extra
-~pre-command-hook~ that I don't benefit from, so...
-It seems that there's a dedicated package for this, so instead of just disabling
-the mode on startup, let's prevent installation of the package.
-#+begin_src emacs-lisp :tangle packages.el
-(package! evil-escape :disable t)
-#+end_src
-
 *** Meow
-Modal editing on the wheel! Use =moew= for modal life.
+Modal editing on wish! Use =moew= for modal life.
 #+begin_src emacs-lisp :tangle packages.el
 (package! meow)
 #+end_src
@@ -1821,7 +1814,8 @@ Modal editing on the wheel! Use =moew= for modal life.
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
    (cons "f" doom-leader-file-map)
-   (cons "C" doom-leader-code-map)
+   ;;(cons "a" org-agenda-keymap )
+   (cons "d" doom-leader-code-map)
    (cons "s" doom-leader-search-map)
    ;;(cons "b" doom-leader-buffer-map)
    (cons "o" doom-leader-open-map)
@@ -2144,7 +2138,7 @@ let's improve that memory.
     markdown-mode
     gfm-mode)
   '(:seperate
-    company-ispell
+    ;;company-ispell
     company-files
     company-yasnippet))
 #+end_src
@@ -2209,6 +2203,10 @@ It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+#+end_src
+**** Don't use ~spell-fu~!
+#+begin_src emacs-lisp  :tangle packages.el
+(disable-packages! spell-fu)
 #+end_src
 *** TRAMP
 
@@ -3563,7 +3561,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
-;;(unpin! org-mode) ; there be bugs
+(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -5392,7 +5390,22 @@ Doom theme's extra fontification is more problematic than helpful.
 #+begin_src emacs-lisp
 (setq doom-themes-org-fontify-special-tags nil)
 #+end_src
+**** Chinese Inline Markers
+Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
+#+begin_src emacs-lisp :tangle packages.el
+(package! seperate-inline :recipe
+  (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
+#+end_src
 
+#+begin_src emacs-lisp
+(use-package seperate-inline
+  :hook ((org-mode-hook . separate-inline-mode)
+         (org-mode-hook . (lambda ()
+                            (add-hook 'separate-inline-mode-hook
+                                      'separate-inline-use-default-rules-for-org-local
+                                      nil 'make-it-local))))
+  )
+#+end_src
 **** Symbols
 
 It's also nice to change the character used for collapsed items (by default ~…~),
@@ -5447,7 +5460,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :end_quote     "❞"
             :caption       "☰"
             :header        "›"
-            :results       "🠶"
+            :results       "⇒"
             :begin_export  "⏩"
             :end_export    "⏪"
             :properties    "⚙"

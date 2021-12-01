@@ -13,10 +13,6 @@
 (package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")) :disable t)
 ;; Very large files:1 ends here
 
-;; [[file:config.org::*EVIL][EVIL:2]]
-(package! evil-escape :disable t)
-;; EVIL:2 ends here
-
 ;; [[file:config.org::*Meow][Meow:1]]
 (package! meow)
 ;; Meow:1 ends here
@@ -24,6 +20,10 @@
 ;; [[file:config.org::*Magit delta][Magit delta:2]]
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 ;; Magit delta:2 ends here
+
+;; [[file:config.org::*Don't use ~spell-fu~!][Don't use ~spell-fu~!:1]]
+(disable-packages! spell-fu)
+;; Don't use ~spell-fu~!:1 ends here
 
 ;; [[file:config.org::*Auto activating snippets][Auto activating snippets:1]]
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets"))
@@ -106,7 +106,7 @@
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
 ")) :includes org) :pin nil)
-;;(unpin! org-mode) ; there be bugs
+(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -150,6 +150,9 @@
 
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! websocket) ; dependency of `org-roam-ui'
+
+(package! seperate-inline :recipe
+  (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
 
 ;; (package! org-pretty-tags)
 
