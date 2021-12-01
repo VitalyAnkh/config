@@ -1875,6 +1875,8 @@ Modal editing on the wheel! Use =moew= for modal life.
   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
   (meow-setup)
   (meow-global-mode 1)
+  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+  (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
   )
 #+end_src
 
@@ -1897,8 +1899,11 @@ Usage:
               (kbd (car key-ref))
               (meow--parse-key-def (cdr key-ref))))
           keybindings))
-(meow-insert-define-key
- '("C-[" . meow-insert-exit))
+;; (meow-insert-define-key
+;;  '("\C-[" . meow-insert-exit))
+
+(define-key input-decode-map (kbd "C-[") [control-bracketleft])
+(define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 #+end_src
 
 *** Consult
@@ -9284,6 +9289,11 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
+  ;; (add-hook 'meow-insert-mode-hook
+  ;;           (if meow-insert-mode
+  ;;               (run-hooks 'meow-entering-insert-mode-hook)
+  ;;             (run-hooks 'meow-leaving-insert-mode-hook))
+  ;;           )
   )
 #+end_src
 ** Ebooks

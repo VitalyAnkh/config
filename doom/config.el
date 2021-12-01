@@ -600,6 +600,8 @@ nil
   ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
   (meow-setup)
   (meow-global-mode 1)
+  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+  (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
   )
 ;; Meow:2 ends here
 
@@ -619,8 +621,11 @@ Usage:
               (kbd (car key-ref))
               (meow--parse-key-def (cdr key-ref))))
           keybindings))
-(meow-insert-define-key
- '("C-[" . meow-insert-exit))
+;; (meow-insert-define-key
+;;  '("\C-[" . meow-insert-exit))
+
+(define-key input-decode-map (kbd "C-[") [control-bracketleft])
+(define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 ;; Meow:4 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
@@ -5352,6 +5357,11 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
+  ;; (add-hook 'meow-insert-mode-hook
+  ;;           (if meow-insert-mode
+  ;;               (run-hooks 'meow-entering-insert-mode-hook)
+  ;;             (run-hooks 'meow-leaving-insert-mode-hook))
+  ;;           )
   )
 ;; Input Method:2 ends here
 
