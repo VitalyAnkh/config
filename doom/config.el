@@ -27,7 +27,7 @@
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
-      ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
+      scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t)                    ; Different languages live together happily
 
@@ -90,10 +90,10 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 22)
-      doom-big-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 19)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
+      doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
 ;; Font Face:1 ends here
 
@@ -508,6 +508,21 @@ nil
 
 ;; [[file:config.org::*Meow][Meow:2]]
 (defun meow-setup ()
+  (map!
+   (:when (featurep! :ui workspaces)
+    :n "C-t"   #'+workspace/new
+    :n "C-S-t" #'+workspace/display
+    :g "M-1"   #'+workspace/switch-to-0
+    :g "M-2"   #'+workspace/switch-to-1
+    :g "M-3"   #'+workspace/switch-to-2
+    :g "M-4"   #'+workspace/switch-to-3
+    :g "M-5"   #'+workspace/switch-to-4
+    :g "M-6"   #'+workspace/switch-to-5
+    :g "M-7"   #'+workspace/switch-to-6
+    :g "M-8"   #'+workspace/switch-to-7
+    :g "M-9"   #'+workspace/switch-to-8
+    :g "M-0"   #'+workspace/switch-to-final
+    ))
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
@@ -529,7 +544,23 @@ nil
    '("9" . meow-digit-argument)
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
+   '("?" . meow-cheatsheet)
+   (cons "f" doom-leader-file-map)
+   (cons "C" doom-leader-code-map)
+   (cons "s" doom-leader-search-map)
+   ;;(cons "b" doom-leader-buffer-map)
+   (cons "o" doom-leader-open-map)
+   (cons "v" doom-leader-versioning-map)
+   (cons "n" doom-leader-notes-map)
+   (cons "p" projectile-command-map)
+   (cons "i" doom-leader-insert-map)
+   (cons "q" doom-leader-quit/restart-map)
+   (cons "h" help-map)
+   (cons "t" doom-leader-toggle-map)
+   (cons "w" doom-leader-workspaces/windows-map)
+   (cons "S" doom-leader-snippets-map)
+   (cons "M" doom-leader-multiple-cursors-map)
+   )
 
   (meow-normal-define-key
    '("0" . meow-expand-0)
@@ -570,7 +601,8 @@ nil
    '("K" . meow-prev-expand)
    '("l" . meow-right)
    '("L" . meow-right-expand)
-   '("m" . meow-join)
+   '("m" . meow-mark-word)
+   '("M" . meow-mark-symbol)
    '("n" . meow-search)
    '("o" . meow-block)
    '("O" . meow-to-block)
@@ -584,24 +616,40 @@ nil
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
    '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
+   '("w" . meow-next-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
+   '("\\" . quoted-insert)
    '("<escape>" . mode-line-other-buffer)))
 (use-package meow
   :config
   (require 'meow)
-  ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
-  ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
   (meow-setup)
   (meow-global-mode 1)
+  (defun meow-insert-define-key (&rest keybindings)
+    "Define key for insert state.
+
+Usage:
+  (meow-insert-define-key
+   '(\"C-<space>\" . meow-insert-exit))"
+    (mapcar (lambda (key-ref)
+              (define-key meow-insert-state-keymap
+                (kbd (car key-ref))
+                (meow--parse-key-def (cdr key-ref))))
+            keybindings))
+  (meow-insert-define-key
+   '("\C-[" . meow-insert-exit))
+
+  (setq meow-expand-exclude-mode-list nil)
+  (setq meow-expand-hint-remove-delay 1024)
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
+  (setq meow-use-clipboard t
+        meow-use-enhanced-selection-effect t)
   )
 ;; Meow:2 ends here
 
@@ -621,11 +669,11 @@ Usage:
               (kbd (car key-ref))
               (meow--parse-key-def (cdr key-ref))))
           keybindings))
-;; (meow-insert-define-key
-;;  '("\C-[" . meow-insert-exit))
+(meow-insert-define-key
+  '("\C-[" . meow-insert-exit))
 
-(define-key input-decode-map (kbd "C-[") [control-bracketleft])
-(define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+;; (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+;; (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 ;; Meow:4 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
@@ -701,8 +749,8 @@ Usage:
 ;; Commit message templates:2 ends here
 
 ;; [[file:config.org::*Magit delta][Magit delta:3]]
-;; (after! magit
-;;   (magit-delta-mode +1))
+(after! magit
+  (magit-delta-mode +1))
 ;; Magit delta:3 ends here
 
 ;; [[file:config.org::*Smerge][Smerge:1]]
@@ -959,8 +1007,8 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Mixed pitch:2 ends here
 
 ;; [[file:config.org::*Mixed pitch][Mixed pitch:3]]
-(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
-(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
+;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+;; (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 ;; Mixed pitch:3 ends here
 
 ;; [[file:config.org::*Marginalia][Marginalia:1]]
@@ -1092,7 +1140,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (defvar treemacs-file-ignore-regexps '()
     "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
   (defun treemacs-file-ignore-generate-regexps ()
-    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+
     (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
   (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
   (defun treemacs-ignore-filter (file full-path)
@@ -2456,7 +2504,7 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
   (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (global-hl-line-mode nil)
-  (custom-set-faces
+  ;;(custom-set-faces
    ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
    ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
    ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
@@ -2473,7 +2521,7 @@ SQL can be either the emacsql vector representation, or a string."
    ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
    ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
    ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
-   )
+   ;;)
   (custom-set-faces!
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
@@ -2600,7 +2648,7 @@ SQL can be either the emacsql vector representation, or a string."
               :em_dash       "-"
               :ellipses      "…"
               :arrow_right   "→"
-              :arrow_left   "←"
+              :arrow_left    "←"
               :title         "𝙏"
               :subtitle      "𝙩"
               :author        "𝘼"
@@ -2608,7 +2656,7 @@ SQL can be either the emacsql vector representation, or a string."
               :property      "☸"
               :options       "⌥"
               :startup       "⏻"
-              :macro         "𝓜"
+              :macro         "ℳ"
               :html_head     "🅷"
               :html          "🅗"
               :latex_class   "🄻"
@@ -2641,7 +2689,7 @@ SQL can be either the emacsql vector representation, or a string."
     :em_dash       "---"
     :ellipsis      "..."
     :arrow_right   "->"
-    :arrow_left   "<-"
+    :arrow_left    "<-"
     :title         "#+title:"
     :subtitle      "#+subtitle:"
     :author        "#+author:"
@@ -5357,11 +5405,10 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
-  ;; (add-hook 'meow-insert-mode-hook
-  ;;           (if meow-insert-mode
-  ;;               (run-hooks 'meow-entering-insert-mode-hook)
-  ;;             (run-hooks 'meow-leaving-insert-mode-hook))
-  ;;           )
+  )
+(after! meow
+  (add-hook 'meow-insert-exit-hook #'sis-set-english)
+  (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
   )
 ;; Input Method:2 ends here
 

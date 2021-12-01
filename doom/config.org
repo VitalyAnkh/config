@@ -357,7 +357,7 @@ the following:
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
-      ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
+      scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t)                    ; Different languages live together happily
 
@@ -602,7 +602,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 #+begin_src emacs-lisp
 ;;syntax                     ; tasing you for every semicolon you forget
 (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
-grammar                      ; tasing grammar mistake every you make
+;;grammar                      ; tasing grammar mistake every you make
 #+end_src
 
 #+name: doom-tools
@@ -749,10 +749,10 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 22)
-      doom-big-font (font-spec :family "mononoki Nerd Font" :weight 'light :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 19)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-unicode-font (font-spec :family "Noto Serif CJK SC" :weight 'light :size 21)
+      doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
 #+end_src
 
@@ -1783,6 +1783,21 @@ Modal editing on the wheel! Use =moew= for modal life.
 
 #+begin_src emacs-lisp
 (defun meow-setup ()
+  (map!
+   (:when (featurep! :ui workspaces)
+    :n "C-t"   #'+workspace/new
+    :n "C-S-t" #'+workspace/display
+    :g "M-1"   #'+workspace/switch-to-0
+    :g "M-2"   #'+workspace/switch-to-1
+    :g "M-3"   #'+workspace/switch-to-2
+    :g "M-4"   #'+workspace/switch-to-3
+    :g "M-5"   #'+workspace/switch-to-4
+    :g "M-6"   #'+workspace/switch-to-5
+    :g "M-7"   #'+workspace/switch-to-6
+    :g "M-8"   #'+workspace/switch-to-7
+    :g "M-9"   #'+workspace/switch-to-8
+    :g "M-0"   #'+workspace/switch-to-final
+    ))
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
@@ -1804,7 +1819,23 @@ Modal editing on the wheel! Use =moew= for modal life.
    '("9" . meow-digit-argument)
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
+   '("?" . meow-cheatsheet)
+   (cons "f" doom-leader-file-map)
+   (cons "C" doom-leader-code-map)
+   (cons "s" doom-leader-search-map)
+   ;;(cons "b" doom-leader-buffer-map)
+   (cons "o" doom-leader-open-map)
+   (cons "v" doom-leader-versioning-map)
+   (cons "n" doom-leader-notes-map)
+   (cons "p" projectile-command-map)
+   (cons "i" doom-leader-insert-map)
+   (cons "q" doom-leader-quit/restart-map)
+   (cons "h" help-map)
+   (cons "t" doom-leader-toggle-map)
+   (cons "w" doom-leader-workspaces/windows-map)
+   (cons "S" doom-leader-snippets-map)
+   (cons "M" doom-leader-multiple-cursors-map)
+   )
 
   (meow-normal-define-key
    '("0" . meow-expand-0)
@@ -1845,7 +1876,8 @@ Modal editing on the wheel! Use =moew= for modal life.
    '("K" . meow-prev-expand)
    '("l" . meow-right)
    '("L" . meow-right-expand)
-   '("m" . meow-join)
+   '("m" . meow-mark-word)
+   '("M" . meow-mark-symbol)
    '("n" . meow-search)
    '("o" . meow-block)
    '("O" . meow-to-block)
@@ -1859,24 +1891,40 @@ Modal editing on the wheel! Use =moew= for modal life.
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
    '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
+   '("w" . meow-next-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
+   '("\\" . quoted-insert)
    '("<escape>" . mode-line-other-buffer)))
 (use-package meow
   :config
   (require 'meow)
-  ;;(define-key meow-normal-state-keymap (kbd "SPC") doom-leader-key)
-  ;;(define-key meow-motion-state-keymap (kbd "SPC") doom-leader-key)
   (meow-setup)
   (meow-global-mode 1)
+  (defun meow-insert-define-key (&rest keybindings)
+    "Define key for insert state.
+
+Usage:
+  (meow-insert-define-key
+   '(\"C-<space>\" . meow-insert-exit))"
+    (mapcar (lambda (key-ref)
+              (define-key meow-insert-state-keymap
+                (kbd (car key-ref))
+                (meow--parse-key-def (cdr key-ref))))
+            keybindings))
+  (meow-insert-define-key
+   '("\C-[" . meow-insert-exit))
+
+  (setq meow-expand-exclude-mode-list nil)
+  (setq meow-expand-hint-remove-delay 1024)
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
+  (setq meow-use-clipboard t
+        meow-use-enhanced-selection-effect t)
   )
 #+end_src
 
@@ -1899,11 +1947,11 @@ Usage:
               (kbd (car key-ref))
               (meow--parse-key-def (cdr key-ref))))
           keybindings))
-;; (meow-insert-define-key
-;;  '("\C-[" . meow-insert-exit))
+(meow-insert-define-key
+  '("\C-[" . meow-insert-exit))
 
-(define-key input-decode-map (kbd "C-[") [control-bracketleft])
-(define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+;; (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+;; (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 #+end_src
 
 *** Consult
@@ -2023,13 +2071,13 @@ cargo install git-delta
 
 Now we can make use of the package for this.
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
+(package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 #+end_src
 
 All that's left is to hook it into magit
 #+begin_src emacs-lisp
-;; (after! magit
-;;   (magit-delta-mode +1))
+(after! magit
+  (magit-delta-mode +1))
 #+end_src
 Unfortunately this currently seems to mess things up, which is something I'll
 want to look into later.
@@ -2659,8 +2707,8 @@ Th /Th/
 
 Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 #+begin_src emacs-lisp
-(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
-(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
+;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+;; (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
 *** Marginalia
 #+begin_quote
@@ -2679,7 +2727,7 @@ Thanks to the ~marginalia-annotator-registry~, we don't have to advise, we can
 just add a new =file= annotator.
 
 Another small thing is the face used for docstrings. At the moment it's =(italic
-shadow)=, but I don't like that.
+shadow)=, I don't like that.
 
 #+begin_src emacs-lisp
 (after! marginalia
@@ -2867,7 +2915,7 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
   (defvar treemacs-file-ignore-regexps '()
     "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
   (defun treemacs-file-ignore-generate-regexps ()
-    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+
     (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
   (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
   (defun treemacs-ignore-filter (file full-path)
@@ -5169,7 +5217,7 @@ Let's make headings a bit bigger
 (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
 (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
 (global-hl-line-mode nil)
-(custom-set-faces
+;;(custom-set-faces
  ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
  ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
  ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
@@ -5186,7 +5234,7 @@ Let's make headings a bit bigger
  ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
  ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
  ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
- )
+ ;;)
 (custom-set-faces!
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
@@ -5377,7 +5425,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :em_dash       "-"
             :ellipses      "…"
             :arrow_right   "→"
-            :arrow_left   "←"
+            :arrow_left    "←"
             :title         "𝙏"
             :subtitle      "𝙩"
             :author        "𝘼"
@@ -5385,7 +5433,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :property      "☸"
             :options       "⌥"
             :startup       "⏻"
-            :macro         "𝓜"
+            :macro         "ℳ"
             :html_head     "🅷"
             :html          "🅗"
             :latex_class   "🄻"
@@ -5418,7 +5466,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
   :em_dash       "---"
   :ellipsis      "..."
   :arrow_right   "->"
-  :arrow_left   "<-"
+  :arrow_left    "<-"
   :title         "#+title:"
   :subtitle      "#+subtitle:"
   :author        "#+author:"
@@ -9289,11 +9337,10 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
-  ;; (add-hook 'meow-insert-mode-hook
-  ;;           (if meow-insert-mode
-  ;;               (run-hooks 'meow-entering-insert-mode-hook)
-  ;;             (run-hooks 'meow-leaving-insert-mode-hook))
-  ;;           )
+  )
+(after! meow
+  (add-hook 'meow-insert-exit-hook #'sis-set-english)
+  (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
   )
 #+end_src
 ** Ebooks
