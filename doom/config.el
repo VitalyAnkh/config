@@ -503,7 +503,7 @@ nil
         :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
         :desc "Switch buffer"              "B" #'switch-to-buffer)
        (:unless (featurep! :ui workspaces)
-       :desc "Switch buffer"               "b"   #'switch-to-buffer)
+        :desc "Switch buffer"               "b"   #'switch-to-buffer)
        :desc "Clone buffer"                "c"   #'clone-indirect-buffer
        :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
        :desc "Kill buffer"                 "d"   #'kill-current-buffer
@@ -670,7 +670,9 @@ Usage:
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
   (setq meow-use-clipboard t
-        meow-use-enhanced-selection-effect t)
+        meow-use-enhanced-selection-effect t
+        meow-visit-sanitize-completion nil
+        )
   )
 ;; Meow:2 ends here
 
