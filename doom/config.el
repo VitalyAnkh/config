@@ -64,27 +64,12 @@
 ;;   (consult-buffer))
 ;; Windows:2 ends here
 
-;; [[file:config.org::*Windows][Windows:3]]
-;; (map! :map evil-window-map
-;;       "SPC" #'rotate-layout
-;;       ;; Navigation
-;;       "<left>"     #'evil-window-left
-;;       "<down>"     #'evil-window-down
-;;       "<up>"       #'evil-window-up
-;;       "<right>"    #'evil-window-right
-;;       ;; Swapping windows
-;;       "C-<left>"       #'+evil/window-move-left
-;;       "C-<down>"       #'+evil/window-move-down
-;;       "C-<up>"         #'+evil/window-move-up
-;;       "C-<right>"      #'+evil/window-move-right)
-;; Windows:3 ends here
-
 ;; [[file:config.org::*Mouse][Mouse:1]]
 (setq mouse-yank-at-point nil)
 ;; Mouse:1 ends here
 
 ;; [[file:config.org::*Mouse][Mouse:2]]
-;;(pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode 1)
 ;; Mouse:2 ends here
 
 ;; [[file:config.org::*Buffer defaults][Buffer defaults:1]]
@@ -429,7 +414,6 @@ nil
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-;;(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 ;; Splash screen:3 ends here
 
 ;; [[file:config.org::*Splash screen][Splash screen:4]]
@@ -509,6 +493,39 @@ nil
 ;; EVIL:1 ends here
 
 ;; [[file:config.org::*Meow][Meow:2]]
+(map! :leader
+      ;; make doom-leader-buffer-map alive
+      (:prefix-map ("b" . "buffer")
+       :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
+       :desc "Previous buffer"             "["   #'previous-buffer
+       :desc "Next buffer"                 "]"   #'next-buffer
+       (:when (featurep! :ui workspaces)
+        :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
+        :desc "Switch buffer"              "B" #'switch-to-buffer)
+       (:unless (featurep! :ui workspaces)
+       :desc "Switch buffer"               "b"   #'switch-to-buffer)
+       :desc "Clone buffer"                "c"   #'clone-indirect-buffer
+       :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
+       :desc "Kill buffer"                 "d"   #'kill-current-buffer
+       :desc "ibuffer"                     "i"   #'ibuffer
+       :desc "Kill buffer"                 "k"   #'kill-current-buffer
+       :desc "Kill all buffers"            "K"   #'doom/kill-all-buffers
+       :desc "Switch to last buffer"       "l"   #'evil-switch-to-windows-last-buffer
+       :desc "Set bookmark"                "m"   #'bookmark-set
+       :desc "Delete bookmark"             "M"   #'bookmark-delete
+       :desc "Next buffer"                 "n"   #'next-buffer
+       :desc "New empty buffer"            "N"   #'evil-buffer-new
+       :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
+       :desc "Previous buffer"             "p"   #'previous-buffer
+       :desc "Revert buffer"               "r"   #'revert-buffer
+       :desc "Save buffer"                 "s"   #'basic-save-buffer
+       :desc "Save all buffers"            "S"   #'evil-write-all
+       :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
+       :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
+       :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
+       :desc "Bury buffer"                 "z"   #'bury-buffer
+       :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
+      )
 (defun meow-setup ()
   (map!
    (:when (featurep! :ui workspaces)
@@ -551,7 +568,7 @@ nil
    ;;(cons "a" org-agenda-keymap )
    (cons "d" doom-leader-code-map)
    (cons "s" doom-leader-search-map)
-   ;;(cons "b" doom-leader-buffer-map)
+   (cons "b" doom-leader-buffer-map)
    (cons "o" doom-leader-open-map)
    (cons "v" doom-leader-versioning-map)
    (cons "n" doom-leader-notes-map)
@@ -562,7 +579,7 @@ nil
    (cons "t" doom-leader-toggle-map)
    (cons "w" doom-leader-workspaces/windows-map)
    (cons "S" doom-leader-snippets-map)
-   (cons "M" doom-leader-multiple-cursors-map)
+   ;;(cons "M" doom-leader-multiple-cursors-map)
    )
 
   (meow-normal-define-key
@@ -582,14 +599,15 @@ nil
    '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
+   '("/" . meow-visit)
    '("a" . meow-append)
-   '("A" . meow-open-below)
+   '("A" . meow-join)
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
    '("c" . meow-change)
    '("d" . meow-delete)
    '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
+   '("e" . meow-open-below)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
    '("g" . meow-cancel-selection)
@@ -618,7 +636,7 @@ nil
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
+   '("v" . meow-grab)
    '("w" . meow-next-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
@@ -2502,29 +2520,12 @@ SQL can be either the emacsql vector representation, or a string."
        (cl-pushnew '(:latex-font-set nil "fontset" nil)
                    (org-export-backend-options (org-export-get-backend 'latex)))))
   (add-hook 'org-mode-hook #'+org-pretty-mode)
+  (setq org-pretty-entities-include-sub-superscripts nil)
   ;; disable =hl-line-mode= and =solaire-mode= for org-mode
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
   (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (global-hl-line-mode nil)
-  ;;(custom-set-faces
-   ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
-   ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
-   ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
-   ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
-   ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
-   ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
-  
-   ;;'(org-list-dt ((t (:foreground "#7382a0"))))
-   ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
-   ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-   ;;'(org-block ((t (:inherit fixed-pitch))))
-   ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-   ;;'(fixed-pitch ((t (:family "mononoki" :height 160))))
-   ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
-   ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
-   ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
-   ;;)
   (custom-set-faces!
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
@@ -2753,7 +2754,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
   ;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
   ;;  (org-pretty-tags-global-mode))
-  (setq org-highlight-latex-and-related '(native script entities))
+  (setq org-highlight-latex-and-related '(native latex entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
   (package! org-fragtog)
@@ -2817,9 +2818,8 @@ SQL can be either the emacsql vector representation, or a string."
   \\addtolength{\\textheight}{-3cm}
   \\setlength{\\topmargin}{1.5cm}
   \\addtolength{\\topmargin}{-2.54cm}
-  %\\usepackage{amsmath}
+  \\usepackage{amsmath}
   \\usepackage{amssymb}
-  \\usepackage{unicode-math}
   ")
   ;; (setq org-format-latex-options
   ;;      (plist-put org-format-latex-options :background "Transparent"))
@@ -3801,8 +3801,8 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-feature-implementations
     '((image         :snippet "\\usepackage{graphicx}" :order 2)
       (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-      ;; replace bmc with unicode-math here
-      (maths         :snippet "\\usepackage{unicode-math}" :order 0.2)
+      ;; replace bmc with amsmath here
+      (maths         :snippet "\\usepackage{amsmath}" :order 0.2)
       (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
       (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
       (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -4963,10 +4963,11 @@ information."
 \\usepackage[osf]{newpxtext}  % Palatino
 \\usepackage{gillius}
 \\usepackage[scale=0.9]{sourcecodepro}
-
-\\usepackage[varbb]{newpxmath}
+% use amsmath instead
+%\\usepackage[varbb]{newpxmath}
 \\usepackage{mathtools}
 \\usepackage{amssymb}
+\\usepackage{amsmath}
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
 % microtype makes text look nicer
@@ -5247,13 +5248,35 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 (use-package! laas
   :hook
   ((LaTeX-mode . laas-mode)
-  (latex-mode . laas-mode)
-  (org-mode . laas-mode))
+   (latex-mode . laas-mode)
+   (org-mode . laas-mode))
   :config
-  (defun laas-tex-fold-maybe ()
-    (unless (equal "/" aas-transient-snippet-key)
-      (+latex-fold-last-macro-a)))
-  (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
+  (setq laas-enable-auto-space nil)
+  (aas-set-snippets 'laas-mode
+    ;; set condition!
+    :cond #'texmathp ; expand only while in math
+    "supp" "\\supp"
+    "On" "O(n)"
+    "O1" "O(1)"
+    "Olog" "O(\\log n)"
+    "Olon" "O(n \\log n)"
+    ;; bind to functions!
+    "Sum" (lambda () (interactive)
+            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+    "Span" (lambda () (interactive)
+             (yas-expand-snippet "\\Span($1)$0"))
+    ;; add accent snippets
+    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
+    "tan" "\\tan"
+    ;; inner product
+    "i*" (lambda () (interactive)
+           (yas-expand-snippet "\\langle $1\\rangle$0"))
+    "sr" "^2"
+    ;; 这是 laas 中定义的用于包裹式 latex 代码的函数，实现 \bm{a}
+    :cond #'laas-object-on-left-condition
+    ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
+    ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))
+))
 ;; LAAS:2 ends here
 
 ;; [[file:config.org::*SyncTeX][SyncTeX:1]]
@@ -5402,11 +5425,12 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; wakatime:2 ends here
 
 ;; [[file:config.org::*Input Method][Input Method:2]]
-(use-package sis
+(use-package! sis
   ;;:hook
-  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;enable the /follow context/ and /inline region/ mode for specific buffers
   ;;(((text-mode prog-mode) . sis-context-mode)
   ;; ((text-mode prog-mode) . sis-inline-mode))
+  :defer-incrementally meow
   :config
   (sis-ism-lazyman-config "1" "2" 'fcitx5)
   ;; enable the /cursor color/ mode
@@ -5417,8 +5441,6 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
-  )
-(after! meow
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
   (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
   )
@@ -5439,9 +5461,8 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 \\usepackage[usenames]{xcolor}
 \\usepackage{soul}
 \\usepackage{adjustbox}
-%\\usepackage{amsmath}
+\\usepackage{amsmath}
 \\usepackage{amssymb}
-\\usepackage{unicode-math}
 \\usepackage{siunitx}
 \\usepackage{cancel}
 \\usepackage{mathtools}

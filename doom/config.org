@@ -416,23 +416,6 @@ Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
 /Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
 by Tmux's use of =C-b SPC= to rotate windows.
 
-We could also do with adding the missing arrow-key variants of the window
-navigation/swapping commands.
-#+begin_src emacs-lisp
-;; (map! :map evil-window-map
-;;       "SPC" #'rotate-layout
-;;       ;; Navigation
-;;       "<left>"     #'evil-window-left
-;;       "<down>"     #'evil-window-down
-;;       "<up>"       #'evil-window-up
-;;       "<right>"    #'evil-window-right
-;;       ;; Swapping windows
-;;       "C-<left>"       #'+evil/window-move-left
-;;       "C-<down>"       #'+evil/window-move-down
-;;       "C-<up>"         #'+evil/window-move-up
-;;       "C-<right>"      #'+evil/window-move-right)
-#+end_src
-
 *** Mouse
 I love mouse menus.
 #+begin_src emacs-lisp
@@ -440,7 +423,7 @@ I love mouse menus.
 #+end_src
 Thanks to Pu Lo, scrolling in emacs is great again!
 #+begin_src emacs-lisp
-;;(pixel-scroll-precision-mode 1)
+(pixel-scroll-precision-mode 1)
 #+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
@@ -548,7 +531,7 @@ hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 (ligatures +extra)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
-nav-flash                    ; blink the current line after jumping
+;;nav-flash                  ; blink the current line after jumping
 ;;neotree                    ; a project drawer, like NERDTree for vim
 ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
@@ -560,7 +543,9 @@ treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 vc-gutter                    ; vcs diff in the fringe
 vi-tilde-fringe              ; fringe tildes to mark beyond EOB
-(window-select +numbers)     ; visually switch windows
+(window-select
+  ;;+switch-window             ; use switch-window other than ace window
+  +numbers)                  ; visually switch windows
 workspaces                   ; tab emulation, persistence & separate workspaces
 zen                          ; distraction-free coding or writing
 #+end_src
@@ -569,15 +554,15 @@ zen                          ; distraction-free coding or writing
 #+begin_src emacs-lisp
 ;; Use meow, not evil!
 ;; Just now.
-;;(evil +everywhere)           ; come to the dark side, we have cookies
+;;(evil +everywhere)         ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format)                     ; automated prettiness
-;;god                      ; run Emacs commands without modifier keys
-;;lispy                    ; vim for lisp, for people who don't like vim
-multiple-cursors             ; editing in many places at once
-;;objed                    ; text object editing for the innocent
-;;parinfer                 ; turn lisp into python, sort of
+;;god                        ; run Emacs commands without modifier keys
+;;lispy                      ; vim for lisp, for people who don't like vim
+;;multiple-cursors           ; editing in many places at once
+;;objed                      ; text object editing for the innocent
+;;parinfer                   ; turn lisp into python, sort of
 rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
 word-wrap                    ; soft wrapping with language-aware indent
@@ -604,7 +589,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 #+begin_src emacs-lisp
 ;;syntax                     ; tasing you for every semicolon you forget
 (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
-;;grammar                      ; tasing grammar mistake every you make
+;;grammar                    ; tasing grammar mistake every you make
 #+end_src
 
 #+name: doom-tools
@@ -629,7 +614,7 @@ make                         ; run make tasks from Emacs
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
 rgb                          ; creating color strings
-;;taskrunner                 ; taskrunner for all your projects
+taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 upload                       ; map local to remote projects via ssh/ftp
@@ -686,7 +671,7 @@ lean                         ; proof that mathematicians need help
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
-;;nix                        ; I hereby declare "nix geht mehr!"
+nix                          ; I hereby declare "nix geht mehr!"
 ocaml                        ; an objective camel
 (org                         ; organize your plain life in plain text
  +pretty                     ; yessss my pretties! (nice unicode symbols)
@@ -1334,8 +1319,9 @@ the modeline and ~hl-line-mode~, then also hide the cursor.
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1) (global-hl-line-mode nil))
 (remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-;;(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 #+end_src
+
+I don't like ~hl-line-mode~. Disabling a Doom builtin package doesn't work. I must remove the hook manually.
 
 At the end, we have a minimal but rather nice splash screen.
 
@@ -1775,6 +1761,39 @@ Modal editing on wish! Use =moew= for modal life.
 #+end_src
 
 #+begin_src emacs-lisp
+(map! :leader
+      ;; make doom-leader-buffer-map alive
+      (:prefix-map ("b" . "buffer")
+       :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
+       :desc "Previous buffer"             "["   #'previous-buffer
+       :desc "Next buffer"                 "]"   #'next-buffer
+       (:when (featurep! :ui workspaces)
+        :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
+        :desc "Switch buffer"              "B" #'switch-to-buffer)
+       (:unless (featurep! :ui workspaces)
+       :desc "Switch buffer"               "b"   #'switch-to-buffer)
+       :desc "Clone buffer"                "c"   #'clone-indirect-buffer
+       :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
+       :desc "Kill buffer"                 "d"   #'kill-current-buffer
+       :desc "ibuffer"                     "i"   #'ibuffer
+       :desc "Kill buffer"                 "k"   #'kill-current-buffer
+       :desc "Kill all buffers"            "K"   #'doom/kill-all-buffers
+       :desc "Switch to last buffer"       "l"   #'evil-switch-to-windows-last-buffer
+       :desc "Set bookmark"                "m"   #'bookmark-set
+       :desc "Delete bookmark"             "M"   #'bookmark-delete
+       :desc "Next buffer"                 "n"   #'next-buffer
+       :desc "New empty buffer"            "N"   #'evil-buffer-new
+       :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
+       :desc "Previous buffer"             "p"   #'previous-buffer
+       :desc "Revert buffer"               "r"   #'revert-buffer
+       :desc "Save buffer"                 "s"   #'basic-save-buffer
+       :desc "Save all buffers"            "S"   #'evil-write-all
+       :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
+       :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
+       :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
+       :desc "Bury buffer"                 "z"   #'bury-buffer
+       :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
+      )
 (defun meow-setup ()
   (map!
    (:when (featurep! :ui workspaces)
@@ -1817,7 +1836,7 @@ Modal editing on wish! Use =moew= for modal life.
    ;;(cons "a" org-agenda-keymap )
    (cons "d" doom-leader-code-map)
    (cons "s" doom-leader-search-map)
-   ;;(cons "b" doom-leader-buffer-map)
+   (cons "b" doom-leader-buffer-map)
    (cons "o" doom-leader-open-map)
    (cons "v" doom-leader-versioning-map)
    (cons "n" doom-leader-notes-map)
@@ -1828,7 +1847,7 @@ Modal editing on wish! Use =moew= for modal life.
    (cons "t" doom-leader-toggle-map)
    (cons "w" doom-leader-workspaces/windows-map)
    (cons "S" doom-leader-snippets-map)
-   (cons "M" doom-leader-multiple-cursors-map)
+   ;;(cons "M" doom-leader-multiple-cursors-map)
    )
 
   (meow-normal-define-key
@@ -1848,14 +1867,15 @@ Modal editing on wish! Use =moew= for modal life.
    '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
+   '("/" . meow-visit)
    '("a" . meow-append)
-   '("A" . meow-open-below)
+   '("A" . meow-join)
    '("b" . meow-back-word)
    '("B" . meow-back-symbol)
    '("c" . meow-change)
    '("d" . meow-delete)
    '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
+   '("e" . meow-open-below)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
    '("g" . meow-cancel-selection)
@@ -1884,7 +1904,7 @@ Modal editing on wish! Use =moew= for modal life.
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
+   '("v" . meow-grab)
    '("w" . meow-next-word)
    '("x" . meow-line)
    '("X" . meow-goto-line)
@@ -5206,6 +5226,7 @@ font changes etc, and also propagate colours from the current theme.
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook #'+org-pretty-mode)
+(setq org-pretty-entities-include-sub-superscripts nil)
 #+end_src
 
 Let's make headings a bit bigger
@@ -5215,24 +5236,6 @@ Let's make headings a bit bigger
 (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
 (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
 (global-hl-line-mode nil)
-;;(custom-set-faces
- ;;'(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- ;;'(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
- ;;                            :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
- ;;'(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
- ;;'(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
- ;;'(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
-
- ;;'(org-list-dt ((t (:foreground "#7382a0"))))
- ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
- ;;'(org-indent ((t (:inherit (org-hide fixed-pitch)))))
- ;;'(org-block ((t (:inherit fixed-pitch))))
- ;;'(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
- ;;'(fixed-pitch ((t (:family "mononoki" :height 160))))
- ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
- ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
- ;;'(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
- ;;)
 (custom-set-faces!
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
@@ -5544,7 +5547,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 ***** Prettier highlighting
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
-(setq org-highlight-latex-and-related '(native script entities))
+(setq org-highlight-latex-and-related '(native latex entities))
 #+end_src
 
 However, by using =native= highlighting the =org-block= face is added, and that
@@ -5722,9 +5725,8 @@ functionality from =bmc-maths=, so we'll load that too.
 \\addtolength{\\textheight}{-3cm}
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
-%\\usepackage{amsmath}
+\\usepackage{amsmath}
 \\usepackage{amssymb}
-\\usepackage{unicode-math}
 ")
 #+end_src
 
@@ -7220,8 +7222,8 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 (defvar org-latex-feature-implementations
   '((image         :snippet "\\usepackage{graphicx}" :order 2)
     (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-    ;; replace bmc with unicode-math here
-    (maths         :snippet "\\usepackage{unicode-math}" :order 0.2)
+    ;; replace bmc with amsmath here
+    (maths         :snippet "\\usepackage{amsmath}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
@@ -8796,10 +8798,11 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 \\usepackage[osf]{newpxtext}  % Palatino
 \\usepackage{gillius}
 \\usepackage[scale=0.9]{sourcecodepro}
-
-\\usepackage[varbb]{newpxmath}
+% use amsmath instead
+%\\usepackage[varbb]{newpxmath}
 \\usepackage{mathtools}
 \\usepackage{amssymb}
+\\usepackage{amsmath}
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
 % microtype makes text look nicer
@@ -9101,13 +9104,35 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 (use-package! laas
   :hook
   ((LaTeX-mode . laas-mode)
-  (latex-mode . laas-mode)
-  (org-mode . laas-mode))
+   (latex-mode . laas-mode)
+   (org-mode . laas-mode))
   :config
-  (defun laas-tex-fold-maybe ()
-    (unless (equal "/" aas-transient-snippet-key)
-      (+latex-fold-last-macro-a)))
-  (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
+  (setq laas-enable-auto-space nil)
+  (aas-set-snippets 'laas-mode
+    ;; set condition!
+    :cond #'texmathp ; expand only while in math
+    "supp" "\\supp"
+    "On" "O(n)"
+    "O1" "O(1)"
+    "Olog" "O(\\log n)"
+    "Olon" "O(n \\log n)"
+    ;; bind to functions!
+    "Sum" (lambda () (interactive)
+            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+    "Span" (lambda () (interactive)
+             (yas-expand-snippet "\\Span($1)$0"))
+    ;; add accent snippets
+    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
+    "tan" "\\tan"
+    ;; inner product
+    "i*" (lambda () (interactive)
+           (yas-expand-snippet "\\langle $1\\rangle$0"))
+    "sr" "^2"
+    ;; 这是 laas 中定义的用于包裹式 latex 代码的函数，实现 \bm{a}
+    :cond #'laas-object-on-left-condition
+    ",." (lambda () (interactive) (laas-wrap-previous-object "bm"))
+    ".," (lambda () (interactive) (laas-wrap-previous-object "bm"))
+))
 #+end_src
 
 *** SyncTeX
@@ -9335,11 +9360,12 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package sis
+(use-package! sis
   ;;:hook
-  ;; enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;enable the /follow context/ and /inline region/ mode for specific buffers
   ;;(((text-mode prog-mode) . sis-context-mode)
   ;; ((text-mode prog-mode) . sis-inline-mode))
+  :defer-incrementally meow
   :config
   (sis-ism-lazyman-config "1" "2" 'fcitx5)
   ;; enable the /cursor color/ mode
@@ -9350,8 +9376,6 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
   (sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
-  )
-(after! meow
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
   (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
   )
@@ -9558,9 +9582,8 @@ everyone else!?
 \\usepackage[usenames]{xcolor}
 \\usepackage{soul}
 \\usepackage{adjustbox}
-%\\usepackage{amsmath}
+\\usepackage{amsmath}
 \\usepackage{amssymb}
-\\usepackage{unicode-math}
 \\usepackage{siunitx}
 \\usepackage{cancel}
 \\usepackage{mathtools}
