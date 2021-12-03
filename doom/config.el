@@ -526,7 +526,12 @@ nil
        :desc "Bury buffer"                 "z"   #'bury-buffer
        :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
       )
+(defun set-useful-keybindings()
+  (global-set-key (kbd "M-o") 'ace-window)
+  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  )
 (defun meow-setup ()
+  (set-useful-keybindings)
   (map!
    (:when (featurep! :ui workspaces)
     :n "C-t"   #'+workspace/new
@@ -546,7 +551,6 @@ nil
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
-
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "H-j")
@@ -639,18 +643,14 @@ nil
    '("v" . meow-grab)
    '("w" . meow-next-word)
    '("x" . meow-line)
-   '("X" . meow-goto-line)
+   '("X" . meow-line-expand)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("\\" . quoted-insert)
-   '("<escape>" . mode-line-other-buffer)))
-(use-package meow
-  :config
-  (require 'meow)
-  (meow-setup)
-  (meow-global-mode 1)
+   ;;'("<escape>" . mode-line-other-buffer)
+   )
   (defun meow-insert-define-key (&rest keybindings)
     "Define key for insert state.
 
@@ -670,9 +670,14 @@ Usage:
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
   (setq meow-use-clipboard t
-        meow-use-enhanced-selection-effect t
         meow-visit-sanitize-completion nil
         )
+  )
+(use-package meow
+  :config
+  (require 'meow)
+  (meow-setup)
+  (meow-global-mode 1)
   )
 ;; Meow:2 ends here
 
@@ -694,9 +699,6 @@ Usage:
           keybindings))
 (meow-insert-define-key
   '("\C-[" . meow-insert-exit))
-
-;; (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-;; (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 ;; Meow:4 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
@@ -1551,6 +1553,8 @@ SQL can be either the emacsql vector representation, or a string."
 ;; [[file:config.org::*Plaintext][Plaintext:1]]
 (after! text-mode
   (add-hook! 'text-mode-hook
+             ;; Disable hl-line-mode for all modes inherited from text mode
+             (hl-line-mode -1)
              ;; Apply ANSI color codes
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max) t)))
@@ -2525,9 +2529,6 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-pretty-entities-include-sub-superscripts nil)
   ;; disable =hl-line-mode= and =solaire-mode= for org-mode
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
-  (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
-  (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-  (global-hl-line-mode nil)
   (custom-set-faces!
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
@@ -5223,6 +5224,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
         '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
           ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)))
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
+   cdlatex-simplify-sub-super-scripts nil
    cdlatex-math-symbol-alist
    '( ;; adding missing functions to 3rd level symbols
      (?_    ("\\downarrow"  ""           "\\inf"))

@@ -553,7 +553,6 @@ zen                          ; distraction-free coding or writing
 #+name: doom-editor
 #+begin_src emacs-lisp
 ;; Use meow, not evil!
-;; Just now.
 ;;(evil +everywhere)         ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
@@ -1788,7 +1787,12 @@ Modal editing on wish! Use =moew= for modal life.
        :desc "Bury buffer"                 "z"   #'bury-buffer
        :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
       )
+(defun set-useful-keybindings()
+  (global-set-key (kbd "M-o") 'ace-window)
+  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  )
 (defun meow-setup ()
+  (set-useful-keybindings)
   (map!
    (:when (featurep! :ui workspaces)
     :n "C-t"   #'+workspace/new
@@ -1808,7 +1812,6 @@ Modal editing on wish! Use =moew= for modal life.
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev))
-
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "H-j")
@@ -1901,18 +1904,14 @@ Modal editing on wish! Use =moew= for modal life.
    '("v" . meow-grab)
    '("w" . meow-next-word)
    '("x" . meow-line)
-   '("X" . meow-goto-line)
+   '("X" . meow-line-expand)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("\\" . quoted-insert)
-   '("<escape>" . mode-line-other-buffer)))
-(use-package meow
-  :config
-  (require 'meow)
-  (meow-setup)
-  (meow-global-mode 1)
+   ;;'("<escape>" . mode-line-other-buffer)
+   )
   (defun meow-insert-define-key (&rest keybindings)
     "Define key for insert state.
 
@@ -1932,9 +1931,14 @@ Usage:
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
   (setq meow-use-clipboard t
-        meow-use-enhanced-selection-effect t
         meow-visit-sanitize-completion nil
         )
+  )
+(use-package meow
+  :config
+  (require 'meow)
+  (meow-setup)
+  (meow-global-mode 1)
   )
 #+end_src
 
@@ -1959,9 +1963,6 @@ Usage:
           keybindings))
 (meow-insert-define-key
   '("\C-[" . meow-insert-exit))
-
-;; (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-;; (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
 #+end_src
 
 *** Consult
@@ -3413,6 +3414,8 @@ on that.
 #+begin_src emacs-lisp :tangle (if (>= emacs-major-version 28) "yes" "no")
 (after! text-mode
   (add-hook! 'text-mode-hook
+             ;; Disable hl-line-mode for all modes inherited from text mode
+             (hl-line-mode -1)
              ;; Apply ANSI color codes
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max) t)))
@@ -5229,9 +5232,6 @@ Let's make headings a bit bigger
 #+begin_src emacs-lisp
 ;; disable =hl-line-mode= and =solaire-mode= for org-mode
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
-(add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
-(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-(global-hl-line-mode nil)
 (custom-set-faces!
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
@@ -9066,6 +9066,7 @@ but more convenient, like =;=.
         '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
           ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)))
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
+   cdlatex-simplify-sub-super-scripts nil
    cdlatex-math-symbol-alist
    '( ;; adding missing functions to 3rd level symbols
      (?_    ("\\downarrow"  ""           "\\inf"))
