@@ -26,6 +26,7 @@
 !gtk-4.0/
 !input_method/
 !mako/
+!microsoft-edge-dev-flags.conf
 !misc/
 !nu/
 !private-data/
