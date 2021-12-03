@@ -5440,7 +5440,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   ;; enable the /respect/ mode
   (sis-global-respect-mode t)
   ;; enable the /follow context/ mode for all buffers
-  (sis-global-context-mode t)
+  ;;(sis-global-context-mode t)
   ;; enable the /inline english/ mode for all buffers
   ;; (sis-global-inline-mode t)
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
