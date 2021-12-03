@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
-#+author: tecosaur
+#+author: VitalyR
 #+date: @@html:<!--@@{{{git-rev}}}@@html:-->@@@@latex:\\\Large\bfseries@@ {{{modification-time(%Y-%m-%d, t)}}} @@latex:\\\normalsize\mdseries@@{{{modification-time(%H:%M, t)}}} @@latex:\acr{\lowercase{@@{{{timezone}}}@@latex:}}\iffalse@@, {{{git-rev}}}@@latex:\fi@@
 #+macro: timezone (eval (substring (shell-command-to-string "date +%Z") 0 -1))
 #+macro: git-rev (eval (format "@@html:<a href=\"https://github.com/tecosaur/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://github.com/tecosaur/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
@@ -1627,13 +1627,7 @@ From the =:config default= module.
 
 
 What a wonderful way to jump to buffer positions, and it uses the QWERTY
-home-row for jumping. Very convenient ... except I'm using Colemak.
-
-#+begin_src emacs-lisp :tangle (if (= 0 (call-process "sh" nil nil nil "-c" "dmesg | grep -q 'ErgoDox'")) "yes" "no")
-(after! avy
-  ;; home row priorities: 8 6 4 5 - - 1 2 3 7
-  (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a)))
-#+end_src
+home-row for jumping.
 
 *** Rotate (window management)
 The =rotate= package just adds the ability to rotate window layouts, but that
