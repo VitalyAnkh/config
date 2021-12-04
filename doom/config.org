@@ -1790,6 +1790,8 @@ Modal editing on wish! Use =moew= for modal life.
 (defun set-useful-keybindings()
   (global-set-key (kbd "M-o") 'ace-window)
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
+  (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   )
 (defun meow-setup ()
   (set-useful-keybindings)
@@ -1929,7 +1931,7 @@ Usage:
   (setq meow-expand-exclude-mode-list nil)
   (setq meow-expand-hint-remove-delay 1024)
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-  (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
+  (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil
         )
@@ -1940,12 +1942,6 @@ Usage:
   (meow-setup)
   (meow-global-mode 1)
   )
-#+end_src
-
-Mimic the =%= key in meow:
-#+begin_src emacs-lisp
-
-
 #+end_src
 
 Let =C-[= be the =ESC= of =evil= in =meow=:

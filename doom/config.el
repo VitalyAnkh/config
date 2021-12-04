@@ -529,6 +529,8 @@ nil
 (defun set-useful-keybindings()
   (global-set-key (kbd "M-o") 'ace-window)
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
+  (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   )
 (defun meow-setup ()
   (set-useful-keybindings)
@@ -668,7 +670,7 @@ Usage:
   (setq meow-expand-exclude-mode-list nil)
   (setq meow-expand-hint-remove-delay 1024)
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-  (define-key meow-insert-state-keymap [control-bracketleft] #'meow-insert-exit)
+  (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil
         )
@@ -682,10 +684,6 @@ Usage:
 ;; Meow:2 ends here
 
 ;; [[file:config.org::*Meow][Meow:3]]
-
-;; Meow:3 ends here
-
-;; [[file:config.org::*Meow][Meow:4]]
 (defun meow-insert-define-key (&rest keybindings)
   "Define key for insert state.
 
@@ -699,7 +697,7 @@ Usage:
           keybindings))
 (meow-insert-define-key
   '("\C-[" . meow-insert-exit))
-;; Meow:4 ends here
+;; Meow:3 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
 (after! consult
