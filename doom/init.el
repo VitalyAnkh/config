@@ -98,7 +98,7 @@
        pdf                          ; pdf enhancements
        ;;prodigy                    ; FIXME managing external services & code builders
        rgb                          ; creating color strings
-       taskrunner                 ; taskrunner for all your projects
+       ;;taskrunner                 ; taskrunner for all your projects
        ;;terraform                  ; infrastructure as code
        ;;tmux                       ; an API for interacting with tmux
        upload                       ; map local to remote projects via ssh/ftp
@@ -118,7 +118,7 @@
        data                         ; config/data formats
        ;;(dart +flutter)            ; paint ui and not much else
        ;;dhall                      ; JSON with FP sprinkles
-       ;;elixir                     ; erlang done right
+       elixir                       ; erlang done right
        ;;elm                        ; care for a cup of TEA?
        emacs-lisp                   ; drown in parentheses
        erlang                       ; an elegant language for a more civilized age

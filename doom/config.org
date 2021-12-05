@@ -421,7 +421,7 @@ I love mouse menus.
 #+begin_src emacs-lisp
 (setq mouse-yank-at-point nil)
 #+end_src
-Thanks to Pu Lo, scrolling in emacs is great again!
+Thanks to Po Lu, scrolling in emacs is great again!
 #+begin_src emacs-lisp
 (pixel-scroll-precision-mode 1)
 #+end_src
@@ -613,7 +613,7 @@ make                         ; run make tasks from Emacs
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
 rgb                          ; creating color strings
-taskrunner                 ; taskrunner for all your projects
+;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 upload                       ; map local to remote projects via ssh/ftp
@@ -642,7 +642,7 @@ coq                          ; proofs-as-programs
 data                         ; config/data formats
 ;;(dart +flutter)            ; paint ui and not much else
 ;;dhall                      ; JSON with FP sprinkles
-;;elixir                     ; erlang done right
+elixir                       ; erlang done right
 ;;elm                        ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
 erlang                       ; an elegant language for a more civilized age
@@ -3627,10 +3627,9 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 (use-package valign
   :init
   (require 'valign)
-  ;; No hook, open this manually when needed
-  ;;:hook
-  ;;(org-mode . valign-mode)
-  ;;(markdown-mode . valign-mode)
+  :hook
+  (org-mode . valign-mode)
+  (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
@@ -3702,7 +3701,7 @@ There's a really cool package in development to /transclude/ Org document conten
   :commands org-transclusion-mode
   :init
   (map! :after org :map org-mode-map
-        "<f12>" #'org-transclusion-mode))
+        "M-n" #'org-transclusion-mode))
 #+end_src
 
 ***** Heading graph
@@ -9152,12 +9151,10 @@ priority of =mypyls=
 ** Haskell
 Set =Haskell= source code formatter.
 #+begin_src emacs-lisp
-(setq
- ghc-ghc-options '("-fno-warn-missing-signatures")
- haskell-interactive-popup-errors nil
- )
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "ormolu"))
+  (setq lsp-haskell-formatting-provider "ormolu"
+        haskell-interactive-popup-errors nil
+        ))
 #+end_src
 ** PDF
 *** MuPDF

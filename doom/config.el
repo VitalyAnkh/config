@@ -4679,10 +4679,9 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package valign
   :init
   (require 'valign)
-  ;; No hook, open this manually when needed
-  ;;:hook
-  ;;(org-mode . valign-mode)
-  ;;(markdown-mode . valign-mode)
+  :hook
+  (org-mode . valign-mode)
+  (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
@@ -4701,7 +4700,7 @@ SQL can be either the emacsql vector representation, or a string."
   :commands org-transclusion-mode
   :init
   (map! :after org :map org-mode-map
-        "<f12>" #'org-transclusion-mode))
+        "M-n" #'org-transclusion-mode))
 
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
@@ -5300,12 +5299,10 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; Python:1 ends here
 
 ;; [[file:config.org::*Haskell][Haskell:1]]
-(setq
- ghc-ghc-options '("-fno-warn-missing-signatures")
- haskell-interactive-popup-errors nil
- )
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "ormolu"))
+  (setq lsp-haskell-formatting-provider "ormolu"
+        haskell-interactive-popup-errors nil
+        ))
 ;; Haskell:1 ends here
 
 ;; [[file:config.org::*MuPDF][MuPDF:2]]
