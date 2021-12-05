@@ -1934,6 +1934,8 @@ Usage:
   (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil
+        meow-expand-exclude-mode-list nil
+        meow-expand-hint-remove-delay 1024
         )
   )
 (use-package meow
