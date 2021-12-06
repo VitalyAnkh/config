@@ -102,6 +102,13 @@
 (package! stan-snippets)
 ;; Stan:1 ends here
 
+;; [[file:config.org::*Lean][Lean:1]]
+(package! lean4-mode :recipe
+  (:host github
+   :repo "leanprover/lean4"
+   :files ("lean4-mode/*.el")))
+;; Lean:1 ends here
+
 (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el") (insert "(fset 'org-release (lambda () \"9.5\"))
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
@@ -149,6 +156,7 @@
   :recipe (:host github :repo "progfolio/doct"))
 
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 
 (package! seperate-inline :recipe

@@ -140,13 +140,13 @@
         +latexmk                    ; what else would you use?
         +cdlatex                    ; quick maths symbols
         +fold)                      ; fold the clutter away nicities
-       lean                         ; proof that mathematicians need help
+       ;;lean                       ; proof that mathematicians need help
        ;;factor                     ; for when scripts are stacked against you
        ;;ledger                     ; an accounting system in Emacs
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
        ;;nim                        ; python + lisp at the speed of c
-       nix                          ; I hereby declare "nix geht mehr!"
+       ;;nix                        ; I hereby declare "nix geht mehr!"
        ocaml                        ; an objective camel
        (org                         ; organize your plain life in plain text
         +pretty                     ; yessss my pretties! (nice unicode symbols)

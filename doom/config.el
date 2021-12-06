@@ -527,7 +527,6 @@ nil
        :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
       )
 (defun set-useful-keybindings()
-  (global-set-key (kbd "M-o") 'ace-window)
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
@@ -653,6 +652,7 @@ nil
    '("\\" . quoted-insert)
    ;;'("<escape>" . mode-line-other-buffer)
    )
+  ;; Let =C-[= be the =ESC= of =evil= in =meow=:
   (defun meow-insert-define-key (&rest keybindings)
     "Define key for insert state.
 
@@ -676,6 +676,7 @@ Usage:
         meow-expand-exclude-mode-list nil
         meow-expand-hint-remove-delay 1024
         )
+  (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
   )
 (use-package meow
   :config
@@ -684,22 +685,6 @@ Usage:
   (meow-global-mode 1)
   )
 ;; Meow:2 ends here
-
-;; [[file:config.org::*Meow][Meow:3]]
-(defun meow-insert-define-key (&rest keybindings)
-  "Define key for insert state.
-
-Usage:
-  (meow-insert-define-key
-   '(\"C-<space>\" . meow-insert-exit))"
-  (mapcar (lambda (key-ref)
-            (define-key meow-insert-state-keymap
-              (kbd (car key-ref))
-              (meow--parse-key-def (cdr key-ref))))
-          keybindings))
-(meow-insert-define-key
-  '("\C-[" . meow-insert-exit))
-;; Meow:3 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
 (after! consult
@@ -1540,7 +1525,7 @@ SQL can be either the emacsql vector representation, or a string."
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 ;; File Templates:1 ends here
 
-;; [[file:config.org::*File Templates][File Templates:2]]
+;; [[file:config.org::*LSP][LSP:1]]
 (setq lsp-file-watch-threshold 1000
       lsp-ui-doc-position "Bottom"
       lsp-ui-peek-enable t
@@ -1548,7 +1533,7 @@ SQL can be either the emacsql vector representation, or a string."
       lsp-ui-imenu-enable t
       lsp-ui-sideline-enable nil
       lsp-ui-sideline-ignore-duplicate t)
-;; File Templates:2 ends here
+;; LSP:1 ends here
 
 ;; [[file:config.org::*Plaintext][Plaintext:1]]
 (after! text-mode
@@ -2757,7 +2742,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
   ;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
   ;;  (org-pretty-tags-global-mode))
-  (setq org-highlight-latex-and-related '(native latex entities))
+  ;;(setq org-highlight-latex-and-related '(native latex entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
   (package! org-fragtog)
@@ -4679,9 +4664,9 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package valign
   :init
   (require 'valign)
-  :hook
-  (org-mode . valign-mode)
-  (markdown-mode . valign-mode)
+  ;; :hook
+  ;; (org-mode . valign-mode)
+  ;; (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
@@ -5050,8 +5035,8 @@ information."
 ;; Deliminators:1 ends here
 
 ;; [[file:config.org::*Editor visuals][Editor visuals:1]]
-;;(after! latex
-;;  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+(after! latex
+  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols

@@ -664,13 +664,13 @@ json                         ; At least it ain't XML
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
  +fold)                      ; fold the clutter away nicities
-lean                         ; proof that mathematicians need help
+;;lean                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
-nix                          ; I hereby declare "nix geht mehr!"
+;;nix                        ; I hereby declare "nix geht mehr!"
 ocaml                        ; an objective camel
 (org                         ; organize your plain life in plain text
  +pretty                     ; yessss my pretties! (nice unicode symbols)
@@ -1788,7 +1788,6 @@ Modal editing on wish! Use =moew= for modal life.
        :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
       )
 (defun set-useful-keybindings()
-  (global-set-key (kbd "M-o") 'ace-window)
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
@@ -1914,6 +1913,7 @@ Modal editing on wish! Use =moew= for modal life.
    '("\\" . quoted-insert)
    ;;'("<escape>" . mode-line-other-buffer)
    )
+  ;; Let =C-[= be the =ESC= of =evil= in =meow=:
   (defun meow-insert-define-key (&rest keybindings)
     "Define key for insert state.
 
@@ -1937,6 +1937,7 @@ Usage:
         meow-expand-exclude-mode-list nil
         meow-expand-hint-remove-delay 1024
         )
+  (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
   )
 (use-package meow
   :config
@@ -1944,23 +1945,6 @@ Usage:
   (meow-setup)
   (meow-global-mode 1)
   )
-#+end_src
-
-Let =C-[= be the =ESC= of =evil= in =meow=:
-#+begin_src emacs-lisp
-(defun meow-insert-define-key (&rest keybindings)
-  "Define key for insert state.
-
-Usage:
-  (meow-insert-define-key
-   '(\"C-<space>\" . meow-insert-exit))"
-  (mapcar (lambda (key-ref)
-            (define-key meow-insert-state-keymap
-              (kbd (car key-ref))
-              (meow--parse-key-def (cdr key-ref))))
-          keybindings))
-(meow-insert-define-key
-  '("\C-[" . meow-insert-exit))
 #+end_src
 
 *** Consult
@@ -3394,7 +3378,7 @@ need to have a template assigned.
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 #+end_src
-
+*** LSP
 Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp client in Emacs has some nuisances. Let's tweak it.
 #+begin_src emacs-lisp
 (setq lsp-file-watch-threshold 1000
@@ -3405,6 +3389,22 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
       lsp-ui-sideline-enable nil
       lsp-ui-sideline-ignore-duplicate t)
 #+end_src
+** Lean
+Use ~Lean~ to prove you are a prover!
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! lean4-mode :recipe
+  (:host github
+   :repo "leanprover/lean4"
+   :files ("lean4-mode/*.el")))
+#+end_src
+
+~Lean~ has its own input method to input unicode characters. Let's make it more plansant.
+#+begin_src emacs-lisp :tangle no
+(add-hook 'lean-mode-hook
+  (lambda () (setq-default sis-english-source "Lean")))
+#+end_src
+
 ** Plaintext
 It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
 possible to do this without modifying the buffer, so let's condition this block
@@ -3627,9 +3627,9 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 (use-package valign
   :init
   (require 'valign)
-  :hook
-  (org-mode . valign-mode)
-  (markdown-mode . valign-mode)
+  ;; :hook
+  ;; (org-mode . valign-mode)
+  ;; (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
@@ -4522,7 +4522,7 @@ That said, if the directory doesn't exist we likely don't want to be using roam.
 Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
-(package! org-roam :disable t)
+;;(package! org-roam :disable t)
 #+end_src
 Let =org-id-method= be time stamp. =uuid= is not informative for humans.
 #+begin_src emacs-lisp
@@ -4548,6 +4548,7 @@ Org-roam is nice by itself, but there are so /extra/ nice packages which integra
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 #+end_src
 
@@ -5540,7 +5541,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 ***** Prettier highlighting
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
-(setq org-highlight-latex-and-related '(native latex entities))
+;;(setq org-highlight-latex-and-related '(native latex entities))
 #+end_src
 
 However, by using =native= highlighting the =org-block= face is added, and that
@@ -8502,7 +8503,7 @@ frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
 #+end_src
-*** Reveal export
+*** Reveal
 
 By default reveal is rather nice, there are just a few tweaks that I consider a
 good idea.
@@ -8883,8 +8884,8 @@ Then let's bind the content to a function, and define some nice helpers.
 
 Let's enhance ~TeX-fold-math~ a bit
 #+begin_src emacs-lisp
-;;(after! latex
-;;  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+(after! latex
+  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
