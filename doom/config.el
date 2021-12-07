@@ -485,13 +485,6 @@ nil
 (setq eros-eval-result-prefix "⟹ ") ; default =>
 ;; Eros:1 ends here
 
-;; [[file:config.org::*EVIL][EVIL:1]]
-;; (after! evil
-;;   (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-;;         evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-;;         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
-;; EVIL:1 ends here
-
 ;; [[file:config.org::*Meow][Meow:2]]
 (map! :leader
       ;; make doom-leader-buffer-map alive
@@ -679,6 +672,7 @@ Usage:
   (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
   )
 (use-package meow
+  :defer t
   :config
   (require 'meow)
   (meow-setup)

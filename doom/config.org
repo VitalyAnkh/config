@@ -327,7 +327,7 @@ Apparently this is used by ~GPG~, and all sorts of other things.
 Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 =~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
 make a difference, and I don't want to accidentally purge this file (I have done
-src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
+src_shell{rm -rf~/.emac.d~} before). I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
@@ -1728,25 +1728,6 @@ could be slightly nicer though.
 (setq eros-eval-result-prefix "⟹ ") ; default =>
 #+end_src
 
-*** EVIL
-#+begin_quote
-From the =:editor evil= module.
-#+end_quote
-
-When I want to make a substitution, I want it to be global more often than not
---- so let's make that the default.
-
-Now, EVIL cares a fair bit about keeping compatibility with Vim's default
-behaviour. I don't. There are some particular settings that I'd rather be
-something else, so let's change them.
-
-#+begin_src emacs-lisp
-;; (after! evil
-;;   (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-;;         evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-;;         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
-#+end_src
-
 *** Meow
 Modal editing on wish! Use =moew= for modal life.
 #+begin_src emacs-lisp :tangle packages.el
@@ -1940,6 +1921,7 @@ Usage:
   (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
   )
 (use-package meow
+  :defer t
   :config
   (require 'meow)
   (meow-setup)
