@@ -4535,6 +4535,9 @@ with it.
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
+(use-package org-raom
+  :defer t
+  )
 (use-package! websocket
   :after org-roam)
 

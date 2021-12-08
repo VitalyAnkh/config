@@ -4789,6 +4789,9 @@ SQL can be either the emacsql vector representation, or a string."
 (setq org-directory "~/org"
       org-roam-directory org-directory)
 
+(use-package org-raom
+  :defer t
+  )
 (use-package! websocket
   :after org-roam)
 
