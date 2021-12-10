@@ -655,7 +655,7 @@ Usage:
     (mapcar (lambda (key-ref)
               (define-key meow-insert-state-keymap
                 (kbd (car key-ref))
-                (meow--parse-key-def (cdr key-ref))))
+                (meow--parse-def (cdr key-ref))))
             keybindings))
   (meow-insert-define-key
    '("\C-[" . meow-insert-exit))
@@ -1529,6 +1529,21 @@ SQL can be either the emacsql vector representation, or a string."
       lsp-ui-sideline-ignore-duplicate t)
 ;; LSP:1 ends here
 
+;; [[file:config.org::*Rust][Rust:1]]
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer
+        lsp-rust-analyzer-cargo-watch-command "clippy"
+        lsp-rust-analyzer-cargo-load-out-dirs-from-check t
+        lsp-rust-analyzer-proc-macro-enable t
+        lsp-rust-analyzer-display-chaining-hints t
+        lsp-rust-analyzer-display-parameter-hints t
+        lsp-rust-analyzer-server-display-inlay-hints t
+        lsp-rust-all-features t
+        ;;rustic-rustfmt-args "+nightly"
+        ;; (setq lsp-rust-full-docs t)
+        lsp-enable-semantic-highlighting t))
+;; Rust:1 ends here
+
 ;; [[file:config.org::*Plaintext][Plaintext:1]]
 (after! text-mode
   (add-hook! 'text-mode-hook
@@ -1542,13 +1557,14 @@ SQL can be either the emacsql vector representation, or a string."
 
 (after! org
   (setq org-directory "~/org"                       ; let's put files here
+        org-journal-dir org-directory               ; let's keep things simple
         org-use-property-inheritance t              ; it's convenient to have properties inherited
         org-log-done 'time                          ; having the time a item is done sounds convenient
         org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
         org-export-in-background t                  ; run export processes in external emacs process
         org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
-        org-export-with-sub-superscripts '{}       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
-        org-footnote-auto-adjust t)                ; let org orgnize footnotes autometely
+        org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+        org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
   (setq org-babel-default-header-args
         '((:session . "none")
           (:results . "replace")
@@ -1560,12 +1576,6 @@ SQL can be either the emacsql vector representation, or a string."
           (:comments . "link")))
   (remove-hook 'text-mode-hook #'visual-line-mode)
   ;;(add-hook 'text-mode-hook #'auto-fill-mode)
-  ;; (map! :map evil-org-mode-map
-  ;;       :after evil-org
-  ;;       :n "g <up>" #'org-backward-heading-same-level
-  ;;       :n "g <down>" #'org-forward-heading-same-level
-  ;;       :n "g <left>" #'org-up-element
-  ;;       :n "g <right>" #'org-down-element)
   (map! :map org-mode-map
         :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
   (defun +org-export-remove-zero-width-space (text _backend _info)
@@ -4791,6 +4801,8 @@ SQL can be either the emacsql vector representation, or a string."
 
 (use-package org-raom
   :defer t
+  :config
+  (setq org-roam-directory org-directory)
   )
 (use-package! websocket
   :after org-roam)
