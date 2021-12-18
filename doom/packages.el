@@ -1,3 +1,8 @@
+;; [[file:config.org::*Workaround][Workaround:1]]
+(unpin! general)
+(unpin! python-pytest)
+;; Workaround:1 ends here
+
 ;; -*- no-byte-compile: t; -*-
 
 ;; [[file:config.org::*Rotate (window management)][Rotate (window management):1]]
@@ -109,6 +114,11 @@
    :files ("lean4-mode/*.el")))
 ;; Lean:1 ends here
 
+;; [[file:config.org::*Sage Math][Sage Math:1]]
+(package! sage-shell-mode)
+(package! ob-sagemath)
+;; Sage Math:1 ends here
+
 (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el") (insert "(fset 'org-release (lambda () \"9.5\"))
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
@@ -117,6 +127,7 @@
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
+(unpin! org-contrib)
 
 (package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table"))

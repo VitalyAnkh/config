@@ -335,9 +335,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+end_src
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
-#+begin_src emacs-lisp
-(general-auto-unbind-keys :off)
-(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! general)
+(unpin! python-pytest)
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -645,7 +645,7 @@ data                         ; config/data formats
 elixir                       ; erlang done right
 ;;elm                        ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
-erlang                       ; an elegant language for a more civilized age
+;;(erlang +lsp)              ; an elegant language for a more civilized age
 ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
@@ -2319,14 +2319,6 @@ For when you want to change the case pattern for a symbol.
         :desc "under_score" "_" #'string-inflection-underscore
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
-  ;; (after! evil
-  ;;   (evil-define-operator evil-operator-string-inflection (beg end _type)
-  ;;     "Define a new evil operator that cycles symbol casing."
-  ;;     :move-point nil
-  ;;     (interactive "<R>")
-  ;;     (string-inflection-all-cycle)
-  ;;     (setq evil-repeat-info '([?g ?~])))
-  ;;   (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
   )
 #+end_src
 *** Smart parentheses
@@ -3386,6 +3378,12 @@ Use ~Lean~ to prove you are a prover!
 (add-hook 'lean-mode-hook
   (lambda () (setq-default sis-english-source "Lean")))
 #+end_src
+** Sage Math
+=Sage Math= is good, use it.
+#+begin_src emacs-lisp :tangle packages.el
+(package! sage-shell-mode)
+(package! ob-sagemath)
+#+end_src
 ** Rust
 #+begin_src emacs-lisp
 (after! rustic
@@ -3397,8 +3395,7 @@ Use ~Lean~ to prove you are a prover!
         lsp-rust-analyzer-display-parameter-hints t
         lsp-rust-analyzer-server-display-inlay-hints t
         lsp-rust-all-features t
-        ;;rustic-rustfmt-args "+nightly"
-        ;; (setq lsp-rust-full-docs t)
+        rustic-format-on-save t
         lsp-enable-semantic-highlighting t))
 #+end_src
 ** Plaintext
@@ -3578,6 +3575,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
+(unpin! org-contrib)
 #+end_src
 
 **** Visuals
@@ -8876,8 +8874,8 @@ Then let's bind the content to a function, and define some nice helpers.
 
 Let's enhance ~TeX-fold-math~ a bit
 #+begin_src emacs-lisp
-(after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+;; (after! latex
+;;   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
@@ -9332,6 +9330,7 @@ Use wakatime to track your coding time!
 Start =wakatime= at when emacs launches:
 #+begin_src emacs-lisp
 (use-package wakatime-mode
+  :defer t
   :config
   (global-wakatime-mode)
   )

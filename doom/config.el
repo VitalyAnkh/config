@@ -10,11 +10,6 @@
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 ;; Personal Information:2 ends here
 
-;; [[file:config.org::*Workaround][Workaround:1]]
-(general-auto-unbind-keys :off)
-(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
-;; Workaround:1 ends here
-
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
@@ -876,14 +871,6 @@ Usage:
         :desc "under_score" "_" #'string-inflection-underscore
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
-  ;; (after! evil
-  ;;   (evil-define-operator evil-operator-string-inflection (beg end _type)
-  ;;     "Define a new evil operator that cycles symbol casing."
-  ;;     :move-point nil
-  ;;     (interactive "<R>")
-  ;;     (string-inflection-all-cycle)
-  ;;     (setq evil-repeat-info '([?g ?~])))
-  ;;   (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
   )
 ;; String inflection:2 ends here
 
@@ -1539,8 +1526,7 @@ SQL can be either the emacsql vector representation, or a string."
         lsp-rust-analyzer-display-parameter-hints t
         lsp-rust-analyzer-server-display-inlay-hints t
         lsp-rust-all-features t
-        ;;rustic-rustfmt-args "+nightly"
-        ;; (setq lsp-rust-full-docs t)
+        rustic-format-on-save t
         lsp-enable-semantic-highlighting t))
 ;; Rust:1 ends here
 
@@ -5044,8 +5030,8 @@ information."
 ;; Deliminators:1 ends here
 
 ;; [[file:config.org::*Editor visuals][Editor visuals:1]]
-(after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+;; (after! latex
+;;   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
@@ -5414,6 +5400,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*wakatime][wakatime:2]]
 (use-package wakatime-mode
+  :defer t
   :config
   (global-wakatime-mode)
   )
