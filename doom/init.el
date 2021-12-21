@@ -18,7 +18,7 @@
        doom                         ; what makes DOOM look the way it does
        doom-dashboard               ; a nifty splash screen for Emacs
        ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)           ; :)
+       (emoji +unicode +ascii)      ; :) :)
        ;;fill-column                ; a `fill-column' indicator
        hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        ;;hydra                      ; quick documentation for related commands
@@ -32,8 +32,8 @@
        (popup                       ; tame sudden yet inevitable temporary windows
         +all                        ; catch all popups that start with an asterix
         +defaults)                  ; default popup rules
-       ;;(tabs                      ; an tab bar for Emacs
-       ;;  +centaur-tabs)           ; ... with prettier tabs
+       tabs                         ; an tab bar for Emacs
+                                    ; ... with prettier tabs
        treemacs                     ; a project drawer, like neotree but cooler
        ;;unicode                    ; extended unicode support for various languages
        vc-gutter                    ; vcs diff in the fringe

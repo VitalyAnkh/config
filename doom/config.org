@@ -523,7 +523,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-;;(emoji +unicode)           ; :)
+(emoji +unicode +ascii)      ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -537,8 +537,8 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-;;(tabs                      ; an tab bar for Emacs
-;;  +centaur-tabs)           ; ... with prettier tabs
+tabs                         ; an tab bar for Emacs
+                             ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 vc-gutter                    ; vcs diff in the fringe
@@ -740,6 +740,11 @@ aspects are nice, but on others I prefer mononoki.
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+(set-fontset-font t 'symbol "Apple Color Emoji")
+(set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+(set-fontset-font t 'symbol "Symbola" nil 'append)
 #+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
@@ -1518,7 +1523,6 @@ else
     emacsclient -create-frame --alternate-editor="" "${args[@]}"
 fi
 #+end_src
-
 Now, to set an alias to use =e= with magit, and then for maximum laziness we can
 set aliases for the terminal-forced variants.
 #+begin_src shell :tangle no
@@ -2105,6 +2109,12 @@ are just waiting to be saved!
   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
   )
 #+end_src
+I don't like use ENTER to apply the completion. TAB is OK!
+#+begin_src emacs-lisp :tangle no
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil))
+#+end_src
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
 #+begin_src emacs-lisp
@@ -2434,7 +2444,7 @@ For starters, twitter's emojis look nicer than emoji-one.
 Other than that, this is pretty great OOTB 😀.
 
 #+begin_src emacs-lisp
-;;(setq emojify-emoji-set "twemoji-v2")
+(setq emojify-emoji-set "twemoji-v2")
 #+end_src
 
 We can accommodate our preferences by deleting those entries from the emoji hash
@@ -2444,26 +2454,26 @@ One minor annoyance is the use of emojis over the default character
 when the default is actually preferred. This occurs with overlay symbols I use
 in Org mode, such as checkbox state, and a few other miscellaneous cases.
 
-#+begin_src emacs-lisp :tangle no
-;; (defvar emojify-disabled-emojis
-;;   '(;; Org
-;;     "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
-;;     ;; Terminal powerline
-;;     "✔"
-;;     ;; Box drawing
-;;     "▶" "◀")
-;;   "Characters that should never be affected by `emojify-mode'.")
+#+begin_src emacs-lisp
+(defvar emojify-disabled-emojis
+  '(;; Org
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    ;; Terminal powerline
+    "✔"
+    ;; Box drawing
+    "▶" "◀")
+  "Characters that should never be affected by `emojify-mode'.")
 
-;; (defadvice! emojify-delete-from-data ()
-;;   "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
-;;   :after #'emojify-set-emoji-data
-;;   (dolist (emoji emojify-disabled-emojis)
-;;     (remhash emoji emojify-emojis)))
+(defadvice! emojify-delete-from-data ()
+  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+  :after #'emojify-set-emoji-data
+  (dolist (emoji emojify-disabled-emojis)
+    (remhash emoji emojify-emojis)))
 #+end_src
 
 Now, it would be good to have a minor mode which allowed you to type ascii/gh
 emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 ;; (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
 ;;   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
 ;;   (if (or (not emoticon-to-emoji) (= 1 (length text)))
@@ -2751,15 +2761,20 @@ inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+begin_src emacs-lisp
-(after! centaur-tabs
-  (centaur-tabs-mode -1)
+(use-package centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
         centaur-tabs-close-button "×"
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "P22 Underground Book" 160))
+  (centaur-tabs-change-fonts "LXGW WenKai" 160)
+  :bind
+  ("C-<left>" . centaur-tabs-backward)
+  ("C-<right>" . centaur-tabs-forward))
 ;; (setq x-underline-at-descent-line t)
 #+end_src
 
@@ -2897,7 +2912,6 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
             (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
   (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
 #+end_src
-
 Now, we just identify the files in question.
 #+begin_src emacs-lisp
 (setq treemacs-file-ignore-extensions
@@ -2929,6 +2943,13 @@ Now, we just identify the files in question.
         "*/.auctex-auto"
         "*/_region_.log"
         "*/_region_.tex"))
+#+end_src
+Minic =evil='s ~/~ in =treemacs= buffer:
+#+begin_src emacs-lisp
+(after! (treemacs meow)
+  ;; No EVIL, then I add this
+  (define-key treemacs-mode-map (kbd "/") 'meow-visit)
+)
 #+end_src
 ** Frivolities
 *** xkcd
@@ -5216,11 +5237,13 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 (setq org-pretty-entities-include-sub-superscripts nil)
 #+end_src
 
-Let's make headings a bit bigger
+Let's make title and headings a bit bigger.
 #+begin_src emacs-lisp
 ;; disable =hl-line-mode= and =solaire-mode= for org-mode
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
 (custom-set-faces!
+  '(org-document-title :height 1.3)
+  '(org-quote :family "CMU Typewriter Text" :height 1.05)
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
   '(outline-3 :height 1.12)
@@ -5230,12 +5253,6 @@ Let's make headings a bit bigger
   '(outline-8 :height 1.01)
   '(outline-9 )
   )
-#+end_src
-
-And the same with the title.
-#+begin_src emacs-lisp
-(custom-set-faces!
-  '(org-document-title :height 1.3))
 #+end_src
 
 It seems reasonable to have deadlines in the error face when they're passed.
@@ -5503,28 +5520,28 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! org-pretty-tags)
+(package! org-pretty-tags)
 #+end_src
 
 #+begin_src emacs-lisp
-;; (use-package org-pretty-tags
-;; :config
-;;  (setq org-pretty-tags-surrogate-strings
-;;        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
-;;          ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
-;;          ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
-;;          ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
-;;          ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
-;;          ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
-;;          ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
-;;          ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
-;;          ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
-;;          ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
-;;          ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
-;;          ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
-;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
-;;  (org-pretty-tags-global-mode))
+(use-package org-pretty-tags
+  :config
+  (setq org-pretty-tags-surrogate-strings
+        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+          ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+          ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+          ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+          ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+          ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+          ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+          ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+          ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+          ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+          ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+          ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+  (org-pretty-tags-global-mode))
 #+end_src
 
 **** LaTeX Fragments

@@ -77,6 +77,11 @@
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
+(set-fontset-font t 'symbol "Apple Color Emoji")
+(set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+(set-fontset-font t 'symbol "Symbola" nil 'append)
 ;; Font Face:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:3]]
@@ -791,10 +796,10 @@ Usage:
   )
 ;; Company:1 ends here
 
-;; [[file:config.org::*Company][Company:2]]
+;; [[file:config.org::*Company][Company:3]]
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
-;; Company:2 ends here
+;; Company:3 ends here
 
 ;; [[file:config.org::*Plain Text][Plain Text:1]]
 (set-company-backend!
@@ -918,8 +923,47 @@ Usage:
 ;; Theme magic:4 ends here
 
 ;; [[file:config.org::*Emojify][Emojify:1]]
-;;(setq emojify-emoji-set "twemoji-v2")
+(setq emojify-emoji-set "twemoji-v2")
 ;; Emojify:1 ends here
+
+;; [[file:config.org::*Emojify][Emojify:2]]
+(defvar emojify-disabled-emojis
+  '(;; Org
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    ;; Terminal powerline
+    "✔"
+    ;; Box drawing
+    "▶" "◀")
+  "Characters that should never be affected by `emojify-mode'.")
+
+(defadvice! emojify-delete-from-data ()
+  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+  :after #'emojify-set-emoji-data
+  (dolist (emoji emojify-disabled-emojis)
+    (remhash emoji emojify-emojis)))
+;; Emojify:2 ends here
+
+;; [[file:config.org::*Emojify][Emojify:3]]
+;; (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
+;;   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
+;;   (if (or (not emoticon-to-emoji) (= 1 (length text)))
+;;       (funcall orig-fn emoji text buffer start end target)
+;;     (delete-region start end)
+;;     (insert (ht-get emoji "unicode"))))
+
+;; (define-minor-mode emoticon-to-emoji
+;;   "Write ascii/gh emojis, and have them converted to unicode live."
+;;   :global nil
+;;   :init-value nil
+;;   (if emoticon-to-emoji
+;;       (progn
+;;         (setq-local emojify-emoji-styles '(ascii github unicode))
+;;         (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
+;;         (unless emojify-mode
+;;           (emojify-turn-on-emojify-mode)))
+;;     (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
+;;     (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
+;; Emojify:3 ends here
 
 ;; [[file:config.org::*Keycast][Keycast:2]]
 (use-package! keycast
@@ -1039,15 +1083,20 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Marginalia:1 ends here
 
 ;; [[file:config.org::*Centaur Tabs][Centaur Tabs:1]]
-(after! centaur-tabs
-  (centaur-tabs-mode -1)
+(use-package centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
         centaur-tabs-close-button "×"
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "P22 Underground Book" 160))
+  (centaur-tabs-change-fonts "LXGW WenKai" 160)
+  :bind
+  ("C-<left>" . centaur-tabs-backward)
+  ("C-<right>" . centaur-tabs-forward))
 ;; (setq x-underline-at-descent-line t)
 ;; Centaur Tabs:1 ends here
 
@@ -1174,6 +1223,13 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         "*/_region_.log"
         "*/_region_.tex"))
 ;; Treemacs:2 ends here
+
+;; [[file:config.org::*Treemacs][Treemacs:3]]
+(after! (treemacs meow)
+  ;; No EVIL, then I add this
+  (define-key treemacs-mode-map (kbd "/") 'meow-visit)
+)
+;; Treemacs:3 ends here
 
 ;; [[file:config.org::*xkcd][xkcd:2]]
 (use-package! xkcd
@@ -2505,6 +2561,8 @@ SQL can be either the emacsql vector representation, or a string."
   ;; disable =hl-line-mode= and =solaire-mode= for org-mode
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (custom-set-faces!
+    '(org-document-title :height 1.3)
+    '(org-quote :family "CMU Typewriter Text" :height 1.05)
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
     '(outline-3 :height 1.12)
@@ -2514,8 +2572,6 @@ SQL can be either the emacsql vector representation, or a string."
     '(outline-8 :height 1.01)
     '(outline-9 )
     )
-  (custom-set-faces!
-    '(org-document-title :height 1.3))
   (setq org-agenda-deadline-faces
         '((1.001 . error)
           (1.0 . org-warning)
@@ -2713,25 +2769,25 @@ SQL can be either the emacsql vector representation, or a string."
     :priority_d    "[#D]"
     :priority_e    "[#E]")
   (plist-put +ligatures-extra-symbols :name "⁍")
-  ;; (package! org-pretty-tags)
-  ;; (use-package org-pretty-tags
-  ;; :config
-  ;;  (setq org-pretty-tags-surrogate-strings
-  ;;        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
-  ;;          ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
-  ;;          ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
-  ;;          ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
-  ;;          ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
-  ;;          ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
-  ;;          ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
-  ;;          ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
-  ;;          ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
-  ;;          ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
-  ;;          ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
-  ;;          ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
-  ;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-  ;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
-  ;;  (org-pretty-tags-global-mode))
+  (package! org-pretty-tags)
+  (use-package org-pretty-tags
+    :config
+    (setq org-pretty-tags-surrogate-strings
+          `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+            ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+            ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+            ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+            ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+            ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+            ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+            ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+            ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+            ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+            ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+            ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+            ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+            ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+    (org-pretty-tags-global-mode))
   ;;(setq org-highlight-latex-and-related '(native latex entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))

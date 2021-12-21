@@ -173,7 +173,7 @@
 (package! seperate-inline :recipe
   (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
 
-;; (package! org-pretty-tags)
+(package! org-pretty-tags)
 
 (package! xenops)
 
