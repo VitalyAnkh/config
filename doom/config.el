@@ -65,6 +65,8 @@
 
 ;; [[file:config.org::*Mouse][Mouse:2]]
 (pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-large-scroll-height 60
+      pixel-scroll-precision-interpolation-factor 30.0)
 ;; Mouse:2 ends here
 
 ;; [[file:config.org::*Buffer defaults][Buffer defaults:1]]
@@ -943,28 +945,6 @@ Usage:
     (remhash emoji emojify-emojis)))
 ;; Emojify:2 ends here
 
-;; [[file:config.org::*Emojify][Emojify:3]]
-;; (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
-;;   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
-;;   (if (or (not emoticon-to-emoji) (= 1 (length text)))
-;;       (funcall orig-fn emoji text buffer start end target)
-;;     (delete-region start end)
-;;     (insert (ht-get emoji "unicode"))))
-
-;; (define-minor-mode emoticon-to-emoji
-;;   "Write ascii/gh emojis, and have them converted to unicode live."
-;;   :global nil
-;;   :init-value nil
-;;   (if emoticon-to-emoji
-;;       (progn
-;;         (setq-local emojify-emoji-styles '(ascii github unicode))
-;;         (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
-;;         (unless emojify-mode
-;;           (emojify-turn-on-emojify-mode)))
-;;     (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
-;;     (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
-;; Emojify:3 ends here
-
 ;; [[file:config.org::*Keycast][Keycast:2]]
 (use-package! keycast
   :commands keycast-mode
@@ -1083,10 +1063,8 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Marginalia:1 ends here
 
 ;; [[file:config.org::*Centaur Tabs][Centaur Tabs:1]]
-(use-package centaur-tabs
-  :demand
-  :config
-  (centaur-tabs-mode t)
+(after! centaur-tabs
+  (centaur-tabs-mode -1)
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
@@ -1094,9 +1072,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
   (centaur-tabs-change-fonts "LXGW WenKai" 160)
-  :bind
-  ("C-<left>" . centaur-tabs-backward)
-  ("C-<right>" . centaur-tabs-forward))
+  (global-set-key (kbd "C-<left>")  'centaur-tabs-backward)
+  (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
+  )
 ;; (setq x-underline-at-descent-line t)
 ;; Centaur Tabs:1 ends here
 

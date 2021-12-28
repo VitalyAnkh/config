@@ -1,6 +1,7 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
 (unpin! general)
-(unpin! python-pytest)
+(package! code-review :disable t)
+(setq garbage-collection-messages t)
 ;; Workaround:1 ends here
 
 ;; -*- no-byte-compile: t; -*-

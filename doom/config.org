@@ -337,7 +337,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! general)
-(unpin! python-pytest)
+(package! code-review :disable t)
+(setq garbage-collection-messages t)
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -424,6 +425,8 @@ I love mouse menus.
 Thanks to Po Lu, scrolling in emacs is great again!
 #+begin_src emacs-lisp
 (pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-large-scroll-height 60
+      pixel-scroll-precision-interpolation-factor 30.0)
 #+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
@@ -523,7 +526,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-(emoji +unicode +ascii)      ; :) :)
+;;(emoji +unicode +ascii +github)    ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -538,14 +541,14 @@ ophints                      ; highlight the region an operation acts on
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
 tabs                         ; an tab bar for Emacs
-                             ; ... with prettier tabs
+                                        ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 vc-gutter                    ; vcs diff in the fringe
 vi-tilde-fringe              ; fringe tildes to mark beyond EOB
 (window-select
-  ;;+switch-window             ; use switch-window other than ace window
-  +numbers)                  ; visually switch windows
+ ;;+switch-window             ; use switch-window other than ace window
+ +numbers)                  ; visually switch windows
 workspaces                   ; tab emulation, persistence & separate workspaces
 zen                          ; distraction-free coding or writing
 #+end_src
@@ -2473,7 +2476,7 @@ in Org mode, such as checkbox state, and a few other miscellaneous cases.
 
 Now, it would be good to have a minor mode which allowed you to type ascii/gh
 emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;; (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
 ;;   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
 ;;   (if (or (not emoticon-to-emoji) (= 1 (length text)))
@@ -2761,10 +2764,8 @@ inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+begin_src emacs-lisp
-(use-package centaur-tabs
-  :demand
-  :config
-  (centaur-tabs-mode t)
+(after! centaur-tabs
+  (centaur-tabs-mode -1)
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
@@ -2772,9 +2773,9 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
   (centaur-tabs-change-fonts "LXGW WenKai" 160)
-  :bind
-  ("C-<left>" . centaur-tabs-backward)
-  ("C-<right>" . centaur-tabs-forward))
+  (global-set-key (kbd "C-<left>")  'centaur-tabs-backward)
+  (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
+  )
 ;; (setq x-underline-at-descent-line t)
 #+end_src
 
