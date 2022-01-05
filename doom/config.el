@@ -2536,7 +2536,7 @@ SQL can be either the emacsql vector representation, or a string."
                    (org-export-backend-options (org-export-get-backend 'latex)))))
   (add-hook 'org-mode-hook #'+org-pretty-mode)
   (setq org-pretty-entities-include-sub-superscripts nil)
-  ;; disable =hl-line-mode= and =solaire-mode= for org-mode
+  ;; disable =solaire-mode= for org-mode
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (custom-set-faces!
     '(org-document-title :height 1.3)
@@ -4679,7 +4679,7 @@ SQL can be either the emacsql vector representation, or a string."
   :hook (org-mode . org-appear-mode)
   :config
   (setq org-appear-autoemphasis t
-        ;;org-appear-autosubmarkers t
+        org-appear-autosubmarkers t
         org-appear-autolinks nil)
   ;; for proper first-time setup, `org-appear--set-elements'
   ;; needs to be run after other hooks have acted.
@@ -5321,11 +5321,13 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*MuPDF][MuPDF:2]]
 ;; (use-package paper
-;;   ;; :mode ("\\.pdf\\'"  . paper-mode)
-;;   ;; :mode ("\\.epub\\'"  . paper-mode)
+;;   :mode ("\\.pdf\\'"  . paper-mode)
+;;   :mode ("\\.epub\\'"  . paper-mode)
+;;   :mode ("\\.cbz\\'"  . paper-mode)
 ;;   :config
-;;   (require 'evil-collection-paper)
-;;   (evil-collection-paper-setup))
+;;   ;;(require 'evil-collection-paper)
+;;   ;;(evil-collection-paper-setup)
+;;   )
 ;; MuPDF:2 ends here
 
 ;; [[file:config.org::*Terminal viewing][Terminal viewing:2]]

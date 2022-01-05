@@ -19,8 +19,6 @@ set fish_greeting
 zoxide init fish | source
 mcfly init fish | source
 
-# remove this when Nvidia driver support glutin and winit on Wayland fully
-set -x WINIT_UNIX_BACKEND x11
 eval (opam env)
 set -gx WASMTIME_HOME "$HOME/.wasmtime"
 

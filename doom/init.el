@@ -49,7 +49,8 @@
        ;;(evil +everywhere)         ; come to the dark side, we have cookies
        file-templates               ; auto-snippets for empty files
        fold                         ; (nigh) universal code folding
-       (format)                     ; automated prettiness
+       (format
+        +onsave)                    ; automated prettiness
        ;;god                        ; run Emacs commands without modifier keys
        ;;lispy                      ; vim for lisp, for people who don't like vim
        ;;multiple-cursors           ; editing in many places at once
@@ -119,7 +120,7 @@
        ;;(dart +flutter)            ; paint ui and not much else
        ;;dhall                      ; JSON with FP sprinkles
        elixir                       ; erlang done right
-       ;;elm                        ; care for a cup of TEA?
+       elm                          ; care for a cup of TEA?
        emacs-lisp                   ; drown in parentheses
        ;;(erlang +lsp)              ; an elegant language for a more civilized age
        ess                          ; emacs speaks statistics
@@ -145,8 +146,8 @@
        ;;ledger                     ; an accounting system in Emacs
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
-       ;;nim                        ; python + lisp at the speed of c
-       ;;nix                        ; I hereby declare "nix geht mehr!"
+       nim                          ; python + lisp at the speed of c
+       nix                          ; I hereby declare "nix geht mehr!"
        ocaml                        ; an objective camel
        (org                         ; organize your plain life in plain text
         +pretty                     ; yessss my pretties! (nice unicode symbols)

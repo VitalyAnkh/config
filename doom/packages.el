@@ -1,6 +1,6 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
 (unpin! general)
-(package! code-review :disable t)
+(unpin! code-review)
 (setq garbage-collection-messages t)
 ;; Workaround:1 ends here
 

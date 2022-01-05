@@ -337,7 +337,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! general)
-(package! code-review :disable t)
+(unpin! code-review)
 (setq garbage-collection-messages t)
 #+end_src
 ** Better defaults
@@ -559,7 +559,8 @@ zen                          ; distraction-free coding or writing
 ;;(evil +everywhere)         ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
-(format)                     ; automated prettiness
+(format
+ +onsave)                    ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
 ;;multiple-cursors           ; editing in many places at once
@@ -646,7 +647,7 @@ data                         ; config/data formats
 ;;(dart +flutter)            ; paint ui and not much else
 ;;dhall                      ; JSON with FP sprinkles
 elixir                       ; erlang done right
-;;elm                        ; care for a cup of TEA?
+elm                          ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
 ;;(erlang +lsp)              ; an elegant language for a more civilized age
 ess                          ; emacs speaks statistics
@@ -672,8 +673,8 @@ json                         ; At least it ain't XML
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
-;;nim                        ; python + lisp at the speed of c
-;;nix                        ; I hereby declare "nix geht mehr!"
+nim                          ; python + lisp at the speed of c
+nix                          ; I hereby declare "nix geht mehr!"
 ocaml                        ; an objective camel
 (org                         ; organize your plain life in plain text
  +pretty                     ; yessss my pretties! (nice unicode symbols)
@@ -3551,7 +3552,7 @@ Then adding a regex for it to =~/.config/git/config=
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle packages.el :comments no
 :END:
-****  Org itself
+**** Org itself
 There are actually three possible package statements I may want to use for Org.
 
 If I'm on a machine where I can push changes, I want to be able to develop Org.
@@ -3627,7 +3628,7 @@ sacrificing visual amenities with the =org-appear= package.
   :hook (org-mode . org-appear-mode)
   :config
   (setq org-appear-autoemphasis t
-        ;;org-appear-autosubmarkers t
+        org-appear-autosubmarkers t
         org-appear-autolinks nil)
   ;; for proper first-time setup, `org-appear--set-elements'
   ;; needs to be run after other hooks have acted.
@@ -5240,7 +5241,7 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 
 Let's make title and headings a bit bigger.
 #+begin_src emacs-lisp
-;; disable =hl-line-mode= and =solaire-mode= for org-mode
+;; disable =solaire-mode= for org-mode
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
 (custom-set-faces!
   '(org-document-title :height 1.3)
@@ -9171,18 +9172,20 @@ Set =Haskell= source code formatter.
 =pdf-tools= is nice, but a =mupdf=-based solution is nicer.
 
 #+begin_src emacs-lisp :tangle no
-;; (package! paper :recipe (:host github :repo "ymarco/paper-mode"
-;;                          :files ("*.el" ".so")
-;;                          :pre-build ("make")))
+(package! paper :recipe (:host github :repo "ymarco/paper-mode"
+                         :files ("*.el" ".so")
+                         :pre-build ("make")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
 ;; (use-package paper
-;;   ;; :mode ("\\.pdf\\'"  . paper-mode)
-;;   ;; :mode ("\\.epub\\'"  . paper-mode)
+;;   :mode ("\\.pdf\\'"  . paper-mode)
+;;   :mode ("\\.epub\\'"  . paper-mode)
+;;   :mode ("\\.cbz\\'"  . paper-mode)
 ;;   :config
-;;   (require 'evil-collection-paper)
-;;   (evil-collection-paper-setup))
+;;   ;;(require 'evil-collection-paper)
+;;   ;;(evil-collection-paper-setup)
+;;   )
 #+end_src
 
 *** Terminal viewing
