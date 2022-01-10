@@ -13,6 +13,7 @@
 !catfish/
 !cef_user_data/
 !chromium/
+!containers/
 !dconf/
 !emacs/
 !fcitx5/
