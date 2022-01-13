@@ -1,6 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR __fish_initialized:3100
+SETUVAR _fish_abbr_chez:chez\x2dscheme
 SETUVAR _fish_abbr_doom:\x24HOME/\x2econfig/emacs/emacs\x2ed\x2ddoom/bin/doom
 SETUVAR _fish_abbr_e:LANG\x3den_US\x2eUTF8
 SETUVAR _fish_abbr_ec:emacsclient\x20\x2d\x2dcreate\x2dframe\x20\x2d\x2dalternate\x2deditor\x3d\x22\x22

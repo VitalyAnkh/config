@@ -456,7 +456,7 @@ nil
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft" (buffer-name))
+    (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
       (switch-to-buffer +doom-dashboard-name))))
 ;; daemon initialisation ends here
 
@@ -694,8 +694,9 @@ Usage:
 (after! magit
   (defun +magit-fill-in-commit-template ()
     "Insert template from `+magit-fill-in-commit-template' if applicable."
-    (when-let ((template (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
-                                     +magit-project-commit-templates-alist))))
+    (when-let ((template (and (save-excursion (goto-char (point-min)) (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                              (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
+                                          +magit-project-commit-templates-alist)))))
       (goto-char (point-min))
       (insert (if (stringp template) template (funcall template)))
       (goto-char (point-min))
@@ -715,7 +716,6 @@ Usage:
                 magit-git-global-arguments
                 (list "diff" "--cached")))
         (goto-char (point-min))
-        (message "%s" (buffer-string))
         (while (re-search-forward "^@@\\|^\\+\\+\\+ b/" nil t)
           (if (looking-back "^\\+\\+\\+ b/" (line-beginning-position))
               (progn
@@ -935,7 +935,9 @@ Usage:
     ;; Terminal powerline
     "✔"
     ;; Box drawing
-    "▶" "◀")
+    "▶" "◀"
+    ;; I just want to see this as text
+    "©" "™")
   "Characters that should never be affected by `emojify-mode'.")
 
 (defadvice! emojify-delete-from-data ()
@@ -2533,6 +2535,7 @@ SQL can be either the emacsql vector representation, or a string."
        (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
                    (org-export-backend-options (org-export-get-backend 'latex)))
        (cl-pushnew '(:latex-font-set nil "fontset" nil)
+  
                    (org-export-backend-options (org-export-get-backend 'latex)))))
   (add-hook 'org-mode-hook #'+org-pretty-mode)
   (setq org-pretty-entities-include-sub-superscripts nil)
@@ -3031,7 +3034,7 @@ SQL can be either the emacsql vector representation, or a string."
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
   (setq org-export-creator-string
-        (format "Emacs %s (Org mode %s %s)" emacs-version (org-release) (org-git-version)))
+        (format "Emacs %s (Org mode %s-%s)" emacs-version (org-release) (org-git-version)))
   (defun org-export-filter-text-acronym (text backend _info)
     "Wrap suspected acronyms in acronyms-specific formatting.
   Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
@@ -3772,8 +3775,8 @@ SQL can be either the emacsql vector representation, or a string."
     "Vertically seperate paragraphs, and remove indentation.")
   
   (defvar org-latex-conditional-features
-    '(("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
-      ("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
+    '(("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]\\|\\\\includegraphics[\\[{]" . image)
+      ("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]\\|\\\\includesvg[\\[{]" . svg)
       ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
       ("^[ \t]*|" . table)
       ("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
@@ -3856,8 +3859,7 @@ SQL can be either the emacsql vector representation, or a string."
   - :prevents, a feature or list of features that should be masked
   - :order, for when ordering is important. Lower values appear first.
       The default is 0.
-  
-  Features that start with ! will be eagerly loaded, i.e. without being detected.")
+  - :eager, when non-nil the feature will be eagerly loaded, i.e. without being detected.")
   (defun org-latex-detect-features (&optional buffer info)
     "List features from `org-latex-conditional-features' detected in BUFFER."
     (let ((case-fold-search nil))
@@ -4034,8 +4036,8 @@ SQL can be either the emacsql vector representation, or a string."
        :mono "\\usepackage[scale=0.95]{plex-mono}"
        :maths "\\usepackage{newtxmath}") ; may be plex-based in future
       (source
-       :serif "\\usepackage[osf]{sourceserifpro}"
-       :sans "\\usepackage[osf]{sourcesanspro}"
+       :serif "\\usepackage[osf,semibold]{sourceserifpro}"
+       :sans "\\usepackage[osf,semibold]{sourcesanspro}"
        :mono "\\usepackage[scale=0.95]{sourcecodepro}"
        :maths "\\usepackage{newtxmath}") ; may be sourceserifpro-based in future
       (times
@@ -4157,9 +4159,10 @@ SQL can be either the emacsql vector representation, or a string."
   (defvar org-latex-condense-lists t
     "Reduce the space between list items.")
   (defvar org-latex-condensed-lists "
-  \\let\\olditem\\itemize\\renewcommand{\\itemize}{\\olditem\\setlength{\\itemsep}{-2ex}}
-  \\let\\oldenum\\enumerate\\renewcommand{\\enumerate}{\\oldenum\\setlength{\\itemsep}{-2ex}}
-  \\let\\olddesc\\description\\renewcommand{\\description}{\\olddesc\\setlength{\\itemsep}{-2ex}}
+  \\newcommand{\\setuplistspacing}{\\setlength{\\itemsep}{-0.5ex}\\setlength{\\parskip}{1.5ex}\\setlength{\\parsep}{0pt}}
+  \\let\\olditem\\itemize\\renewcommand{\\itemize}{\\olditem\\setuplistspacing}
+  \\let\\oldenum\\enumerate\\renewcommand{\\enumerate}{\\oldenum\\setuplistspacing}
+  \\let\\olddesc\\description\\renewcommand{\\description}{\\olddesc\\setuplistspacing}
   ")
   
   (add-to-list 'org-latex-conditional-features '((and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ") . condensed-lists) t)
@@ -4201,6 +4204,7 @@ SQL can be either the emacsql vector representation, or a string."
   
   \\definecolor{codebackground}{HTML}{f7f7f7}
   \\definecolor{codeborder}{HTML}{f0f0f0}
+  \\providecolor{EFD}{HTML}{28292e}
   
   % TODO have code boxes keep line vertical alignment
   \\usepackage[breakable,xparse]{tcolorbox}
@@ -4314,6 +4318,11 @@ SQL can be either the emacsql vector representation, or a string."
               (if (string= options "") ""
                 (format "[%s]" options))
               code)))
+  (add-to-list 'org-latex-feature-implementations
+               '(.no-protrusion-in-code :snippet "\\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}"
+                                        :when (microtype engraved-code-setup)
+                                        :eager t
+                                        :order 98.5) t)
   (defadvice! org-latex-example-block-engraved (orig-fn example-block contents info)
     "Like `org-latex-example-block', but supporting an engraved backend"
     :around #'org-latex-example-block
@@ -5215,13 +5224,13 @@ Such special cases should be remapped to another value, as given in `string-offs
 
 (font-lock-add-keywords
  'latex-mode
- `((,(rx (and "\\" (any "()[]"))) 0 'unimportant-latex-face prepend))
+ `(("\\\\[]()[]" 0 'unimportant-latex-face prepend))
  'end)
 
-(font-lock-add-keywords
- 'latex-mode
- `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
- 'end)
+;; (font-lock-add-keywords
+;;  'latex-mode
+;;  '(("\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
+;;  'end)
 ;; Editor visuals:3 ends here
 
 ;; [[file:config.org::*Editor visuals][Editor visuals:4]]
@@ -6296,11 +6305,20 @@ Prevents a series of redisplays from being called (when set to an appropriate va
         msg-url))
   
     (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
+  (defun +browse-url-orgmode-ml (url &optional _)
+    "Open an orgmode list url using notmuch."
+    (let ((id (and (or (string-match "^https?://orgmode\\.org/list/\\([^/]+\\)" url)
+                       (string-match "^https?://list\\.orgmode\\.org/\\([^/]+\\)" url))
+                   (match-string 1 url))))
+      (mu4e-view-message-with-message-id id)))
+  
+  (add-to-list 'browse-url-handlers (cons "^https?://orgmode\\.org/list" #'+browse-url-orgmode-ml))
+  (add-to-list 'browse-url-handlers (cons "^https?://list\\.orgmode\\.org/" #'+browse-url-orgmode-ml))
 )
 
 ;; [[file:config.org::*Org Msg][Org Msg:1]]
 (setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi %s,\n\n"
+      org-msg-greeting-fmt "\nHi%s,\n\n"
       org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
 (map! :map org-msg-edit-mode-map
       :after org-msg
