@@ -14,6 +14,8 @@ set -x GUAKE_ENABLE_WAYLAND 1
 set -e GDK_BACKEND
 set fish_greeting
 
+source ~/.profile
+
 # include config.d/*
 
 zoxide init fish | source

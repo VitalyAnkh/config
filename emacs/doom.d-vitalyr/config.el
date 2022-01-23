@@ -65,6 +65,8 @@
              mac-option-modifier       'alt
              mac-right-option-modifier 'alt)))
 
+(setq kill-whole-line t)
+
 ;;(setq ivy-use-selectable-prompt t)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -251,11 +253,45 @@
 
 ;;(add-hook! org-mode (electric-indent-local-mode -1))
 
+(add-hook! 'org-mode-hook (lambda () (solaire-mode -1)))
+(add-hook! 'org-mode-hook (lambda () (hl-line-mode -1)))
+(add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
 
 (defun zz/adjust-org-company-backends ()
   (remove-hook 'after-change-major-mode-hook '+company-init-backends-h)
   (setq-local company-backends nil))
 (add-hook! org-mode (zz/adjust-org-company-backends))
+
+(custom-set-faces
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ '(org-block-begin-line ((t (:extend t :background "#f7e0c3" :foreground "gray"
+                             :weight semi-bold :height 151 :family "CMU Typewriter Text"))))
+ '(org-code ((t (:foreground "#957f5f" :family "mononoki"))))
+ '(org-document-title ((t (:foreground "midnight blue" :weight bold :height 2.0))))
+ '(org-hide ((t (:foreground "#E5E9F0" :height 0.1))))
+
+ '(org-list-dt ((t (:foreground "#7382a0"))))
+ ;;'(org-verbatim ((t (:foreground "#81895d" :family "Latin Modern Mono"))))
+ '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ ;; TODO set the color following this
+ ;;'(org-block ((t (:extend t :background "#f7e0c3" :foreground "#5b5143" :family "Latin Modern Mono"))))
+ ;;'(org-code ((t (:inherit (shadow fixed-pitch)))))
+ '(variable-pitch ((t (:family "CMU Typewriter Text" :height 160))))
+ '(fixed-pitch ((t (:family "mononoki" :height 160))))
+ ;;'(org-level-8 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-7 ((t (,@headline ,@variable-tuple))))
+ ;;'(org-level-6 ((t (,@headline ,@variable-tuple))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.05 :family "DejaVu Math TeX Gyre"))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :family "CMU Typewriter Text"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.25 :family "CMU Typewriter Text"))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "#EEC591" :height 1.5 :family
+                    "CMU Typewriter Text"))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "#076678" :weight extra-bold
+                    :height 1.75 :family "CMU Typewriter Text"))))
+
+ '(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))
 
 (add-hook! org-mode :append
            'visual-line-mode
@@ -267,17 +303,27 @@
 ;; Not friendly for blogging
 ;;(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
+(setq org-footnote-auto-adjust t)
 
 ;;(after! org
 ;;  (setq org-agenda-files
 ;;        '("~/gtd" "~/Work/work.org.gpg" "~/org/")))
 
+;;(defun zz/add-file-keybinding (key file &optional desc)
+;;  (let ((key key)
+;;        (file file)
+;;        (desc desc))
+;;    (map! :desc (or desc file)
+;;          key
+;;          (lambda () (interactive) (find-file file)))))
 
 ;;(zz/add-file-keybinding "C-c z w" "~/Work/work.org.gpg" "work.org")
 ;;(zz/add-file-keybinding "C-c z i" "~/org/ideas.org" "ideas.org")
 ;;(zz/add-file-keybinding "C-c z p" "~/org/projects.org" "projects.org")
 ;;(zz/add-file-keybinding "C-c z d" "~/org/diary.org" "diary.org")
 
+(setq org-roam-directory org-directory)
+;; garbage collection for org-roam
 (setq org-roam-db-gc-threshold most-positive-fixnum)
 ;;(setq +org-roam-open-buffer-on-find-file t)
 
@@ -935,6 +981,8 @@ headlines tagged with :noexport:"
 (add-hook 'prog-mode-hook #'wucuo-start)
 (add-hook 'text-mode-hook #'wucuo-start)
 
+;; to speed up company
+(setq company-idle-delay 0)
 
 ;;(setq org-superstar-headline-bullets-list '("◉" "○" "◈" "◇" "▣" "□"))
 ;;(transwin-toggle-transparent-frame)

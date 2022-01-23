@@ -2,7 +2,7 @@
 # VERSION: 3.0
 SETUVAR __fish_initialized:3100
 SETUVAR _fish_abbr_chez:chez\x2dscheme
-SETUVAR _fish_abbr_doom:\x24HOME/\x2econfig/emacs/emacs\x2ed\x2ddoom/bin/doom
+SETUVAR _fish_abbr_doom:\x24HOME/\x2econfig/\x2eemacs\x2ed/bin/doom
 SETUVAR _fish_abbr_e:LANG\x3den_US\x2eUTF8
 SETUVAR _fish_abbr_ec:emacsclient\x20\x2d\x2dcreate\x2dframe\x20\x2d\x2dalternate\x2deditor\x3d\x22\x22
 SETUVAR _fish_abbr_eman:LANG\x3den_US\x2eUTF8\x20man
@@ -19,7 +19,7 @@ SETUVAR _fish_abbr_pdc:http_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20h
 SETUVAR _fish_abbr_ped:http_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20https_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20element\x2ddesktop\x20\x2d\x2dproxy\x2dserver\x3d\x22socks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x22
 SETUVAR _fish_abbr_pmf:http_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20https_proxy\x3dsocks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x20moonfm\x20\x2d\x2dproxy\x2dserver\x3d\x22socks5\x3a//127\x2e0\x2e0\x2e1\x3a1080\x22
 SETUVAR _fish_abbr_pq:proxychains\x20\x2dq
-SETUVAR _fish_abbr_pqd:proxychains\x20\x2dq\x20\x24HOME/\x2econfig/emacs/emacs\x2ed\x2ddoom/bin/doom
+SETUVAR _fish_abbr_pqd:proxychains\x20\x2dq\x20\x24HOME/\x2econfig/\x2eemacs\x2ed/bin/doom
 SETUVAR _fish_abbr_pqgp:proxychains\x20\x2dq\x20git\x20pull
 SETUVAR _fish_abbr_pqp:proxychains\x20\x2dq\x20paru
 SETUVAR _fish_abbr_pqri:proxychains\x20\x2dq\x20rua\x20install
