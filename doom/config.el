@@ -488,46 +488,15 @@ nil
 ;; Eros:1 ends here
 
 ;; [[file:config.org::*Meow][Meow:2]]
-(map! :leader
-      ;; make doom-leader-buffer-map alive
-      (:prefix-map ("b" . "buffer")
-       :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
-       :desc "Previous buffer"             "["   #'previous-buffer
-       :desc "Next buffer"                 "]"   #'next-buffer
-       (:when (featurep! :ui workspaces)
-        :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
-        :desc "Switch buffer"              "B" #'switch-to-buffer)
-       (:unless (featurep! :ui workspaces)
-        :desc "Switch buffer"               "b"   #'switch-to-buffer)
-       :desc "Clone buffer"                "c"   #'clone-indirect-buffer
-       :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
-       :desc "Kill buffer"                 "d"   #'kill-current-buffer
-       :desc "ibuffer"                     "i"   #'ibuffer
-       :desc "Kill buffer"                 "k"   #'kill-current-buffer
-       :desc "Kill all buffers"            "K"   #'doom/kill-all-buffers
-       :desc "Switch to last buffer"       "l"   #'evil-switch-to-windows-last-buffer
-       :desc "Set bookmark"                "m"   #'bookmark-set
-       :desc "Delete bookmark"             "M"   #'bookmark-delete
-       :desc "Next buffer"                 "n"   #'next-buffer
-       :desc "New empty buffer"            "N"   #'evil-buffer-new
-       :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
-       :desc "Previous buffer"             "p"   #'previous-buffer
-       :desc "Revert buffer"               "r"   #'revert-buffer
-       :desc "Save buffer"                 "s"   #'basic-save-buffer
-       :desc "Save all buffers"            "S"   #'evil-write-all
-       :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
-       :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
-       :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
-       :desc "Bury buffer"                 "z"   #'bury-buffer
-       :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
-      )
 (defun set-useful-keybindings()
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   )
+
 (defun meow-setup ()
   (set-useful-keybindings)
+  ;; for doom emacs
   (map!
    (:when (featurep! :ui workspaces)
     :n "C-t"   #'+workspace/new
@@ -564,22 +533,6 @@ nil
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
-   (cons "f" doom-leader-file-map)
-   ;;(cons "a" org-agenda-keymap )
-   (cons "d" doom-leader-code-map)
-   (cons "s" doom-leader-search-map)
-   (cons "b" doom-leader-buffer-map)
-   (cons "o" doom-leader-open-map)
-   (cons "v" doom-leader-versioning-map)
-   (cons "n" doom-leader-notes-map)
-   (cons "p" projectile-command-map)
-   (cons "i" doom-leader-insert-map)
-   (cons "q" doom-leader-quit/restart-map)
-   (cons "h" help-map)
-   (cons "t" doom-leader-toggle-map)
-   (cons "w" doom-leader-workspaces/windows-map)
-   (cons "S" doom-leader-snippets-map)
-   ;;(cons "M" doom-leader-multiple-cursors-map)
    )
 
   (meow-normal-define-key
@@ -674,7 +627,6 @@ Usage:
   (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
   )
 (use-package meow
-  :defer t
   :config
   (require 'meow)
   (meow-setup)
@@ -5460,16 +5412,15 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   :defer-incrementally meow
   :config
   (sis-ism-lazyman-config "1" "2" 'fcitx5)
-  ;; enable the /cursor color/ mode
-  (sis-global-cursor-color-mode t)
-  ;; enable the /respect/ mode
-  (sis-global-respect-mode t)
-  ;; enable the /follow context/ mode for all buffers
-  ;;(sis-global-context-mode t)
-  ;; enable the /inline english/ mode for all buffers
-  ;; (sis-global-inline-mode t)
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
   (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
+  (defun describe-key-sis ()
+    (interactive)
+    (sis-set-english)
+    (sis-global-respect-mode 0)
+    (describe-key (help--read-key-sequence))
+    (sis-global-respect-mode t))
+  :bind (("C-h k" . describe-key-sis))
   )
 ;; Input Method:2 ends here
 
