@@ -34,6 +34,9 @@
 ;;  (display-battery-mode 1))                     ; it's nice to know how much power you have
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
+
+;; Useset C-z which is bound to =suspend-frame= by default
+(global-unset-key (kbd "C-z"))
 ;; Simple settings:1 ends here
 
 ;; [[file:config.org::*Frame sizing][Frame sizing:1]]
@@ -1978,7 +1981,8 @@ SQL can be either the emacsql vector representation, or a string."
                   (when (display-graphic-p)
                     (set-org-capture-templates)
                     (remove-hook 'server-after-make-frame-hook
-                                 #'org-capture-reinitialise-hook))))))
+                                 #'org-capture-reinitialise-hook)))))
+    )
   (setf (alist-get 'height +org-capture-frame-parameters) 15)
   ;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
   (setq +org-capture-fn
@@ -1986,7 +1990,6 @@ SQL can be either the emacsql vector representation, or a string."
           (interactive)
           (set-window-parameter nil 'mode-line-format 'none)
           (org-capture)))
-  (setq org-id-method 'ts)
   (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
     :around #'doom-modeline-buffer-file-name ; takes no args
     (if (s-contains-p org-roam-directory (or buffer-file-name ""))
@@ -4794,7 +4797,6 @@ SQL can be either the emacsql vector representation, or a string."
   :hook (org-roam . org-roam-ui-mode)
   :config
   (require 'org-roam) ; in case autoloaded
-  (setq org-roam-directory org-directory)
   (defun org-roam-ui-open ()
     "Ensure the server is active, then open the roam graph."
     (interactive)

@@ -338,7 +338,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! general)
 (unpin! code-review)
-(setq garbage-collection-messages t)
+(unpin! elisp-ref)
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -370,6 +370,9 @@ the following:
 ;;  (display-battery-mode 1))                     ; it's nice to know how much power you have
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
+
+;; Useset C-z which is bound to =suspend-frame= by default
+(global-unset-key (kbd "C-z"))
 #+end_src
 *** Frame sizing
 It's nice to control the size of new frames, when launching Emacs that can be
@@ -3303,21 +3306,6 @@ For editing systemd unit files
   :defer t)
 #+end_src
 
-*** Stan
-Stan is probabilistic programming language written in =C++=. From my brief
-exposure I think of it as a nicer =JAGS=. Though =Turing.jl= looks nicer yet...
-
-Anyway, the [[https://github.com/stan-dev/stan-mode][stan-dev/stan-mode]] repository contains a number of packages for
-working with Stan code. Let's grab them all.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! stan-mode)
-(package! company-stan)
-(package! eldoc-stan)
-(package! flycheck-stan)
-(package! stan-snippets)
-#+end_src
-
 * Language configuration
 ** General
 *** File Templates
@@ -3554,6 +3542,12 @@ correct package statement needed.
 (unpin! org-contrib)
 #+end_src
 
+***** Tweak org defaults
+Let =org-id-method= be time stamp. =uuid= is not informative for humans.
+#+begin_src emacs-lisp
+(setq org-id-method 'ts)
+#+end_src
+
 **** Visuals
 ***** Tables
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -3629,25 +3623,6 @@ Now and then citations need to happen
 (package! org-ref)
 #+end_src
 
-***** Julia support
-=ob-julia= is currently a bit borked, but there's an effort to improve this.
-#+begin_src emacs-lisp
-;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(use-package! ob-julia
-  :commands org-babel-execute:julia
-  :config
-  (setq org-babel-julia-command-arguments
-        `("--sysimage"
-          ,(when-let ((img "~/.local/lib/julia.so")
-                      (exists? (file-exists-p img)))
-             (expand-file-name img))
-          "--threads"
-          ,(number-to-string (- (doom-system-cpus) 2))
-          "--banner=no")))
-#+end_src
 ***** HTTP requests
 
 I like the idea of being able to make HTTP requests with Babel.
@@ -4346,7 +4321,8 @@ set up org-capture.
                 (when (display-graphic-p)
                   (set-org-capture-templates)
                   (remove-hook 'server-after-make-frame-hook
-                               #'org-capture-reinitialise-hook))))))
+                               #'org-capture-reinitialise-hook)))))
+  )
 #+end_src
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
@@ -4479,16 +4455,6 @@ Set this to be within =org mode= folders.
       org-roam-directory org-directory)
 #+end_src
 
-That said, if the directory doesn't exist we likely don't want to be using roam.
-Since we don't want to trigger errors (which will happen as soon as roam tries
-to initialise), let's not load roam.
-#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
-;;(package! org-roam :disable t)
-#+end_src
-Let =org-id-method= be time stamp. =uuid= is not informative for humans.
-#+begin_src emacs-lisp
-(setq org-id-method 'ts)
-#+end_src
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
 the [[*Window title][Window title]].
@@ -4528,7 +4494,6 @@ with it.
   :hook (org-roam . org-roam-ui-mode)
   :config
   (require 'org-roam) ; in case autoloaded
-  (setq org-roam-directory org-directory)
   (defun org-roam-ui-open ()
     "Ensure the server is active, then open the roam graph."
     (interactive)
@@ -9325,7 +9290,7 @@ Start =wakatime= at when emacs launches:
 #+end_src
 
 ** Input Method
-I can't go out without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
+I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
 within Emacs. Let's add =smart-input-source= to support fcitx5.
 #+begin_src emacs-lisp :tangle packages.el
 (package! sis)

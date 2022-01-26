@@ -1,7 +1,7 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
 (unpin! general)
 (unpin! code-review)
-(setq garbage-collection-messages t)
+(unpin! elisp-ref)
 ;; Workaround:1 ends here
 
 ;; -*- no-byte-compile: t; -*-
@@ -100,14 +100,6 @@
 (package! systemd)
 ;; Systemd:1 ends here
 
-;; [[file:config.org::*Stan][Stan:1]]
-(package! stan-mode)
-(package! company-stan)
-(package! eldoc-stan)
-(package! flycheck-stan)
-(package! stan-snippets)
-;; Stan:1 ends here
-
 ;; [[file:config.org::*Lean][Lean:1]]
 (package! lean4-mode :recipe
   (:host github
@@ -130,6 +122,8 @@
            :files ("lisp/*.el")))
 (unpin! org-contrib)
 
+(setq org-id-method 'ts)
+
 (package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table"))
 
@@ -140,8 +134,6 @@
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
 
 (package! org-ref)
-
-;;(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 
 (package! ob-http)
 
