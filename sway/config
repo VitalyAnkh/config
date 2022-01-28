@@ -15,19 +15,21 @@ set
 {
 	$layer1			Mod1
 	$layer2			Mod1+Shift
+	$layer3         Mod4
+	$layer4         Mod4+Shift
 }
 
 #--- Programs --------------------------------------------------------------
 set
 {
 	$term			alacritty
-	$lock 			swaylock -f -e -i ~/.config/sway/noelle_lock.png
+	#$lock 			swaylock -f -e -i ~/.config/sway/noelle_lock.png
 	$launcher		wofi -f
 	$screenshot		grim ~/picture/screenshot-$(date +"%Y-%m-%d-%H-%M-%S").png
 }
+
 # Chinese and fcitx
 exec fcitx5 -d
-#bindsym $layer1+i exec fcitx5
 
 # open flameshot 
 bindsym $layer1+shift+right exec flameshot gui
@@ -35,7 +37,7 @@ bindsym $layer1+shift+right exec flameshot gui
 bindsym $layer1+Shift+n exec guake
 
 #--- Font ------------------------------------------------------------------
-set $font			更纱黑体 14
+set $font			更纱黑体 16
 
 #--- GUI -------------------------------------------------------------------
 set
@@ -59,9 +61,9 @@ set
 	$gaps_outer  	2
 }
 #--- External Monitor ------------------------------------------------------
+output HDMI-A-1 scale 2.0
 output eDP-1 pos 3840 0 res 3840x2160
-output HDMI1 pos 0 0 res 3840x2160
-output HDMI1 scale 2
+output HDMI-A-1 pos 0 0 res 3840x2160
 #--- Workspace Names -------------------------------------------------------
 set
 {
@@ -242,30 +244,30 @@ mode "resize" {
 #---- Workspace Keybinds ---------------------------------------------------
 bindsym
 {
-	$layer1+1 workspace $ws1
-   	$layer1+2 workspace $ws2
-    $layer1+3 workspace $ws3
-    $layer1+4 workspace $ws4
-    $layer1+5 workspace $ws5
-    $layer1+6 workspace $ws6
-    $layer1+7 workspace $ws7
-    $layer1+8 workspace $ws8
-    $layer1+9 workspace $ws9
-    $layer1+0 workspace $ws10
+	$layer2+1 workspace $ws1
+   	$layer2+2 workspace $ws2
+    $layer2+3 workspace $ws3
+    $layer2+4 workspace $ws4
+    $layer2+5 workspace $ws5
+    $layer2+6 workspace $ws6
+    $layer2+7 workspace $ws7
+    $layer2+8 workspace $ws8
+    $layer2+9 workspace $ws9
+    $layer2+0 workspace $ws10
 
-	$layer2+1 move container to workspace $ws1
-    $layer2+2 move container to workspace $ws2
-    $layer2+3 move container to workspace $ws3
-    $layer2+4 move container to workspace $ws4
-    $layer2+5 move container to workspace $ws5
-    $layer2+6 move container to workspace $ws6
-    $layer2+7 move container to workspace $ws7
-    $layer2+8 move container to workspace $ws8
-    $layer2+9 move container to workspace $ws9
-    $layer2+0 move container to workspace $ws10
+	$layer3+1 move container to workspace $ws1
+    $layer3+2 move container to workspace $ws2
+    $layer3+3 move container to workspace $ws3
+    $layer3+4 move container to workspace $ws4
+    $layer3+5 move container to workspace $ws5
+    $layer3+6 move container to workspace $ws6
+    $layer3+7 move container to workspace $ws7
+    $layer3+8 move container to workspace $ws8
+    $layer3+9 move container to workspace $ws9
+    $layer3+0 move container to workspace $ws10
 }
 #---- Fix gnome apps start up -------------------------------------------------
-exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
+#exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
 exec hash dbus-update-activation-environment 2>/dev/null && \
      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
 ##########################################################################

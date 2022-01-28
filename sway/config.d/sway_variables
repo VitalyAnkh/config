@@ -4,9 +4,6 @@ set $XMODIFIERS @im fcitx
 set $XIM fcitx
 set $XIM_PROGRAM fcitx
 set $SDL_IM_MODULE fcitx
-set $QT_AUTO_SCREEN_SCALE_FACTOR 1
-# set $QT_SCREEN_SCALE_FACTOR 2
-
 # Set variables to let programs run natively under wayland
 
 # for gtk3 applications
@@ -16,10 +13,6 @@ set $GDK_BACKEND wayland
 set $MOZ_ENABLE_WAYLAND 1
 # This is LibreOffice
 set $SAL_USE_VCLPLUGIN gtk3
-# For Qt5
-set $QT_QPA_PLATFORM wayland-egl
-set $QT_WAYLAND_DISABLE_WINDOWDECORATION 1
-set $QT_WAYLAND_FORCE_DPI physical
 # For Elementary/EFL
 set $ECORE_EVAS_ENGINE wayland_egl
 set $ELM_ENGINE wayland_egl
