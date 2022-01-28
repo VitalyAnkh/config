@@ -1,7 +1,7 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
 (unpin! general)
 (unpin! code-review)
-(unpin! elisp-ref)
+(unpin! elisp-refs)
 ;; Workaround:1 ends here
 
 ;; -*- no-byte-compile: t; -*-
@@ -195,8 +195,12 @@
 ;; wakatime:1 ends here
 
 ;; [[file:config.org::*Input Method][Input Method:1]]
-(package! sis)
+;;(package! sis)
 ;; Input Method:1 ends here
+
+;; [[file:config.org::*Use =emacs-rime=][Use =emacs-rime=:1]]
+(package! rime)
+;; Use =emacs-rime=:1 ends here
 
 ;; [[file:config.org::*Ebooks][Ebooks:1]]
 ;;(package! calibredb)

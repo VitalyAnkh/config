@@ -17,8 +17,6 @@
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      ;; Use meow!
-      ;;evil-want-fine-undo t                     ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -198,16 +196,31 @@ nil
 ;; Asynchronous config tangling:1 ends here
 
 ;; [[file:config.org::*Dashboard quick actions][Dashboard quick actions:1]]
-(map! :map +doom-dashboard-mode-map
-      :ne "f" #'find-file
-      :ne "r" #'consult-recent-file
-      :ne "p" #'doom/open-private-config
-      :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
-      :ne "." (cmd! (doom-project-find-file "~/.config/")) ; . for dotfiles
-      :ne "b" #'+vertico/switch-workspace-buffer
-      :ne "B" #'consult-buffer
-      :ne "q" #'save-buffers-kill-terminal)
+(defun +doom-dashboard-setup-modified-keymap ()
+  (setq +doom-dashboard-mode-map (make-sparse-keymap))
+  (map! :map +doom-dashboard-mode-map
+        :desc "Find file" :ne "f" #'find-file
+        :desc "Recent files" :ne "r" #'consult-recent-file
+        :desc "Config dir" :ne "C" #'doom/open-private-config
+        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
+        :desc "Notes (roam)" :ne "n" #'org-roam-node-find
+        :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
+        :desc "Switch buffers (all)" :ne "B" #'consult-buffer
+        :desc "IBuffer" :ne "i" #'ibuffer
+        :desc "Previous buffer" :ne "p" #'previous-buffer
+        :desc "Set theme" :ne "t" #'consult-theme
+        :desc "Quit" :ne "Q" #'save-buffers-kill-terminal
+        :desc "Show keybindings" :ne "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
+
+(add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
+(add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
+(add-hook! 'doom-init-ui-hook :append (+doom-dashboard-setup-modified-keymap))
 ;; Dashboard quick actions:1 ends here
+
+;; [[file:config.org::*Dashboard quick actions][Dashboard quick actions:2]]
+(map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
+;; Dashboard quick actions:2 ends here
 
 ;; [[file:config.org::*Mouse buttons][Mouse buttons:1]]
 ;;(map! :n [mouse-8] #'better-jumper-jump-backward
@@ -3639,10 +3652,9 @@ SQL can be either the emacsql vector representation, or a string."
   
   (setq org-latex-tables-booktabs t
         org-latex-hyperref-template "
-  \\colorlet{greenyblue}{blue!70!green}
-  \\colorlet{blueygreen}{blue!40!green}
-  \\providecolor{link}{named}{greenyblue}
-  \\providecolor{cite}{named}{blueygreen}
+  \\providecolor{url}{HTML}{0077bb}
+  \\providecolor{link}{HTML}{882255}
+  \\providecolor{cite}{HTML}{999933}
   \\hypersetup{
     pdfauthor={%a},
     pdftitle={%t},
@@ -3652,8 +3664,8 @@ SQL can be either the emacsql vector representation, or a string."
     pdflang={%L},
     breaklinks=true,
     colorlinks=true,
-    linkcolor=,
-    urlcolor=link,
+    linkcolor=link,
+    urlcolor=url,
     citecolor=cite\n}
   \\urlstyle{same}
   "
@@ -3682,20 +3694,33 @@ SQL can be either the emacsql vector representation, or a string."
     "Preamble that improves checkboxes.")
   
   (defvar org-latex-box-preamble "
-  % args = #1 Name, #2 Colour, #3 Ding, #4 Label
-  \\newcommand{\\defsimplebox}[4]{%
-    \\definecolor{#1}{HTML}{#2}
-    \\newenvironment{#1}[1][]
-    {%
+  \\ExplSyntaxOn
+  \\NewCoffin\\Content
+  \\NewCoffin\\SideRule
+  \\NewDocumentCommand{\\defsimplebox}{O{\\ding{117}} O{0.36em} m m m}{%
+    % #1 ding, #2 ding offset, #3 name, #4 colour, #5 default label
+    \\definecolor{#3}{HTML}{#4}
+    \\NewDocumentEnvironment{#3}{ O{#5} }
+    {
+      \\vcoffin_set:Nnw \\Content { \\linewidth }
+      \\noindent \\ignorespaces
       \\par\\vspace{-0.7\\baselineskip}%
-      \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{\\def\\temp{##1}\\ifx\\temp\\empty#4\\else##1\\fi}}%
+      \\textcolor{#3}{#1}~\\textcolor{#3}{\\textbf{##1}}%
       \\vspace{-0.8\\baselineskip}
       \\begin{addmargin}[1em]{1em}
-    }{%
+   }
+      {
       \\end{addmargin}
       \\vspace{-0.5\\baselineskip}
-    }%
+      \\vcoffin_set_end:
+      \\SetHorizontalCoffin\\SideRule{\\color{#3}\\rule{1pt}{\\CoffinTotalHeight\\Content}}
+      \\JoinCoffins*\\Content[l,t]\\SideRule[l,t](#2,-0.7em)
+      \\noindent\\TypesetCoffin\\Content
+      \\vspace*{\\CoffinTotalHeight\\Content}\\bigskip
+      \\vspace{-2\\baselineskip}
+    }
   }
+  \\ExplSyntaxOff
   "
     "Preamble that provides a macro for custom boxes.")
   (defun org-latex-embed-extra-files ()
@@ -3786,16 +3811,17 @@ SQL can be either the emacsql vector representation, or a string."
       (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
       (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
       (.pifont       :snippet "\\usepackage{pifont}")
+      (.xcoffins     :snippet "\\usepackage{xcoffins}")
       (checkbox      :requires .pifont :order 3
                      :snippet (concat (unless (memq 'maths features)
                                         "\\usepackage{amssymb} % provides \\square")
                                       org-latex-checkbox-preamble))
-      (.fancy-box    :requires .pifont    :snippet org-latex-box-preamble :order 3.9)
-      (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
-      (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
-      (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{\\ding{43}}{Notes}" :order 4)
-      (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
-      (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
+      (.fancy-box    :requires (.pifont .xcoffins) :snippet org-latex-box-preamble :order 3.9)
+      (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{Warning}" :order 4)
+      (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{Information}" :order 4)
+      (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{Notes}" :order 4)
+      (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}" :order 4)
+      (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{Important}" :order 4))
     "LaTeX features and details required to implement them.
   
   List where the car is the feature symbol, and the rest forms a plist with the
@@ -3838,7 +3864,8 @@ SQL can be either the emacsql vector representation, or a string."
     "For each feature in FEATURES process :requires, :when, and :prevents keywords and sort according to :order."
     (dolist (feature features)
       (unless (assoc feature org-latex-feature-implementations)
-        (error "Feature %s not provided in org-latex-feature-implementations" feature)))
+        (message "Feature %s not provided in org-latex-feature-implementations, ignoring." feature)
+        (setq features (remove feature features))))
     (setq current features)
     (while current
       (when-let ((requirements (plist-get (cdr (assq (car current) org-latex-feature-implementations)) :requires)))
@@ -3993,7 +4020,7 @@ SQL can be either the emacsql vector representation, or a string."
       (source
        :serif "\\usepackage[osf,semibold]{sourceserifpro}"
        :sans "\\usepackage[osf,semibold]{sourcesanspro}"
-       :mono "\\usepackage[scale=0.95]{sourcecodepro}"
+       :mono "\\usepackage[scale=0.92]{sourcecodepro}"
        :maths "\\usepackage{newtxmath}") ; may be sourceserifpro-based in future
       (times
        :serif "\\usepackage{newtxtext}"
@@ -5405,26 +5432,19 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   )
 ;; wakatime:2 ends here
 
-;; [[file:config.org::*Input Method][Input Method:2]]
-(use-package! sis
-  ;;:hook
-  ;;enable the /follow context/ and /inline region/ mode for specific buffers
-  ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mode))
-  :defer-incrementally meow
-  :config
-  (sis-ism-lazyman-config "1" "2" 'fcitx5)
-  (add-hook 'meow-insert-exit-hook #'sis-set-english)
-  (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
-  (defun describe-key-sis ()
-    (interactive)
-    (sis-set-english)
-    (sis-global-respect-mode 0)
-    (describe-key (help--read-key-sequence))
-    (sis-global-respect-mode t))
-  :bind (("C-h k" . describe-key-sis))
+;; [[file:config.org::*Use =emacs-rime=][Use =emacs-rime=:2]]
+(use-package rime
+  :custom
+  (default-input-method "rime")
+  (rime-user-data-dir "~/.config/input_method/rime")
+  (rime-disable-predicates
+   '(meow-normal-mode-p
+     meow-motion-mode-p
+     meow-keypad-mode-p
+     meow-beacon-mode-p
+     ))
   )
-;; Input Method:2 ends here
+;; Use =emacs-rime=:2 ends here
 
 ;; [[file:config.org::*Defaults][Defaults:1]]
 (setq calc-angle-mode 'rad  ; radians are rad

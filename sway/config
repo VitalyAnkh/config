@@ -10,7 +10,6 @@
 include config.d/dracula
 include config.d/sway_variables
 
-
 #--- Keybindings -----------------------------------------------------------
 set
 {
@@ -28,7 +27,7 @@ set
 }
 # Chinese and fcitx
 exec fcitx5 -d
-bindsym $layer1+i exec fcitx5
+#bindsym $layer1+i exec fcitx5
 
 # open flameshot 
 bindsym $layer1+shift+right exec flameshot gui
@@ -82,7 +81,7 @@ set
 #]>#########################################################################
 
 #<[# OUTPUTS ###############################################################
-output "*" bg ~/picture/wallpaper/rp.jpg fill
+output "*" bg ~/nutstore_files/Pictures/picture/wallpaper/rp.jpg fill
 
 #]>#########################################################################
 

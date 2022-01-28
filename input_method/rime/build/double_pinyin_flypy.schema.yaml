@@ -1,13 +1,13 @@
 __build_info:
-  rime_version: 1.5.3
+  rime_version: 1.7.3
   timestamps:
-    default: 1592108337
-    default.custom: 1592113551
-    double_pinyin_flypy.custom: 1592112884
-    double_pinyin_flypy.schema: 1592112245
-    key_bindings: 1592108337
+    default: 1635610401
+    default.custom: 1635610401
+    double_pinyin_flypy.custom: 1635610401
+    double_pinyin_flypy.schema: 1635610401
+    key_bindings: 1635610401
     key_bindings.custom: 0
-    punctuation: 1592108337
+    punctuation: 1635610401
     punctuation.custom: 0
 engine:
   filters:
@@ -161,7 +161,7 @@ schema:
     - stroke
   description: |
     朙月拼音＋小鶴雙拼方案。
-    
+
   name: "小鶴雙拼"
   schema_id: double_pinyin_flypy
   version: 0.18
