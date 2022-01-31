@@ -102,12 +102,12 @@ input "1739:10036:Synaptics_s3203"
 #]>#########################################################################
 
 #<[# STARTUP ###############################################################
-exec swayidle -w \
-	timeout 300 	'$lock' \
-    timeout 600		'swaymsg "output * dpms off"' \
-	resume			'swaymsg "output * dpms on"' \
-	timeout 900 	'systemctl suspend'\
-    before-sleep	'$lock'
+# exec swayidle -w \
+# 	timeout 3000 	'$lock' \
+#     timeout 3060		'swaymsg "output * dpms off"' \
+# 	resume			'swaymsg "output * dpms on"' \
+# 	timeout 3060 	'systemctl suspend'\
+#     before-sleep	'$lock'
 
 exec_always
 {
@@ -174,16 +174,16 @@ bindsym
 
 	Print					exec $screenshot
 
-	XF86AudioRaiseVolume 	exec --no-startup-id pamixer -i 5
-	XF86AudioLowerVolume	exec --no-startup-id pamixer -d 5
-	XF86AudioMute			exec --no-startup-id pamixer -t
+	XF86AudioRaiseVolume 	exec pamixer -i 5
+	XF86AudioLowerVolume	exec pamixer -d 5
+	XF86AudioMute			exec pamixer -t
 
-	XF86AudioPlay			exec --no-startup-id playerctl play-pause
-	XF86AudioNext			exec --no-startup-id playerctl next
-	XF86AudioPrev			exec --no-startup-id playerctl previous
+	XF86AudioPlay			exec playerctl play-pause
+	XF86AudioNext			exec playerctl next
+	XF86AudioPrev			exec playerctl previous
 
-	XF86MonBrightnessUp		exec --no-startup-id light -A 5
-	XF86MonBrightnessDown	exec --no-startup-id light -U 5
+	XF86MonBrightnessUp		exec light -A 5
+	XF86MonBrightnessDown	exec light -U 5
 
 	$layer1+Escape			exec $lock
 }
@@ -241,33 +241,40 @@ mode "resize" {
     }
 }
 
-#---- Workspace Keybinds ---------------------------------------------------
+#---- Workspace Keybindings ---------------------------------------------------
 bindsym
 {
-	$layer2+1 workspace $ws1
-   	$layer2+2 workspace $ws2
-    $layer2+3 workspace $ws3
-    $layer2+4 workspace $ws4
-    $layer2+5 workspace $ws5
-    $layer2+6 workspace $ws6
-    $layer2+7 workspace $ws7
-    $layer2+8 workspace $ws8
-    $layer2+9 workspace $ws9
-    $layer2+0 workspace $ws10
+	$layer3+1 workspace $ws1
+   	$layer3+2 workspace $ws2
+    $layer3+3 workspace $ws3
+    $layer3+4 workspace $ws4
+    $layer3+5 workspace $ws5
+    $layer3+6 workspace $ws6
+    $layer3+7 workspace $ws7
+    $layer3+8 workspace $ws8
+    $layer3+9 workspace $ws9
+    $layer3+0 workspace $ws10
 
-	$layer3+1 move container to workspace $ws1
-    $layer3+2 move container to workspace $ws2
-    $layer3+3 move container to workspace $ws3
-    $layer3+4 move container to workspace $ws4
-    $layer3+5 move container to workspace $ws5
-    $layer3+6 move container to workspace $ws6
-    $layer3+7 move container to workspace $ws7
-    $layer3+8 move container to workspace $ws8
-    $layer3+9 move container to workspace $ws9
-    $layer3+0 move container to workspace $ws10
+	$layer2+1 move container to workspace $ws1
+    $layer2+2 move container to workspace $ws2
+    $layer2+3 move container to workspace $ws3
+    $layer2+4 move container to workspace $ws4
+    $layer2+5 move container to workspace $ws5
+    $layer2+6 move container to workspace $ws6
+    $layer2+7 move container to workspace $ws7
+    $layer2+8 move container to workspace $ws8
+    $layer2+9 move container to workspace $ws9
+    $layer2+0 move container to workspace $ws10
 }
+#---- Autostart apps -------------------------------------------
+exec swaymsg "workspace 1; exec emacs"
+exec swaymsg "workspace 3; exec firefox-developer-edition"
+exec swaymsg "workspace 4; exec microsoft-edge-dev"
+exec swaymsg "workspace 5; exec discord"
+exec swaymsg "workspace 6; exec cfw"
+
 #---- Fix gnome apps start up -------------------------------------------------
-#exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
 exec hash dbus-update-activation-environment 2>/dev/null && \
      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
 ##########################################################################

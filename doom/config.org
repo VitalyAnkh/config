@@ -1771,6 +1771,8 @@ Modal editing on wish! Use =moew= for modal life.
 (defun meow-setup ()
   (set-useful-keybindings)
   ;; for doom emacs
+  (meow-normal-define-key (cons "SPC" doom-leader-map))
+  (meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
    (:when (featurep! :ui workspaces)
     :n "C-t"   #'+workspace/new
