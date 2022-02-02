@@ -337,7 +337,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! general)
-(unpin! code-review)
 (unpin! elisp-refs)
 #+end_src
 ** Better defaults
@@ -386,7 +385,9 @@ default to be something roughly 80% of that size.
 #+begin_src emacs-lisp
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(push  '(alpha-background . 90) default-frame-alist)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized)
+             )
 #+end_src
 *** Auto-customisations
 By default changes made via a customisation interface are added to =init.el=.
@@ -4230,6 +4231,13 @@ set up org-capture.
                    :type entry
                    :template ("* %?"
                               "%i %a"))
+                  ("Personal journal" :keys "j"
+                   :icon ("checklist" :set "octicon" :color "yellow")
+                   :file +org-capture-journal-file
+                   :target (file+olp+datetree +org-capture-journal-file day)
+                   :type entry
+                   :template ("* %U")
+                   )
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
@@ -4499,7 +4507,7 @@ with it.
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
-(use-package org-raom
+(use-package org-roam
   :defer t
   :config
   (setq org-roam-directory org-directory)
@@ -4734,6 +4742,11 @@ REFERENCE is a either a number or a string representing a reference,
 as returned by `org-export-new-reference'."
   :override #'org-export-format-reference
   (if (stringp reference) reference (format "org%07x" reference)))
+#+end_src
+
+Let =org-id-method= be time stamp. =uuid= is not informative for humans.
+#+begin_src emacs-lisp
+(setq org-id-method 'ts)
 #+end_src
 **** Nicer ~org-return~
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]

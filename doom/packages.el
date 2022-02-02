@@ -1,6 +1,5 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
 (unpin! general)
-(unpin! code-review)
 (unpin! elisp-refs)
 ;; Workaround:1 ends here
 

@@ -40,7 +40,9 @@
 ;; [[file:config.org::*Frame sizing][Frame sizing:1]]
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(push  '(alpha-background . 90) default-frame-alist)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized)
+             )
 ;; Frame sizing:1 ends here
 
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
@@ -1886,6 +1888,13 @@ SQL can be either the emacsql vector representation, or a string."
                      :type entry
                      :template ("* %?"
                                 "%i %a"))
+                    ("Personal journal" :keys "j"
+                     :icon ("checklist" :set "octicon" :color "yellow")
+                     :file +org-capture-journal-file
+                     :target (file+olp+datetree +org-capture-journal-file day)
+                     :type entry
+                     :template ("* %U")
+                     )
                     ("Email" :keys "e"
                      :icon ("envelope" :set "faicon" :color "blue")
                      :file +org-capture-todo-file
@@ -2200,6 +2209,7 @@ SQL can be either the emacsql vector representation, or a string."
   as returned by `org-export-new-reference'."
     :override #'org-export-format-reference
     (if (stringp reference) reference (format "org%07x" reference)))
+  (setq org-id-method 'ts)
   (defun unpackaged/org-element-descendant-of (type element)
     "Return non-nil if ELEMENT is a descendant of TYPE.
   TYPE should be an element type, like `item' or `paragraph'.
@@ -4812,7 +4822,7 @@ SQL can be either the emacsql vector representation, or a string."
 (setq org-directory "~/org"
       org-roam-directory org-directory)
 
-(use-package org-raom
+(use-package org-roam
   :defer t
   :config
   (setq org-roam-directory org-directory)

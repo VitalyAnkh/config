@@ -39,6 +39,7 @@
 !chrome-flags.conf
 !electron-flags.conf
 !mimeapps.list
+!qt5ct
 !README.md
 !restart-pipewire.sh
 !setup-agda.sh
