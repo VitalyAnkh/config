@@ -654,6 +654,14 @@ Usage:
   )
 ;; Meow:2 ends here
 
+;; [[file:config.org::*Annotate][Annotate:2]]
+(use-package annotate
+  :config
+  (setq annotate-file (convert-standard-filename
+                       (file-name-concat org-directory "annotations")
+                       )))
+;; Annotate:2 ends here
+
 ;; [[file:config.org::*Consult][Consult:1]]
 (after! consult
   (set-face-attribute 'consult-file nil :inherit 'consult-buffer)

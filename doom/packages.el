@@ -22,6 +22,10 @@
 (package! meow)
 ;; Meow:1 ends here
 
+;; [[file:config.org::*Annotate][Annotate:1]]
+(package! annotate)
+;; Annotate:1 ends here
+
 ;; [[file:config.org::*Magit delta][Magit delta:2]]
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 ;; Magit delta:2 ends here

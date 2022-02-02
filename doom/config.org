@@ -1910,6 +1910,19 @@ Usage:
   (meow-global-mode 1)
   )
 #+end_src
+*** Annotate
+Use =annotate.el= to add comment gracely to your files!
+#+begin_src emacs-lisp :tangle packages.el
+(package! annotate)
+#+end_src
+And store the annotation database with my Org Mode files.
+#+begin_src emacs-lisp
+(use-package annotate
+  :config
+  (setq annotate-file (convert-standard-filename
+                       (file-name-concat org-directory "annotations")
+                       )))
+#+end_src
 
 *** Consult
 #+begin_quote
