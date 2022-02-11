@@ -1767,11 +1767,46 @@ Modal editing on wish! Use =moew= for modal life.
   (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
+  ;; for doom emacs
+  (map! :leader
+        ;; make doom-leader-buffer-map alive
+        (:prefix-map ("b" . "buffer")
+         :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
+         :desc "Previous buffer"             "["   #'previous-buffer
+         :desc "Next buffer"                 "]"   #'next-buffer
+         (:when (featurep! :ui workspaces)
+          :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
+          :desc "Switch buffer"              "B" #'switch-to-buffer)
+         (:unless (featurep! :ui workspaces)
+          :desc "Switch buffer"               "b"   #'switch-to-buffer)
+         :desc "Clone buffer"                "c"   #'clone-indirect-buffer
+         :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
+         :desc "Kill buffer"                 "d"   #'kill-current-buffer
+         :desc "ibuffer"                     "i"   #'ibuffer
+         :desc "Kill buffer"                 "k"   #'kill-current-buffer
+         :desc "Kill all buffers"            "K"   #'doom/kill-all-buffers
+         :desc "Switch to last buffer"       "l"   #'evil-switch-to-windows-last-buffer
+         :desc "Set bookmark"                "m"   #'bookmark-set
+         :desc "Delete bookmark"             "M"   #'bookmark-delete
+         :desc "Next buffer"                 "n"   #'next-buffer
+         :desc "New empty buffer"            "N"   #'evil-buffer-new
+         :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
+         :desc "Previous buffer"             "p"   #'previous-buffer
+         :desc "Revert buffer"               "r"   #'revert-buffer
+         :desc "Save buffer"                 "s"   #'basic-save-buffer
+         :desc "Save all buffers"            "S"   #'evil-write-all
+         :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
+         :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
+         :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
+         :desc "Bury buffer"                 "z"   #'bury-buffer
+         :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
+        )
   )
 
 (defun meow-setup ()
   (set-useful-keybindings)
   ;; for doom emacs
+  (add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
   (meow-normal-define-key (cons "SPC" doom-leader-map))
   (meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
@@ -1915,9 +1950,12 @@ Use =annotate.el= to add comment gracely to your files!
 #+begin_src emacs-lisp :tangle packages.el
 (package! annotate)
 #+end_src
-And store the annotation database with my Org Mode files.
+And store the annotation database (which is just a plain emacs-lisp file!) with my Org Mode files.
 #+begin_src emacs-lisp
 (use-package annotate
+  :after org
+  :hook
+  (((text-mode prog-mode) . annotate-mode))
   :config
   (setq annotate-file (convert-standard-filename
                        (file-name-concat org-directory "annotations")

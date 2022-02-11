@@ -15,6 +15,7 @@
 !chromium/
 !containers/
 !dconf/
+!doom/
 !emacs/
 !fcitx5/
 !flutter/
@@ -30,6 +31,7 @@
 !microsoft-edge-dev-flags.conf
 !misc/
 !nu/
+!paru/
 !private-data/
 !sway/
 !vim/
@@ -50,4 +52,3 @@
 !.gitmodules
 !.pam_environment
 !.profile
-!doom
