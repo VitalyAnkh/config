@@ -1582,6 +1582,19 @@ SQL can be either the emacsql vector representation, or a string."
         lsp-rust-all-features t
         rustic-format-on-save t
         lsp-enable-semantic-highlighting t))
+(use-package dap-mode
+  :config
+  (require 'dap-lldb)
+  (require 'dap-gdb-lldb)
+  (require 'dap-cpptools)
+  (dap-register-debug-template
+   "Rust::LLDB Run Configuration"
+   (list :type "lldb"
+         :request "launch"
+         :name "LLDB::Run"
+	    :gdbpath "rust-lldb"
+         :target nil
+         :cwd nil)))
 ;; Rust:1 ends here
 
 ;; [[file:config.org::*Plaintext][Plaintext:1]]

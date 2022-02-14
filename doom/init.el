@@ -32,8 +32,7 @@
        (popup                       ; tame sudden yet inevitable temporary windows
         +all                        ; catch all popups that start with an asterix
         +defaults)                  ; default popup rules
-       tabs                         ; an tab bar for Emacs
-                                               ; ... with prettier tabs
+       ;;tabs                         ; an tab bar for Emacs
        treemacs                     ; a project drawer, like neotree but cooler
        ;;unicode                    ; extended unicode support for various languages
        vc-gutter                    ; vcs diff in the fringe
@@ -131,7 +130,7 @@
        (haskell +lsp)               ; a language that's lazier than I am
        ;;hy                         ; readability of scheme w/ speed of python
        idris                        ;
-       json                         ; At least it ain't XML
+       (json +lsp)                         ; At least it ain't XML
        ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
        (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
        (julia +lsp)                 ; Python, R, and MATLAB in a blender
@@ -139,6 +138,7 @@
        (latex                       ; writing papers in Emacs has never been so fun
         +latexmk                    ; what else would you use?
         +cdlatex                    ; quick maths symbols
+        +lsp                        ; lsp for latex, use texlab!
         +fold)                      ; fold the clutter away nicities
        ;;lean                       ; proof that mathematicians need help
        ;;factor                     ; for when scripts are stacked against you
@@ -167,7 +167,7 @@
        ;;qt                         ; the 'cutest' gui framework ever
        (racket +lsp +xp)            ; a DSL for DSLs
        raku                         ; the artist formerly known as perl6
-       ;;rest                       ; Emacs as a REST client
+       rest                       ; Emacs as a REST client
        ;;rst                        ; ReST in peace
        (ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
