@@ -77,16 +77,31 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "JetBrains Mono Thin" :weight 'thin :size 19)
-      doom-big-font (font-spec :family "JetBrains Mono Thin" :weight 'thin :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+
 ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
 (set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
 (set-fontset-font t 'symbol "Apple Color Emoji")
 (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
 (set-fontset-font t 'symbol "Symbola" nil 'append)
+
+;; This is the vanilla font config. Use it when doom can't
+;; handle some fonts.
+;;(set-face-attribute 'default nil :font "Droid Sans Mono")
+;; Latin
+;;(set-fontset-font t 'latin "Noto Sans")
+;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
+;;
+;; This font requires "Regular". Other Noto fonts dont.
+;; ¯\_(ツ)_/¯
+;; (set-fontset-font t 'han "Noto Sans CJK SC Regular")
+;; (set-fontset-font t 'kana "Noto Sans CJK JP Regular")
+;; (set-fontset-font t 'hangul "Noto Sans CJK KR Regular")
+;; (set-fontset-font t 'cjk-misc "Noto Sans CJK SC Regular")
 ;; Font Face:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:3]]
