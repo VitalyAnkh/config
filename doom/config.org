@@ -528,10 +528,10 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-;;(emoji +unicode +ascii +github)    ; :) :)
+(emoji +unicode +ascii +github)    ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-;;hydra                      ; quick documentation for related commands
+hydra                      ; quick documentation for related commands
 ;;indent-guides              ; highlighted indent columns, notoriously slow
 (ligatures +extra)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
@@ -740,8 +740,8 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 19)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'thin :size 19)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'thin :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
@@ -2405,7 +2405,13 @@ so I'd like to make sure we have a recent version.
 #+begin_src emacs-lisp :tangle packages.el
 (package! modus-themes)
 #+end_src
+*** Nano heme
 
+Rougier's =nano-theme= is amazing!
+#+begin_src emacs-lisp :tangle packages.el
+(package! nano-theme
+  :recipe (:host github :repo "rougier/nano-theme"))
+#+end_src
 *** Theme magic
 
 With all our fancy Emacs themes, my terminal is missing out!

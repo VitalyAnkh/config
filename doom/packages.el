@@ -63,6 +63,11 @@
 (package! modus-themes)
 ;; Modus themes:1 ends here
 
+;; [[file:config.org::*Nano heme][Nano heme:1]]
+(package! nano-theme
+  :recipe (:host github :repo "rougier/nano-theme"))
+;; Nano heme:1 ends here
+
 ;; [[file:config.org::*Theme magic][Theme magic:1]]
 (package! theme-magic)
 ;; Theme magic:1 ends here

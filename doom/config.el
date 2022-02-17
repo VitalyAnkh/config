@@ -77,8 +77,8 @@
 ;; Buffer defaults:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:1]]
-(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 19)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono Thin" :weight 'thin :size 19)
+      doom-big-font (font-spec :family "JetBrains Mono Thin" :weight 'thin :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
       doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))

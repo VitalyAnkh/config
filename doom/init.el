@@ -18,10 +18,10 @@
        doom                         ; what makes DOOM look the way it does
        doom-dashboard               ; a nifty splash screen for Emacs
        ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode +ascii +github)    ; :) :)
+       (emoji +unicode +ascii +github)    ; :) :)
        ;;fill-column                ; a `fill-column' indicator
        hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;hydra                      ; quick documentation for related commands
+       hydra                      ; quick documentation for related commands
        ;;indent-guides              ; highlighted indent columns, notoriously slow
        (ligatures +extra)           ; ligatures and symbols to make your code pretty again
        ;;minimap                    ; show a map of the code on the side
