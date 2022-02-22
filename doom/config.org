@@ -385,7 +385,7 @@ default to be something roughly 80% of that size.
 #+begin_src emacs-lisp
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
-(push  '(alpha-background . 90) default-frame-alist)
+(push  '(alpha-background . 95) default-frame-alist)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized)
              )
 #+end_src
@@ -528,7 +528,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-(emoji +unicode +ascii +github)    ; :) :)
+;;(emoji +unicode +ascii +github)    ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 hydra                      ; quick documentation for related commands
@@ -676,7 +676,7 @@ lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 nim                          ; python + lisp at the speed of c
 nix                          ; I hereby declare "nix geht mehr!"
-ocaml                        ; an objective camel
+(ocaml +lsp)                        ; an objective camel
 (org                         ; organize your plain life in plain text
  +pretty                     ; yessss my pretties! (nice unicode symbols)
  +dragndrop                  ; drag & drop files/images into org buffers
@@ -9425,10 +9425,10 @@ Start =wakatime= at when emacs launches:
 I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
 within Emacs. Let's add =smart-input-source= to support fcitx5.
 #+begin_src emacs-lisp :tangle packages.el
-;;(package! sis)
+(package! sis)
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package! sis
   ;;:hook
   ;;enable the /follow context/ and /inline region/ mode for specific buffers
@@ -9451,10 +9451,10 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
 
 *** Use =emacs-rime=
 #+begin_src emacs-lisp :tangle packages.el
-(package! rime)
+;;(package! rime)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package rime
   :custom
   (default-input-method "rime")

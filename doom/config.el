@@ -40,7 +40,7 @@
 ;; [[file:config.org::*Frame sizing][Frame sizing:1]]
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
-(push  '(alpha-background . 90) default-frame-alist)
+(push  '(alpha-background . 95) default-frame-alist)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized)
              )
 ;; Frame sizing:1 ends here
@@ -5518,19 +5518,26 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   )
 ;; wakatime:2 ends here
 
-;; [[file:config.org::*Use =emacs-rime=][Use =emacs-rime=:2]]
-(use-package rime
-  :custom
-  (default-input-method "rime")
-  (rime-user-data-dir "~/.config/input_method/rime")
-  (rime-disable-predicates
-   '(meow-normal-mode-p
-     meow-motion-mode-p
-     meow-keypad-mode-p
-     meow-beacon-mode-p
-     ))
+;; [[file:config.org::*Input Method][Input Method:2]]
+(use-package! sis
+  ;;:hook
+  ;;enable the /follow context/ and /inline region/ mode for specific buffers
+  ;;(((text-mode prog-mode) . sis-context-mode)
+  ;; ((text-mode prog-mode) . sis-inline-mode))
+  :defer-incrementally meow
+  :config
+  (sis-ism-lazyman-config "1" "2" 'fcitx5)
+  (add-hook 'meow-insert-exit-hook #'sis-set-english)
+  (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
+  ;; (defun describe-key-sis ()
+  ;;   (interactive)
+  ;;   (sis-set-english)
+  ;;   (sis-global-respect-mode 0)
+  ;;   (describe-key (help--read-key-sequence))
+  ;;   (sis-global-respect-mode t))
+  ;; :bind (("C-h k" . describe-key-sis))
   )
-;; Use =emacs-rime=:2 ends here
+;; Input Method:2 ends here
 
 ;; [[file:config.org::*Defaults][Defaults:1]]
 (setq calc-angle-mode 'rad  ; radians are rad

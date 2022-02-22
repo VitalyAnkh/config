@@ -18,7 +18,7 @@
        doom                         ; what makes DOOM look the way it does
        doom-dashboard               ; a nifty splash screen for Emacs
        ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-       (emoji +unicode +ascii +github)    ; :) :)
+       ;;(emoji +unicode +ascii +github)    ; :) :)
        ;;fill-column                ; a `fill-column' indicator
        hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra                      ; quick documentation for related commands
@@ -147,7 +147,7 @@
        markdown                     ; writing docs for people to ignore
        nim                          ; python + lisp at the speed of c
        nix                          ; I hereby declare "nix geht mehr!"
-       ocaml                        ; an objective camel
+       (ocaml +lsp)                        ; an objective camel
        (org                         ; organize your plain life in plain text
         +pretty                     ; yessss my pretties! (nice unicode symbols)
         +dragndrop                  ; drag & drop files/images into org buffers
