@@ -336,8 +336,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
-(unpin! general)
-(unpin! elisp-refs)
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -3719,6 +3717,16 @@ structure has come to my attention.
       :after org
       :localleader
       :desc "Outline" "O" #'org-ol-tree)
+#+end_src
+
+***** Use =org-modern=
+minad's =org-moder= is fashionate.
+#+begin_src emacs-lisp
+(package! org-modern)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (add-hook 'org-mode-hook #'org-modern-mode)
 #+end_src
 
 **** Extra functionality

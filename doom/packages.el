@@ -1,6 +1,5 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
-(unpin! general)
-(unpin! elisp-refs)
+
 ;; Workaround:1 ends here
 
 ;; -*- no-byte-compile: t; -*-
@@ -140,6 +139,10 @@
 (package! valign :recipe (:host github :repo "casouri/valign"))
 
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
+
+(package! org-modern)
+
+;; (add-hook 'org-mode-hook #'org-modern-mode)
 
 (package! org-ref)
 
