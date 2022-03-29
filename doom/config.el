@@ -76,6 +76,12 @@
 ;; (setq-default major-mode 'org-mode)
 ;; Buffer defaults:1 ends here
 
+;; [[file:config.org::*Drag text from emacs to other apps][Drag text from emacs to other apps:1]]
+(setq
+ mouse-drag-and-drop-region-cross-program t
+ mouse-drag-and-drop-region t)
+;; Drag text from emacs to other apps:1 ends here
+
 ;; [[file:config.org::*Font Face][Font Face:1]]
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
@@ -2821,7 +2827,8 @@ SQL can be either the emacsql vector representation, or a string."
             ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
             ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
             ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-            ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+  
+     ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
     (org-pretty-tags-global-mode))
   ;;(setq org-highlight-latex-and-related '(native latex entities))
   (require 'org-src)

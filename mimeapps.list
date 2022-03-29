@@ -188,6 +188,7 @@ application/x-bzpdf=okularApplication_pdf.desktop;
 application/wps-office.ppt=libreoffice-impress.desktop;
 text/x-tex=visual-studio-code.desktop;
 text/org=visual-studio-code.desktop;
+application/x-bittorrent=transmission-gtk.desktop;
 
 [Default Applications]
 x-scheme-handler/jetbrains=jetbrains-toolbox.desktop

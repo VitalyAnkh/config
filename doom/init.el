@@ -129,7 +129,7 @@
        (go +lsp)                    ; the hipster dialect
        (haskell +lsp)               ; a language that's lazier than I am
        ;;hy                         ; readability of scheme w/ speed of python
-       idris                        ;
+       (idris +lsp)                        ;
        (json +lsp)                         ; At least it ain't XML
        ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
        (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))

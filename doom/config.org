@@ -435,6 +435,13 @@ I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+end_src
 For some reason this + the mixed pitch hook causes issues with hydra and so I'll
 just need to resort to =SPC b o= for now.
+*** Drag text from emacs to other apps
+Thanks to Po Lu!
+#+begin_src emacs-lisp
+ (setq
+  mouse-drag-and-drop-region-cross-program t
+  mouse-drag-and-drop-region t)
+#+end_src
 ** Doom configuration
 *** Modules
 :PROPERTIES:
@@ -656,7 +663,7 @@ ess                          ; emacs speaks statistics
 (go +lsp)                    ; the hipster dialect
 (haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
-idris                        ;
+(idris +lsp)                        ;
 (json +lsp)                         ; At least it ain't XML
 ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
@@ -5587,7 +5594,8 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
           ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
           ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
           ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+
+   ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
   (org-pretty-tags-global-mode))
 #+end_src
 
