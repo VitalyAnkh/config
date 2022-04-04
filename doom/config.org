@@ -5451,8 +5451,8 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-(package! seperate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
+;;(package! seperate-inline :recipe
+;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5574,7 +5574,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-pretty-tags)
+;;(package! org-pretty-tags)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5705,7 +5705,7 @@ have this be performed automatically with =xenops=.
 #+end_src
 OK, let's customize the default inline rendering a bit.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-fragtog)
+;;(package! org-fragtog)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7802,6 +7802,10 @@ exporting that as LaTeX commands.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! engrave-faces)
+(package! org-fragtog)
+(package! org-pretty-tags)
+(package! seperate-inline :recipe
+  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none
@@ -8270,51 +8274,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX       |
-|-----------+-------------|
-| ɑ         | \(\alpha\)       |
-| β         | \(\beta\)       |
-| γ         | \(\gamma\)       |
-| δ         | \(\delta\)       |
-| ε         | \(\epsilon\)       |
-| ϵ         | \(\varepsilon\)       |
-| ζ         | \(\zeta\)       |
-| η         | \(\eta\)       |
-| θ         | \(\theta\)       |
-| ϑ         | \(\vartheta\)       |
-| ι         | \(\iota\)       |
-| κ         | \(\kappa\)       |
-| λ         | \(\lambda\)       |
-| μ         | \(\mu\)       |
-| ν         | \(\nu\)       |
-| ξ         | \(\xi\)       |
-| π         | \(\pi\)       |
-| ϖ         | \(\varpi\)       |
-| ρ         | \(\rho\)       |
+| Character | LaTeX |
+|-----------+-------|
+| ɑ         | \(\alpha\) |
+| β         | \(\beta\) |
+| γ         | \(\gamma\) |
+| δ         | \(\delta\) |
+| ε         | \(\epsilon\) |
+| ϵ         | \(\varepsilon\) |
+| ζ         | \(\zeta\) |
+| η         | \(\eta\) |
+| θ         | \(\theta\) |
+| ϑ         | \(\vartheta\) |
+| ι         | \(\iota\) |
+| κ         | \(\kappa\) |
+| λ         | \(\lambda\) |
+| μ         | \(\mu\) |
+| ν         | \(\nu\) |
+| ξ         | \(\xi\) |
+| π         | \(\pi\) |
+| ϖ         | \(\varpi\) |
+| ρ         | \(\rho\) |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\)       |
-| ς         | \(\varsigma\)       |
-| τ         | \(\tau\)       |
-| υ         | \(\upsilon\)       |
-| ϕ         | \(\phi\)       |
-| φ         | \(\varphi\)       |
-| ψ         | \(\psi\)       |
-| ω         | \(\omega\)       |
-| Γ         | \(\Gamma\)       |
-| Δ         | \(\Delta\)       |
-| Θ         | \(\Theta\)       |
-| Λ         | \(\Lambda\)       |
-| Ξ         | \(\Xi\)       |
-| Π         | \(\Pi\)       |
-| Σ         | \(\Sigma\)       |
-| Υ         | \(\Upsilon\)       |
-| Φ         | \(\Phi\)       |
-| Ψ         | \(\Psi\)       |
-| Ω         | \(\Omega\)       |
-| א         | \(\aleph\)       |
-| ב         | \(\beth\)       |
+| σ         | \(\sigma\) |
+| ς         | \(\varsigma\) |
+| τ         | \(\tau\) |
+| υ         | \(\upsilon\) |
+| ϕ         | \(\phi\) |
+| φ         | \(\varphi\) |
+| ψ         | \(\psi\) |
+| ω         | \(\omega\) |
+| Γ         | \(\Gamma\) |
+| Δ         | \(\Delta\) |
+| Θ         | \(\Theta\) |
+| Λ         | \(\Lambda\) |
+| Ξ         | \(\Xi\) |
+| Π         | \(\Pi\) |
+| Σ         | \(\Sigma\) |
+| Υ         | \(\Upsilon\) |
+| Φ         | \(\Phi\) |
+| Ψ         | \(\Psi\) |
+| Ω         | \(\Omega\) |
+| א         | \(\aleph\) |
+| ב         | \(\beth\) |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\)       |
+| ג         | \(\gimel\) |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

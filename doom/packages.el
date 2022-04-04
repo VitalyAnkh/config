@@ -174,16 +174,20 @@
 (unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 
-(package! seperate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("lean4-mode/*.el")))
+;;(package! seperate-inline :recipe
+;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 
-(package! org-pretty-tags)
+;;(package! org-pretty-tags)
 
 (package! xenops)
 
-(package! org-fragtog)
+;;(package! org-fragtog)
 
 (package! engrave-faces)
+(package! org-fragtog)
+(package! org-pretty-tags)
+(package! seperate-inline :recipe
+  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 
 ;;(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 
