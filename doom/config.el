@@ -1591,6 +1591,18 @@ SQL can be either the emacsql vector representation, or a string."
       lsp-ui-sideline-ignore-duplicate t)
 ;; LSP:1 ends here
 
+;; [[file:config.org::*Agda][Agda:1]]
+(setq auto-mode-alist
+      (append
+       '(
+         ("\\.agda\\'" . agda2-mode)
+         ("\\.lagda.md\\'" . agda2-mode)
+         )
+       auto-mode-alist))
+;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
+;;                                  ("\\.lagda.md\\'" . agda2-mode)))
+;; Agda:1 ends here
+
 ;; [[file:config.org::*Rust][Rust:1]]
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer
