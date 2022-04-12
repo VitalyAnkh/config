@@ -710,6 +710,27 @@ Usage:
   )
 ;; Meow:2 ends here
 
+;; [[file:config.org::*Copilot][Copilot:2]]
+(add-hook 'prog-mode-hook 'copilot-mode)
+(add-hook 'text-mode-hook 'copilot-mode)
+(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
+; complete by copilot first, then company-mode
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (company-indent-or-complete-common nil)))
+
+; modify company-mode behaviors
+(with-eval-after-load 'company
+  ; disable inline previews
+  (delq 'company-preview-if-just-one-frontend company-frontends)
+  ; enable tab completion
+  (define-key company-mode-map (kbd "<tab>") 'my-tab)
+  (define-key company-mode-map (kbd "TAB") 'my-tab)
+  (define-key company-active-map (kbd "<tab>") 'my-tab)
+  (define-key company-active-map (kbd "TAB") 'my-tab))
+;; Copilot:2 ends here
+
 ;; [[file:config.org::*Annotate][Annotate:2]]
 (use-package annotate
   :after org

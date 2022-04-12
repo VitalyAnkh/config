@@ -21,6 +21,10 @@
 (package! meow)
 ;; Meow:1 ends here
 
+;; [[file:config.org::*Copilot][Copilot:1]]
+(package! copilot :recipe (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el")))
+;; Copilot:1 ends here
+
 ;; [[file:config.org::*Annotate][Annotate:1]]
 (package! annotate)
 ;; Annotate:1 ends here
