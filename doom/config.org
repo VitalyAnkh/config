@@ -4653,6 +4653,7 @@ with it.
   :config
   (setq org-roam-directory org-directory)
   )
+
 (use-package! websocket
   :after org-roam)
 
