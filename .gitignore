@@ -52,3 +52,6 @@
 !.gitmodules
 !.pam_environment
 !.profile
+
+**/elpa/**
+**/eln-cache/**

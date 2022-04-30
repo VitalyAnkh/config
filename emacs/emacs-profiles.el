@@ -1,2 +1,3 @@
-(("default" . ((user-emacs-directory . "~/.config/emacs/emacs.d-doom")))
- ("ksqsf" . ((user-emacs-directory . "~/.config/emacs/profiles/ksqsf"))))
+(("default" . ((user-emacs-directory . "~/.config/.emacs.d/")))
+("ksqsf" . ((user-emacs-directory . "~/.config/emacs/profiles/ksqsf")))
+("vanilla" . ((user-emacs-directory . "~/.config/emacs/profiles/vanilla"))))
