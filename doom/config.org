@@ -9398,7 +9398,6 @@ Use wakatime to track your coding time!
 Start =wakatime= at when emacs launches:
 #+begin_src emacs-lisp
 (use-package wakatime-mode
-  :defer t
   :config
   (global-wakatime-mode)
   )

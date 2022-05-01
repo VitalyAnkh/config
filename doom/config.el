@@ -5476,7 +5476,6 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*wakatime][wakatime:2]]
 (use-package wakatime-mode
-  :defer t
   :config
   (global-wakatime-mode)
   )
