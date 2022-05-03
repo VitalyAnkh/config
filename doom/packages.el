@@ -135,9 +135,6 @@
 
 (setq org-id-method 'ts)
 
-(package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table"))
-
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 
 (package! valign :recipe (:host github :repo "casouri/valign"))
@@ -147,8 +144,6 @@
 (package! org-modern)
 
 ;; (add-hook 'org-mode-hook #'org-modern-mode)
-
-(package! org-ref)
 
 (package! ob-http)
 

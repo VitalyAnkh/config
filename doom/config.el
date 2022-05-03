@@ -205,7 +205,7 @@ nil
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))
    ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
+    (pop-to-buffer (get-buffer " *tangle config*"))
     (message "Failed to tangle config.org (after %.1fs)"
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))))
@@ -1663,6 +1663,7 @@ SQL can be either the emacsql vector representation, or a string."
 ;; Plaintext:1 ends here
 
 (after! org
+  (remove-hook 'org-mode-hook #'org-pretty-table-mode)
   (setq org-directory "~/org"                       ; let's put files here
         org-journal-dir org-directory               ; let's keep things simple
         org-use-property-inheritance t              ; it's convenient to have properties inherited
@@ -4712,9 +4713,6 @@ SQL can be either the emacsql vector representation, or a string."
   (add-to-list '+org-babel-mode-alist '(jags . ess-jags))
 )
 
-(use-package! org-pretty-table
-  :commands (org-pretty-table-mode global-org-pretty-table-mode))
-
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)
   :config
@@ -4770,13 +4768,17 @@ SQL can be either the emacsql vector representation, or a string."
 ;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 
 (use-package! citar
+  :when (featurep! :completion vertico)
   :config
-  (setq citar-bibliography "~/org/library.bib")
-  (setq citar-templates
-      '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
-        (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
-        (note . "#+title: Notes on ${author editor}, ${title}")))
-  :when (featurep! :completion vertico))
+  (setq citar-bibliography
+        (let ((libfile-search-names '("library.bib" "Library.bib" "library.json" "Library.json"))
+              (libfile-dir "~/Zotero")
+              paths)
+          (dolist (libfile libfile-search-names)
+            (when (and (not paths)
+                       (file-exists-p (expand-file-name libfile libfile-dir)))
+              (setq paths (list (expand-file-name libfile libfile-dir)))))
+          paths)))
 
 (use-package! citeproc
   :defer t)
@@ -4801,7 +4803,7 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-cite-export-processors
         '((t csl))))
 
-  ;; Org-cite processors
+;; Org-cite processors
 (use-package! oc-biblatex
   :after oc)
 

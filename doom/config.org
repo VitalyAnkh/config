@@ -607,7 +607,7 @@ debugger                     ; FIXME stepping through code, to help you add bugs
 direnv                       ; be direct about your environment
 ;;docker                     ; port everything to containers
 editorconfig                 ; let someone else argue about tabs vs spaces
-;;ein                        ; tame Jupyter notebooks with emacs
+ein                        ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
 (lookup                      ; helps you navigate your code and documentation
@@ -659,7 +659,7 @@ ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
-;;gdscript                   ; the language you waited for
+gdscript                   ; the language you waited for
 (go +lsp)                    ; the hipster dialect
 (haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
@@ -1078,7 +1078,7 @@ straightforward, I'll just redefine it to a simpler, async, function.
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))
    ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
+    (pop-to-buffer (get-buffer " *tangle config*"))
     (message "Failed to tangle config.org (after %.1fs)"
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))))
@@ -3701,18 +3701,14 @@ Let =org-id-method= be time stamp. =uuid= is not informative for humans.
 
 **** Visuals
 ***** Tables
-Org tables aren't the prettiest thing to look at. This package is supposed to
-redraw them in the buffer with box-drawing characters. Sounds like an
-improvement to me! We'll make use of this with =writeroom-mode=.
-#+begin_src emacs-lisp
-(package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table"))
-#+end_src
-#+begin_src emacs-lisp :tangle yes
-(use-package! org-pretty-table
-  :commands (org-pretty-table-mode global-org-pretty-table-mode))
+We now get pretty tables with =org +pretty= from Doom, however I actually don't want
+that by default, so we'll just trim it off the org-mode hook.
+
+#+begin_src emacs-lisp :tangle no :noweb-ref org-conf
+(remove-hook 'org-mode-hook #'org-pretty-table-mode)
 #+end_src
 
+We'll enable this when using =writeroom-mode=.
 ***** Emphasis markers
 While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
 occur at the border a bit more fiddley. We can improve this situation without
@@ -3767,7 +3763,7 @@ structure has come to my attention.
 #+end_src
 
 ***** Use =org-modern=
-minad's =org-moder= is fashionate.
+minad's =org-modern= is fashionate.
 #+begin_src emacs-lisp
 (package! org-modern)
 #+end_src
@@ -3777,12 +3773,6 @@ minad's =org-moder= is fashionate.
 #+end_src
 
 **** Extra functionality
-
-***** Org ref
-Now and then citations need to happen
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-ref)
-#+end_src
 
 ***** HTTP requests
 
@@ -4027,13 +4017,17 @@ To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! citar
+  :when (featurep! :completion vertico)
   :config
-  (setq citar-bibliography "~/org/library.bib")
-  (setq citar-templates
-      '((main . "${author editor:30}     ${date year issued:4}     ${title:48}")
-        (suffix . "          ${=key= id:15}    ${=type=:12}    ${tags keywords:*}")
-        (note . "#+title: Notes on ${author editor}, ${title}")))
-  :when (featurep! :completion vertico))
+  (setq citar-bibliography
+        (let ((libfile-search-names '("library.bib" "Library.bib" "library.json" "Library.json"))
+              (libfile-dir "~/Zotero")
+              paths)
+          (dolist (libfile libfile-search-names)
+            (when (and (not paths)
+                       (file-exists-p (expand-file-name libfile libfile-dir)))
+              (setq paths (list (expand-file-name libfile libfile-dir)))))
+          paths)))
 
 (use-package! citeproc
   :defer t)
@@ -4058,7 +4052,7 @@ To improve =org-cite=.
   (setq org-cite-export-processors
         '((t csl))))
 
-  ;; Org-cite processors
+;; Org-cite processors
 (use-package! oc-biblatex
   :after oc)
 
@@ -8438,40 +8432,50 @@ This gives the same advantages as mentioned in the [[*Make verbatim different to
 
 For how I've setup Org's LaTeX export, the following packages are needed:
 #+name: org-latex-required-packages-list
-+ adjustbox
-+ arev
-+ amsmath
-+ booktabs
-+ cancel
-+ capt-of
-+ caption
-+ cleveref
-+ embedall
-+ fourier
-+ fvextra
-+ gillius
-+ graphicx
-+ hyperref
-+ mathalpha
-+ mathtools
-+ microtype
-+ pdfx
-+ pifont
-+ preview
-+ siunitx
-+ soul
-+ subcaption
-+ svg
-+ tcolorbox
-+ xcolor
-+ xparse
-
+| Package    | Description                                           |
+|------------+-------------------------------------------------------|
+| adjustbox  | Adjust general LaTeX material in like includegraphics |
+| amsmath    | A near-essential maths package                        |
+| booktabs   | Nice horizontal lines in tables                       |
+| cancel     | Cancel terms in equations                             |
+| capt-of    | Captions outside floats                               |
+| caption    | Finer control over captions                           |
+| cleveref   | Easy cross-referencing                                |
+| embedall   | Embed files in the document                           |
+| float      | Floating environments                                 |
+| fontenc    | Font encodings                                        |
+| fvextra    | Enhanced verbatim environments                        |
+| graphicx   | An extended graphics package                          |
+| hanging    | Used by oc-csl                                        |
+| hyperref   | Links                                                 |
+| inputenc   | Input file encodings                                  |
+| longtable  | Multi-page tables                                     |
+| mathalpha  | Set extended math alphabet fonts                      |
+| mathtools  | Typesetting tools for maths                           |
+| microtype  | Microtypography                                       |
+| pdfx       | Create pdf/a- and pdf/x- compatible documents         |
+| pifont     | A collection of symbols                               |
+| preview    | Needed for AUCTeX and ob-latex                        |
+| scrbase    | KOMA classes and more                                 |
+| siunitx    | Proper unit support                                   |
+| soul       | Strikethrough and underline, flexibly                 |
+| subcaption | Form subfigures and subcaptions                       |
+| svg        | Insert SVG images                                     |
+| tikz       | Generally handy, as a dependancy and for graphics     |
+| tcolorbox  | Nice boxes for code                                   |
+| textcomp   | Font encodings                                        |
+| xcolor     | Colours                                               |
+| xparse     | Extended command/env definition forms                 |
+| xcoffins   | Manipulate coffins (boxes) for typesetting            |
 Then for the various fontsets:
 #+name: org-latex-font-packages-list
 + Alegreya
++ arev
 + biolinum
 + FiraMono
 + FiraSans
++ fourier
++ gillius
 + kpfonts
 + libertine
 + newpxmath
@@ -8493,8 +8497,8 @@ generated config that gets a list of missing packages and warns us every time we
 export to a PDF.
 
 #+name: org-missing-latex-packages
-#+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list :var org-latex-font-packages-list=org-latex-font-packages-list
-(setq org-required-latex-packages (append (mapcar #'car org-latex-required-packages-list)
+#+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list[,0] :var org-latex-font-packages-list=org-latex-font-packages-list
+(setq org-required-latex-packages (append org-latex-required-packages-list
                                           (mapcar #'car org-latex-font-packages-list)))
 
 (defun check-for-latex-packages (packages)
