@@ -1603,13 +1603,16 @@ SQL can be either the emacsql vector representation, or a string."
 ;; File Templates:1 ends here
 
 ;; [[file:config.org::*LSP][LSP:1]]
-(setq lsp-file-watch-threshold 1000
-      lsp-ui-doc-position "Bottom"
-      lsp-ui-peek-enable t
-      lsp-ui-doc-enable nil
-      lsp-ui-imenu-enable t
-      lsp-ui-sideline-enable nil
-      lsp-ui-sideline-ignore-duplicate t)
+(use-package lsp-mode
+  :custom
+  (lsp-enable-file-watchers nil)
+  (lsp-ui-doc-position "Bottom")
+  (lsp-keep-workspace-alive nil)
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-semantic-tokens-enable t)
+  )
 ;; LSP:1 ends here
 
 ;; [[file:config.org::*Agda][Agda:1]]
@@ -1624,6 +1627,10 @@ SQL can be either the emacsql vector representation, or a string."
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
 ;; Agda:1 ends here
 
+;; [[file:config.org::*OCaml][OCaml:1]]
+(add-hook 'before-save-hook 'ocamlformat-before-save)
+;; OCaml:1 ends here
+
 ;; [[file:config.org::*Rust][Rust:1]]
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer
@@ -1635,7 +1642,8 @@ SQL can be either the emacsql vector representation, or a string."
         lsp-rust-analyzer-server-display-inlay-hints t
         lsp-rust-all-features t
         rustic-format-on-save t
-        lsp-enable-semantic-highlighting t))
+)
+)
 (use-package dap-mode
   :config
   (require 'dap-lldb)

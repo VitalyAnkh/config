@@ -3444,13 +3444,16 @@ need to have a template assigned.
 *** LSP
 Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp client in Emacs has some nuisances. Let's tweak it.
 #+begin_src emacs-lisp
-(setq lsp-file-watch-threshold 1000
-      lsp-ui-doc-position "Bottom"
-      lsp-ui-peek-enable t
-      lsp-ui-doc-enable nil
-      lsp-ui-imenu-enable t
-      lsp-ui-sideline-enable nil
-      lsp-ui-sideline-ignore-duplicate t)
+(use-package lsp-mode
+  :custom
+  (lsp-enable-file-watchers nil)
+  (lsp-ui-doc-position "Bottom")
+  (lsp-keep-workspace-alive nil)
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-semantic-tokens-enable t)
+  )
 #+end_src
 ** Agda
 Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That's a bug and it's easy to fix.
@@ -3486,6 +3489,11 @@ Use ~Lean~ to prove you are a prover!
 (package! sage-shell-mode)
 (package! ob-sagemath)
 #+end_src
+** OCaml
+I love auto-formatting =OCaml= code.
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'ocamlformat-before-save)
+#+end_src
 ** Rust
 #+begin_src emacs-lisp
 (after! rustic
@@ -3498,7 +3506,8 @@ Use ~Lean~ to prove you are a prover!
         lsp-rust-analyzer-server-display-inlay-hints t
         lsp-rust-all-features t
         rustic-format-on-save t
-        lsp-enable-semantic-highlighting t))
+)
+)
 (use-package dap-mode
   :config
   (require 'dap-lldb)
