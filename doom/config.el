@@ -711,24 +711,23 @@ Usage:
 ;; Meow:2 ends here
 
 ;; [[file:config.org::*Copilot][Copilot:2]]
-(add-hook 'prog-mode-hook 'copilot-mode)
-(add-hook 'text-mode-hook 'copilot-mode)
-(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
-; complete by copilot first, then company-mode
+(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert)))
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
       (company-indent-or-complete-common nil)))
-
-; modify company-mode behaviors
-(with-eval-after-load 'company
-  ; disable inline previews
-  (delq 'company-preview-if-just-one-frontend company-frontends)
-  ; enable tab completion
-  (define-key company-mode-map (kbd "<tab>") 'my-tab)
-  (define-key company-mode-map (kbd "TAB") 'my-tab)
-  (define-key company-active-map (kbd "<tab>") 'my-tab)
-  (define-key company-active-map (kbd "TAB") 'my-tab))
+;; complete by copilot first, then company-mode
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :hook (text-mode . copilot-mode)
+  :bind (("C-TAB" . 'copilot-accept-completion-by-word)
+         ("C-<tab>" . 'copilot-accept-completion-by-word)
+         :map company-active-map
+         ("<tab>" . 'my-tab)
+         ("TAB" . 'my-tab)
+         :map company-mode-map
+         ("<tab>" . 'my-tab)
+         ("TAB" . 'my-tab)))
 ;; Copilot:2 ends here
 
 ;; [[file:config.org::*Annotate][Annotate:2]]
