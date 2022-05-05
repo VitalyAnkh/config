@@ -1973,7 +1973,7 @@ GitHub Copilot is awesome!
 #+end_src
 
 #+begin_src emacs-lisp
-(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert)))
+(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
@@ -4378,8 +4378,8 @@ set up org-capture.
                    :file +org-capture-journal-file
                    :target (file+olp+datetree +org-capture-journal-file day)
                    :type entry
-                   :template ("* %U")
-                   )
+                   :template ("* %U"
+                              "%T"))
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file

@@ -711,7 +711,7 @@ Usage:
 ;; Meow:2 ends here
 
 ;; [[file:config.org::*Copilot][Copilot:2]]
-(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert)))
+(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
@@ -2014,8 +2014,8 @@ SQL can be either the emacsql vector representation, or a string."
                      :file +org-capture-journal-file
                      :target (file+olp+datetree +org-capture-journal-file day)
                      :type entry
-                     :template ("* %U")
-                     )
+                     :template ("* %U"
+                                "%T"))
                     ("Email" :keys "e"
                      :icon ("envelope" :set "faicon" :color "blue")
                      :file +org-capture-todo-file
