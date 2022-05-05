@@ -2012,10 +2012,14 @@ SQL can be either the emacsql vector representation, or a string."
                     ("Personal journal" :keys "j"
                      :icon ("checklist" :set "octicon" :color "yellow")
                      :file +org-capture-journal-file
-                     :target (file+olp+datetree +org-capture-journal-file day)
+                     :type entry
+                     :prepend t
+                     :target (file+olp+datatree +org-capture-journal-file)
                      :type entry
                      :template ("* %U"
-                                "%T"))
+                                "%i %a"
+                                "%?"
+                                ))
                     ("Email" :keys "e"
                      :icon ("envelope" :set "faicon" :color "blue")
                      :file +org-capture-todo-file
