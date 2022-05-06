@@ -3481,6 +3481,26 @@ Use ~Lean~ to prove you are a prover!
 (add-hook 'lean-mode-hook
   (lambda () (setq-default sis-english-source "Lean")))
 #+end_src
+** Meson
+Meson is a great build tool for C++, much more ergonomic than CMake.
+#+begin_src emacs-lisp :tangle packages.el
+(package! meson-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(add-hook 'meson-mode-hook 'company-mode)
+#+end_src
+** LLVM Tools
+Add major modes for LLVM's =LLVM IR= and =TableGen=.
+#+begin_src emacs-lisp :tangle packages.el
+;; TODO
+;; To have these small packages we must clone the whole llvm-project repository
+;; That's insane and needs fixed
+(package! llvm :recipe
+  (:host github
+   :repo "llvm/llvm-project"
+   :files ("llvm/utils/emacs/*.el")))
+#+end_src
 ** Sage Math
 =Sage Math= is good, use it.
 #+begin_src emacs-lisp :tangle packages.el

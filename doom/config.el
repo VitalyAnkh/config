@@ -1626,6 +1626,10 @@ SQL can be either the emacsql vector representation, or a string."
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
 ;; Agda:1 ends here
 
+;; [[file:config.org::*Meson][Meson:2]]
+(add-hook 'meson-mode-hook 'company-mode)
+;; Meson:2 ends here
+
 ;; [[file:config.org::*OCaml][OCaml:1]]
 (add-hook 'before-save-hook 'ocamlformat-before-save)
 ;; OCaml:1 ends here
