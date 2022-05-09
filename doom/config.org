@@ -366,6 +366,8 @@ the following:
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
+(scroll-bar-mode)                                 ; I like scroll bars
+
 ;; Useset C-z which is bound to =suspend-frame= by default
 (global-unset-key (kbd "C-z"))
 #+end_src
@@ -659,16 +661,16 @@ ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
-gdscript                   ; the language you waited for
+gdscript                     ; the language you waited for
 (go +lsp)                    ; the hipster dialect
 (haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp)                        ;
 (json +lsp)                         ; At least it ain't XML
-;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
+(java +lsp)                  ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp)                 ; Python, R, and MATLAB in a blender
-;;kotlin                     ; a better, slicker Java(Script)
+(kotlin +lsp)                ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
@@ -834,13 +836,14 @@ I find the ~doom-solarized-light~ really nice. Oh, and with the nice selection d
   :config
   ;;Global settings (defaults)
   (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        doom-themes-enable-italic t ; if nil, italics is universally disabled
+        doom-themes-treemacs-enable-variable-pitch nil)
   (doom-themes-treemacs-config)
-  ;;(doom-themes-org-config)
+  (doom-themes-org-config)
   )
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
-(delq! t custom-theme-load-path)
+;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
+;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
+;; (delq! t custom-theme-load-path)
 #+end_src
 
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
@@ -867,12 +870,6 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 #+end_src
 
 **** Miscellaneous
-Relative line numbers are fantastic for knowing how far away line numbers are,
-then =ESC 12 <UP>= gets you exactly where you think.
-#+begin_src emacs-lisp
-;;(setq display-line-numbers-type 'relative)
-#+end_src
-
 Add this hook to eleminate doom emacs errors:
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
@@ -3016,6 +3013,9 @@ Now, we just identify the files in question.
         "mw"
         ;; LaTeX - pdfx
         "pdfa.xmpi"
+        ;; agda
+        "agdai"
+        ;; ocaml
         ))
 (setq treemacs-file-ignore-globs
       '(;; LaTeX
@@ -3031,6 +3031,29 @@ Minic =evil='s ~/~ in =treemacs= buffer:
   ;; No EVIL, then I add this
   (define-key treemacs-mode-map (kbd "/") 'meow-visit)
 )
+#+end_src
+Adjust the face of =treemacs=. The variable-pitch font is too large for a file explorer.
+#+begin_src emacs-lisp
+(use-package treemacs
+  :config
+  (setq
+   treemacs-file-event-delay 1000
+   treemacs-follow-after-init t
+   treemacs-file-follow-delay 0.1
+   treemacs-indentation 1
+   treemacs-recenter-after-file-follow t
+   treemacs-recenter-after-tag-follow t
+   ;;treemacs-text-scale 1.5
+   )
+  :bind
+  (:map global-map
+   ("C-x t 1"   . treemacs-delete-other-windows)
+   ("C-x t t"   . treemacs)
+   ("C-x t d"   . treemacs-select-directory)
+   ("C-x t B"   . treemacs-bookmark)
+   ("C-x t C-t" . treemacs-find-file)
+   ("C-x t M-t" . treemacs-find-tag))
+  )
 #+end_src
 ** Frivolities
 *** xkcd
@@ -3493,13 +3516,11 @@ Meson is a great build tool for C++, much more ergonomic than CMake.
 ** LLVM Tools
 Add major modes for LLVM's =LLVM IR= and =TableGen=.
 #+begin_src emacs-lisp :tangle packages.el
-;; TODO
-;; To have these small packages we must clone the whole llvm-project repository
-;; That's insane and needs fixed
+;; Use my own fork of the llvm-tools which located in the llvm-project monorepo
 (package! llvm :recipe
   (:host github
-   :repo "llvm/llvm-project"
-   :files ("llvm/utils/emacs/*.el")))
+   :repo "VitalyAnkh/llvm-tools"
+   :files ("*.el")))
 #+end_src
 ** Sage Math
 =Sage Math= is good, use it.

@@ -123,13 +123,11 @@
 ;; Meson:1 ends here
 
 ;; [[file:config.org::*LLVM Tools][LLVM Tools:1]]
-;; TODO
-;; To have these small packages we must clone the whole llvm-project repository
-;; That's insane and needs fixed
+;; Use my own fork of the llvm-tools which located in the llvm-project monorepo
 (package! llvm :recipe
   (:host github
-   :repo "llvm/llvm-project"
-   :files ("llvm/utils/emacs/*.el")))
+   :repo "VitalyAnkh/llvm-tools"
+   :files ("*.el")))
 ;; LLVM Tools:1 ends here
 
 ;; [[file:config.org::*Sage Math][Sage Math:1]]

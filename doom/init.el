@@ -125,16 +125,16 @@
        ;;faust                      ; dsp, but you get to keep your soul
        ;;fsharp                     ; ML stands for Microsoft's Language
        ;;fstar                      ; (dependent) types and (monadic) effects and Z3
-       gdscript                   ; the language you waited for
+       gdscript                     ; the language you waited for
        (go +lsp)                    ; the hipster dialect
        (haskell +lsp)               ; a language that's lazier than I am
        ;;hy                         ; readability of scheme w/ speed of python
        (idris +lsp)                        ;
        (json +lsp)                         ; At least it ain't XML
-       ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
+       (java +lsp)                  ; the poster child for carpal tunnel syndrome
        (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
        (julia +lsp)                 ; Python, R, and MATLAB in a blender
-       ;;kotlin                     ; a better, slicker Java(Script)
+       (kotlin +lsp)                ; a better, slicker Java(Script)
        (latex                       ; writing papers in Emacs has never been so fun
         +latexmk                    ; what else would you use?
         +cdlatex                    ; quick maths symbols

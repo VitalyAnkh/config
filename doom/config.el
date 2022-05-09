@@ -33,6 +33,8 @@
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
+(scroll-bar-mode)                                 ; I like scroll bars
+
 ;; Useset C-z which is bound to =suspend-frame= by default
 (global-unset-key (kbd "C-z"))
 ;; Simple settings:1 ends here
@@ -120,13 +122,14 @@ nil
   :config
   ;;Global settings (defaults)
   (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        doom-themes-enable-italic t ; if nil, italics is universally disabled
+        doom-themes-treemacs-enable-variable-pitch nil)
   (doom-themes-treemacs-config)
-  ;;(doom-themes-org-config)
+  (doom-themes-org-config)
   )
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
-(delq! t custom-theme-load-path)
+;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
+;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
+;; (delq! t custom-theme-load-path)
 ;; Theme and modeline:1 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:2]]
@@ -147,17 +150,13 @@ nil
 ;; Theme and modeline:3 ends here
 
 ;; [[file:config.org::*Miscellaneous][Miscellaneous:1]]
-;;(setq display-line-numbers-type 'relative)
+(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
 ;; Miscellaneous:1 ends here
 
 ;; [[file:config.org::*Miscellaneous][Miscellaneous:2]]
-(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
-;; Miscellaneous:2 ends here
-
-;; [[file:config.org::*Miscellaneous][Miscellaneous:3]]
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
-;; Miscellaneous:3 ends here
+;; Miscellaneous:2 ends here
 
 ;; [[file:config.org::*Asynchronous config tangling][Asynchronous config tangling:1]]
 (defvar +literate-tangle--proc nil)
@@ -1253,6 +1252,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         "mw"
         ;; LaTeX - pdfx
         "pdfa.xmpi"
+        ;; agda
+        "agdai"
+        ;; ocaml
         ))
 (setq treemacs-file-ignore-globs
       '(;; LaTeX
@@ -1269,6 +1271,29 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (define-key treemacs-mode-map (kbd "/") 'meow-visit)
 )
 ;; Treemacs:3 ends here
+
+;; [[file:config.org::*Treemacs][Treemacs:4]]
+(use-package treemacs
+  :config
+  (setq
+   treemacs-file-event-delay 1000
+   treemacs-follow-after-init t
+   treemacs-file-follow-delay 0.1
+   treemacs-indentation 1
+   treemacs-recenter-after-file-follow t
+   treemacs-recenter-after-tag-follow t
+   ;;treemacs-text-scale 1.5
+   )
+  :bind
+  (:map global-map
+   ("C-x t 1"   . treemacs-delete-other-windows)
+   ("C-x t t"   . treemacs)
+   ("C-x t d"   . treemacs-select-directory)
+   ("C-x t B"   . treemacs-bookmark)
+   ("C-x t C-t" . treemacs-find-file)
+   ("C-x t M-t" . treemacs-find-tag))
+  )
+;; Treemacs:4 ends here
 
 ;; [[file:config.org::*xkcd][xkcd:2]]
 (use-package! xkcd
