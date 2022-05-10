@@ -1210,7 +1210,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Writeroom:2 ends here
 
 ;; [[file:config.org::*Treemacs][Treemacs:1]]
-(after! treemacs
+(after! (treemacs dired)
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
   (defvar treemacs-file-ignore-globs '()
