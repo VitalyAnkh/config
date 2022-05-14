@@ -167,7 +167,6 @@ digraph {
 + Emacs is ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Threads.html][mostly]]) single-threaded, meaning that when something holds that
   thread up the whole application freezes
 + A few other nuisances
-
 *** Teach a man to fish...
 #+begin_quote
 Give a man a fish, and you feed him for a day. Teach a man to fish, and you feed
@@ -538,7 +537,7 @@ doom-dashboard               ; a nifty splash screen for Emacs
 ;;(emoji +unicode +ascii +github)    ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-hydra                      ; quick documentation for related commands
+;;hydra                      ; quick documentation for related commands
 ;;indent-guides              ; highlighted indent columns, notoriously slow
 (ligatures +extra)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
@@ -1762,7 +1761,14 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
 #+end_src
-
+*** Straight
+Let =straight= use our own =org=.
+#+begin_src emacs-lisp
+(use-package straight
+  :config
+  (add-to-list 'straight-built-in-pseudo-packages 'org)
+  )
+#+end_src
 *** Eros
 #+begin_quote
 From the =:tools eval= module.

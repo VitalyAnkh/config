@@ -521,6 +521,13 @@ nil
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
 ;; Very large files:2 ends here
 
+;; [[file:config.org::*Straight][Straight:1]]
+(use-package straight
+  :config
+  (add-to-list 'straight-built-in-pseudo-packages 'org)
+  )
+;; Straight:1 ends here
+
 ;; [[file:config.org::*Eros][Eros:1]]
 (setq eros-eval-result-prefix "⟹ ") ; default =>
 ;; Eros:1 ends here
