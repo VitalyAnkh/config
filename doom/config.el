@@ -1725,7 +1725,7 @@ SQL can be either the emacsql vector representation, or a string."
           (:hlines . "no")
           (:tangle . "no")
           (:comments . "link")))
-  (remove-hook 'text-mode-hook #'visual-line-mode)
+  ;;(remove-hook 'text-mode-hook #'visual-line-mode)
   ;;(add-hook 'text-mode-hook #'auto-fill-mode)
   (map! :map org-mode-map
         :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
@@ -2709,8 +2709,8 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook #'locally-defer-font-lock)
   (setq org-inline-src-prettify-results '("⟨" . "⟩"))
   (setq doom-themes-org-fontify-special-tags nil)
-  ;;(package! seperate-inline :recipe
-  ;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+  (package! seperate-inline :recipe
+   (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
   (use-package seperate-inline
     :hook ((org-mode-hook . separate-inline-mode)
            (org-mode-hook . (lambda ()
@@ -2814,7 +2814,7 @@ SQL can be either the emacsql vector representation, or a string."
     :priority_d    "[#D]"
     :priority_e    "[#E]")
   (plist-put +ligatures-extra-symbols :name "⁍")
-  ;;(package! org-pretty-tags)
+  (package! org-pretty-tags)
   (use-package org-pretty-tags
     :config
     (setq org-pretty-tags-surrogate-strings
@@ -2837,7 +2837,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;;(setq org-highlight-latex-and-related '(native latex entities))
   (require 'org-src)
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
-  ;;(package! org-fragtog)
+  (package! org-fragtog)
   (add-hook 'org-mode-hook 'org-fragtog-mode)
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-preview-latex-process-alist

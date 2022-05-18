@@ -3801,8 +3801,7 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 #+end_src
 
 ***** Heading structure
-Speaking of headlines, a nice package for viewing and managing the heading
-structure has come to my attention.
+Speaking of headlines, a nice package for viewing and managing the heading structure has come to my attention.
 #+begin_src emacs-lisp
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
 #+end_src
@@ -3970,7 +3969,7 @@ However this messes with tables in Org-mode, and other plaintext files (e.g.
 markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
 specific modes as desired.
 #+begin_src emacs-lisp
-(remove-hook 'text-mode-hook #'visual-line-mode)
+;;(remove-hook 'text-mode-hook #'visual-line-mode)
 ;;(add-hook 'text-mode-hook #'auto-fill-mode)
 #+end_src
 **** Extra functionality
@@ -5467,8 +5466,8 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-;;(package! seperate-inline :recipe
-;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! seperate-inline :recipe
+ (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5590,7 +5589,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp :tangle packages.el
-;;(package! org-pretty-tags)
+(package! org-pretty-tags)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5721,7 +5720,7 @@ have this be performed automatically with =xenops=.
 #+end_src
 OK, let's customize the default inline rendering a bit.
 #+begin_src emacs-lisp :tangle packages.el
-;;(package! org-fragtog)
+(package! org-fragtog)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7817,10 +7816,6 @@ exporting that as LaTeX commands.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! engrave-faces)
-(package! org-fragtog)
-(package! org-pretty-tags)
-(package! seperate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none
