@@ -4794,9 +4794,9 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package valign
   :init
   (require 'valign)
-  ;; :hook
-  ;; (org-mode . valign-mode)
-  ;; (markdown-mode . valign-mode)
+  :hook
+  (org-mode . valign-mode)
+  (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
