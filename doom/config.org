@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2020-2021 tecosaur <tec@tecosaur.com>
+# SPDX-FileCopyrightText: © 2020-2022 VitalyR <vitalyankh@gmail.com>
 # SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
@@ -401,20 +401,6 @@ setting, and load it if it exists.
 I find it rather handy to be asked which buffer I want to see after splitting
 the window. Let's make that happen.
 
-First, we'll enter the new window
-#+begin_src emacs-lisp
-;; (setq evil-vsplit-window-right t
-;;       evil-split-window-below t)
-#+end_src
-
-Then, we'll pull up a buffer prompt.
-#+begin_src emacs-lisp
-;; (defadvice! prompt-for-buffer (&rest _)
-;;   :after '(evil-window-split evil-window-vsplit)
-;;   (consult-buffer))
-#+end_src
-
-Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
 /Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
 by Tmux's use of =C-b SPC= to rotate windows.
 
