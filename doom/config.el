@@ -723,18 +723,125 @@ Usage:
   (or (copilot-accept-completion)
       (company-indent-or-complete-common nil)))
 ;; complete by copilot first, then company-mode
+;; (use-package! copilot
+;;   :hook (prog-mode . copilot-mode)
+;;   :hook (text-mode . copilot-mode)
+;;   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
+;;          ("C-<tab>" . 'copilot-accept-completion-by-word)
+;;          :map company-active-map
+;;          ("<tab>" . 'my-tab)
+;;          ("TAB" . 'my-tab)
+;;          :map company-mode-map
+;;          ("<tab>" . 'my-tab)
+;;          ("TAB" . 'my-tab)))
 (use-package! copilot
+  :after corfu
   :hook (prog-mode . copilot-mode)
   :hook (text-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
          ("C-<tab>" . 'copilot-accept-completion-by-word)
-         :map company-active-map
-         ("<tab>" . 'my-tab)
-         ("TAB" . 'my-tab)
-         :map company-mode-map
+         :map corfu-map
          ("<tab>" . 'my-tab)
          ("TAB" . 'my-tab)))
 ;; Copilot:2 ends here
+
+;; [[file:config.org::*Corfu][Corfu:2]]
+;; Reset lsp-completion provider
+(add-hook 'doom-init-modules-hook
+          (lambda ()
+            (after! lsp-mode
+              (setq lsp-completion-provider :none))))
+
+;; Pad before lsp modeline error info
+(add-hook 'lsp-mode-hook
+          (lambda ()
+            (setf (caadr
+                   (assq 'global-mode-string mode-line-misc-info))
+                  " ")))
+
+;; Set orderless filtering for LSP-mode completions
+(add-hook 'lsp-completion-mode-hook
+          (lambda ()
+            (setf (alist-get 'lsp-capf completion-category-defaults) '((styles . (orderless))))))
+
+;; Set bindings
+(map! :i "C-@" #'completion-at-point
+      :i "C-SPC" #'completion-at-point
+      (:prefix "C-x"
+       :i "C-k" #'cape-dict
+       :i "C-f" #'cape-file
+       :i "s" #'cape-ispell
+       :i "C-n" #'cape-keyword
+       :i "C-s" #'dabbrev-completion))
+
+;; Fallback cleanly to consult in TUI
+(setq-default completion-in-region-function #'consult-completion-in-region)
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (company-indent-or-complete-common nil)))
+
+(use-package corfu
+  :after copilot
+  :custom
+  (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-preview-current nil)    ;; Disable current candidate preview
+  (corfu-auto nil)
+  (corfu-on-exact-match nil)
+  (corfu-quit-no-match 'separator)
+  (corfu-preselect-first nil)
+  :hook
+  (doom-first-buffer . global-corfu-mode)
+  :bind (:map corfu-map
+         ("SPC" . corfu-insert-separator)
+         ("TAB" . my-tab)
+         ([tab] . my-tab)
+         ;; ("TAB" . corfu-next)
+         ;; ([tab] . corfu-next)
+         ("S-TAB" . corfu-previous)
+         ([backtab] . corfu-previous)))
+
+(use-package corfu-doc
+  :hook
+  (corfu-mode . corfu-doc-mode)
+  :bind (:map corfu-map
+         ("M-n" . corfu-doc-scroll-down)
+         ("M-p" . corfu-doc-scroll-up)
+         ("M-d" . corfu-doc-toggle)))
+
+(use-package orderless
+  :when (featurep! +orderless)
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion))))))
+
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package cape
+  :defer t
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file-capf)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev-capf)
+  (add-to-list 'completion-at-point-functions #'cape-keyword-capf))
+
+(setq completion-cycle-threshold 1)
+
+;; Enable indentation+completion using the TAB key.
+;; Completion is often bound to M-TAB.
+(setq tab-always-indent 'complete)
+
+;; Dirty hack to get c completion running
+;; Discussion in https://github.com/minad/corfu/issues/34
+(when (equal tab-always-indent 'complete)
+  (map! :map c-mode-base-map
+        :i [remap c-indent-line-or-region] #'completion-at-point))
+;; Corfu:2 ends here
 
 ;; [[file:config.org::*Annotate][Annotate:2]]
 (use-package annotate
@@ -855,12 +962,12 @@ Usage:
 ;; Smerge:1 ends here
 
 ;; [[file:config.org::*Company][Company:1]]
-(after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t)
-  ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
-  )
+;; (after! company
+;;   (setq company-idle-delay 0.5
+;;         company-minimum-prefix-length 2)
+;;   (setq company-show-numbers t)
+;;   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+;;   )
 ;; Company:1 ends here
 
 ;; [[file:config.org::*Company][Company:3]]
@@ -869,18 +976,18 @@ Usage:
 ;; Company:3 ends here
 
 ;; [[file:config.org::*Plain Text][Plain Text:1]]
-(set-company-backend!
-  '(text-mode
-    markdown-mode
-    gfm-mode)
-  '(:seperate
-    ;;company-ispell
-    company-files
-    company-yasnippet))
+;; (set-company-backend!
+;;   '(text-mode
+;;     markdown-mode
+;;     gfm-mode)
+;;   '(:seperate
+;;     ;;company-ispell
+;;     company-files
+;;     company-yasnippet))
 ;; Plain Text:1 ends here
 
 ;; [[file:config.org::*ESS][ESS:1]]
-(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
+;;(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 ;; ESS:1 ends here
 
 ;; [[file:config.org::*Projectile][Projectile:1]]
@@ -1170,10 +1277,11 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; [[file:config.org::*Writeroom][Writeroom:2]]
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
+(defvar +zen-org-starhide t
+  "The value `org-modern-hide-stars' is set to.")
 (after! writeroom-mode
   (defvar-local +zen--original-org-indent-mode-p nil)
   (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defvar-local +zen--original-org-pretty-table-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
     (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
@@ -1186,8 +1294,10 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
             'display-line-numbers
             'visual-fill-column-width
             'org-adapt-indentation
-            'org-superstar-headline-bullets-list
-            'org-superstar-remove-leading-stars)
+            'org-modern-mode
+            'org-modern-star
+            'org-modern-hide-stars
+            )
   (add-hook 'writeroom-mode-enable-hook
             (defun +zen-prose-org-h ()
               "Reformat the current Org buffer appearance for prose."
@@ -1195,25 +1305,23 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
                 (setq display-line-numbers nil
                       visual-fill-column-width 60
                       org-adapt-indentation nil)
-                (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-remove-leading-stars t)
-                  (org-superstar-restart))
+                (when (featurep 'org-modern)
+                  (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
+                              ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-modern-hide-stars +zen-org-starhide)
+                  (org-modern-mode -1)
+                  (org-modern-mode 1))
                 (setq
                  +zen--original-org-indent-mode-p org-indent-mode
-                 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
-                (org-indent-mode -1)
-                (org-pretty-table-mode 1))))
-  (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-nonprose-org-h ()
-              "Reverse the effect of `+zen-prose-org'."
-              (when (eq major-mode 'org-mode)
-                (when (featurep 'org-superstar)
-                  (org-superstar-restart))
-                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
-                ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
-                ))))
+                 (org-indent-mode -1))))
+            (add-hook 'writeroom-mode-disable-hook
+                      (defun +zen-nonprose-org-h ()
+                        "Reverse the effect of `+zen-prose-org'."
+                        (when (eq major-mode 'org-mode)
+                          (when (bound-and-true-p org-modern-mode)
+                            (org-modern-mode -1)
+                            (org-modern-mode 1))
+                          (when +zen--original-org-indent-mode-p (org-indent-mode 1)))))))
 ;; Writeroom:2 ends here
 
 ;; [[file:config.org::*Treemacs][Treemacs:1]]
@@ -1706,7 +1814,6 @@ SQL can be either the emacsql vector representation, or a string."
 ;; Plaintext:1 ends here
 
 (after! org
-  (remove-hook 'org-mode-hook #'org-pretty-table-mode)
   (setq org-directory "~/org"                       ; let's put files here
         org-journal-dir org-directory               ; let's keep things simple
         org-use-property-inheritance t              ; it's convenient to have properties inherited
@@ -2718,10 +2825,6 @@ SQL can be either the emacsql vector representation, or a string."
                                         'separate-inline-use-default-rules-for-org-local
                                         nil 'make-it-local))))
     )
-  (after! org-superstar
-    (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
-          org-superstar-prettify-item-bullets t ))
-  
   (setq org-ellipsis " ▾ "
         org-hide-leading-stars t
         org-priority-highest ?A
@@ -2749,6 +2852,8 @@ SQL can be either the emacsql vector representation, or a string."
               :options       "⌥"
               :startup       "⏻"
               :macro         "ℳ"
+              :bibliography  ""
+              :print_biblio  ""
               :html_head     "🅷"
               :html          "🅗"
               :latex_class   "🄻"
@@ -2790,6 +2895,8 @@ SQL can be either the emacsql vector representation, or a string."
     :options       "#+options:"
     :startup       "#+startup:"
     :macro         "#+macro:"
+    :bibliography  "#+bibliography:"
+    :print_biblio  "#+print_bibliography:"
     :html_head     "#+html_head:"
     :html          "#+html:"
     :latex_class   "#+latex_class:"
@@ -4247,20 +4354,6 @@ SQL can be either the emacsql vector representation, or a string."
   (add-to-list 'org-latex-conditional-features '((and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ") . condensed-lists) t)
   (add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 0.7) t)
   (setq org-latex-listings 'engraved) ; NOTE non-standard value
-  (defadvice! org-latex-src-block-engraved (orig-fn src-block contents info)
-    "Like `org-latex-src-block', but supporting an engraved backend"
-    :around #'org-latex-src-block
-    (if (eq 'engraved (plist-get info :latex-listings))
-        (org-latex-scr-block--engraved src-block contents info)
-      (funcall orig-fn src-block contents info)))
-  
-  (defadvice! org-latex-inline-src-block-engraved (orig-fn inline-src-block contents info)
-    "Like `org-latex-inline-src-block', but supporting an engraved backend"
-    :around #'org-latex-inline-src-block
-    (if (eq 'engraved (plist-get info :latex-listings))
-        (org-latex-inline-scr-block--engraved inline-src-block contents info)
-      (funcall orig-fn src-block contents info)))
-  
   (defvar-local org-export-has-code-p nil)
   
   (defadvice! org-export-expect-no-code (&rest _)
@@ -4268,7 +4361,7 @@ SQL can be either the emacsql vector representation, or a string."
     (setq org-export-has-code-p nil))
   
   (defadvice! org-export-register-code (&rest _)
-    :after #'org-latex-src-block-engraved
+    :after #'org-latex-src-block
     :after #'org-latex-inline-src-block-engraved
     (setq org-export-has-code-p t))
   
@@ -4281,15 +4374,15 @@ SQL can be either the emacsql vector representation, or a string."
     breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}}
   \\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
   
-  \\definecolor{codebackground}{HTML}{f7f7f7}
-  \\definecolor{codeborder}{HTML}{f0f0f0}
+  \\providecolor{codebackground}{HTML}{f7f7f7}
+  \\providecolor{codeborder}{HTML}{f0f0f0}
   \\providecolor{EFD}{HTML}{28292e}
   
   % TODO have code boxes keep line vertical alignment
   \\usepackage[breakable,xparse]{tcolorbox}
   \\DeclareTColorBox[]{Code}{o}%
   {colback=codebackground, colframe=codeborder,
-    fontupper=\\footnotesize,
+    fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
     colupper=EFD,
     IfNoValueTF={#1}%
     {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
@@ -4300,105 +4393,9 @@ SQL can be either the emacsql vector representation, or a string."
     breakable}
   ")
   
-  (add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]") . engraved-code) t)
-  (add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+begin_example\\|^[ \t]*#\\+BEGIN_EXAMPLE" . engraved-code-setup) t)
-  (add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :order 99) t)
-  (add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :order 98) t)
-  
-  (defun org-latex-scr-block--engraved (src-block contents info)
-    (let* ((lang (org-element-property :language src-block))
-           (attributes (org-export-read-attribute :attr_latex src-block))
-           (float (plist-get attributes :float))
-           (num-start (org-export-get-loc src-block info))
-           (retain-labels (org-element-property :retain-labels src-block))
-           (caption (org-element-property :caption src-block))
-           (caption-above-p (org-latex--caption-above-p src-block info))
-           (caption-str (org-latex--caption/label-string src-block info))
-           (placement (or (org-unbracket-string "[" "]" (plist-get attributes :placement))
-                          (plist-get info :latex-default-figure-position)))
-           (float-env
-            (cond
-             ((string= "multicolumn" float)
-              (format "\\begin{listing*}[%s]\n%s%%s\n%s\\end{listing*}"
-                      placement
-                      (if caption-above-p caption-str "")
-                      (if caption-above-p "" caption-str)))
-             (caption
-              (format "\\begin{listing}[%s]\n%s%%s\n%s\\end{listing}"
-                      placement
-                      (if caption-above-p caption-str "")
-                      (if caption-above-p "" caption-str)))
-             ((string= "t" float)
-              (concat (format "\\begin{listing}[%s]\n"
-                              placement)
-                      "%s\n\\end{listing}"))
-             (t "%s")))
-           (options (plist-get info :latex-minted-options))
-           (content-buffer
-            (with-temp-buffer
-              (insert
-               (let* ((code-info (org-export-unravel-code src-block))
-                      (max-width
-                       (apply 'max
-                              (mapcar 'length
-                                      (org-split-string (car code-info)
-                                                        "\n")))))
-                 (org-export-format-code
-                  (car code-info)
-                  (lambda (loc _num ref)
-                    (concat
-                     loc
-                     (when ref
-                       ;; Ensure references are flushed to the right,
-                       ;; separated with 6 spaces from the widest line
-                       ;; of code.
-                       (concat (make-string (+ (- max-width (length loc)) 6)
-                                            ?\s)
-                               (format "(%s)" ref)))))
-                  nil (and retain-labels (cdr code-info)))))
-              (funcall (org-src-get-lang-mode lang))
-              (engrave-faces-latex-buffer)))
-           (content
-            (with-current-buffer content-buffer
-              (buffer-string)))
-           (body
-            (format
-             "\\begin{Code}\n\\begin{Verbatim}[%s]\n%s\\end{Verbatim}\n\\end{Code}"
-             ;; Options.
-             (concat
-              (org-latex--make-option-string
-               (if (or (not num-start) (assoc "linenos" options))
-                   options
-                 (append
-                  `(("linenos")
-                    ("firstnumber" ,(number-to-string (1+ num-start))))
-                  options)))
-              (let ((local-options (plist-get attributes :options)))
-                (and local-options (concat "," local-options))))
-             content)))
-      (kill-buffer content-buffer)
-      ;; Return value.
-      (format float-env body)))
-  
-  (defun org-latex-inline-scr-block--engraved (inline-src-block _contents info)
-    (let ((options (org-latex--make-option-string
-                    (plist-get info :latex-minted-options)))
-          code-buffer code)
-      (setq code-buffer
-            (with-temp-buffer
-              (insert (org-element-property :value inline-src-block))
-              (funcall (org-src-get-lang-mode
-                        (org-element-property :language inline-src-block)))
-              (engrave-faces-latex-buffer)))
-      (setq code (with-current-buffer code-buffer
-                   (buffer-string)))
-      (kill-buffer code-buffer)
-      (format "\\Verb%s{%s}"
-              (if (string= options "") ""
-                (format "[%s]" options))
-              code)))
   (add-to-list 'org-latex-feature-implementations
-               '(.no-protrusion-in-code :snippet "\\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}"
+               '(.no-protrusion-in-code :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
+                                        :when microtype
                                         :when (microtype engraved-code-setup)
                                         :eager t
                                         :order 98.5) t)
@@ -4759,6 +4756,30 @@ SQL can be either the emacsql vector representation, or a string."
           (ess-R-fl-keyword:F&T . t)))
   (add-to-list '+org-babel-mode-alist '(jags . ess-jags))
 )
+
+(use-package! org-modern
+  :hook (org-mode . org-modern-mode)
+  :config
+  (setq org-modern-star ["◉" "○" "✸" "✿" "✤" "✜" "◆" "▶"]
+        org-modern-table-vertical 1
+        org-modern-table-horizontal 0.2
+        org-modern-list '((43 . "➤")
+                          (45 . "–")
+                          (42 . "•"))
+        org-modern-todo-faces
+        '(("TODO" :inverse-video t :inherit org-todo)
+          ("PROJ" :inverse-video t :inherit +org-todo-project)
+          ("STRT" :inverse-video t :inherit +org-todo-active)
+          ("[-]"  :inverse-video t :inherit +org-todo-active)
+          ("HOLD" :inverse-video t :inherit +org-todo-onhold)
+          ("WAIT" :inverse-video t :inherit +org-todo-onhold)
+          ("[?]"  :inverse-video t :inherit +org-todo-onhold)
+          ("KILL" :inverse-video t :inherit +org-todo-cancel)
+          ("NO"   :inverse-video t :inherit +org-todo-cancel))
+        org-modern-block nil
+        org-modern-progress nil
+        org-modern-keyword nil)
+  (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)

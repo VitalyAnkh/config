@@ -25,6 +25,14 @@
 (package! copilot :recipe (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el")))
 ;; Copilot:1 ends here
 
+;; [[file:config.org::*Corfu][Corfu:1]]
+(package! corfu)
+(package! orderless)
+(package! kind-icon )
+(package! cape :recipe (:host github :repo "minad/cape" :branch "main"))
+(package! corfu-doc :recipe (:host github :repo "galeo/corfu-doc" :branch "main"))
+;; Corfu:1 ends here
+
 ;; [[file:config.org::*Annotate][Annotate:1]]
 (package! annotate)
 ;; Annotate:1 ends here
@@ -147,15 +155,13 @@
 
 (setq org-id-method 'ts)
 
+(package! org-modern)
+
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 
 (package! valign :recipe (:host github :repo "casouri/valign"))
 
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
-
-(package! org-modern)
-
-;; (add-hook 'org-mode-hook #'org-modern-mode)
 
 (package! ob-http)
 
