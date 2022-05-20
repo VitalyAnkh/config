@@ -4,8 +4,8 @@
 ;; Press 'K' on a module to view its documentation, and 'gd' to browse its directory.
 
 (doom! :completion
-       ;; (company                     ; the ultimate code completion backend
-       ;;  +childframe)                ; ... when your children are better than you
+       (company                     ; the ultimate code completion backend
+        +childframe)                ; ... when your children are better than you
        ;;helm                       ; the *other* search engine for love and life
        ;;ido                        ; the other *other* search engine...
        ;; (ivy                      ; a search engine for love and life

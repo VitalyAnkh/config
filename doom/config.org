@@ -335,6 +335,11 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle packages.el
+(defadvice copilot--complete-post-command (around intercept activate)
+  (condition-case err
+      ad-do-it
+    ;; Let the debugger run
+    ((debug error) (signal (car err) (cdr err)))))
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -504,8 +509,8 @@ I reckon enabling half the modules Doom provides should do it.
 
 #+name: doom-completion
 #+begin_src emacs-lisp
-;; (company                     ; the ultimate code completion backend
-;;  +childframe)                ; ... when your children are better than you
+(company                     ; the ultimate code completion backend
+ +childframe)                ; ... when your children are better than you
 ;;helm                       ; the *other* search engine for love and life
 ;;ido                        ; the other *other* search engine...
 ;; (ivy                      ; a search engine for love and life
@@ -1968,26 +1973,26 @@ GitHub Copilot is awesome!
   (or (copilot-accept-completion)
       (company-indent-or-complete-common nil)))
 ;; complete by copilot first, then company-mode
-;; (use-package! copilot
-;;   :hook (prog-mode . copilot-mode)
-;;   :hook (text-mode . copilot-mode)
-;;   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
-;;          ("C-<tab>" . 'copilot-accept-completion-by-word)
-;;          :map company-active-map
-;;          ("<tab>" . 'my-tab)
-;;          ("TAB" . 'my-tab)
-;;          :map company-mode-map
-;;          ("<tab>" . 'my-tab)
-;;          ("TAB" . 'my-tab)))
 (use-package! copilot
-  :after corfu
   :hook (prog-mode . copilot-mode)
   :hook (text-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
          ("C-<tab>" . 'copilot-accept-completion-by-word)
-         :map corfu-map
+         :map company-active-map
+         ("<tab>" . 'my-tab)
+         ("TAB" . 'my-tab)
+         :map company-mode-map
          ("<tab>" . 'my-tab)
          ("TAB" . 'my-tab)))
+;; (use-package! copilot
+;;   :after corfu
+;;   :hook (prog-mode . copilot-mode)
+;;   :hook (text-mode . copilot-mode)
+;;   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
+;;          ("C-<tab>" . 'copilot-accept-completion-by-word)
+;;          :map corfu-map
+;;          ("<tab>" . 'my-tab)
+;;          ("TAB" . 'my-tab)))
 #+end_src
 *** Corfu
 Try =corfu=!
@@ -1999,7 +2004,7 @@ Try =corfu=!
 (package! corfu-doc :recipe (:host github :repo "galeo/corfu-doc" :branch "main"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;; Reset lsp-completion provider
 (add-hook 'doom-init-modules-hook
           (lambda ()
@@ -2030,13 +2035,13 @@ Try =corfu=!
 
 ;; Fallback cleanly to consult in TUI
 (setq-default completion-in-region-function #'consult-completion-in-region)
+
 (defun my-tab ()
   (interactive)
   (or (copilot-accept-completion)
-      (company-indent-or-complete-common nil)))
+      (corfu-complete)))
 
 (use-package corfu
-  :after copilot
   :custom
   (corfu-separator ?\s)          ;; Orderless field separator
   (corfu-preview-current nil)    ;; Disable current candidate preview
@@ -2044,8 +2049,8 @@ Try =corfu=!
   (corfu-on-exact-match nil)
   (corfu-quit-no-match 'separator)
   (corfu-preselect-first nil)
-  :hook
-  (doom-first-buffer . global-corfu-mode)
+  :config
+  (global-corfu-mode)
   :bind (:map corfu-map
          ("SPC" . corfu-insert-separator)
          ("TAB" . my-tab)
@@ -2078,11 +2083,14 @@ Try =corfu=!
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package cape
-  :defer t
   :init
-  (add-to-list 'completion-at-point-functions #'cape-file-capf)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev-capf)
-  (add-to-list 'completion-at-point-functions #'cape-keyword-capf))
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 (setq completion-cycle-threshold 1)
 
@@ -2103,14 +2111,14 @@ Use =annotate.el= to add comment gracely to your files!
 #+end_src
 And store the annotation database (which is just a plain emacs-lisp file!) with my Org Mode files.
 #+begin_src emacs-lisp
-(use-package annotate
-  :after org
-  :hook
-  (((text-mode prog-mode) . annotate-mode))
-  :config
-  (setq annotate-file (convert-standard-filename
-                       (file-name-concat org-directory "annotations")
-                       )))
+;; (use-package annotate
+;;   :after org
+;;   :hook
+;;   (((text-mode prog-mode) . annotate-mode))
+;;   :config
+;;   (setq annotate-file (convert-standard-filename
+;;                        (file-name-concat org-directory "annotations")
+;;                        )))
 #+end_src
 
 *** Consult
@@ -2282,18 +2290,18 @@ From the =:completion company= module.
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 #+begin_src emacs-lisp
-;; (after! company
-;;   (setq company-idle-delay 0.5
-;;         company-minimum-prefix-length 2)
-;;   (setq company-show-numbers t)
-;;   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
-;;   )
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t)
+  ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
+  )
 #+end_src
 I don't like use ENTER to apply the completion. TAB is OK!
 #+begin_src emacs-lisp :tangle no
-;; (with-eval-after-load 'company
-;;   (define-key company-active-map (kbd "<return>") nil)
-;;   (define-key company-active-map (kbd "RET") nil))
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil))
 #+end_src
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
@@ -2304,20 +2312,20 @@ let's improve that memory.
 **** Plain Text
 ~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
 #+begin_src emacs-lisp
-;; (set-company-backend!
-;;   '(text-mode
-;;     markdown-mode
-;;     gfm-mode)
-;;   '(:seperate
-;;     ;;company-ispell
-;;     company-files
-;;     company-yasnippet))
+(set-company-backend!
+  '(text-mode
+    markdown-mode
+    gfm-mode)
+  '(:seperate
+    ;;company-ispell
+    company-files
+    company-yasnippet))
 #+end_src
 We then configure the dictionary we're using in [[*Ispell][Ispell]].
 **** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
 #+begin_src emacs-lisp
-;;(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
+(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+end_src
 *** Projectile
 #+begin_quote
@@ -11169,6 +11177,7 @@ We also want to define ~mu4e-compose-from-mailto~.
                  (org-msg-goto-body)
                (mu4e-compose-goto-bottom))))
     (font-lock-ensure)
+;;TODO: replace this with meow's config
     ;; (when evil-normal-state-minor-mode
     ;;   (evil-append 1))
     (when quit-frame-after
@@ -11180,7 +11189,7 @@ We also want to define ~mu4e-compose-from-mailto~.
 
 It would also be nice to change the name pre-filled in =From:= when drafting.
 #+begin_src emacs-lisp
-(defvar mu4e-from-name "Timothy"
+(defvar mu4e-from-name "VitalyR"
   "Name used in \"From:\" template.")
 (defadvice! mu4e~draft-from-construct-renamed (orig-fn)
   "Wrap `mu4e~draft-from-construct-renamed' to change the name."

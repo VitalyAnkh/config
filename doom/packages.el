@@ -1,5 +1,9 @@
 ;; [[file:config.org::*Workaround][Workaround:1]]
-
+(defadvice copilot--complete-post-command (around intercept activate)
+  (condition-case err
+      ad-do-it
+    ;; Let the debugger run
+    ((debug error) (signal (car err) (cdr err)))))
 ;; Workaround:1 ends here
 
 ;; -*- no-byte-compile: t; -*-
