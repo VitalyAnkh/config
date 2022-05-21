@@ -525,7 +525,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;;doom-quit                  ; DOOM quit-message prompts when you quit Emacs
-(emoji +unicode +ascii +github)    ; :) :)
+;;(emoji +unicode +ascii +github)    ; :) :)
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -1908,6 +1908,7 @@ Modal editing on wish! Use =moew= for modal life.
    '("o" . meow-block)
    '("O" . meow-to-block)
    '("p" . meow-yank)
+   '("P" . pop-to-mark-command)
    '("q" . meow-open-below)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
@@ -2103,7 +2104,8 @@ Try =corfu=!
 (when (equal tab-always-indent 'complete)
   (map! :map c-mode-base-map
         :i [remap c-indent-line-or-region] #'completion-at-point))
-#+end_src
+        #+end_src
+
 *** Annotate
 Use =annotate.el= to add comment gracely to your files!
 #+begin_src emacs-lisp :tangle packages.el
@@ -3540,7 +3542,18 @@ about it?
   :config
   (setq elcord-use-major-mode-as-main-icon t))
 #+end_src
+*** Flycheck
+I don't like the default error checking. Let's make.
+#+begin_src emacs-lisp
+(defun init-flycheck-hook ()
+  (remove-hook 'post-command-hook 'flycheck-maybe-display-error-at-point-soon 'local)
+  (remove-hook 'focus-in-hook 'flycheck-maybe-display-error-at-point-soon 'local)
+  (remove-hook 'post-command-hook 'flycheck-display-error-at-point-soon 'local)
+  (remove-hook 'focus-in-hook 'flycheck-display-error-at-point-soon 'local)
+  )
 
+(add-hook 'flycheck-mode-hook 'init-flycheck-hook)
+#+end_src
 ** File types
 *** Authinfo
 
@@ -3925,9 +3938,9 @@ Use [[https://github.com/casouri/valign][valign]] for tables alignments.
 (use-package valign
   :init
   (require 'valign)
-  :hook
-  (org-mode . valign-mode)
-  (markdown-mode . valign-mode)
+  ;; :hook
+  ;; (org-mode . valign-mode)
+  ;; (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
@@ -5513,7 +5526,8 @@ Let's make title and headings a bit bigger.
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
 (custom-set-faces!
   '(org-document-title :height 1.3)
-  '(org-quote :family "CMU Typewriter Text" :height 1.05)
+  '(org-quote :font "LXWK WenKei" :height 1.05)
+  '(org-table :font "Sarasa Mono SC" :height 1.05)
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
   '(outline-3 :height 1.12)
@@ -9457,6 +9471,7 @@ Of course, there's an Emacs mode for this.
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 #+end_src
+
 * Applications
 ** Time Tracking System
 *** wakatime

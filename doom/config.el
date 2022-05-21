@@ -652,6 +652,7 @@ nil
    '("o" . meow-block)
    '("O" . meow-to-block)
    '("p" . meow-yank)
+   '("P" . pop-to-mark-command)
    '("q" . meow-open-below)
    '("Q" . meow-goto-line)
    '("r" . meow-replace)
@@ -1620,6 +1621,17 @@ SQL can be either the emacsql vector representation, or a string."
   :config
   (setq elcord-use-major-mode-as-main-icon t))
 ;; Elcord:2 ends here
+
+;; [[file:config.org::*Flycheck][Flycheck:1]]
+(defun init-flycheck-hook ()
+  (remove-hook 'post-command-hook 'flycheck-maybe-display-error-at-point-soon 'local)
+  (remove-hook 'focus-in-hook 'flycheck-maybe-display-error-at-point-soon 'local)
+  (remove-hook 'post-command-hook 'flycheck-display-error-at-point-soon 'local)
+  (remove-hook 'focus-in-hook 'flycheck-display-error-at-point-soon 'local)
+  )
+
+(add-hook 'flycheck-mode-hook 'init-flycheck-hook)
+;; Flycheck:1 ends here
 
 ;; [[file:config.org::*Systemd][Systemd:2]]
 (use-package! systemd
@@ -2682,7 +2694,8 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (custom-set-faces!
     '(org-document-title :height 1.3)
-    '(org-quote :family "CMU Typewriter Text" :height 1.05)
+    '(org-quote :font "LXWK WenKei" :height 1.05)
+    '(org-table :font "Sarasa Mono SC" :height 1.05)
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
     '(outline-3 :height 1.12)
@@ -4685,9 +4698,9 @@ SQL can be either the emacsql vector representation, or a string."
 (use-package valign
   :init
   (require 'valign)
-  :hook
-  (org-mode . valign-mode)
-  (markdown-mode . valign-mode)
+  ;; :hook
+  ;; (org-mode . valign-mode)
+  ;; (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar 1)
   )
