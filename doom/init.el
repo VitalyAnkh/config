@@ -73,7 +73,7 @@
 
        :checkers
        ;;syntax                     ; tasing you for every semicolon you forget
-       (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+       ;;(:if (executable-find "aspell") spell +aspell) ; tasing you for misspelling mispelling
        ;;grammar                    ; tasing grammar mistake every you make
 
        :tools

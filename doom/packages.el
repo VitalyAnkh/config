@@ -45,10 +45,6 @@
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 ;; Magit delta:2 ends here
 
-;; [[file:config.org::*Don't use ~spell-fu~!][Don't use ~spell-fu~!:1]]
-(disable-packages! spell-fu)
-;; Don't use ~spell-fu~!:1 ends here
-
 ;; [[file:config.org::*Auto activating snippets][Auto activating snippets:1]]
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets"))
 ;; Auto activating snippets:1 ends here
@@ -122,6 +118,10 @@
 ;; [[file:config.org::*Systemd][Systemd:1]]
 (package! systemd)
 ;; Systemd:1 ends here
+
+;; [[file:config.org::*Grammarly][Grammarly:1]]
+(package! lsp-grammarly)
+;; Grammarly:1 ends here
 
 ;; [[file:config.org::*Lean][Lean:1]]
 (package! lean4-mode :recipe

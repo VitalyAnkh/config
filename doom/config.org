@@ -62,7 +62,7 @@ Then I heard about =doom emacs= and thought I may as well give that a try.
 TLDR; it's great.
 
 Now I've discovered the wonders of literate programming, and am becoming more
-settled by the day. This is both my config, and a cautionary tale (just replace
+settled by the day. This is both my configuration, and a cautionary tale (just replace
 "Linux" with "Emacs" in the comic below).
 
 [[xkcd:456]]
@@ -72,7 +72,7 @@ settled by the day. This is both my config, and a cautionary tale (just replace
 Emacs is [[https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor][not a text editor]], this is a common misnomer. It is far more apt to
 describe Emacs as /a Lisp machine providing a generic user-centric text
 manipulation environment/. That's quite a mouthful.
-In simpler terms one can think of Emacs as a platform for text-related
+In simpler terms, one can think of Emacs as a platform for text-related
 applications. It's a vague and generic definition because Emacs itself is
 generic.
 
@@ -588,7 +588,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 #+name: doom-checkers
 #+begin_src emacs-lisp
 ;;syntax                     ; tasing you for every semicolon you forget
-(:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+;;(:if (executable-find "aspell") spell +aspell) ; tasing you for misspelling mispelling
 ;;grammar                    ; tasing grammar mistake every you make
 #+end_src
 
@@ -813,7 +813,7 @@ if the system doesn't have any of those fonts.
 <<detect-missing-fonts()>>
 #+end_src
 
-This way whenever fonts are missing, after Doom's UI has initialised, a warning
+This way whenever fonts are missing after Doom's UI has initialised, a warning
 listing the missing fonts should appear for at least half a second.
 
 **** Theme and modeline
@@ -2385,15 +2385,11 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
-**** Don't use ~spell-fu~!
-#+begin_src emacs-lisp  :tangle packages.el
-(disable-packages! spell-fu)
-#+end_src
 *** TRAMP
 
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
 Multiple Protocol/. In brief, it's a lovely way to wander around outside your
-local filesystem.
+local file system.
 
 **** Prompt recognition
 
@@ -3617,6 +3613,18 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
        auto-mode-alist))
 ;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
+#+end_src
+** Grammarly
+I use =grammarly= to check my writing.
+#+begin_src emacs-lisp :tangle packages.el
+(package! lsp-grammarly)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package lsp-grammarly
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp))))  ; or lsp-deferred
 #+end_src
 ** Lean
 Use ~Lean~ to prove you are a prover!

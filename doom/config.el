@@ -1669,6 +1669,13 @@ SQL can be either the emacsql vector representation, or a string."
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
 ;; Agda:1 ends here
 
+;; [[file:config.org::*Grammarly][Grammarly:2]]
+(use-package lsp-grammarly
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp))))  ; or lsp-deferred
+;; Grammarly:2 ends here
+
 ;; [[file:config.org::*Meson][Meson:2]]
 (add-hook 'meson-mode-hook 'company-mode)
 ;; Meson:2 ends here
