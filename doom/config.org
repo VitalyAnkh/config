@@ -155,7 +155,7 @@ digraph {
 
 *** Some notably unique features
 + Recursive editing
-+ Completely introspectable, with pervasive docstrings
++ Completely introspectable, with pervasive doc-strings
 + Mutable environment, which can be incrementally modified
 + Functionality without applications
 + Client-server separation allows for a daemon, giving near-instant perceived
@@ -296,7 +296,7 @@ Please make sure you have the correct access rights
 and the repository exists.
 #+end_src
 *** Unread emails doesn't work across Emacs instances
-It would be nice if it did, so that I could have the Emacs-daemon hold the
+It would be nice if it did so that I could have the Emacs-daemon hold the
 active mu4e session, but still get that information. In this case I'd want to
 change the action to open the Emacs daemon, but it should be possible.
 
@@ -327,7 +327,7 @@ Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 =~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
 make a difference, and I don't want to accidentally purge this file (I have done
 src_shell{rm -rf~/.emac.d~} before). I also want to cache as much as possible, as
-my home machine is pretty safe, and my laptop is shutdown a lot.
+my home machine is pretty safe, and my laptop is shutting down a lot.
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
@@ -354,7 +354,7 @@ the following:
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
+      auto-save-default t                         ; Nobody likes to lose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
@@ -3622,9 +3622,11 @@ I use =grammarly= to check my writing.
 
 #+begin_src emacs-lisp
 (use-package lsp-grammarly
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp))))  ; or lsp-deferred
+  ;; don't add hook, enable it manually
+  ;; :hook (text-mode . (lambda ()
+  ;;                      (require 'lsp-grammarly)
+  ;;                      (lsp)))
+)  ; or lsp-deferred
 #+end_src
 ** Lean
 Use ~Lean~ to prove you are a prover!

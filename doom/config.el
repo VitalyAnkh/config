@@ -17,7 +17,7 @@
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
+      auto-save-default t                         ; Nobody likes to lose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
@@ -1671,9 +1671,11 @@ SQL can be either the emacsql vector representation, or a string."
 
 ;; [[file:config.org::*Grammarly][Grammarly:2]]
 (use-package lsp-grammarly
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp))))  ; or lsp-deferred
+  ;; don't add hook, enable it manually
+  ;; :hook (text-mode . (lambda ()
+  ;;                      (require 'lsp-grammarly)
+  ;;                      (lsp)))
+)  ; or lsp-deferred
 ;; Grammarly:2 ends here
 
 ;; [[file:config.org::*Meson][Meson:2]]
