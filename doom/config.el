@@ -2694,7 +2694,7 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (custom-set-faces!
     '(org-document-title :height 1.3)
-    '(org-quote :font "LXWK WenKei" :height 1.05)
+    '(org-quote :font "LXGW WenKai" :height 1.05)
     '(org-table :font "Sarasa Mono SC" :height 1.05)
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
