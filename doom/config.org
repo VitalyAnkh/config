@@ -2385,6 +2385,11 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
+**** Don't use ~spell-fu~!
+I don't like red underscores.
+#+begin_src emacs-lisp  :tangle packages.el
+(disable-packages! spell-fu)
+#+end_src
 *** TRAMP
 
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
@@ -3622,10 +3627,9 @@ I use =grammarly= to check my writing.
 
 #+begin_src emacs-lisp
 (use-package lsp-grammarly
-  ;; don't add hook, enable it manually
-  ;; :hook (text-mode . (lambda ()
-  ;;                      (require 'lsp-grammarly)
-  ;;                      (lsp)))
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp)))
 )  ; or lsp-deferred
 #+end_src
 ** Lean

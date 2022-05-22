@@ -1671,10 +1671,9 @@ SQL can be either the emacsql vector representation, or a string."
 
 ;; [[file:config.org::*Grammarly][Grammarly:2]]
 (use-package lsp-grammarly
-  ;; don't add hook, enable it manually
-  ;; :hook (text-mode . (lambda ()
-  ;;                      (require 'lsp-grammarly)
-  ;;                      (lsp)))
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp)))
 )  ; or lsp-deferred
 ;; Grammarly:2 ends here
 
