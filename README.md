@@ -1,10 +1,11 @@
-# Arch Ansible: My Arch Linux Desktop Configurated by ansible
+# VitalyR's Arch Linux Dotfiles
 
 ## Description
 
-This is for a arch linux user to set up and update `rust`, `python`, `haskell`, `ocaml`, `idris`, `emacs`, `agda`, `flutter` and `nodejs` development environment with ansible.
-Besides, this also builds `servo`, `rust-analyzer`, `idris2`.
+This is my `.config` for an Arch Linux machine.
 
 ## How to use
 
-Install `ansible` and run `ansible-playbook`.
+I don't intend to allow this to be deployed on a fresh machine now. Just copy & paste the useful configs, especially the emacs configs.
+
+For a full-fledged dotfiles manager, I recommend to use [nix home-manager](https://github.com/nix-community/home-manager).
