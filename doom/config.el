@@ -106,7 +106,7 @@ nil
 ;; Font Face:3 ends here
 
 ;; [[file:config.org::*Theme and modeline][Theme and modeline:1]]
-(setq doom-theme 'doom-solarized-light)
+(setq doom-theme 'doom-one-light)
 (use-package doom-themes
   :config
   ;;Global settings (defaults)
@@ -1644,18 +1644,20 @@ SQL can be either the emacsql vector representation, or a string."
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 ;; File Templates:1 ends here
 
-;; [[file:config.org::*LSP][LSP:1]]
+;; [[file:config.org::*LSP][LSP:2]]
 (use-package lsp-mode
   :custom
   (lsp-enable-file-watchers nil)
   (lsp-ui-doc-position "Bottom")
   (lsp-keep-workspace-alive nil)
-  (lsp-ui-doc-enable nil)
+  (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-semantic-tokens-enable t)
+  (lsp-ui-doc-show-with-mouse t)
+  (lsp-ui-doc-show-with-cursor nil)
   )
-;; LSP:1 ends here
+;; LSP:2 ends here
 
 ;; [[file:config.org::*Agda][Agda:1]]
 (setq auto-mode-alist

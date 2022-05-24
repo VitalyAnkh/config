@@ -123,6 +123,10 @@
 (package! systemd)
 ;; Systemd:1 ends here
 
+;; [[file:config.org::*LSP][LSP:1]]
+(unpin! lsp-mode)
+;; LSP:1 ends here
+
 ;; [[file:config.org::*Grammarly][Grammarly:1]]
 (package! lsp-grammarly)
 ;; Grammarly:1 ends here
