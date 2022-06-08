@@ -714,6 +714,7 @@ Usage:
       (company-indent-or-complete-common nil)))
 ;; complete by copilot first, then company-mode
 (use-package! copilot
+  :after company
   :hook (prog-mode . copilot-mode)
   :hook (text-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
@@ -1182,6 +1183,28 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
             (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
             (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
         (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
+  (defun +zen-prose-org-h ()
+    "Reformat the current Org buffer appearance for prose."
+    (when (eq major-mode 'org-mode)
+      (setq display-line-numbers nil
+            visual-fill-column-width 60
+            org-adapt-indentation nil)
+      (when (featurep 'org-modern)
+        (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
+                    ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                    org-modern-hide-stars +zen-org-starhide)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (setq
+       +zen--original-org-indent-mode-p org-indent-mode)
+      (org-indent-mode -1)))
+  (defun +zen-nonprose-org-h ()
+    "Reverse the effect of `+zen-prose-org'."
+    (when (eq major-mode 'org-mode)
+      (when (bound-and-true-p org-modern-mode)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (when +zen--original-org-indent-mode-p (org-indent-mode 1))))
   (pushnew! writeroom--local-variables
             'display-line-numbers
             'visual-fill-column-width
@@ -1190,30 +1213,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
             'org-modern-star
             'org-modern-hide-stars
             )
-  (add-hook 'writeroom-mode-enable-hook
-            (defun +zen-prose-org-h ()
-              "Reformat the current Org buffer appearance for prose."
-              (when (eq major-mode 'org-mode)
-                (setq display-line-numbers nil
-                      visual-fill-column-width 60
-                      org-adapt-indentation nil)
-                (when (featurep 'org-modern)
-                  (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
-                              ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-modern-hide-stars +zen-org-starhide)
-                  (org-modern-mode -1)
-                  (org-modern-mode 1))
-                (setq
-                 +zen--original-org-indent-mode-p org-indent-mode
-                 (org-indent-mode -1))))
-            (add-hook 'writeroom-mode-disable-hook
-                      (defun +zen-nonprose-org-h ()
-                        "Reverse the effect of `+zen-prose-org'."
-                        (when (eq major-mode 'org-mode)
-                          (when (bound-and-true-p org-modern-mode)
-                            (org-modern-mode -1)
-                            (org-modern-mode 1))
-                          (when +zen--original-org-indent-mode-p (org-indent-mode 1)))))))
+  (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
+  (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h)
+  )
 ;; Writeroom:2 ends here
 
 ;; [[file:config.org::*Treemacs][Treemacs:1]]
@@ -2750,40 +2752,12 @@ SQL can be either the emacsql vector representation, or a string."
           (?D . 'all-the-icons-green)
           (?E . 'all-the-icons-blue)))
   (appendq! +ligatures-extra-symbols
-            `(:checkbox      "☐"
-              :pending       "◼"
-              :checkedbox    "☑"
-              :list_property "∷"
+            `(:list_property "∷"
               :em_dash       "-"
               :ellipses      "…"
               :arrow_right   "→"
               :arrow_left    "←"
-              :title         "𝙏"
-              :subtitle      "𝙩"
-              :author        "𝘼"
-              :date          "𝘿"
-              :property      "☸"
-              :options       "⌥"
-              :startup       "⏻"
-              :macro         "ℳ"
-              :bibliography  ""
-              :print_biblio  ""
-              :html_head     "🅷"
-              :html          "🅗"
-              :latex_class   "🄻"
-              :latex_header  "🅻"
-              :beamer_header "🅑"
-              :latex         "🅛"
-              :attr_latex    "🄛"
-              :attr_html     "🄗"
-              :attr_org      "⒪"
-              :begin_quote   "❝"
-              :end_quote     "❞"
-              :caption       "☰"
-              :header        "›"
-              :results       "⇒"
-              :begin_export  "⏩"
-              :end_export    "⏪"
+              :arrow_lr      "⟷"
               :properties    "⚙"
               :end           "∎"
               :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
@@ -2793,9 +2767,6 @@ SQL can be either the emacsql vector representation, or a string."
               :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
   (set-ligatures! 'org-mode
     :merge t
-    :checkbox      "[ ]"
-    :pending       "[-]"
-    :checkedbox    "[X]"
     :list_property "::"
     :em_dash       "---"
     :ellipsis      "..."
@@ -2811,30 +2782,14 @@ SQL can be either the emacsql vector representation, or a string."
     :macro         "#+macro:"
     :bibliography  "#+bibliography:"
     :print_biblio  "#+print_bibliography:"
-    :html_head     "#+html_head:"
-    :html          "#+html:"
-    :latex_class   "#+latex_class:"
-    :latex_header  "#+latex_header:"
-    :beamer_header "#+beamer_header:"
-    :latex         "#+latex:"
-    :attr_latex    "#+attr_latex:"
-    :attr_html     "#+attr_html:"
-    :attr_org      "#+attr_org:"
-    :begin_quote   "#+begin_quote"
-    :end_quote     "#+end_quote"
-    :caption       "#+caption:"
-    :header        "#+header:"
-    :begin_export  "#+begin_export"
-    :end_export    "#+end_export"
-    :results       "#+RESULTS:"
-    :property      ":PROPERTIES:"
+    :arrow_lr      "<->"
+    :properties    ":PROPERTIES:"
     :end           ":END:"
     :priority_a    "[#A]"
     :priority_b    "[#B]"
     :priority_c    "[#C]"
     :priority_d    "[#D]"
     :priority_e    "[#E]")
-  (plist-put +ligatures-extra-symbols :name "⁍")
   (package! org-pretty-tags)
   (use-package org-pretty-tags
     :config
@@ -3042,7 +2997,9 @@ SQL can be either the emacsql vector representation, or a string."
   (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
   (put 'scimax-org-renumber-environment 'enabled t)
   (after! org-plot
-    (defun org-plot/generate-theme (_type)
+    (defvar +org-plot-term-size '(1050 . 650)
+      "The size of the GNUPlot terminal, in the form (WIDTH . HEIGHT).")
+    (defun +org-plot-generate-theme (_type)
       "Use the current Doom theme colours to generate a GnuPlot preamble."
       (format "
   fgt = \"textcolor rgb '%s'\" # foreground text
@@ -3108,14 +3065,14 @@ SQL can be either the emacsql vector representation, or a string."
               (doom-color 'magenta)
               (doom-color 'orange)
               (doom-color 'yellow)
-              (doom-color 'teal)
-              (doom-color 'violet)
-              ))
-    (defun org-plot/gnuplot-term-properties (_type)
-      (format "background rgb '%s' size 1050,650"
-              (doom-color 'bg)))
-    (setq org-plot/gnuplot-script-preamble #'org-plot/generate-theme)
-    (setq org-plot/gnuplot-term-extra #'org-plot/gnuplot-term-properties))
+              (doom-color 'violet)))
+  
+    (defun +org-plot-gnuplot-term-properties (_type)
+      (format "background rgb '%s' size %s,%s"
+              (doom-color 'bg) (car +org-plot-term-size) (cdr +org-plot-term-size)))
+  
+    (setq org-plot/gnuplot-script-preamble #'+org-plot-generate-theme)
+    (setq org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))(doom-color 'teal)
   (setq org-export-headline-levels 5) ; I like nesting
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
@@ -4690,9 +4647,46 @@ SQL can be either the emacsql vector representation, or a string."
           ("[?]"  :inverse-video t :inherit +org-todo-onhold)
           ("KILL" :inverse-video t :inherit +org-todo-cancel)
           ("NO"   :inverse-video t :inherit +org-todo-cancel))
-        org-modern-block nil
+        org-modern-footnote
+        (cons nil (cadr org-script-display))
         org-modern-progress nil
-        org-modern-keyword nil)
+        org-modern-priority nil
+        org-modern-keyword
+        '((t . t)
+          ("title" . "𝙏")
+          ("subtitle" . "𝙩")
+          ("author" . "𝘼")
+          ("email" . #("" 0 1 (display (raise -0.14))))
+          ("date" . "𝘿")
+          ("property" . "☸")
+          ("options" . "⌥")
+          ("startup" . "⏻")
+          ("macro" . "𝓜")
+          ("bind" . #("" 0 1 (display (raise -0.1))))
+          ("bibliography" . "")
+          ("print_bibliography" . #("" 0 1 (display (raise -0.1))))
+          ("cite_export" . "⮭")
+          ("import" . "⇤")
+          ("setupfile" . "⇚")
+          ("html_head" . "🅷")
+          ("html" . "🅗")
+          ("latex_class" . "🄻")
+          ("latex_class_options" . #("🄻" 1 2 (display (raise -0.14))))
+          ("latex_header" . "🅻")
+          ("latex_header_extra" . "🅻⁺")
+          ("latex" . "🅛")
+          ("beamer_theme" . "🄱")
+          ("beamer_color_theme" . #("🄱" 1 2 (display (raise -0.12))))
+          ("beamer_font_theme" . "🄱𝐀")
+          ("beamer_header" . "🅱")
+          ("beamer" . "🅑")
+          ("attr_latex" . "🄛")
+          ("attr_html" . "🄗")
+          ("attr_org" . "⒪")
+          ("name" . "⁍")
+          ("header" . "›")
+          ("caption" . "☰")
+          ("RESULTS" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 
 (use-package! org-appear
