@@ -3126,6 +3126,22 @@ SQL can be either the emacsql vector representation, or a string."
     (org-latex-format-headline-default-function
      todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
   (setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
+  (defun +org-mode--fontlock-only-mode ()
+    "Just apply org-mode's font-lock once."
+    (let (org-mode-hook
+          org-hide-leading-stars
+          org-hide-emphasis-markers)
+      (org-set-font-lock-defaults)
+      (font-lock-ensure))
+    (setq-local major-mode #'fundamental-mode))
+  
+  (defun +org-export-babel-mask-org-config (_backend)
+    "Use `+org-mode--fontlock-only-mode' instead of `org-mode'."
+    (setq-local org-src-lang-modes
+                (append org-src-lang-modes
+                        (list (cons "org" #'+org-mode--fontlock-only)))))
+  
+  (add-hook 'org-export-before-processing-hook #'+org-export-babel-mask-org-config)
   (after! ox-html
     (define-minor-mode org-fancy-html-export-mode
       "Toggle my fabulous org export tweaks. While this mode itself does a little bit,
