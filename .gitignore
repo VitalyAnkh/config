@@ -52,6 +52,7 @@
 !.gitmodules
 !.pam_environment
 !.profile
+!update.sh
 
 **/elpa/**
 **/eln-cache/**
