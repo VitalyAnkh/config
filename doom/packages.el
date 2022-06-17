@@ -45,10 +45,6 @@
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
 ;; Magit delta:2 ends here
 
-;; [[file:config.org::*Blamer][Blamer:1]]
-(package! blamer :recipe (:host github :repo "artawower/blamer.el"))
-;; Blamer:1 ends here
-
 ;; [[file:config.org::*Don't use ~spell-fu~!][Don't use ~spell-fu~!:1]]
 (disable-packages! spell-fu)
 ;; Don't use ~spell-fu~!:1 ends here
