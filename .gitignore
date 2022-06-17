@@ -1,4 +1,4 @@
-/*
+*
 *.log
 !alacritty/
 !albert/
@@ -11,8 +11,6 @@
 !brasero/
 !cataclysm-dda/
 !catfish/
-!cef_user_data/
-!chromium/
 !containers/
 !dconf/
 !doom/
@@ -23,9 +21,6 @@
 !fontconfig/
 !gconf/
 !go/
-!gtk-2.0/
-!gtk-3.0/
-!gtk-4.0/
 !input_method/
 !mako/
 !microsoft-edge-dev-flags.conf

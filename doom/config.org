@@ -2251,7 +2251,28 @@ All that's left is to hook it into magit
 #+end_src
 Unfortunately this currently seems to mess things up, which is something I'll
 want to look into later.
+*** Blamer
+~Blamer~ is a tool inspired by VS Code's git lens. When you find a bug, use it to blame someone.
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! blamer :recipe (:host github :repo "artawower/blamer.el"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package blamer
+  :bind (("s-i" . blamer-show-commit-info))
+  :defer 10
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                    :background nil
+                    :height 140
+                    :italic t)))
+  :config
+  (global-blamer-mode 1))
+#+end_src
 *** Smerge
 
 For repeated operations, a hydra would be helpful. But I prefer transient.
@@ -3823,7 +3844,8 @@ Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
 #+end_src
-**** Git diffs
+****  diffs
+
 Protesilaos wrote a [[https://protesilaos.com/codelog/2021-01-26-git-diff-hunk-elisp-org/][very helpful article]] in which he explains how to change the
 git diff chunk heading to something more useful than just the immediate line
 above the hunk --- like the parent heading.

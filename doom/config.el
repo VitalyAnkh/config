@@ -824,6 +824,22 @@ Usage:
   (magit-delta-mode +1))
 ;; Magit delta:3 ends here
 
+;; [[file:config.org::*Blamer][Blamer:2]]
+(use-package blamer
+  :bind (("s-i" . blamer-show-commit-info))
+  :defer 10
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                    :background nil
+                    :height 140
+                    :italic t)))
+  :config
+  (global-blamer-mode 1))
+;; Blamer:2 ends here
+
 ;; [[file:config.org::*Smerge][Smerge:1]]
 (defun smerge-repeatedly ()
   "Perform smerge actions again and again"

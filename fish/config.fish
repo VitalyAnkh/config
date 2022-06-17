@@ -14,7 +14,7 @@ set -x GUAKE_ENABLE_WAYLAND 1
 set -e GDK_BACKEND
 set fish_greeting
 
-source ~/.profile
+source $HOME/.profile
 
 # include config.d/*
 
