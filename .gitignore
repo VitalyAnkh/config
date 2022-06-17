@@ -33,6 +33,7 @@
 !wofi/
 !bochsrc.disk
 !build-redox.sh
+!build_taichi.sh
 !chrome-flags.conf
 !electron-flags.conf
 !mimeapps.list

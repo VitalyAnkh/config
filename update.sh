@@ -13,18 +13,6 @@ echo "==== pull llvm-project done ===="
 echo "==== pull taichi ===="
 cd $HOME/projects/dev/cpp/taichi
 git pull --recurse-submodules
-export CLANG_PATH=$HOME/sdk/lib/taichi/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/
-export LLVM_PATH=$HOME/sdk/lib/taichi/taichi-llvm-10.0.0-linux
-export LD=mold
-#. .venv/bin/activate
-export TAICHI_CMAKE_ARGS="-DCMAKE_CXX_COMPILER=${CLANG_PATH}/bin/clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON $TAICHI_CMAKE_ARGS"
-export PATH="${LLVM_PATH}/bin:${CLANG_PATH}/bin:$PATH"
-export DEBUG=1
-python setup.py develop --user
-cp _skbuild/linux-x86_64-3.10/cmake-build/compile_commands.json .
-
-# python3 setup.py clean
-#python3 -m pip install --user -r requirements_dev.txt
 echo "==== pull taichi done ===="
 
 # echo "==== pull Unreal Engine ===="
