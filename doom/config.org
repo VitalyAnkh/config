@@ -3622,14 +3622,15 @@ pip install ffi-navigator
 =ffi-navigator= is a package that provides a way to navigate foreign function interfaces (c/c++ code) in =python=. It relies on =lsp-mode= which offers multiple language server for one file, so we need to load it.
 
 #+begin_src emacs-lisp
-(after! lsp
-(lsp-register-client
- (make-lsp-client
-  :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
-  :major-modes '(python-mode c++-mode)
-  :server-id 'ffi-navigator
-  :add-on? t))
-)
+(use-package lsp
+  :custom
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
+    :major-modes '(python-mode c++-mode)
+    :server-id 'ffi-navigator
+    :add-on? t))
+  )
 #+end_src
 ** Agda
 Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That's a bug and it's easy to fix.

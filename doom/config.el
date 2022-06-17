@@ -1662,14 +1662,15 @@ SQL can be either the emacsql vector representation, or a string."
 ;; LSP:2 ends here
 
 ;; [[file:config.org::*ffi-navigator][ffi-navigator:2]]
-(after! lsp
-(lsp-register-client
- (make-lsp-client
-  :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
-  :major-modes '(python-mode c++-mode)
-  :server-id 'ffi-navigator
-  :add-on? t))
-)
+(use-package lsp
+  :custom
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
+    :major-modes '(python-mode c++-mode)
+    :server-id 'ffi-navigator
+    :add-on? t))
+  )
 ;; ffi-navigator:2 ends here
 
 ;; [[file:config.org::*Agda][Agda:1]]
