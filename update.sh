@@ -10,6 +10,16 @@ CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 echo "==== pull llvm-project done ===="
 
+echo "==== pull taichi ===="
+cd ~/projects/dev/cpp/taichi
+export TAICHI_CMAKE_ARGS="-DCMAKE_CXX_COMPILER=clang++ $TAICHI_CMAKE_ARGS"
+export DEBUG=1
+# python3 setup.py clean
+#python3 -m pip install --user -r requirements_dev.txt
+git pull --recurse-submodules
+python3 setup.py develop --user
+echo "==== pull llvm-project done ===="
+
 # echo "==== pull Unreal Engine ===="
 # cd ~/projects/dev/cpp/UnrealEngine
 # git pull
