@@ -85,9 +85,12 @@ bear -- make -j12
 echo "==== pull wlroots done ===="
 
 echo "==== pull blender ===="
+cd ~/projects/dev/c/blender-git/lib
+svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_centos7_x86_64
 cd ~/projects/dev/c/blender-git/blender
-git pull
-meson build --reconfigure
+make update
+make debug developer ccache ninja
+cp ../build_linux_debug/compile_commands.json .
 echo "==== pull blender done ===="
 
 
