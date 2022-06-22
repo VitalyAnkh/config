@@ -235,7 +235,8 @@
 ;; wakatime:1 ends here
 
 ;; [[file:config.org::*Input Method][Input Method:1]]
-(package! sis)
+(package! sis :recipe (:host github :repo "VitalyAnkh/emacs-smart-input-source"
+                           :files ("*.el" )))
 ;; Input Method:1 ends here
 
 ;; [[file:config.org::*Use =emacs-rime=][Use =emacs-rime=:1]]

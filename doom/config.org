@@ -9555,7 +9555,8 @@ Start =wakatime= at when emacs launches:
 I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
 within Emacs. Let's add =smart-input-source= to support fcitx5.
 #+begin_src emacs-lisp :tangle packages.el
-(package! sis)
+(package! sis :recipe (:host github :repo "VitalyAnkh/emacs-smart-input-source"
+                           :files ("*.el" )))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -9563,8 +9564,9 @@ within Emacs. Let's add =smart-input-source= to support fcitx5.
   ;;:hook
   ;;enable the /follow context/ and /inline region/ mode for specific buffers
   ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mode))
-  :defer-incrementally meow
+  ;; ((text-mode prog-mode) . sis-inline-mod
+  :after meow
+  ;;:defer-incrementally meow
   :config
   (sis-ism-lazyman-config "1" "2" 'fcitx5)
   (add-hook 'meow-insert-exit-hook #'sis-set-english)

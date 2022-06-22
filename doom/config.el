@@ -5492,8 +5492,9 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   ;;:hook
   ;;enable the /follow context/ and /inline region/ mode for specific buffers
   ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mode))
-  :defer-incrementally meow
+  ;; ((text-mode prog-mode) . sis-inline-mod
+  :after meow
+  ;;:defer-incrementally meow
   :config
   (sis-ism-lazyman-config "1" "2" 'fcitx5)
   (add-hook 'meow-insert-exit-hook #'sis-set-english)
