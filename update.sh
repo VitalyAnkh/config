@@ -106,6 +106,11 @@ cd ~/projects/dev/rust-projects/rust
 git pull
 echo "==== pull rust done ===="
 
+echo "==== pull wasmtime ===="
+cd ~/projects/dev/rust-projects/wasmtime
+git pull --recurse-submodules
+echo "==== pull wasmtime done ===="
+
 echo "==== pull deno ===="
 cd ~/projects/dev/rust-projects/deno
 git pull
