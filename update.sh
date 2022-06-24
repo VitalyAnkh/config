@@ -111,6 +111,13 @@ cd ~/projects/dev/rust-projects/wasmtime
 git pull --recurse-submodules
 echo "==== pull wasmtime done ===="
 
+echo "==== pull riscv-gnu-toolchain ===="
+cd ~/projects/dev/c/riscv-gnu-toolchain
+git pull --recurse-submodules
+./configure --prefix=/opt/riscv
+make linux -j12
+echo "==== pull riscv-gnu-toolchain done ===="
+
 echo "==== pull deno ===="
 cd ~/projects/dev/rust-projects/deno
 git pull
