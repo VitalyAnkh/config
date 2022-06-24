@@ -1718,6 +1718,14 @@ SQL can be either the emacsql vector representation, or a string."
   (after! ox
     (add-to-list 'org-export-filter-final-output-functions #'+org-export-remove-zero-width-space t))
   (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
+  (defun +org-insert-file-link ()
+    "Insert a file link.  At the prompt, enter the filename."
+    (interactive)
+    (insert (format "[[%s]]" (org-link-complete-file))))
+  (map! :after org
+        :map org-mode-map
+        :localleader
+        "l f" #'+org-insert-file-link)
   (after! oc
     (defun org-ref-to-org-cite ()
       "Attempt to convert org-ref citations to org-cite syntax."
@@ -3169,7 +3177,7 @@ SQL can be either the emacsql vector representation, or a string."
                      (or link-home link-up))))
          ;; Preamble.
          (org-html--build-pre/postamble 'preamble info)
-         ;; Document contents.
+         ;;  contents.
          (let ((div (assq 'content (plist-get info :html-divs))))
            (format "<%s id=\"%s\">\n" (nth 1 div) (nth 2 div)))
          ;; Document title.
@@ -4254,7 +4262,12 @@ SQL can be either the emacsql vector representation, or a string."
         output-block)))
   (defadvice! org-latex-pick-compiler (_contents info)
     :before #'org-latex-template
-    (when (and org-export-has-code-p (memq 'julia-code (org-latex-detect-features)))
+    :before #'org-beamer-template
+    (when (and org-export-has-code-p
+               (memq 'julia-code (org-latex-detect-features))
+               (save-excursion
+                 (goto-char (point-min))
+                 (re-search-forward "[^\x00-\x7F\u200b]" nil t)))
       (setf info (plist-put
                   (if (member #'+org-latex-replace-non-ascii-chars (plist-get info :filter-final-output))
                       (plist-put info :filter-final-output
@@ -4313,7 +4326,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;;         (emojify-latexify-emoji-in-buffer)
   ;;         (buffer-string)))))
   
-  ;; (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+  ;; (add-to-list 'org-export-plain-text-functions #'+org-latex-convert-emojis)
   ;; (defun org-latex-emoji-install-vector-graphics ()
   ;;   "Dowload, convert, and install vector emojis for use with LaTeX."
   ;;   (interactive)
@@ -4469,35 +4482,6 @@ SQL can be either the emacsql vector representation, or a string."
       (when (plist-get info :with-special-strings)
         (setq output (org-latex-convert-extra-special-strings output)))
       output))
-  (defadvice! +org-latex-link (orig-fn link desc info)
-    "Acts as `org-latex-link', but supports remote images."
-    :around #'org-latex-link
-    (setq o-link link
-          o-desc desc
-          o-info info)
-    (if (and (member (plist-get (cadr link) :type) '("http" "https"))
-             (member (file-name-extension (plist-get (cadr link) :path))
-                     '("png" "jpg" "jpeg" "pdf" "svg")))
-        (org-latex-link--remote link desc info)
-      (funcall orig-fn link desc info)))
-  
-  (defun org-latex-link--remote (link _desc info)
-    (let* ((url (plist-get (cadr link) :raw-link))
-           (ext (file-name-extension url))
-           (target (format "%s%s.%s"
-                           (temporary-file-directory)
-                           (replace-regexp-in-string "[./]" "-"
-                                                     (file-name-sans-extension (substring (plist-get (cadr link) :path) 2)))
-                           ext)))
-      (unless (file-exists-p target)
-        (url-copy-file url target))
-      (setcdr link (--> (cadr link)
-                     (plist-put it :type "file")
-                     (plist-put it :path target)
-                     (plist-put it :raw-link (concat "file:" target))
-                     (list it)))
-      (concat "% fetched from " url "\n"
-              (org-latex--inline-image link info))))
   (setq org-latex-text-markup-alist
         '((bold . "\\textbf{%s}")
           (code . protectedtexttt)
@@ -4702,6 +4686,9 @@ SQL can be either the emacsql vector representation, or a string."
 
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
+
+(use-package! org-glossary
+  :hook (org-mode . org-glossary-mode))
 
 ;; (evil-define-command evil-buffer-org-new (count file)
 ;;   "Creates a new ORG buffer replacing the current window, optionally

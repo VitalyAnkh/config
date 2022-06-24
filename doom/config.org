@@ -3825,7 +3825,9 @@ correct package statement needed.
 
 #+name: org-pkg-statement
 #+begin_src emacs-lisp :tangle no
-(load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; for `doom-local-dir'
+(condition-case nil
+    (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
+  (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
 (let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
@@ -4049,6 +4051,17 @@ to make that right again, and this package makes that even easier to do.
   :after org)
 #+end_src
 
+***** Glossaries and more
+
+#+begin_src emacs-lisp
+(package! org-glossary
+  :recipe (:host github :repo "tecosaur/org-glossary"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-glossary
+  :hook (org-mode . org-glossary-mode))
+#+end_src
 ***** Document comparison
 It's quite nice to compare Org files, and the richest way to compare content is
 probably =latexdiff=. There are a few annoying steps involved here, and so I've
@@ -4180,6 +4193,30 @@ with a little filter.
 I think it makes sense to have list bullets change with depth
 #+begin_src emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
+#+end_src
+***** Easier file links
+
+While ~org-insert-link~ is all very well and good, a large portion of the time I
+want to insert a file, and so it would be good to have a way to skip straight to
+that and avoid the description prompt. Looking at ~org-link-parameters~, we can
+see that the ="file"= link type uses the completion function
+~org-link-complete-file~, so let's use that to make a little file-link inserting
+function.
+
+#+begin_src emacs-lisp
+(defun +org-insert-file-link ()
+  "Insert a file link.  At the prompt, enter the filename."
+  (interactive)
+  (insert (format "[[%s]]" (org-link-complete-file))))
+#+end_src
+
+Now we'll just add that under the Org mode link localleader for convenience.
+
+#+begin_src emacs-lisp
+(map! :after org
+      :map org-mode-map
+      :localleader
+      "l f" #'+org-insert-file-link)
 #+end_src
 ***** Citation
 Occasionally I want to cite something, and =org-ref= is /the/ package for that.
@@ -6375,7 +6412,7 @@ compared to the default implementation."
                  (or link-home link-up))))
      ;; Preamble.
      (org-html--build-pre/postamble 'preamble info)
-     ;; Document contents.
+     ;;  contents.
      (let ((div (assq 'content (plist-get info :html-divs))))
        (format "<%s id=\"%s\">\n" (nth 1 div) (nth 2 div)))
      ;; Document title.
@@ -8088,7 +8125,12 @@ need to make it automatic
 #+begin_src emacs-lisp
 (defadvice! org-latex-pick-compiler (_contents info)
   :before #'org-latex-template
-  (when (and org-export-has-code-p (memq 'julia-code (org-latex-detect-features)))
+  :before #'org-beamer-template
+  (when (and org-export-has-code-p
+             (memq 'julia-code (org-latex-detect-features))
+             (save-excursion
+               (goto-char (point-min))
+               (re-search-forward "[^\x00-\x7F\u200b]" nil t)))
     (setf info (plist-put
                 (if (member #'+org-latex-replace-non-ascii-chars (plist-get info :filter-final-output))
                     (plist-put info :filter-final-output
@@ -8199,7 +8241,7 @@ strange happens.
 ;;         (emojify-latexify-emoji-in-buffer)
 ;;         (buffer-string)))))
 
-;; (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+;; (add-to-list 'org-export-plain-text-functions #'+org-latex-convert-emojis)
 #+end_src
 
 This works fairly nicely, there's just one little QOL upgrade that we can
@@ -8447,46 +8489,6 @@ I'd quite like to also recognise =->= and =<-=, so let's set come up with some a
     output))
 #+end_src
 
-**** Support images from URLs
-You can link to remote images easily, and they work nicely with HTML-based
-exports. However, LaTeX can only include local files, and so the current
-behaviour of =org-latex-link= is just to insert a URL to the image.
-
-We can do better than that by downloading the image to a predictable location,
-and using that. By making the filename predictable as opposed to just another
-tempfile, this can provide a caching mechanism.
-
-#+begin_src emacs-lisp
-(defadvice! +org-latex-link (orig-fn link desc info)
-  "Acts as `org-latex-link', but supports remote images."
-  :around #'org-latex-link
-  (setq o-link link
-        o-desc desc
-        o-info info)
-  (if (and (member (plist-get (cadr link) :type) '("http" "https"))
-           (member (file-name-extension (plist-get (cadr link) :path))
-                   '("png" "jpg" "jpeg" "pdf" "svg")))
-      (org-latex-link--remote link desc info)
-    (funcall orig-fn link desc info)))
-
-(defun org-latex-link--remote (link _desc info)
-  (let* ((url (plist-get (cadr link) :raw-link))
-         (ext (file-name-extension url))
-         (target (format "%s%s.%s"
-                         (temporary-file-directory)
-                         (replace-regexp-in-string "[./]" "-"
-                                                   (file-name-sans-extension (substring (plist-get (cadr link) :path) 2)))
-                         ext)))
-    (unless (file-exists-p target)
-      (url-copy-file url target))
-    (setcdr link (--> (cadr link)
-                   (plist-put it :type "file")
-                   (plist-put it :path target)
-                   (plist-put it :raw-link (concat "file:" target))
-                   (list it)))
-    (concat "% fetched from " url "\n"
-            (org-latex--inline-image link info))))
-#+end_src
 **** Chameleon --- aka. match theme
 
 Once I had the idea of having the look of the LaTeX document produced match the
