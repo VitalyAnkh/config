@@ -572,7 +572,10 @@ word-wrap                    ; soft wrapping with language-aware indent
 
 #+name: doom-emacs
 #+begin_src emacs-lisp
-(dired +icons +dirvish)      ; making dired pretty [functional]
+(dired
+ ;;+icons
+ +dirvish
+ )                     ; making dired pretty [functional]
 electric                     ; smarter, keyword-based electric-indent
 (ibuffer +icons)             ; interactive buffer management
 undo                         ; persistent, smarter undo for your inevitable mistakes
@@ -1692,6 +1695,13 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 #+begin_src emacs-lisp
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
+#+end_src
+*** Dirvish
+Doom has a dirvish in ~dired~ module now, but I want to tweak some defaults.
+#+begin_src emacs-lisp :tangle yes
+(setq dirvish-hide-details t
+      dirvish-side-follow-buffer-file t
+      )
 #+end_src
 *** Straight
 Let =straight= use our own =org=.

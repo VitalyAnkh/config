@@ -451,6 +451,12 @@ nil
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
 ;; Very large files:2 ends here
 
+;; [[file:config.org::*Dirvish][Dirvish:1]]
+(setq dirvish-hide-details t
+      dirvish-side-follow-buffer-file t
+      )
+;; Dirvish:1 ends here
+
 ;; [[file:config.org::*Straight][Straight:1]]
 (use-package straight
   :config
