@@ -6,7 +6,7 @@ git pull
 cd build
 CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
   -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
-  -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra"\
+  -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra;libc;libcxx;libcxxabi;libunwind"\
   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 echo "==== pull llvm-project done ===="
 

@@ -3596,7 +3596,7 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
        auto-mode-alist))
 ;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
-#+end_src
+      #+end_src
 ** Grammarly
 I use =grammarly= to check my writing.
 #+begin_src emacs-lisp :tangle packages.el
@@ -8379,24 +8379,24 @@ able to handle anyway. For them we define a table of LaTeX translations
 | β         | \(\beta\)       |
 | γ          | \(\gamma\)      |
 | δ         | \(\delta\)      |
-| ε         | \(\epsilon\)    |
+| ε          | \(\epsilon\)    |
 | ϵ          | \(\varepsilon\) |
-| ζ         | \(\zeta\)       |
-| η         | \(\eta\)        |
+| ζ          | \(\zeta\)       |
+| η          | \(\eta\)        |
 | θ         | \(\theta\)      |
-| ϑ         | \(\vartheta\)   |
+| ϑ          | \(\vartheta\)   |
 | ι          | \(\iota\)       |
-| κ         | \(\kappa\)      |
-| λ         | \(\lambda\)     |
+| κ          | \(\kappa\)      |
+| λ          | \(\lambda\)     |
 | μ         | \(\mu\)         |
-| ν         | \(\nu\)         |
-| ξ         | \(\xi\)         |
+| ν          | \(\nu\)         |
+| ξ          | \(\xi\)         |
 | π         | \(\pi\)         |
 | ϖ         | \(\varpi\)      |
 | ρ         | \(\rho\)        |
-| ϱ          | \(\varrho\)     |
+| ϱ         | \(\varrho\)     |
 | σ         | \(\sigma\)      |
-| ς         | \(\varsigma\)   |
+| ς          | \(\varsigma\)   |
 | τ          | \(\tau\)        |
 | υ         | \(\upsilon\)    |
 | ϕ         | \(\phi\)        |
@@ -8416,7 +8416,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Ω         | \(\Omega\)      |
 | א         | \(\aleph\)      |
 | ב         | \(\beth\)       |
-| ד          | \(\daleth\)     |
+| ד         | \(\daleth\)     |
 | ג          | \(\gimel\)      |
 
 #+name: gen-latex-non-ascii-char-substitutions

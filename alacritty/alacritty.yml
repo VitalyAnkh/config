@@ -1,15 +1,15 @@
 # Font configuration (changes require restart)
 font:
   normal:
-    family: FiraCode Nerd Font Mono
-    style: Regular
+    family: JetBrains Mono
+    style: ExtraLight
     size: 15
 
   bold:
-    family: FiraCode Nerd Font Mono
+    family: JetBrains Mono
 
   italic:
-    family: FiraCode Nerd Font Mono
+    family: JetBrains Mono
   size: 14
 # 背景不透明度
 #background_opacity: 0.8
@@ -100,8 +100,8 @@ window:
   # by DPI and the specified value is always added at both opposing sides.
   opacity: 0.8
   padding:
-   x: 5
-   y: 0 
+    x: 5
+    y: 0
 
   # Spread additional padding evenly around the terminal content.
   #dynamic_padding: false
@@ -133,10 +133,10 @@ window:
 
   # Window class (Linux/BSD only):
   #class:
-    # Application instance name
-    #instance: Alacritty
-    # General application class
-    #general: Alacritty
+  # Application instance name
+  #instance: Alacritty
+  # General application class
+  #general: Alacritty
 
   # GTK theme variant (Linux/BSD only)
   #
@@ -144,7 +144,7 @@ window:
   # Set this to `None` to use the default theme variant.
   #gtk_theme_variant: None
 
-#scrolling:
+  #scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
   #history: 10000
@@ -156,62 +156,62 @@ window:
   # Scroll to the bottom when new text is written to the terminal.
   #auto_scroll: false
 
-# Spaces per Tab (changes require restart)
-#
-# This setting defines the width of a tab in cells.
-#
-# Some applications, like Emacs, rely on knowing about the width of a tab.
-# To prevent unexpected behavior in these applications, it's also required to
-# change the `it` value in terminfo when altering this setting.
-#tabspaces: 8
+  # Spaces per Tab (changes require restart)
+  #
+  # This setting defines the width of a tab in cells.
+  #
+  # Some applications, like Emacs, rely on knowing about the width of a tab.
+  # To prevent unexpected behavior in these applications, it's also required to
+  # change the `it` value in terminfo when altering this setting.
+  #tabspaces: 8
 
-# # Font configuration
-# font:
-#   # Normal (roman) font face
-#   normal:
-#     # Font family
-#     #
-#     # Default:
-#     #   - (macOS) Menlo
-#     #   - (Linux/BSD) monospace
-#     #   - (Windows) Consolas
-#     family: Inconsolata
+  # # Font configuration
+  # font:
+  #   # Normal (roman) font face
+  #   normal:
+  #     # Font family
+  #     #
+  #     # Default:
+  #     #   - (macOS) Menlo
+  #     #   - (Linux/BSD) monospace
+  #     #   - (Windows) Consolas
+  #     family: Inconsolata
 
-#     # The `style` can be specified to pick a specific face.
-#     style: Regular
+  #     # The `style` can be specified to pick a specific face.
+  #     style: Regular
 
-#   # Bold font face
-#   #bold:
-#     # Font family
-#     #
-#     # If the bold family is not specified, it will fall back to the
-#     # value specified for the normal font.
-#     #family: Inconsolata
+  #   # Bold font face
+  #   #bold:
+  #     # Font family
+  #     #
+  #     # If the bold family is not specified, it will fall back to the
+  #     # value specified for the normal font.
+  #     #family: Inconsolata
 
-#     # The `style` can be specified to pick a specific face.
-#     #style: Bold
+  #     # The `style` can be specified to pick a specific face.
+  #     #style: Bold
 
-#   # Italic font face
-#   #italic:
-#     # Font family
-#     #
-#     # If the italic family is not specified, it will fall back to the
-#     # value specified for the normal font.
-#     #family: Inconsolata
+  #   # Italic font face
+  #   #italic:
+  #     # Font family
+  #     #
+  #     # If the italic family is not specified, it will fall back to the
+  #     # value specified for the normal font.
+  #     #family: Inconsolata
 
-#     # The `style` can be specified to pick a specific face.
-#     #style: Italic
+  #     # The `style` can be specified to pick a specific face.
+  #     #style: Italic
 
-#   # Bold italic font face
-#   #bold_italic:
-#     # Font family
-#     #
-#     # If the bold italic family is not specified, it will fall back to the
-#     # value specified for the normal font.
-#     #family: monospace
+  #   # Bold italic font face
+  #   #bold_italic:
+  #     # Font family
+  #     #
+  #     # If the bold italic family is not specified, it will fall back to the
+  #     # value specified for the normal font.
+  #     #family: monospace
 
-#     # The `style` can be specified to pick a specific face.
-#     #style: Bold Italic
+  #     # The `style` can be specified to pick a specific face.
+  #     #style: Bold Italic
 
   # Point size
   size: 14.0
@@ -221,14 +221,12 @@ window:
   #offset:
   #  x: 0
   #  y: 0
-
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
   # increasing `y` moves the glyph upwards.
   #glyph_offset:
   #  x: 0
   #  y: 0
-
   # Thin stroke font rendering (macOS only)
   #
   # Thin strokes are suitable for retina displays, but for non-retina screens
@@ -248,37 +246,36 @@ window:
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
 
-
 # Colors (Gruvbox dark)
 colors:
   # Default colors
   primary:
     # hard contrast: background = '#1d2021'
-    background: '#1d2021'
+    background: "#1d2021"
     # soft contrast: background = '#32302f'
-    foreground: '#ebdbb2'
+    foreground: "#ebdbb2"
 
   # Normal colors
   normal:
-    black:   '#282828'
-    red:     '#cc241d'
-    green:   '#98971a'
-    yellow:  '#d79921'
-    blue:    '#458588'
-    magenta: '#b16286'
-    cyan:    '#689d6a'
-    white:   '#a89984'
+    black: "#282828"
+    red: "#cc241d"
+    green: "#98971a"
+    yellow: "#d79921"
+    blue: "#458588"
+    magenta: "#b16286"
+    cyan: "#689d6a"
+    white: "#a89984"
 
   # Bright colors
   bright:
-    black:   '#928374'
-    red:     '#fb4934'
-    green:   '#b8bb26'
-    yellow:  '#fabd2f'
-    blue:    '#83a598'
-    magenta: '#d3869b'
-    cyan:    '#8ec07c'
-    white:   '#ebdbb2'
+    black: "#928374"
+    red: "#fb4934"
+    green: "#b8bb26"
+    yellow: "#fabd2f"
+    blue: "#83a598"
+    magenta: "#d3869b"
+    cyan: "#8ec07c"
+    white: "#ebdbb2"
 
 # Visual Bell
 #
@@ -313,10 +310,10 @@ colors:
 #background_opacity: 1.0
 
 #selection:
-  #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+#semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
 
-  # When set to `true`, selected text will be copied to the primary clipboard.
-  #save_to_clipboard: false
+# When set to `true`, selected text will be copied to the primary clipboard.
+#save_to_clipboard: false
 
 # Allow terminal applications to change Alacritty's window title.
 #dynamic_title: true
@@ -371,28 +368,28 @@ cursor:
 #alt_send_esc: true
 
 #debug:
-  # Display the time it takes to redraw each frame.
-  #render_timer: false
+# Display the time it takes to redraw each frame.
+#render_timer: false
 
-  # Keep the log file after quitting Alacritty.
-  #persistent_logging: false
+# Keep the log file after quitting Alacritty.
+#persistent_logging: false
 
-  # Log level
-  #
-  # Values for `log_level`:
-  #   - None
-  #   - Error
-  #   - Warn
-  #   - Info
-  #   - Debug
-  #   - Trace
-  #log_level: Warn
+# Log level
+#
+# Values for `log_level`:
+#   - None
+#   - Error
+#   - Warn
+#   - Info
+#   - Debug
+#   - Trace
+#log_level: Warn
 
-  # Print all received window events.
-  #print_events: false
+# Print all received window events.
+#print_events: false
 
-  # Record all characters and escape sequences as test data.
-  #ref_test: false
+# Record all characters and escape sequences as test data.
+#ref_test: false
 
 mouse:
   # Click settings
@@ -421,7 +418,6 @@ mouse:
     launcher:
       program: firefox-developer-edition
     #  args: []
-
     # URL modifiers
     #
     # These are the modifiers that need to be held down for opening URLs when clicking
@@ -552,8 +548,8 @@ mouse:
 # a no-op if you do not wish to receive input characters for that binding.
 key_bindings:
   # (Windows, Linux, and BSD only)
-  - { key: V,        mods: Control|Shift, action: Paste            }
-  - { key: C,        mods: Control|Shift, action: Copy             }
+  - { key: V, mods: Control|Shift, action: Paste }
+  - { key: C, mods: Control|Shift, action: Copy }
   #- { key: Insert,   mods: Shift,         action: PasteSelection   }
   #- { key: Key0,     mods: Control,       action: ResetFontSize    }
   #- { key: Equals,   mods: Control,       action: IncreaseFontSize }
@@ -583,7 +579,7 @@ key_bindings:
   #- { key: Copy,                     action: Copy                             }
   #- { key: L,         mods: Control, action: ClearLogNotice                   }
   #- { key: L,         mods: Control, chars: "\x0c"                            }
-  - { key: PageUp,      mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }
-  - { key: PageDown,    mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
-  - { key: Home,        mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
-  - { key: End,         mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
+  - { key: PageUp, mods: Shift, action: ScrollPageUp, mode: ~Alt }
+  - { key: PageDown, mods: Shift, action: ScrollPageDown, mode: ~Alt }
+  - { key: Home, mods: Shift, action: ScrollToTop, mode: ~Alt }
+  - { key: End, mods: Shift, action: ScrollToBottom, mode: ~Alt }
