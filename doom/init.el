@@ -126,11 +126,11 @@
        elixir                       ; erlang done right
        elm                          ; care for a cup of TEA?
        emacs-lisp                   ; drown in parentheses
-       ;;(erlang +lsp)              ; an elegant language for a more civilized age
+       (erlang +lsp)                ; an elegant language for a more civilized age
        ess                          ; emacs speaks statistics
        ;;faust                      ; dsp, but you get to keep your soul
        ;;fsharp                     ; ML stands for Microsoft's Language
-       ;;fstar                      ; (dependent) types and (monadic) effects and Z3
+       fstar                        ; (dependent) types and (monadic) effects and Z3
        gdscript                     ; the language you waited for
        (go +lsp)                    ; the hipster dialect
        (haskell +lsp)               ; a language that's lazier than I am
@@ -186,7 +186,7 @@
        ;;terra                      ; Earth and Moon in alignment for performance.
        web                          ; the tubes
        yaml                         ; JSON, but readable
-       zig                        ; C, but simpler
+       zig                          ; C, but simpler
 
        :email
        (:if (executable-find "mu") (mu4e +org +gmail))
