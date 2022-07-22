@@ -623,7 +623,7 @@ rgb                          ; creating color strings
 ;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
-tree-sitter                    ; syntax and parsing, sitting in a tree...
+tree-sitter                  ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
@@ -700,7 +700,7 @@ nix                          ; I hereby declare "nix geht mehr!"
 ;;qt                         ; the 'cutest' gui framework ever
 (racket +lsp +xp)            ; a DSL for DSLs
 raku                         ; the artist formerly known as perl6
-rest                       ; Emacs as a REST client
+rest                         ; Emacs as a REST client
 ;;rst                        ; ReST in peace
 (ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
 (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
@@ -8379,24 +8379,24 @@ able to handle anyway. For them we define a table of LaTeX translations
 | β         | \(\beta\)       |
 | γ          | \(\gamma\)      |
 | δ         | \(\delta\)      |
-| ε          | \(\epsilon\)    |
+| ε         | \(\epsilon\)    |
 | ϵ          | \(\varepsilon\) |
-| ζ          | \(\zeta\)       |
-| η          | \(\eta\)        |
+| ζ         | \(\zeta\)       |
+| η         | \(\eta\)        |
 | θ         | \(\theta\)      |
-| ϑ          | \(\vartheta\)   |
+| ϑ         | \(\vartheta\)   |
 | ι          | \(\iota\)       |
-| κ          | \(\kappa\)      |
-| λ          | \(\lambda\)     |
+| κ         | \(\kappa\)      |
+| λ         | \(\lambda\)     |
 | μ         | \(\mu\)         |
-| ν          | \(\nu\)         |
-| ξ          | \(\xi\)         |
+| ν         | \(\nu\)         |
+| ξ         | \(\xi\)         |
 | π         | \(\pi\)         |
 | ϖ         | \(\varpi\)      |
 | ρ         | \(\rho\)        |
-| ϱ         | \(\varrho\)     |
+| ϱ          | \(\varrho\)     |
 | σ         | \(\sigma\)      |
-| ς          | \(\varsigma\)   |
+| ς         | \(\varsigma\)   |
 | τ          | \(\tau\)        |
 | υ         | \(\upsilon\)    |
 | ϕ         | \(\phi\)        |
@@ -8416,7 +8416,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Ω         | \(\Omega\)      |
 | א         | \(\aleph\)      |
 | ב         | \(\beth\)       |
-| ד         | \(\daleth\)     |
+| ד          | \(\daleth\)     |
 | ג          | \(\gimel\)      |
 
 #+name: gen-latex-non-ascii-char-substitutions
