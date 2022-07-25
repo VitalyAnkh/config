@@ -34,6 +34,7 @@ echo "==== pull Pilot done ===="
 echo "==== pull godot ===="
 cd ~/projects/dev/cpp/godot
 git pull
+scons platform=linuxbsd -j 12 target=release_debug compiledb=true
 echo "==== pull godot done ===="
 
 echo "==== pull v8 riscv-collab/RV32G ===="
@@ -123,9 +124,14 @@ cd ~/projects/dev/rust-projects/deno
 git pull
 echo "==== pull deno done ===="
 
-echo "==== pull agda ===="
+echo "==== pull agda-stdlib ===="
 cd ~/sdk/lib/agda-stdlib
 git pull
+echo "==== pull agda done ===="
+
+echo "==== pull agda ===="
+cd ~/projects/dev/haskell/agda
+git pull --recurse-submodules
 echo "==== pull agda done ===="
 
 echo "=== pull emacs ==="

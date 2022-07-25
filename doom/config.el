@@ -2812,7 +2812,7 @@ SQL can be either the emacsql vector representation, or a string."
                    :image-input-type "dvi"
                    :image-output-type "svg"
                    :image-size-adjust
-                   (0.55 . 0.55)
+                   (0.8 . 0.8)
                    :latex-compiler
                    ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
                    :image-converter
@@ -4855,7 +4855,7 @@ SQL can be either the emacsql vector representation, or a string."
                   :image-input-type "dvi"
                   :image-output-type "svg"
                   :image-size-adjust
-                  (1.0 . 1.0)
+                  (1.2 . 1.2)
                   :latex-compiler
                   ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
                   :image-converter
