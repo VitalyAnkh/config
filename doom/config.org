@@ -586,6 +586,7 @@ file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format
  +onsave
+  ;;+only-format-changes-on-save
 )                    ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
@@ -3626,15 +3627,15 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
 ** Grammarly
 I use =grammarly= to check my writing.
 #+begin_src emacs-lisp :tangle packages.Symbol’s function definition is void: consult--readl
-(package! lsp-grammarly)
+;;(package! lsp-grammarly)
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package lsp-grammarly
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp)))
-)  ; or lsp-deferred
+;; (use-package lsp-grammarly
+;;   :hook (text-mode . (lambda ()
+;;                        (require 'lsp-grammarly)
+;;                        (lsp)))
+;; )  ; or lsp-deferred
 #+end_src
 ** Lean
 Use ~Lean~ to prove you are a prover!
@@ -10213,7 +10214,7 @@ module. Let's just try to patch on the main things I like the look of.
   (push 'elfeed-search-mode evil-snipe-disabled-modes))
 #+end_src
 *** Visual enhancements
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (after! elfeed
 
   (elfeed-org)

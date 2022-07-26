@@ -51,6 +51,7 @@
        fold                         ; (nigh) universal code folding
        (format
         +onsave
+         ;;+only-format-changes-on-save
        )                    ; automated prettiness
        ;;god                        ; run Emacs commands without modifier keys
        ;;lispy                      ; vim for lisp, for people who don't like vim
