@@ -10,6 +10,33 @@
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 ;; Personal Information:2 ends here
 
+;; [[file:config.org::*Workaround][Workaround:1]]
+(defadvice copilot--complete-post-command (around intercept activate)
+  (condition-case err
+      ad-do-it
+    ;; Let the debugger run
+    ((debug error) (signal (car err) (cdr err)))))
+;; Workaround:1 ends here
+
+;; [[file:config.org::*Workaround][Workaround:3]]
+(use-package clang-format+
+  :config
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+  (setq clang-format+-context 'modification)
+  (setq clang-format+-always-enable t)
+  )
+
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
+            cpp-mode  ; use clang-format+ for C/C++
+            c++-mode
+            c-mode
+            sql-mode           ; sqlformat is currently broken
+            tex-mode           ; latexindent is broken
+            latex-mode
+            org-msg-edit-mode)) ; doesn't need a formatter
+;; Workaround:3 ends here
+
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash

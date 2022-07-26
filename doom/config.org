@@ -334,12 +334,37 @@ my home machine is pretty safe, and my laptop is shutting down a lot.
 #+end_src
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle config.el
 (defadvice copilot--complete-post-command (around intercept activate)
   (condition-case err
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
+#+end_src
+
+Test some package
+#+begin_src emacs-lisp :tangle packages.el
+(package! clang-format+
+  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(use-package clang-format+
+  :config
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+  (setq clang-format+-context 'modification)
+  (setq clang-format+-always-enable t)
+  )
+
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
+            cpp-mode  ; use clang-format+ for C/C++
+            c++-mode
+            c-mode
+            sql-mode           ; sqlformat is currently broken
+            tex-mode           ; latexindent is broken
+            latex-mode
+            org-msg-edit-mode)) ; doesn't need a formatter
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -560,7 +585,8 @@ zen                          ; distraction-free coding or writing
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format
- +onsave)                    ; automated prettiness
+ +onsave
+)                    ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
 ;;multiple-cursors           ; editing in many places at once
@@ -679,7 +705,7 @@ gdscript                     ; the language you waited for
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 nim                          ; python + lisp at the speed of c
-nix                          ; I hereby declare "nix geht mehr!"
+(nix +lsp)                          ; I hereby declare "nix geht mehr!"
 (ocaml +lsp)                        ; an objective camel
 (org                         ; organize your plain life in plain text
  ;;+pretty                     ; yessss my pretties! (nice unicode symbols)
@@ -3599,7 +3625,7 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
       #+end_src
 ** Grammarly
 I use =grammarly= to check my writing.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.Symbol’s function definition is void: consult--readl
 (package! lsp-grammarly)
 #+end_src
 
@@ -3618,12 +3644,12 @@ Use ~Lean~ to prove you are a prover!
   (:host github
    :repo "leanprover/lean4"
    :files ("lean4-mode/*.el")))
-#+end_src
+      #+end_src
 
 ~Lean~ has its own input method to input unicode characters. Let's make it more plansant.
 #+begin_src emacs-lisp :tangle no
 (add-hook 'lean-mode-hook
-  (lambda () (setq-default sis-english-source "Lean")))
+          (lambda ()  (setq-default sis-english-source "Lean")))
 #+end_src
 ** Meson
 Meson is a great build tool for =C++=, much more ergonomic than CMake.

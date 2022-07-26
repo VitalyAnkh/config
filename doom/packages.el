@@ -1,10 +1,7 @@
-;; [[file:config.org::*Workaround][Workaround:1]]
-(defadvice copilot--complete-post-command (around intercept activate)
-  (condition-case err
-      ad-do-it
-    ;; Let the debugger run
-    ((debug error) (signal (car err) (cdr err)))))
-;; Workaround:1 ends here
+;; [[file:config.org::*Workaround][Workaround:2]]
+(package! clang-format+
+  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+;; Workaround:2 ends here
 
 ;; -*- no-byte-compile: t; -*-
 
@@ -126,10 +123,6 @@
 ;; [[file:config.org::*LSP][LSP:1]]
 (unpin! lsp-mode)
 ;; LSP:1 ends here
-
-;; [[file:config.org::*Grammarly][Grammarly:1]]
-(package! lsp-grammarly)
-;; Grammarly:1 ends here
 
 ;; [[file:config.org::*Lean][Lean:1]]
 (package! lean4-mode :recipe

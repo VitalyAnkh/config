@@ -50,7 +50,8 @@
        file-templates               ; auto-snippets for empty files
        fold                         ; (nigh) universal code folding
        (format
-        +onsave)                    ; automated prettiness
+        +onsave
+       )                    ; automated prettiness
        ;;god                        ; run Emacs commands without modifier keys
        ;;lispy                      ; vim for lisp, for people who don't like vim
        ;;multiple-cursors           ; editing in many places at once
@@ -152,7 +153,7 @@
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
        nim                          ; python + lisp at the speed of c
-       nix                          ; I hereby declare "nix geht mehr!"
+       (nix +lsp)                          ; I hereby declare "nix geht mehr!"
        (ocaml +lsp)                        ; an objective camel
        (org                         ; organize your plain life in plain text
         ;;+pretty                     ; yessss my pretties! (nice unicode symbols)
