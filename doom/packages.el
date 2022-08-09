@@ -186,7 +186,7 @@
 
 ;;(package! org-music :recipe (:local-repo "lisp/org-music"))
 
-(package! citar)
+(unpin! citar)
 (package! citeproc)
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 

@@ -810,7 +810,7 @@ Label=se
 
 [keyboard-se-ovd]
 Description="键盘 - 瑞典语 - Elfdalian 语（瑞典，带组合 ogonek）"
-Language=
+Language=ovd
 Label=se
 
 [keyboard-bg]

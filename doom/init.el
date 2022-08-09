@@ -85,6 +85,7 @@
 
        :tools
        ansible                      ; a crucible for infrastructure as code
+       biblio                       ; write you a PhD
        debugger                     ; FIXME stepping through code, to help you add bugs
        direnv                       ; be direct about your environment
        ;;docker                     ; port everything to containers

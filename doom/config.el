@@ -1760,32 +1760,6 @@ SQL can be either the emacsql vector representation, or a string."
         :map org-mode-map
         :localleader
         "l f" #'+org-insert-file-link)
-  (after! oc
-    (defun org-ref-to-org-cite ()
-      "Attempt to convert org-ref citations to org-cite syntax."
-      (interactive)
-      (let* ((cite-conversions '(("cite" . "//b") ("Cite" . "//bc")
-                                 ("nocite" . "/n")
-                                 ("citep" . "") ("citep*" . "//f")
-                                 ("parencite" . "") ("Parencite" . "//c")
-                                 ("citeauthor" . "/a/f") ("citeauthor*" . "/a")
-                                 ("citeyear" . "/na/b")
-                                 ("Citep" . "//c") ("Citealp" . "//bc")
-                                 ("Citeauthor" . "/a/cf") ("Citeauthor*" . "/a/c")
-                                 ("autocite" . "") ("Autocite" . "//c")
-                                 ("notecite" . "/l/b") ("Notecite" . "/l/bc")
-                                 ("pnotecite" . "/l") ("Pnotecite" . "/l/bc")))
-             (cite-regexp (rx (regexp (regexp-opt (mapcar #'car cite-conversions) t))
-                              ":" (group (+ (not (any "\n 	,.)]}")))))))
-        (save-excursion
-          (goto-char (point-min))
-          (while (re-search-forward cite-regexp nil t)
-            (message (format "[cite%s:@%s]"
-                                   (cdr (assoc (match-string 1) cite-conversions))
-                                   (match-string 2)))
-            (replace-match (format "[cite%s:@%s]"
-                                   (cdr (assoc (match-string 1) cite-conversions))
-                                   (match-string 2))))))))
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
   ;;(setq cdlatex-takeover-subsuperscript nil)
   (defadvice! org-edit-latex-emv-after-insert ()
