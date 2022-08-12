@@ -115,7 +115,8 @@
        tty                          ; improve the terminal Emacs experience
 
        :lang
-       (agda +local)                ; types of types of types of types...
+       (agda +tree-sitter
+             +local)                ; types of types of types of types...
        beancount                    ; mind the GAAP
        (cc +lsp)                    ; C/C++/Obj-C madness
        clojure                      ; java with a lisp

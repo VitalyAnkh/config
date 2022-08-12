@@ -340,14 +340,6 @@ This is a place I put workarounds. It should be empty in the best scenarios.
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
-
-(when (and (featurep! :lang agda +local)
-           (executable-find "agda-mode"))
-  (add-load-path!
-   (file-name-directory (shell-command-to-string "agda-mode locate")))
-  (unless (require 'agda2 nil t)
-    (message "Failed to find the `agda2' package")))
-
 #+end_src
 
 Test some package
@@ -675,7 +667,8 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-(agda +local)                ; types of types of types of types...
+(agda +tree-sitter
+      +local)                ; types of types of types of types...
 beancount                    ; mind the GAAP
 (cc +lsp)                    ; C/C++/Obj-C madness
 clojure                      ; java with a lisp
