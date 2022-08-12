@@ -16,6 +16,13 @@
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
+
+(when (and (featurep! :lang agda +local)
+           (executable-find "agda-mode"))
+  (add-load-path!
+   (file-name-directory (shell-command-to-string "agda-mode locate")))
+  (unless (require 'agda2 nil t)
+    (message "Failed to find the `agda2' package")))
 ;; Workaround:1 ends here
 
 ;; [[file:config.org::*Workaround][Workaround:3]]

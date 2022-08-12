@@ -2,6 +2,8 @@
 
 systemctl --user disable emacs.service
 
+cargo install git-delta
+
 xdg-mime default emacs.desktop text/org
 
 texdef -t pdflatex -p graphicx Gin@extensions
