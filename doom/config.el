@@ -1630,6 +1630,9 @@ SQL can be either the emacsql vector representation, or a string."
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-headerline-breadcrumb-segments '(symbols))
+  (lsp-headerline-breadcrumb-enable-diagnostics nil)
   (lsp-semantic-tokens-enable t)
   (lsp-ui-doc-show-with-mouse t)
   (lsp-ui-doc-show-with-cursor nil)
@@ -1715,10 +1718,10 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook! 'text-mode-hook
              ;; Disable hl-line-mode for all modes inherited from text mode
              (hl-line-mode -1)
-             ;; Apply ANSI color codes
-             (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max) t)))
-  )
+             (unless (derived-mode-p 'org-mode)
+               ;; Apply ANSI color codes
+               (with-silent-modifications
+                 (ansi-color-apply-on-region (point-min) (point-max) t)))))
 ;; Plaintext:1 ends here
 
 (after! org
@@ -1730,6 +1733,7 @@ SQL can be either the emacsql vector representation, or a string."
         org-export-in-background t                  ; run export processes in external emacs process
         org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
         org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+        org-image-actual-width '(0.9)
         org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
   (setq org-babel-default-header-args
         '((:session . "none")
@@ -3835,8 +3839,8 @@ SQL can be either the emacsql vector representation, or a string."
       (org-latex-use-microtype . microtype)
       ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
       (org-latex-par-sep . par-sep)
-      ((org-latex-embed-extra-files) . embed-files)
-      ((and org-latex-embed-files "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
+      (org-latex-embed-files . embed-files)
+      ((and org-latex-embed-files "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
       ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
       ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
       ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
@@ -4677,7 +4681,15 @@ SQL can be either the emacsql vector representation, or a string."
   )
 
 (use-package! org-ol-tree
-  :commands org-ol-tree)
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
+
 (map! :map org-mode-map
       :after org
       :localleader

@@ -667,8 +667,9 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-(agda +tree-sitter
-      +local)                ; types of types of types of types...
+(agda
+ ;;+tree-sitter
+ +local)                ; types of types of types of types...
 beancount                    ; mind the GAAP
 (cc +lsp)                    ; C/C++/Obj-C madness
 clojure                      ; java with a lisp
@@ -1718,7 +1719,7 @@ have the following.
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")) :disable t)
+(package! vlf :recipe (:host github :repo "emacs-stright/vlfi" :files ("*.el")) :disable t)
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
@@ -3589,6 +3590,9 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-headerline-breadcrumb-segments '(symbols))
+  (lsp-headerline-breadcrumb-enable-diagnostics nil)
   (lsp-semantic-tokens-enable t)
   (lsp-ui-doc-show-with-mouse t)
   (lsp-ui-doc-show-with-cursor nil)
@@ -3726,10 +3730,10 @@ on that.
   (add-hook! 'text-mode-hook
              ;; Disable hl-line-mode for all modes inherited from text mode
              (hl-line-mode -1)
-             ;; Apply ANSI color codes
-             (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max) t)))
-  )
+             (unless (derived-mode-p 'org-mode)
+               ;; Apply ANSI color codes
+               (with-silent-modifications
+                 (ansi-color-apply-on-region (point-min) (point-max) t)))))
 #+end_src
 ** Org
 :PROPERTIES:
@@ -4021,7 +4025,15 @@ Speaking of headlines, a nice package for viewing and managing the heading struc
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-ol-tree
-  :commands org-ol-tree)
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
+
 (map! :map org-mode-map
       :after org
       :localleader
@@ -4162,6 +4174,7 @@ It's nice to be able to link to music
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+      org-image-actual-width '(0.9)
       org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
 #+end_src
 
@@ -7401,8 +7414,8 @@ tests should be very versatile.
     (org-latex-use-microtype . microtype)
     ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
     (org-latex-par-sep . par-sep)
-    ((org-latex-embed-extra-files) . embed-files)
-    ((and org-latex-embed-files "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
+    (org-latex-embed-files . embed-files)
+    ((and org-latex-embed-files "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
     ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
     ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
     ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
