@@ -53,7 +53,7 @@
       word-wrap-by-category t                     ; Different languages live together happily
       org-return-follows-link t)                  ; Organise it!
 
-(display-time-mode 1)                             ; Enable time in the mode-line
+;;(display-time-mode 1)                             ; Enable time in the mode-line
 
 ;; This messes things up, disable for now
 ;;(unless (string-match-p "^Power N/A" (battery)) ; On laptops...
@@ -794,10 +794,10 @@ Usage:
   (add-to-list '+magit-project-commit-templates-alist (cons "org-mode" #'+org-commit-message-template)))
 ;; Commit message templates:2 ends here
 
-;; [[file:config.org::*Magit delta][Magit delta:3]]
+;; [[file:config.org::*\\\[\\\]agit delta][\[\]agit delta:3]]
 (after! magit
   (magit-delta-mode +1))
-;; Magit delta:3 ends here
+;; \[\]agit delta:3 ends here
 
 ;; [[file:config.org::*Smerge][Smerge:1]]
 (defun smerge-repeatedly ()
@@ -971,7 +971,7 @@ Usage:
 ;; [[file:config.org::*Emojify][Emojify:2]]
 (defvar emojify-disabled-emojis
   '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
     ;; Terminal powerline
     "✔"
     ;; Box drawing
@@ -1266,7 +1266,10 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
    treemacs-indentation 1
    treemacs-recenter-after-file-follow t
    treemacs-recenter-after-tag-follow t
-   ;;treemacs-text-scale 1.5
+   treemacs-text-scale -1.0
+   treemacs-follow-mode t
+   treemacs-width 25
+   ;;treemacs-display-in-side-window nil
    )
   :bind
   (:map global-map
@@ -2736,7 +2739,7 @@ SQL can be either the emacsql vector representation, or a string."
               :ellipses      "…"
               :arrow_right   "→"
               :arrow_left    "←"
-              :arrow_lr      "⟷"
+              :arrow_lr      "↔"
               :properties    "⚙"
               :end           "∎"
               :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
@@ -4477,7 +4480,8 @@ SQL can be either the emacsql vector representation, or a string."
   
   (add-to-list 'org-export-filter-paragraph-functions #'+org-latex-correct-latin-abbreviation-spaces t)
   (defvar org-latex-extra-special-string-regexps
-    '(("->" . "\\\\textrightarrow{}")
+    '(("<->" . "\\\\(\\\\leftrightarrow{}\\\\)")
+      ("->" . "\\\\textrightarrow{}")
       ("<-" . "\\\\textleftarrow{}")))
   
   (defun org-latex-convert-extra-special-strings (string)
@@ -4522,6 +4526,7 @@ SQL can be either the emacsql vector representation, or a string."
              ("---\\([^-]\\|$\\)" . "-\\1")
              ("--\\([^-]\\|$\\)" . "-\\1")
              ("\\.\\.\\." . "…")
+             ("<->" . "⟷")
              ("->" . "→")
              ("<-" . "←"))))
       (funcall orig-fn text (plist-put info :with-smart-quotes nil))))

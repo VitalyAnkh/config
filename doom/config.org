@@ -388,7 +388,7 @@ the following:
       word-wrap-by-category t                     ; Different languages live together happily
       org-return-follows-link t)                  ; Organise it!
 
-(display-time-mode 1)                             ; Enable time in the mode-line
+;;(display-time-mode 1)                             ; Enable time in the mode-line
 
 ;; This messes things up, disable for now
 ;;(unless (string-match-p "^Power N/A" (battery)) ; On laptops...
@@ -1377,6 +1377,7 @@ Type=forking
 ExecStart=sh -c 'emacs --daemon && emacsclient -c --eval "(delete-frame)"'
 ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
 Restart=on-failure
+Environment=COLORTERM=truecolor
 
 [Install]
 WantedBy=default.target
@@ -2210,7 +2211,7 @@ heading line selection for elisp and Org files.
   xfuncname = "^(\\*+ +.*)$"
 #+end_src
 
-*** Magit delta
+*** \[\]agit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view (which don't get any syntax
@@ -2636,7 +2637,7 @@ in Org mode, such as checkbox state, and a few other miscellaneous cases.
 #+begin_src emacs-lisp
 (defvar emojify-disabled-emojis
   '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
     ;; Terminal powerline
     "✔"
     ;; Box drawing
@@ -3134,7 +3135,7 @@ Minic =evil='s ~/~ in =treemacs= buffer:
   (define-key treemacs-mode-map (kbd "/") 'meow-visit)
 )
 #+end_src
-Adjust the face of =treemacs=. The variable-pitch font is too large for a file explorer.
+Adjust the face of =treemacs=. The =variable-pitch= is too large for a file explorer.
 #+begin_src emacs-lisp
 (use-package treemacs
   :config
@@ -3145,7 +3146,10 @@ Adjust the face of =treemacs=. The variable-pitch font is too large for a file e
    treemacs-indentation 1
    treemacs-recenter-after-file-follow t
    treemacs-recenter-after-tag-follow t
-   ;;treemacs-text-scale 1.5
+   treemacs-text-scale -1.0
+   treemacs-follow-mode t
+   treemacs-width 25
+   ;;treemacs-display-in-side-window nil
    )
   :bind
   (:map global-map
@@ -3879,7 +3883,7 @@ correct package statement needed.
                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
                        :pre-build
-                       (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el")
+                       (with-temp-file "org-version.el"
                          (insert "(fset 'org-release (lambda () \"9.5\"))\n"
                                  (format "(fset 'org-git-version (lambda () \"%s\"))\n"
                                          (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
@@ -5688,7 +5692,7 @@ other settings.
             :ellipses      "…"
             :arrow_right   "→"
             :arrow_left    "←"
-            :arrow_lr      "⟷"
+            :arrow_lr      "↔"
             :properties    "⚙"
             :end           "∎"
             :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
@@ -8452,7 +8456,8 @@ I'd quite like to also recognise =->= and =<-=, so let's set come up with some a
 
 #+begin_src emacs-lisp
 (defvar org-latex-extra-special-string-regexps
-  '(("->" . "\\\\textrightarrow{}")
+  '(("<->" . "\\\\(\\\\leftrightarrow{}\\\\)")
+    ("->" . "\\\\textrightarrow{}")
     ("<-" . "\\\\textleftarrow{}")))
 
 (defun org-latex-convert-extra-special-strings (string)
@@ -8739,6 +8744,7 @@ these substitution.
            ("---\\([^-]\\|$\\)" . "-\\1")
            ("--\\([^-]\\|$\\)" . "-\\1")
            ("\\.\\.\\." . "…")
+           ("<->" . "⟷")
            ("->" . "→")
            ("<-" . "←"))))
     (funcall orig-fn text (plist-put info :with-smart-quotes nil))))

@@ -4,9 +4,8 @@ echo "==== pull llvm-project ===="
 cd ~/projects/dev/cpp/llvm-project
 git pull
 cd build
-CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
-  -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
-  -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra;libc;libcxx;libcxxabi;libunwind"\
+CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86" \
+  -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra;libc;libcxx;libcxxabi;libunwind" \
   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 echo "==== pull llvm-project done ===="
 
@@ -42,9 +41,8 @@ cd ~/projects/dev/cpp/v8/
 gclient sync
 cd v8
 git pull
-ninja -C out/riscv32.debug -t compdb cxx cc > compile_commands.json
+ninja -C out/riscv32.debug -t compdb cxx cc >compile_commands.json
 echo "==== pull v8 done ===="
-
 
 echo "==== pull wgpu ===="
 cd ~/projects/dev/rust-projects/wgpu
@@ -57,7 +55,6 @@ git pull
 cd build
 meson --reconfigure ..
 echo "==== pull mesa done ===="
-
 
 echo "==== pull iced ===="
 cd ~/projects/dev/rust-projects/iced
@@ -93,7 +90,6 @@ make update
 make debug developer ccache ninja
 cp ../build_linux_debug/compile_commands.json .
 echo "==== pull blender done ===="
-
 
 echo "==== pull redox ===="
 cd ~/projects/dev/rust-projects/redox
@@ -157,7 +153,7 @@ echo "==== pull iced done ===="
 echo "==== pull rust-analyzer ===="
 cd ~/projects/dev/rust-projects/rust-analyzer
 git pull
-echo "==== pull rust-analyzer done ====" 
+echo "==== pull rust-analyzer done ===="
 
 echo "==== pull bevy ===="
 cd ~/projects/dev/bevy
@@ -175,4 +171,5 @@ echo "==== pull Essentials-of-Compilation ===="
 cd ~/projects/dev/book/Essentials-of-Compilation
 git pull
 make all
+cp book.pdf ~/nutstore_files/Books/计算机科学/编译原理/essentials-of-compilation.pdf
 echo "==== pull Essentials-of-Compilation done ===="

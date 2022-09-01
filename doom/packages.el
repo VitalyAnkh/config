@@ -38,9 +38,9 @@
 (package! annotate)
 ;; Annotate:1 ends here
 
-;; [[file:config.org::*Magit delta][Magit delta:2]]
+;; [[file:config.org::*\\\[\\\]agit delta][\[\]agit delta:2]]
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
-;; Magit delta:2 ends here
+;; \[\]agit delta:2 ends here
 
 ;; [[file:config.org::*Don't use ~spell-fu~!][Don't use ~spell-fu~!:1]]
 (disable-packages! spell-fu)
@@ -148,7 +148,7 @@
 (package! ob-sagemath)
 ;; Sage Math:1 ends here
 
-(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el") (insert "(fset 'org-release (lambda () \"9.5\"))
+(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file "org-version.el" (insert "(fset 'org-release (lambda () \"9.5\"))
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
 ")) :includes org) :pin nil)
