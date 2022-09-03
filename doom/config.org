@@ -340,6 +340,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
+(setq straight-repository-branch "develop")
 #+end_src
 
 Test some package

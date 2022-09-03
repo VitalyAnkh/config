@@ -16,6 +16,7 @@
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
+(setq straight-repository-branch "develop")
 ;; Workaround:1 ends here
 
 ;; [[file:config.org::*Workaround][Workaround:3]]

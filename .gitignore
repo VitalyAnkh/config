@@ -52,6 +52,8 @@
 !update.sh
 !ysyx_set_env.sh
 !ysyx_unset_env.sh
+!xiangshan_set_env.sh
+!xiangshan_unset_env.sh
 
 **/elpa/**
 **/eln-cache/**
