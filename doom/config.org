@@ -3636,7 +3636,7 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
       #+end_src
 ** Grammarly
 I use =grammarly= to check my writing.
-#+begin_src emacs-lisp :tangle packages.Symbol’s function definition is void: consult--readl
+#+begin_src emacs-lisp :tangle packages.Symbol's function definition is void: consult--readl
 ;;(package! lsp-grammarly)
 #+end_src
 
@@ -4110,8 +4110,8 @@ to make that right again, and this package makes that even easier to do.
 ***** Glossaries and more
 
 #+begin_src emacs-lisp
-(package! org-glossary
-  :recipe (:host github :repo "tecosaur/org-glossary"))
+;;(package! org-glossary
+;;  :recipe (:host github :repo "tecosaur/org-glossary"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes

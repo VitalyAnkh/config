@@ -50,6 +50,8 @@
 !.pam_environment
 !.profile
 !update.sh
+!ysyx_set_env.sh
+!ysyx_unset_env.sh
 
 **/elpa/**
 **/eln-cache/**

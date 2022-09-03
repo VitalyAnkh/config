@@ -179,8 +179,8 @@
 ;;(package! org-pandoc-import :recipe
 ;;  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 
-(package! org-glossary
-  :recipe (:host github :repo "tecosaur/org-glossary"))
+;;(package! org-glossary
+;;  :recipe (:host github :repo "tecosaur/org-glossary"))
 
 ;;(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 
