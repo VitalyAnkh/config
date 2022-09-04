@@ -174,3 +174,10 @@ make all
 chmod 0600 /home/vitalyr/nutstore_files/Books/计算机科学/编译原理/essentials-of-compilation.pdf
 cp book.pdf ~/nutstore_files/Books/计算机科学/编译原理/essentials-of-compilation.pdf
 echo "==== pull Essentials-of-Compilation done ===="
+
+echo "==== pull chisel-book ===="
+cd ~/projects/dev/scala-projects/chisel-book
+git pull
+make
+cp chisel-book.pdf ~/nutstore_files/Books/计算机科学/计算机体系结构/
+echo "==== pull chisel-book done ===="
