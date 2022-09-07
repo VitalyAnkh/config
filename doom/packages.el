@@ -1,6 +1,7 @@
 ;; [[file:config.org::*Workaround][Workaround:2]]
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+(package! all-the-icons :disable t)
 ;; Workaround:2 ends here
 
 ;; -*- no-byte-compile: t; -*-
@@ -179,8 +180,8 @@
 ;;(package! org-pandoc-import :recipe
 ;;  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 
-;;(package! org-glossary
-;;  :recipe (:host github :repo "tecosaur/org-glossary"))
+(package! org-glossary
+  :recipe (:host github :repo "tecosaur/org-glossary"))
 
 ;;(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 

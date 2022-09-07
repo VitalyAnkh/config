@@ -9,6 +9,15 @@ CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE
   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 echo "==== pull llvm-project done ===="
 
+echo "==== pull ROCm-Device-Libs ===="
+cd ~/projects/dev/cpp/ROCm-Device-Libs
+git pull
+cd build
+export LLVM_BUILD=$HOME/projects/dev/cpp/llvm-project/build
+cmake -G "Ninja" -DCMAKE_PREFIX_PATH=$LLVM_BUILD -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DLLVM_USE_LINKER=mold ..
+#ninja all
+echo "==== pull ROcm-Device-Libs done ===="
+
 echo "==== pull taichi ===="
 cd $HOME/projects/dev/cpp/taichi
 git pull --recurse-submodules

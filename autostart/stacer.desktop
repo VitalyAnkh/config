@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Stacer
-Comment=Linux System Optimizer and Monitoring
-Exec=stacer --hide 
-Type=Application
-Terminal=false
-Hidden=false
-

@@ -36,6 +36,23 @@
             tex-mode           ; latexindent is broken
             latex-mode
             org-msg-edit-mode)) ; doesn't need a formatter
+
+;; fix org mode aysn export
+(defadvice! fixed-+org--fix-async-export-a (fn &rest args)
+  :override #'+org--fix-async-export-a
+  (let ((old-async-init-file org-export-async-init-file)
+        (org-export-async-init-file (make-temp-file "doom-org-async-export")))
+    (with-temp-file org-export-async-init-file
+      (prin1 `(progn (setq org-export-async-debug
+                           ,(or org-export-async-debug
+                                debug-on-error)
+                           load-path ',load-path)
+                     (unwind-protect
+                         (load ,(or old-async-init-file early-init-file)
+                               nil t)
+                       (delete-file load-file-name)))
+             (current-buffer)))
+    (apply fn args)))
 ;; Workaround:3 ends here
 
 ;; [[file:config.org::*Simple settings][Simple settings:1]]

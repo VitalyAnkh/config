@@ -347,6 +347,7 @@ Test some package
 #+begin_src emacs-lisp :tangle packages.el
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+(package! all-the-icons :disable t)
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -366,6 +367,23 @@ Test some package
             tex-mode           ; latexindent is broken
             latex-mode
             org-msg-edit-mode)) ; doesn't need a formatter
+
+;; fix org mode aysn export
+(defadvice! fixed-+org--fix-async-export-a (fn &rest args)
+  :override #'+org--fix-async-export-a
+  (let ((old-async-init-file org-export-async-init-file)
+        (org-export-async-init-file (make-temp-file "doom-org-async-export")))
+    (with-temp-file org-export-async-init-file
+      (prin1 `(progn (setq org-export-async-debug
+                           ,(or org-export-async-debug
+                                debug-on-error)
+                           load-path ',load-path)
+                     (unwind-protect
+                         (load ,(or old-async-init-file early-init-file)
+                               nil t)
+                       (delete-file load-file-name)))
+             (current-buffer)))
+    (apply fn args)))
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -4111,8 +4129,8 @@ to make that right again, and this package makes that even easier to do.
 ***** Glossaries and more
 
 #+begin_src emacs-lisp
-;;(package! org-glossary
-;;  :recipe (:host github :repo "tecosaur/org-glossary"))
+(package! org-glossary
+  :recipe (:host github :repo "tecosaur/org-glossary"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5963,7 +5981,7 @@ let's make it transparent.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|--------------+-----------------|
+|------------+---------------|
 | 135 \pm 2 ms | 215 \pm 3 ms    |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
@@ -5973,12 +5991,12 @@ size and prefer a vector graphic.
 
 Using the above latex expression and benchmarking lead to the following results:
 | ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
-|---------------+----------------+----------------|
+|-------------+--------------+--------------|
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain             | Total time   | Resultant file size |
-|------------------------+--------------+---------------------|
+| Tool chain         | Total time | Resultant file size |
+|--------------------+------------+---------------------|
 | ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
 | ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
@@ -8349,51 +8367,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX           |
-|-----------+-----------------|
-| ɑ         | \(\alpha\)      |
+| Character | LaTeX       |
+|-----------+-------------|
+| ɑ         | \(\alpha\)       |
 | β         | \(\beta\)       |
-| γ          | \(\gamma\)      |
-| δ         | \(\delta\)      |
-| ε         | \(\epsilon\)    |
-| ϵ          | \(\varepsilon\) |
+| γ          | \(\gamma\)        |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ          | \(\varepsilon\)       |
 | ζ         | \(\zeta\)       |
-| η         | \(\eta\)        |
-| θ         | \(\theta\)      |
-| ϑ         | \(\vartheta\)   |
-| ι          | \(\iota\)       |
-| κ         | \(\kappa\)      |
-| λ         | \(\lambda\)     |
-| μ         | \(\mu\)         |
-| ν         | \(\nu\)         |
-| ξ         | \(\xi\)         |
-| π         | \(\pi\)         |
-| ϖ         | \(\varpi\)      |
-| ρ         | \(\rho\)        |
-| ϱ          | \(\varrho\)     |
-| σ         | \(\sigma\)      |
-| ς         | \(\varsigma\)   |
+| η         | \(\eta\)       |
+| θ         | \(\theta\)       |
+| ϑ         | \(\vartheta\)       |
+| ι          | \(\iota\)        |
+| κ         | \(\kappa\)       |
+| λ         | \(\lambda\)       |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
+| π         | \(\pi\)       |
+| ϖ         | \(\varpi\)       |
+| ρ         | \(\rho\)       |
+| ϱ          | \(\varrho\) |
+| σ         | \(\sigma\)       |
+| ς         | \(\varsigma\)       |
 | τ          | \(\tau\)        |
-| υ         | \(\upsilon\)    |
-| ϕ         | \(\phi\)        |
-| φ         | \(\varphi\)     |
-| ψ         | \(\psi\)        |
-| ω         | \(\omega\)      |
-| Γ         | \(\Gamma\)      |
-| Δ         | \(\Delta\)      |
-| Θ         | \(\Theta\)      |
-| Λ         | \(\Lambda\)     |
-| Ξ         | \(\Xi\)         |
-| Π         | \(\Pi\)         |
-| Σ         | \(\Sigma\)      |
-| Υ         | \(\Upsilon\)    |
-| Φ         | \(\Phi\)        |
-| Ψ         | \(\Psi\)        |
-| Ω         | \(\Omega\)      |
-| א         | \(\aleph\)      |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)       |
+| φ         | \(\varphi\)       |
+| ψ         | \(\psi\)       |
+| ω         | \(\omega\)       |
+| Γ         | \(\Gamma\)       |
+| Δ         | \(\Delta\)       |
+| Θ         | \(\Theta\)       |
+| Λ         | \(\Lambda\)       |
+| Ξ         | \(\Xi\)       |
+| Π         | \(\Pi\)       |
+| Σ         | \(\Sigma\)       |
+| Υ         | \(\Upsilon\)       |
+| Φ         | \(\Phi\)       |
+| Ψ         | \(\Psi\)       |
+| Ω         | \(\Omega\)       |
+| א         | \(\aleph\)       |
 | ב         | \(\beth\)       |
-| ד          | \(\daleth\)     |
-| ג          | \(\gimel\)      |
+| ד          | \(\daleth\) |
+| ג          | \(\gimel\)        |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions
