@@ -526,10 +526,10 @@ nil
          :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
          :desc "Previous buffer"             "["   #'previous-buffer
          :desc "Next buffer"                 "]"   #'next-buffer
-         (:when (featurep! :ui workspaces)
+         (:when (modulep! :ui workspaces)
           :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
           :desc "Switch buffer"              "B" #'switch-to-buffer)
-         (:unless (featurep! :ui workspaces)
+         (:unless (modulep! :ui workspaces)
           :desc "Switch buffer"               "b"   #'switch-to-buffer)
          :desc "Clone buffer"                "c"   #'clone-indirect-buffer
          :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
@@ -562,7 +562,7 @@ nil
   (meow-normal-define-key (cons "SPC" doom-leader-map))
   (meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
-   (:when (featurep! :ui workspaces)
+   (:when (modulep! :ui workspaces)
     :n "C-t"   #'+workspace/new
     :n "C-S-t" #'+workspace/display
     :g "M-1"   #'+workspace/switch-to-0
@@ -4749,7 +4749,7 @@ SQL can be either the emacsql vector representation, or a string."
 ;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 
 (use-package! citar
-  :when (featurep! :completion vertico)
+  :when (modulep! :completion vertico)
   :config
   (setq citar-bibliography
         (let ((libfile-search-names '("library.bib" "Library.bib" "library.json" "Library.json"))
@@ -4805,7 +4805,7 @@ SQL can be either the emacsql vector representation, or a string."
   (org-cite-follow-processor 'citar)
   (org-cite-activate-processor 'citar)
   (org-support-shift-select t)
-  (when (featurep! :lang org +roam2)
+  (when (modulep! :lang org +roam2)
     ;; Include property drawer metadata for 'org-roam' v2.
     (citar-org-note-include '(org-id org-roam-ref)))
   ;; Personal extras
