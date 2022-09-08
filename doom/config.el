@@ -48,8 +48,11 @@
                                 debug-on-error)
                            load-path ',load-path)
                      (unwind-protect
-                         (load ,(or old-async-init-file early-init-file)
-                               nil t)
+                         (let ((file ,old-async-init-file))
+                           (if file
+                               (load file nil t)
+                             (load ,early-init-file nil t)
+                             (require 'doom-start)))
                        (delete-file load-file-name)))
              (current-buffer)))
     (apply fn args)))
@@ -123,28 +126,30 @@
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-unicode-font (font-spec :family "LXGW WenKai" :weight 'light :size 21)
+      ;;doom-unicode-font (font-spec :family "Noto Sans Symbols2" :weight 'light)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
 
 ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-(set-fontset-font t 'symbol "Apple Color Emoji")
-(set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
-(set-fontset-font t 'symbol "Symbola" nil 'append)
+(set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
+(set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
+(set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
 
-;; This is the vanilla font config. Use it when doom can't
-;; handle some fonts.
 ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
 ;; Latin
 ;;(set-fontset-font t 'latin "Noto Sans")
 ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
 ;;
-;; This font requires "Regular". Other Noto fonts dont.
+;; This font requires "Regular". Other Noto fonts don't.
 ;; ¯\_(ツ)_/¯
-;; (set-fontset-font t 'han "Noto Sans CJK SC Regular")
-;; (set-fontset-font t 'kana "Noto Sans CJK JP Regular")
-;; (set-fontset-font t 'hangul "Noto Sans CJK KR Regular")
-;; (set-fontset-font t 'cjk-misc "Noto Sans CJK SC Regular")
+(set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
+(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
+(set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
+(set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
 ;; Font Face:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:3]]
@@ -493,8 +498,8 @@ nil
 ;; Which-key:2 ends here
 
 ;; [[file:config.org::*Very large files][Very large files:2]]
-(use-package! vlf-setup
-  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
+;; (use-package! vlf-setup
+;;   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
 ;; Very large files:2 ends here
 
 ;; [[file:config.org::*Dirvish][Dirvish:1]]
@@ -1072,7 +1077,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     "A variable-pitch face with serifs."
     :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "CMU Typewriter Text" :size 27))
+  (setq variable-pitch-serif-font (font-spec :family "Linux Libertine" :size 23))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -2706,7 +2711,7 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
   (custom-set-faces!
     '(org-document-title :height 1.3)
-    '(org-quote :font "LXGW WenKai" :height 1.05)
+    '(org-quote :font "Linux Libertine" :height 1.05)
     '(org-table :font "Sarasa Mono SC" :height 1.05)
     '(outline-1 :height 1.25)
     '(outline-2 :height 1.15)
@@ -2765,31 +2770,24 @@ SQL can be either the emacsql vector representation, or a string."
               :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
               :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
               :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
-  (set-ligatures! 'org-mode
-    :merge t
-    :list_property "::"
-    :em_dash       "---"
-    :ellipsis      "..."
-    :arrow_right   "->"
-    :arrow_left    "<-"
-    :title         "#+title:"
-    :subtitle      "#+subtitle:"
-    :author        "#+author:"
-    :date          "#+date:"
-    :property      "#+property:"
-    :options       "#+options:"
-    :startup       "#+startup:"
-    :macro         "#+macro:"
-    :bibliography  "#+bibliography:"
-    :print_biblio  "#+print_bibliography:"
-    :arrow_lr      "<->"
-    :properties    ":PROPERTIES:"
-    :end           ":END:"
-    :priority_a    "[#A]"
-    :priority_b    "[#B]"
-    :priority_c    "[#C]"
-    :priority_d    "[#D]"
-    :priority_e    "[#E]")
+  
+  (defadvice! +org-init-appearance-h--no-ligatures-a ()
+    :after #'+org-init-appearance-h
+    (set-ligatures! 'org-mode nil)
+    (set-ligatures! 'org-mode
+      :list_property "::"
+      :em_dash       "---"
+      :ellipsis      "..."
+      :arrow_right   "->"
+      :arrow_left    "<-"
+      :arrow_lr      "<->"
+      :properties    ":PROPERTIES:"
+      :end           ":END:"
+      :priority_a    "[#A]"
+      :priority_b    "[#B]"
+      :priority_c    "[#C]"
+      :priority_d    "[#D]"
+      :priority_e    "[#E]"))
   (package! org-pretty-tags)
   (use-package org-pretty-tags
     :config
@@ -4414,8 +4412,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;;      images)))
   
   (defvar +org-pdflatex-inputenc-encoded-chars
-    "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06]")
-  
+    "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200B\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06\u2500-\u259F]")
   (defun +org-latex-replace-non-ascii-chars (text backend info)
     "Replace non-ascii chars with \\char\"XYZ forms."
     (when (and (org-export-derived-backend-p backend 'latex)
@@ -4677,6 +4674,7 @@ SQL can be either the emacsql vector representation, or a string."
           ("attr_latex" . "🄛")
           ("attr_html" . "🄗")
           ("attr_org" . "⒪")
+          ("call" . #("" 0 1 (display (raise -0.15))))
           ("name" . "⁍")
           ("header" . "›")
           ("caption" . "☰")

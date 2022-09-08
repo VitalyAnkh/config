@@ -16,7 +16,7 @@
 ;; Emacs Everywhere:1 ends here
 
 ;; [[file:config.org::*Very large files][Very large files:1]]
-(package! vlf :recipe (:host github :repo "emacs-stright/vlfi" :files ("*.el")) :disable t)
+;; (package! vlf)
 ;; Very large files:1 ends here
 
 ;; [[file:config.org::*Meow][Meow:1]]
