@@ -9309,7 +9309,7 @@ priority of =mypyls=
 Set =Haskell= source code formatter.
 #+begin_src emacs-lisp
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "ormolu"
+  (setq lsp-haskell-formatting-provider "stylish-haskell"
         haskell-interactive-popup-errors nil
         ))
 #+end_src

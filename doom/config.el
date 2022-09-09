@@ -5335,7 +5335,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*Haskell][Haskell:1]]
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "ormolu"
+  (setq lsp-haskell-formatting-provider "stylish-haskell"
         haskell-interactive-popup-errors nil
         ))
 ;; Haskell:1 ends here
