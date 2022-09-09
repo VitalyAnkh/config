@@ -126,30 +126,27 @@
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      ;;doom-unicode-font (font-spec :family "Noto Sans Symbols2" :weight 'light)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+(add-hook 'after-init-hook (lambda ()
+                             ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+                             (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
+                             (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
+                             (set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
+                             ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
+                             ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
+                             (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
+                             ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
+                             ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
 
-;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-(set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
-(set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
-(set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
-
-;;(set-face-attribute 'default nil :font "Droid Sans Mono")
-;; Latin
-;;(set-fontset-font t 'latin "Noto Sans")
-;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
-;;
-;; This font requires "Regular". Other Noto fonts don't.
-;; ¯\_(ツ)_/¯
-(set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
-(set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
-(set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
+                             ))
 ;; Font Face:1 ends here
 
 ;; [[file:config.org::*Font Face][Font Face:3]]

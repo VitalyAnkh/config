@@ -603,13 +603,13 @@ zen                          ; distraction-free coding or writing
 
 #+name: doom-editor
 #+begin_src emacs-lisp
-;;(evil +everywhere)         ; come to the dark side, we have cookies
+;;(evil +everywhere)        ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format
  +onsave
-  ;;+only-format-changes-on-save
-)                    ; automated prettiness
+ ;;+only-format-changes-on-save
+ )                            ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
 ;;multiple-cursors           ; editing in many places at once
@@ -799,31 +799,27 @@ aspects are nice, but on others I prefer mononoki.
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      ;;doom-unicode-font (font-spec :family "Noto Sans Symbols2" :weight 'light)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+(add-hook 'after-init-hook (lambda ()
+                             ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+                             (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
+                             (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
+                             (set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
+                             ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
+                             ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
+                             (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
+                             ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
+                             ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
 
-;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-(set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
-(set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
-(set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
-(set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
-
-;;(set-face-attribute 'default nil :font "Droid Sans Mono")
-;; Latin
-;;(set-fontset-font t 'latin "Noto Sans")
-;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
-;;
-;; This font requires "Regular". Other Noto fonts don't.
-;; ¯\_(ツ)_/¯
-(set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-(set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
-(set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
-(set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
-
+                             ))
 #+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
@@ -8367,46 +8363,46 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+name: latex-non-ascii-char-substitutions
 | Character | LaTeX       |
 |-----------+-------------|
-| ɑ         | \(\alpha\)       |
-| β          | \(\beta\)        |
-| γ          | \(\gamma\)        |
-| δ          | \(\delta\)        |
-| ε          | \(\epsilon\)        |
-| ϵ          | \(\varepsilon\)        |
-| ζ          | \(\zeta\)        |
+| ɑ          | \(\alpha\)       |
+| β         | \(\beta\)       |
+| γ         | \(\gamma\)       |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ          | \(\varepsilon\)       |
+| ζ         | \(\zeta\)       |
 | η         | \(\eta\)       |
 | θ         | \(\theta\)       |
 | ϑ         | \(\vartheta\)       |
-| ι          | \(\iota\)        |
-| κ          | \(\kappa\)        |
+| ι         | \(\iota\)       |
+| κ         | \(\kappa\)       |
 | λ         | \(\lambda\)       |
-| μ          | \(\mu\)        |
-| ν          | \(\nu\)        |
-| ξ          | \(\xi\)        |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
 | π         | \(\pi\)       |
 | ϖ         | \(\varpi\)       |
-| ρ          | \(\rho\)        |
+| ρ         | \(\rho\)       |
 | ϱ          | \(\varrho\) |
 | σ         | \(\sigma\)       |
-| ς          | \(\varsigma\)        |
-| τ          | \(\tau\)        |
-| υ          | \(\upsilon\)        |
-| ϕ         | \(\phi\)       |
+| ς         | \(\varsigma\)       |
+| τ         | \(\tau\)       |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)        |
 | φ         | \(\varphi\)       |
 | ψ         | \(\psi\)       |
 | ω         | \(\omega\)       |
-| Γ          | \(\Gamma\)        |
+| Γ         | \(\Gamma\)       |
 | Δ         | \(\Delta\)       |
 | Θ         | \(\Theta\)       |
 | Λ         | \(\Lambda\)       |
 | Ξ         | \(\Xi\)       |
 | Π         | \(\Pi\)       |
-| Σ          | \(\Sigma\)        |
+| Σ         | \(\Sigma\)       |
 | Υ         | \(\Upsilon\)       |
 | Φ         | \(\Phi\)       |
 | Ψ         | \(\Psi\)       |
 | Ω         | \(\Omega\)       |
-| א         | \(\aleph\)       |
+| א         | \(\aleph\)        |
 | ב         | \(\beth\)       |
 | ד          | \(\daleth\) |
 | ג          | \(\gimel\)        |
