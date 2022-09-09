@@ -3945,7 +3945,7 @@ minad's =org-modern= is fashionate.
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :config
-  (setq org-modern-star ["◉" "○" "✸" "✿" "✤" "✜" "◆" "▶"]
+  (setq org-modern-star ["◉" "✜" "✸" "✿" "✤" "○" "◆" "▶"]
         org-modern-table-vertical 1
         org-modern-table-horizontal 0.2
         org-modern-list '((43 . "➤")
@@ -8364,29 +8364,29 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Character | LaTeX       |
 |-----------+-------------|
 | ɑ          | \(\alpha\)       |
-| β         | \(\beta\)       |
-| γ         | \(\gamma\)       |
-| δ         | \(\delta\)       |
-| ε         | \(\epsilon\)       |
-| ϵ          | \(\varepsilon\)       |
-| ζ         | \(\zeta\)       |
-| η         | \(\eta\)       |
-| θ         | \(\theta\)       |
+| β          | \(\beta\)        |
+| γ          | \(\gamma\)        |
+| δ          | \(\delta\)        |
+| ε          | \(\epsilon\)        |
+| ϵ          | \(\varepsilon\)        |
+| ζ          | \(\zeta\)        |
+| η          | \(\eta\)        |
+| θ          | \(\theta\)        |
 | ϑ         | \(\vartheta\)       |
-| ι         | \(\iota\)       |
-| κ         | \(\kappa\)       |
-| λ         | \(\lambda\)       |
-| μ         | \(\mu\)       |
-| ν         | \(\nu\)       |
-| ξ         | \(\xi\)       |
+| ι          | \(\iota\)        |
+| κ          | \(\kappa\)        |
+| λ          | \(\lambda\)        |
+| μ          | \(\mu\)        |
+| ν          | \(\nu\)        |
+| ξ          | \(\xi\)        |
 | π         | \(\pi\)       |
 | ϖ         | \(\varpi\)       |
-| ρ         | \(\rho\)       |
+| ρ          | \(\rho\)        |
 | ϱ          | \(\varrho\) |
-| σ         | \(\sigma\)       |
-| ς         | \(\varsigma\)       |
-| τ         | \(\tau\)       |
-| υ         | \(\upsilon\)       |
+| σ          | \(\sigma\)        |
+| ς          | \(\varsigma\)        |
+| τ          | \(\tau\)        |
+| υ          | \(\upsilon\)        |
 | ϕ         | \(\phi\)        |
 | φ         | \(\varphi\)       |
 | ψ         | \(\psi\)       |

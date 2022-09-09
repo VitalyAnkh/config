@@ -23,6 +23,7 @@
 !gconf/
 !go/
 !input_method/
+!justfile
 !mako/
 !microsoft-edge-dev-flags.conf
 !misc/
@@ -49,7 +50,6 @@
 !.gitmodules
 !.pam_environment
 !.profile
-!update.sh
 !ysyx_set_env.sh
 !ysyx_unset_env.sh
 !xiangshan_set_env.sh
