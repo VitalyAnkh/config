@@ -348,6 +348,11 @@ Test some package
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (package! all-the-icons :disable t)
+;; There are some problems in Emacs 29 which make doom not download these packages
+(package! f)
+(package! dash)
+(package! pkg-info)
+(package! epl)
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -693,7 +698,7 @@ associated file.
  ;;+tree-sitter
  +local)                ; types of types of types of types...
 beancount                    ; mind the GAAP
-(cc +lsp)                    ; C/C++/Obj-C madness
+(cc +lsp +tree-sitter)                    ; C/C++/Obj-C madness
 clojure                      ; java with a lisp
 common-lisp                  ; if you've seen one lisp, you've seen them all
 coq                          ; proofs-as-programs
@@ -704,7 +709,7 @@ data                         ; config/data formats
 ;;dhall                      ; JSON with FP sprinkles
 elixir                       ; erlang done right
 elm                          ; care for a cup of TEA?
-emacs-lisp                   ; drown in parentheses
+(emacs-lisp +tree-sitter)                   ; drown in parentheses
 (erlang +lsp)                ; an elegant language for a more civilized age
 ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
@@ -730,7 +735,7 @@ gdscript                     ; the language you waited for
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
-nim                          ; python + lisp at the speed of c
+;;nim                          ; python + lisp at the speed of c
 (nix +lsp)                          ; I hereby declare "nix geht mehr!"
 (ocaml +lsp)                        ; an objective camel
 (org                         ; organize your plain life in plain text
@@ -765,7 +770,7 @@ sml                          ; no, the /other/ ML
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-zig                          ; C, but simpler
+(zig +lsp)                   ; C, but simpler
 #+end_src
 
 **** Everything in Emacs
@@ -4445,6 +4450,18 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
   '("go" "python" "ipython" "bash" "sh"))
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
+#+end_src
+***** ~lsp-clangd~
+Use ~clangd~ other than ~ccls~ for C++.
+#+begin_src emacs-lisp :tangle config.el
+(after! lsp-clangd
+  (setq lsp-clients-clangd-args
+        '("-j=12"
+          "--background-index"
+          "--clang-tidy"
+          "--completion-style=detailed"
+          "--header-insertion-decorators=0"))
+  (set-lsp-priority! 'clangd 2))
 #+end_src
 ***** View exported file
 ='localeader v= has no pre-existing binding, so I may as well use it with the same

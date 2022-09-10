@@ -2,6 +2,11 @@
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (package! all-the-icons :disable t)
+;; There are some problems in Emacs 29 which make doom not download these packages
+(package! f)
+(package! dash)
+(package! pkg-info)
+(package! epl)
 ;; Workaround:2 ends here
 
 ;; -*- no-byte-compile: t; -*-

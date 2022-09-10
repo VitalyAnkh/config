@@ -119,7 +119,7 @@
         ;;+tree-sitter
         +local)                ; types of types of types of types...
        beancount                    ; mind the GAAP
-       (cc +lsp)                    ; C/C++/Obj-C madness
+       (cc +lsp +tree-sitter)                    ; C/C++/Obj-C madness
        clojure                      ; java with a lisp
        common-lisp                  ; if you've seen one lisp, you've seen them all
        coq                          ; proofs-as-programs
@@ -130,7 +130,7 @@
        ;;dhall                      ; JSON with FP sprinkles
        elixir                       ; erlang done right
        elm                          ; care for a cup of TEA?
-       emacs-lisp                   ; drown in parentheses
+       (emacs-lisp +tree-sitter)                   ; drown in parentheses
        (erlang +lsp)                ; an elegant language for a more civilized age
        ess                          ; emacs speaks statistics
        ;;faust                      ; dsp, but you get to keep your soul
@@ -156,7 +156,7 @@
        ;;ledger                     ; an accounting system in Emacs
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
-       nim                          ; python + lisp at the speed of c
+       ;;nim                          ; python + lisp at the speed of c
        (nix +lsp)                          ; I hereby declare "nix geht mehr!"
        (ocaml +lsp)                        ; an objective camel
        (org                         ; organize your plain life in plain text
@@ -191,7 +191,7 @@
        ;;terra                      ; Earth and Moon in alignment for performance.
        web                          ; the tubes
        yaml                         ; JSON, but readable
-       zig                          ; C, but simpler
+       (zig +lsp)                   ; C, but simpler
 
        :email
        (:if (executable-find "mu") (mu4e +org +gmail))

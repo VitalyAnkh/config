@@ -1821,6 +1821,14 @@ SQL can be either the emacsql vector representation, or a string."
     '("go" "python" "ipython" "bash" "sh"))
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enable ,lang)))
+  (after! lsp-clangd
+    (setq lsp-clients-clangd-args
+          '("-j=12"
+            "--background-index"
+            "--clang-tidy"
+            "--completion-style=detailed"
+            "--header-insertion-decorators=0"))
+    (set-lsp-priority! 'clangd 2))
   (map! :map org-mode-map
         :localleader
         :desc "View exported file" "v" #'org-view-output-file)
@@ -4827,6 +4835,15 @@ SQL can be either the emacsql vector representation, or a string."
           (org-cite-activate (point-max)))
         (org-cite-csl-activate-render-all)))
     (fmakunbound #'+org-cite-csl-activate/enable)))
+
+(after! lsp-clangd
+  (setq lsp-clients-clangd-args
+        '("-j=12"
+          "--background-index"
+          "--clang-tidy"
+          "--completion-style=detailed"
+          "--header-insertion-decorators=0"))
+  (set-lsp-priority! 'clangd 2))
 
 (use-package! org-super-agenda
   :commands org-super-agenda-mode)
