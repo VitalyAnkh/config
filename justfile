@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu v8 wasmtime wlroots mutter riscv-gnu riscv-isa-sim ra emacs agda agda-stdlib
+all: llvm taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu v8 wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux 
 
 llvm:
   #!/usr/bin/env bash
