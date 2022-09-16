@@ -105,7 +105,6 @@ window:
 
   # Spread additional padding evenly around the terminal content.
   #dynamic_padding: false
-
   # Window decorations
   #
   # Values for `decorations`:
@@ -115,7 +114,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  #decorations: full
+  decorations: none
 
   # Startup Mode (changes require restart)
   #
@@ -126,7 +125,7 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  startup_mode: Maximized
+  startup_mode: Fullscreen
 
   # Window title
   #title: Alacritty
@@ -154,7 +153,7 @@ window:
   #multiplier: 3
 
   # Scroll to the bottom when new text is written to the terminal.
-  #auto_scroll: false
+  auto_scroll: false
 
   # Spaces per Tab (changes require restart)
   #
