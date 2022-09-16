@@ -19,6 +19,11 @@ llvm:
   CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86" \
     -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra;libc;libcxx;libcxxabi;libunwind" \
     -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
+  cd ~/projects/dev/emacs-projects/llvm-tools
+  cp ~/project/dev/cpp/llvm-project/llvm/utils/emacs/*.el .
+  git add -A
+  git commit "up"
+  git push
   echo "==== pull llvm-project done ===="
 
 rocm:
