@@ -20,7 +20,7 @@ llvm:
     -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir;clang-tools-extra;libc;libcxx;libcxxabi;libunwind" \
     -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
   cd ~/projects/dev/emacs-projects/llvm-tools
-  cp ~/project/dev/cpp/llvm-project/llvm/utils/emacs/*.el .
+  cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el .
   git add -A
   git commit "up"
   git push
