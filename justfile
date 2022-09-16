@@ -26,6 +26,51 @@ llvm:
   git push
   echo "==== pull llvm-project done ===="
 
+trash_emacs_cache:
+  trash-put $HOME/.config/.emacs.d/eln-cache
+  trash-put $HOME/.config/.emacs.d/.local/cache/eln
+  trash-put $HOME/.config/.emacs.d/.local/straight/build-*
+  trash-put $HOME/.config/.emacs.d/.local/autoloads*
+  trash-put $HOME/.config/.emacs.d/.local/etc/@
+
+build_taichi:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/taichi
+  #python3 setup.py clean
+  #python3 -m pip install --user -r requirements_dev.txt
+  export CLANG_PATH=$HOME/sdk/lib/taichi/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/
+  export LLVM_PATH=$HOME/sdk/lib/taichi/taichi-llvm-10.0.0-linux
+  #. .venv/bin/activate
+  export LD=mold
+  export TAICHI_CMAKE_ARGS="-DCMAKE_CXX_COMPILER=${CLANG_PATH}/bin/clang++   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON $TAICHI_CMAKE_ARGS"
+  export PATH="${LLVM_PATH}/bin:${CLANG_PATH}/bin:$PATH"
+  python setup.py develop --user
+  cp _skbuild/linux-x86_64-3.10/cmake-build/compile_commands.json .
+
+build_circt:
+  #!/usr/bin/env bash
+  mkdir -p $HOME/projects/dev/cpp/circt/llvm/build
+  cd $HOME/projects/dev/cpp/circt/llvm/build
+  cmake -G Ninja ../llvm \
+  -DLLVM_ENABLE_PROJECTS="mlir" \
+  -DLLVM_TARGETS_TO_BUILD="host" \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ninja
+  ninja check-mlir
+  # build circt
+  mkdir -p $HOME/projects/dev/cpp/circt/build
+  cd $HOME/projects/dev/cpp/circt/build
+  cmake -G Ninja .. \
+  -DMLIR_DIR=../llvm/build/lib/cmake/mlir \
+  -DLLVM_DIR=../llvm/build/lib/cmake/llvm \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ninja
+  ninja check-circt
+
 rocm:
   #!/usr/bin/env bash
   echo "==== pull ROCm-Device-Libs ===="
