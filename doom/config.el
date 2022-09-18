@@ -58,53 +58,6 @@
 ;; [[file:config.org::*Workaround][Workaround:4]]
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
-
-;; Just haskell workarounds
-
-(use-package haskell-mode
-  :config
-  )
-
-(after! haskell-mode
-  (setq haskell-process-suggest-remove-import-lines t  ; warnings for redundant imports etc
-        haskell-process-auto-import-loaded-modules t
-        haskell-process-show-overlays (not (modulep! :checkers syntax))) ; redundant with flycheck
-
-  (set-lookup-handlers! 'haskell-mode
-    :definition #'haskell-mode-jump-to-def-or-tag)
-  (set-file-template! 'haskell-mode
-    :trigger #'haskell-auto-insert-module-template
-    :project t)
-  (set-repl-handler!
-    '(haskell-mode haskell-cabal-mode literate-haskell-mode)
-    #'+haskell/open-repl :persist t)
-  ;; Don't kill REPL popup on ESC/C-g
-  (set-popup-rule! "^\\*haskell\\*" :quit nil)
-
-  (add-hook! 'haskell-mode-hook
-             #'haskell-collapse-mode ; support folding haskell code blocks
-             #'interactive-haskell-mode)
-
-  (add-to-list 'completion-ignored-extensions ".hi")
-
-  (map! :map haskell-mode-map
-        (:when (modulep! :tools lookup)
-         [remap haskell-mode-jump-to-def-or-tag] #'+lookup/definition))
-
-  (map! :localleader
-        :map haskell-mode-map
-        "b" #'haskell-process-cabal-build
-        "c" #'haskell-cabal-visit-file
-        "h" #'haskell-hide-toggle
-        "H" #'haskell-hide-toggle-all))
-
-(use-package! lsp-haskell
-  :when (modulep! +lsp)
-  :after lsp-mode
-  :preface (add-hook 'haskell-mode-local-vars-hook #'lsp! 'append)
-  :config
-  ;; Does some strange indentation if it pastes in the snippet
-  (setq-hook! 'haskell-mode-hook yas-indent-line 'fixed))
 ;; Workaround:4 ends here
 
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
@@ -146,7 +99,7 @@
 ;; Frame sizing:1 ends here
 
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
-(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
+(setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 ;; Auto-customisations:1 ends here
@@ -194,7 +147,6 @@
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
-
                              ))
 ;; Font Face:1 ends here
 
@@ -251,7 +203,7 @@ nil
         :desc "Find file" :ne "f" #'find-file
         :desc "Recent files" :ne "r" #'consult-recent-file
         :desc "Config dir" :ne "C" #'doom/open-private-config
-        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
         :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
         :desc "Notes (roam)" :ne "n" #'org-roam-node-find
         :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
@@ -293,7 +245,7 @@ nil
 
 ;; [[file:config.org::*Splash screen][Splash screen:1]]
 (defvar fancy-splash-image-template
-  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir)
+  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-user-dir)
   "Default template svg used for the splash image, with substitutions from ")
 
 (defvar fancy-splash-sizes
@@ -387,7 +339,7 @@ nil
 
 ;; [[file:config.org::*Splash screen][Splash screen:2]]
 (defvar splash-phrase-source-folder
-  (expand-file-name "misc/splash-phrases" doom-private-dir)
+  (expand-file-name "misc/splash-phrases" doom-user-dir)
   "A folder of text files with a fun phrase on each line.")
 
 (defvar splash-phrase-sources
@@ -566,8 +518,32 @@ nil
 ;; Eros:1 ends here
 
 ;; [[file:config.org::*Meow][Meow:2]]
+(defun meow/setup-leader ()
+ (map! :leader
+  "?" #'meow-cheatsheet
+  "/" #'meow-keypad-describe-key
+  "1" #'meow-digit-argument
+  "2" #'meow-digit-argument
+  "3" #'meow-digit-argument
+  "4" #'meow-digit-argument
+  "5" #'meow-digit-argument
+  "6" #'meow-digit-argument
+  "7" #'meow-digit-argument
+  "8" #'meow-digit-argument
+  "9" #'meow-digit-argument
+  "0" #'meow-digit-argument))
+
+(defun meow/setup-doom-keybindings()
+    (map! :map meow-normal-state-keymap
+    doom-leader-key doom-leader-map)
+    (map! :map meow-motion-state-keymap
+     doom-leader-key doom-leader-map)
+    (map! :map meow-beacon-state-keymap
+     doom-leader-key nil)
+    (meow/setup-leader)
+)
 (defun set-useful-keybindings()
-  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  ;;(define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   ;; for doom emacs
@@ -608,10 +584,11 @@ nil
 
 (defun meow-setup ()
   (set-useful-keybindings)
+  (meow/setup-doom-keybindings)
   ;; for doom emacs
-  (add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
-  (meow-normal-define-key (cons "SPC" doom-leader-map))
-  (meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
+  ;;(add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
+  ;;(meow-normal-define-key (cons "SPC" doom-leader-map))
+  ;;(meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
    (:when (modulep! :ui workspaces)
     :n "C-t"   #'+workspace/new
@@ -939,7 +916,7 @@ Usage:
 ;; Configuration:1 ends here
 
 ;; [[file:config.org::*Configuration][Configuration:2]]
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-user-dir))
 ;; Configuration:2 ends here
 
 ;; [[file:config.org::*Prompt recognition][Prompt recognition:1]]
@@ -1363,8 +1340,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         xkcd-cache-latest (concat xkcd-cache-dir "latest"))
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
-  ;; (after! evil-snipe
-  ;;  (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -2548,10 +2523,6 @@ SQL can be either the emacsql vector representation, or a string."
         ;; All other cases: call `org-return-indent'.
         (org-return t)))))
   
-  ;; (map!
-  ;;  :after evil-org
-  ;;  :map evil-org-mode-map
-  ;;  :i [return] #'unpackaged/org-return-dwim)
   (defun +yas/org-src-header-p ()
     "Determine whether `point' is within a src-block header or header-args."
     (pcase (org-element-type (org-element-context))
@@ -3406,11 +3377,11 @@ SQL can be either the emacsql vector representation, or a string."
     (defun org-html-reload-fancy-style ()
       (interactive)
       (setq org-html-style-fancy
-            (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
+            (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-user-dir))
                     "<script>\n"
-                    (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
+                    (f-read-text (expand-file-name "misc/org-css/main.js" doom-user-dir))
                     "</script>\n<style>\n"
-                    (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
+                    (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-user-dir))
                     "</style>"))
       (when org-fancy-html-export-mode
         (setq org-html-style-default org-html-style-fancy)))

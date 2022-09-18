@@ -1,10 +1,8 @@
 ;; [[file:config.org::*Workaround][Workaround:2]]
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
-(package! haskell-mode
-  :recipe (:host github :repo "VitalyAnkh/haskell-mode" :branch "fix_cl_case_error"))
 (unpin! haskell-mode)
-(package! lsp-haskell)
+(unpin! lsp-haskell)
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)

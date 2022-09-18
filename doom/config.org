@@ -347,10 +347,8 @@ Test some package
 #+begin_src emacs-lisp :tangle packages.el
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
-(package! haskell-mode
-  :recipe (:host github :repo "VitalyAnkh/haskell-mode" :branch "fix_cl_case_error"))
 (unpin! haskell-mode)
-(package! lsp-haskell)
+(unpin! lsp-haskell)
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
@@ -399,52 +397,6 @@ Test some package
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
 
-;; Just haskell workarounds
-
-(use-package haskell-mode
-  :config
-  )
-
-(after! haskell-mode
-  (setq haskell-process-suggest-remove-import-lines t  ; warnings for redundant imports etc
-        haskell-process-auto-import-loaded-modules t
-        haskell-process-show-overlays (not (modulep! :checkers syntax))) ; redundant with flycheck
-
-  (set-lookup-handlers! 'haskell-mode
-    :definition #'haskell-mode-jump-to-def-or-tag)
-  (set-file-template! 'haskell-mode
-    :trigger #'haskell-auto-insert-module-template
-    :project t)
-  (set-repl-handler!
-    '(haskell-mode haskell-cabal-mode literate-haskell-mode)
-    #'+haskell/open-repl :persist t)
-  ;; Don't kill REPL popup on ESC/C-g
-  (set-popup-rule! "^\\*haskell\\*" :quit nil)
-
-  (add-hook! 'haskell-mode-hook
-             #'haskell-collapse-mode ; support folding haskell code blocks
-             #'interactive-haskell-mode)
-
-  (add-to-list 'completion-ignored-extensions ".hi")
-
-  (map! :map haskell-mode-map
-        (:when (modulep! :tools lookup)
-         [remap haskell-mode-jump-to-def-or-tag] #'+lookup/definition))
-
-  (map! :localleader
-        :map haskell-mode-map
-        "b" #'haskell-process-cabal-build
-        "c" #'haskell-cabal-visit-file
-        "h" #'haskell-hide-toggle
-        "H" #'haskell-hide-toggle-all))
-
-(use-package! lsp-haskell
-  :when (modulep! +lsp)
-  :after lsp-mode
-  :preface (add-hook 'haskell-mode-local-vars-hook #'lsp! 'append)
-  :config
-  ;; Does some strange indentation if it pastes in the snippet
-  (setq-hook! 'haskell-mode-hook yas-indent-line 'fixed))
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -504,7 +456,7 @@ By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
 #+begin_src emacs-lisp
-(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
+(setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
@@ -770,7 +722,7 @@ ess                          ; emacs speaks statistics
 fstar                        ; (dependent) types and (monadic) effects and Z3
 gdscript                     ; the language you waited for
 (go +lsp)                    ; the hipster dialect
-;;(haskell +lsp)               ; a language that's lazier than I am
+(haskell +lsp)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp)                        ;
 (json +lsp)                         ; At least it ain't XML
@@ -876,7 +828,6 @@ aspects are nice, but on others I prefer mononoki.
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
-
                              ))
 #+end_src
 
@@ -1143,7 +1094,7 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
         :desc "Find file" :ne "f" #'find-file
         :desc "Recent files" :ne "r" #'consult-recent-file
         :desc "Config dir" :ne "C" #'doom/open-private-config
-        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
         :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
         :desc "Notes (roam)" :ne "n" #'org-roam-node-find
         :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
@@ -1207,7 +1158,7 @@ Now we just make it theme-appropriate, and resize with the frame.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-image-template
-  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir)
+  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-user-dir)
   "Default template svg used for the splash image, with substitutions from ")
 
 (defvar fancy-splash-sizes
@@ -1310,7 +1261,7 @@ The following is rather long, but it essentially
 
 #+begin_src emacs-lisp
 (defvar splash-phrase-source-folder
-  (expand-file-name "misc/splash-phrases" doom-private-dir)
+  (expand-file-name "misc/splash-phrases" doom-user-dir)
   "A folder of text files with a fun phrase on each line.")
 
 (defvar splash-phrase-sources
@@ -1634,7 +1585,7 @@ anything to be run.
 ;;           (defun +config-run-setup ()
 ;;             (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
 ;;                                        (propertize "Warning!" 'face '(bold warning))))
-;;               (find-file (expand-file-name "setup.sh" doom-private-dir))
+;;               (find-file (expand-file-name "setup.sh" doom-user-dir))
 ;;               (when (yes-or-no-p "Would you like to run this script?")
 ;;                 (async-shell-command "./setup.sh"))))
 ;;           (add-hook! 'doom-init-ui-hook
@@ -1790,7 +1741,7 @@ have the following.
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
             (setq-default abbrev-mode t)
-            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-user-dir))))
 #+end_src
 
 *** Very large files
@@ -1839,8 +1790,32 @@ Modal editing on wish! Use =moew= for modal life.
 #+end_src
 
 #+begin_src emacs-lisp
+(defun meow/setup-leader ()
+ (map! :leader
+  "?" #'meow-cheatsheet
+  "/" #'meow-keypad-describe-key
+  "1" #'meow-digit-argument
+  "2" #'meow-digit-argument
+  "3" #'meow-digit-argument
+  "4" #'meow-digit-argument
+  "5" #'meow-digit-argument
+  "6" #'meow-digit-argument
+  "7" #'meow-digit-argument
+  "8" #'meow-digit-argument
+  "9" #'meow-digit-argument
+  "0" #'meow-digit-argument))
+
+(defun meow/setup-doom-keybindings()
+    (map! :map meow-normal-state-keymap
+    doom-leader-key doom-leader-map)
+    (map! :map meow-motion-state-keymap
+     doom-leader-key doom-leader-map)
+    (map! :map meow-beacon-state-keymap
+     doom-leader-key nil)
+    (meow/setup-leader)
+)
 (defun set-useful-keybindings()
-  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  ;;(define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   ;; for doom emacs
@@ -1881,10 +1856,11 @@ Modal editing on wish! Use =moew= for modal life.
 
 (defun meow-setup ()
   (set-useful-keybindings)
+  (meow/setup-doom-keybindings)
   ;; for doom emacs
-  (add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
-  (meow-normal-define-key (cons "SPC" doom-leader-map))
-  (meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
+  ;;(add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
+  ;;(meow-normal-define-key (cons "SPC" doom-leader-map))
+  ;;(meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
    (:when (modulep! :ui workspaces)
     :n "C-t"   #'+workspace/new
@@ -2444,7 +2420,7 @@ the above.
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-user-dir))
 #+end_src
 **** Don't use ~spell-fu~!
 I don't like red underscores.
@@ -3206,7 +3182,7 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
-Minic =evil='s ~/~ in =treemacs= buffer:
+Minick =evil='s ~/~ in =treemacs= buffer:
 #+begin_src emacs-lisp
 (after! (treemacs meow)
   ;; No EVIL, then I add this
@@ -3259,8 +3235,6 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
         xkcd-cache-latest (concat xkcd-cache-dir "latest"))
   (unless (file-exists-p xkcd-cache-dir)
     (make-directory xkcd-cache-dir))
-  ;; (after! evil-snipe
-  ;;  (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
@@ -5316,10 +5290,6 @@ appropriate.  In tables, insert a new row or end the table."
       ;; All other cases: call `org-return-indent'.
       (org-return t)))))
 
-;; (map!
-;;  :after evil-org
-;;  :map evil-org-mode-map
-;;  :i [return] #'unpackaged/org-return-dwim)
 #+end_src
 **** Snippet Helpers
 
@@ -6652,11 +6622,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 (defun org-html-reload-fancy-style ()
   (interactive)
   (setq org-html-style-fancy
-        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
+        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-user-dir))
                 "<script>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.js" doom-user-dir))
                 "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-user-dir))
                 "</style>"))
   (when org-fancy-html-export-mode
     (setq org-html-style-default org-html-style-fancy)))
