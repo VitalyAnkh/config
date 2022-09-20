@@ -344,13 +344,13 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 (setq native-comp-async-jobs-number 20)
 
 ;; make org latex preview images' baseline the same as the text
-(defun my-org-latex-preview-advice (beg end &rest _args)
-  (let* ((ov (car (overlays-in beg end)))
-         (img (cdr (overlay-get ov 'display)))
-         (new-img (plist-put img :ascent 90)))
-    (overlay-put ov 'display (cons 'image new-img))))
-(advice-add 'org--make-preview-overlay
-            :after #'my-org-latex-preview-advice)
+;; (defun my-org-latex-preview-advice (beg end &rest _args)
+;;   (let* ((ov (car (overlays-in beg end)))
+;;          (img (cdr (overlay-get ov 'display)))
+;;          (new-img (plist-put img :ascent 90)))
+;;     (overlay-put ov 'display (cons 'image new-img))))
+;; (advice-add 'org--make-preview-overlay
+;;             :after #'my-org-latex-preview-advice)
 #+end_src
 
 Test some package
@@ -360,7 +360,10 @@ Test some package
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
-(package! all-the-icons :disable t)
+(unpin! lsp-mode)
+;; test consult-recoll
+(package! consult-recoll)
+;;(package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
 (package! dash)
@@ -661,7 +664,7 @@ ein                        ; tame Jupyter notebooks with emacs
 (lookup                      ; helps you navigate your code and documentation
  +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
-lsp                          ; Language Server Protocol
+(lsp +eglot)                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges

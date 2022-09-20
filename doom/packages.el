@@ -4,7 +4,10 @@
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
-(package! all-the-icons :disable t)
+(unpin! lsp-mode)
+;; test consult-recoll
+(package! consult-recoll)
+;;(package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
 (package! dash)
