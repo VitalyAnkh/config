@@ -18,6 +18,15 @@
     ((debug error) (signal (car err) (cdr err)))))
 (setq straight-repository-branch "develop")
 (setq native-comp-async-jobs-number 20)
+
+;; make org latex preview images' baseline the same as the text
+(defun my-org-latex-preview-advice (beg end &rest _args)
+  (let* ((ov (car (overlays-in beg end)))
+         (img (cdr (overlay-get ov 'display)))
+         (new-img (plist-put img :ascent 90)))
+    (overlay-put ov 'display (cons 'image new-img))))
+(advice-add 'org--make-preview-overlay
+            :after #'my-org-latex-preview-advice)
 ;; Workaround:1 ends here
 
 ;; [[file:config.org::*Workaround][Workaround:3]]
