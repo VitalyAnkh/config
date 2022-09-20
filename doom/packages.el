@@ -2,6 +2,7 @@
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (unpin! haskell-mode)
+(unpin! treemacs)
 (unpin! lsp-haskell)
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages

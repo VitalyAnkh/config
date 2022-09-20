@@ -341,6 +341,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
 (setq straight-repository-branch "develop")
+(setq native-comp-async-jobs-number 20)
 #+end_src
 
 Test some package
@@ -348,6 +349,7 @@ Test some package
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (unpin! haskell-mode)
+(unpin! treemacs)
 (unpin! lsp-haskell)
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
@@ -371,32 +373,11 @@ Test some package
             c++-mode
             c-mode
             org-msg-edit-mode)) ; doesn't need a formatter
-
-;; fix org mode async export
-(defadvice! fixed-+org--fix-async-export-a (fn &rest args)
-  :override #'+org--fix-async-export-a
-  (let ((old-async-init-file org-export-async-init-file)
-        (org-export-async-init-file (make-temp-file "doom-org-async-export")))
-    (with-temp-file org-export-async-init-file
-      (prin1 `(progn (setq org-export-async-debug
-                           ,(or org-export-async-debug
-                                debug-on-error)
-                           load-path ',load-path)
-                     (unwind-protect
-                         (let ((file ,old-async-init-file))
-                           (if file
-                               (load file nil t)
-                             (load ,early-init-file nil t)
-                             (require 'doom-start)))
-                       (delete-file load-file-name)))
-             (current-buffer)))
-    (apply fn args)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
-
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -476,7 +457,7 @@ Thanks to Po Lu, scrolling in emacs is great again!
 #+begin_src emacs-lisp
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-large-scroll-height 60
-      pixel-scroll-precision-interpolation-factor 30.0)
+     pixel-scroll-precision-interpolation-factor 30.0)
 #+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
@@ -1815,7 +1796,7 @@ Modal editing on wish! Use =moew= for modal life.
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  ;;(define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
+  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
   (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
   (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
   ;; for doom emacs
