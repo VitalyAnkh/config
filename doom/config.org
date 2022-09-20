@@ -1124,7 +1124,7 @@ I'd like to have just the buffer name, then if applicable the project folder
 (setq frame-title-format
       '(""
         (:eval
-         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+         (if (string-match-p (regexp-quote org-roam-directory) (or buffer-file-name ""))
              (replace-regexp-in-string
               ".*/[0-9]*-?" "☰ "
               (subst-char-in-string ?_ ?  buffer-file-name))
@@ -2258,7 +2258,7 @@ heading line selection for elisp and Org files.
   xfuncname = "^(\\*+ +.*)$"
 #+end_src
 
-*** \[\]agit delta
+*** magit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view (which don't get any syntax
@@ -3718,7 +3718,7 @@ Meson is a great build tool for =C++=, much more ergonomic than CMake.
 (setq auto-mode-alist
       (append
        '(
-         ("\\meson.buil\\'" . meson-mode)
+         ("\\meson.build\\'" . meson-mode)
          )
        auto-mode-alist))
 #+end_src
@@ -4445,7 +4445,7 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
 (cl-defmacro lsp-org-babel-enable (lang)
   "Support LANG in org source code block."
   (setq centaur-lsp 'lsp-mode)
-  (cl-check-type lang stringp)
+  (cl-check-type lang string)
   (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
          (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
     `(progn
@@ -4923,7 +4923,7 @@ the [[*Window title][Window title]].
 #+begin_src emacs-lisp
 (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
   :around #'doom-modeline-buffer-file-name ; takes no args
-  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+  (if (string-match-p (regexp-quote org-roam-directory) (or buffer-file-name ""))
       (replace-regexp-in-string
        "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
        "🢔(\\1-\\2-\\3) "
@@ -5040,7 +5040,7 @@ truncated to fit within the limit using `org-reference-contraction-truncate-word
                         downcase
                         (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
                         (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
-                        puny-encode-string
+                        puny-encode-(string  )
                         (replace-regexp-in-string "^xn--\\(.*?\\) ?-?\\([a-z0-9]+\\)$" "\\2 \\1") ; rearrange punycode
                         (replace-regexp-in-string "[^A-Za-z0-9 ]" "") ; strip chars which need %-encoding in a uri
                         ) " +"))))
@@ -5462,7 +5462,7 @@ Saving seconds adds up after all! (but only so much)
          (file (xkcd-download img (string-to-number num))))
     (cond
      ((org-export-derived-backend-p backend 'html)
-      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?" alt) title))
+      (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?\" alt) title))
      ((org-export-derived-backend-p backend 'latex)
       (format "\\begin{figure}[!htb]
       \\centering

@@ -50,9 +50,9 @@
 (package! annotate)
 ;; Annotate:1 ends here
 
-;; [[file:config.org::*\\\[\\\]agit delta][\[\]agit delta:2]]
+;; [[file:config.org::*magit delta][magit delta:2]]
 (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta"))
-;; \[\]agit delta:2 ends here
+;; magit delta:2 ends here
 
 ;; [[file:config.org::*Don't use ~spell-fu~!][Don't use ~spell-fu~!:1]]
 (disable-packages! spell-fu)
