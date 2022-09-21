@@ -5,6 +5,7 @@
 (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
+(unpin! eglot)
 ;; test consult-recoll
 (package! consult-recoll)
 ;;(package! all-the-icons :disable t)

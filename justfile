@@ -27,11 +27,27 @@ llvm:
   echo "==== pull llvm-project done ===="
 
 trash_emacs_cache:
-  trash-put $HOME/.config/.emacs.d/eln-cache
-  trash-put $HOME/.config/.emacs.d/.local/cache/eln
+  #!/usr/bin/env bash
   trash-put $HOME/.config/.emacs.d/.local/straight/build-*
   trash-put $HOME/.config/.emacs.d/.local/autoloads*
+  trash-put $HOME/.config/.emacs.d/eln-cache
+  trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
+
+build_local_emacs:
+  #!/usr/bin/env bash
+  cd $HOME/projects/aur/emacs-pgtk-git/src/emacs-git
+  make bootstrap-clean
+  make clean
+  cd $HOME/projects/aur/emacs-pgtk-git/
+  trash-put ./src/emacs-git/lisp/*elc
+  trash-put ./src/emacs-git/lisp/progmodes/*elc
+  trash-put ./src/emacs-git/lisp/emacs-lisp/*elc
+  mksrcinfo
+  #makepkg -si
+  #proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force
+
+test_local_emacs: trash_emacs_cache build_local_emacs
 
 build_taichi:
   #!/usr/bin/env bash

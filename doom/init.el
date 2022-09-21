@@ -108,7 +108,7 @@
        ;;taskrunner                 ; taskrunner for all your projects
        ;;terraform                  ; infrastructure as code
        ;;tmux                       ; an API for interacting with tmux
-       tree-sitter                  ; syntax and parsing, sitting in a tree...
+       ;;tree-sitter                  ; syntax and parsing, sitting in a tree...
        upload                       ; map local to remote projects via ssh/ftp
 
        :os
@@ -118,8 +118,10 @@
        (agda
         ;;+tree-sitter
         +local)                ; types of types of types of types...
-       beancount                    ; mind the GAAP
-       (cc +lsp +tree-sitter)                    ; C/C++/Obj-C madness
+       ;;beancount                    ; mind the GAAP
+       (cc +lsp 
+        ;;+tree-sitter
+       )                    ; C/C++/Obj-C madness
        clojure                      ; java with a lisp
        common-lisp                  ; if you've seen one lisp, you've seen them all
        coq                          ; proofs-as-programs
@@ -132,10 +134,10 @@
        elm                          ; care for a cup of TEA?
        (emacs-lisp +tree-sitter)                   ; drown in parentheses
        (erlang +lsp)                ; an elegant language for a more civilized age
-       ess                          ; emacs speaks statistics
+       ;;ess                          ; emacs speaks statistics
        ;;faust                      ; dsp, but you get to keep your soul
        ;;fsharp                     ; ML stands for Microsoft's Language
-       fstar                        ; (dependent) types and (monadic) effects and Z3
+       ;;fstar                        ; (dependent) types and (monadic) effects and Z3
        gdscript                     ; the language you waited for
        (go +lsp)                    ; the hipster dialect
        (haskell +lsp)               ; a language that's lazier than I am
@@ -165,7 +167,7 @@
         +journal
         +hugo                       ; use Emacs for hugo blogging
         +noter                      ; enhanced PDF notetaking
-        +jupyter                    ; ipython/jupyter support for babel
+        ;;+jupyter                    ; ipython/jupyter support for babel
         +pandoc                     ; export-with-pandoc support
         +gnuplot                    ; who doesn't like pretty pictures
         ;;+pomodoro                 ; be fruitful with the tomato technique
@@ -177,7 +179,7 @@
        (python +lsp +pyright)       ; beautiful is better than ugly
        ;;qt                         ; the 'cutest' gui framework ever
        (racket +lsp +xp)            ; a DSL for DSLs
-       raku                         ; the artist formerly known as perl6
+       ;;raku                         ; the artist formerly known as perl6
        rest                         ; Emacs as a REST client
        ;;rst                        ; ReST in peace
        (ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
@@ -189,9 +191,9 @@
        ;;solidity                   ; do you need a blockchain? No.
        ;;swift                      ; who asked for emoji variables?
        ;;terra                      ; Earth and Moon in alignment for performance.
-       web                          ; the tubes
+       ;;web                          ; the tubes
        yaml                         ; JSON, but readable
-       (zig +lsp)                   ; C, but simpler
+       ;;(zig +lsp)                   ; C, but simpler
 
        :email
        (:if (executable-find "mu") (mu4e +org +gmail))
