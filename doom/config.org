@@ -345,13 +345,20 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 (setq eldoc-echo-area-use-multiline-p nil)
 
 ;; make org latex preview images' baseline the same as the text
-;; (defun my-org-latex-preview-advice (beg end &rest _args)
-;;   (let* ((ov (car (overlays-in beg end)))
-;;          (img (cdr (overlay-get ov 'display)))
-;;          (new-img (plist-put img :ascent 90)))
-;;     (overlay-put ov 'display (cons 'image new-img))))
-;; (advice-add 'org--make-preview-overlay
-;;             :after #'my-org-latex-preview-advice)
+(defun my-org-latex-preview-advice (beg end &rest _args)
+  (let* ((ov (car (overlays-in beg end)))
+         (img (cdr (overlay-get ov 'display)))
+         (new-img (plist-put img :ascent 90)))
+    (overlay-put ov 'display (cons 'image new-img))))
+(advice-add 'org--make-preview-overlay
+            :after #'my-org-latex-preview-advice)
+#+end_src
+
+#+begin_src emacs-lisp :tangle init.el
+;; fix doom's load order issue with recent emacs
+(defadvice! fixed-doom-module-list (fn &rest args)
+  :around #'doom-module-list
+  (nreverse (apply fn args)))
 #+end_src
 
 Test some package
@@ -361,11 +368,12 @@ Test some package
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
+(unpin! lsp-metals)
 (unpin! lsp-mode)
 (unpin! eglot)
 ;; test consult-recoll
 (package! consult-recoll)
-;;(package! all-the-icons :disable t)
+(package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
 (package! dash)
@@ -403,7 +411,7 @@ the following:
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
-;; x-stretch-cursor t                              ; Stretch cursor to the glyph width
+ x-stretch-cursor t                               ; Stretch cursor to the glyph width
 )
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
@@ -471,14 +479,14 @@ Thanks to Po Lu, scrolling in emacs is great again!
 #+begin_src emacs-lisp
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-large-scroll-height 60
-     pixel-scroll-precision-interpolation-factor 30.0)
+      pixel-scroll-precision-interpolation-factor 30.0)
 #+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+begin_src emacs-lisp
 ;; (setq-default major-mode 'org-mode)
 #+end_src
-For some reason this + the mixed pitch hook causes issues with hydra and so I'll
+For some reason this and the mixed pitch hook cause issues with hydra and so I'll
 just need to resort to =SPC b o= for now.
 *** Drag text from emacs to other apps
 Thanks to Po Lu!
@@ -660,13 +668,13 @@ debugger                     ; FIXME stepping through code, to help you add bugs
 direnv                       ; be direct about your environment
 ;;docker                     ; port everything to containers
 editorconfig                 ; let someone else argue about tabs vs spaces
-ein                        ; tame Jupyter notebooks with emacs
+ein                          ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
 (lookup                      ; helps you navigate your code and documentation
  +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
-(lsp +eglot)                          ; Language Server Protocol
+(lsp +eglot)                 ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges
@@ -678,7 +686,7 @@ rgb                          ; creating color strings
 ;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
-;;tree-sitter                  ; syntax and parsing, sitting in a tree...
+tree-sitter                  ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
@@ -694,13 +702,10 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-(agda
- ;;+tree-sitter
- +local)                ; types of types of types of types...
+(agda +tree-sitter
+      +local)                ; types of types of types of types...
 ;;beancount                    ; mind the GAAP
-(cc +lsp 
- ;;+tree-sitter
-)                    ; C/C++/Obj-C madness
+(cc +lsp +tree-sitter)       ; C/C++/Obj-C madness
 clojure                      ; java with a lisp
 common-lisp                  ; if you've seen one lisp, you've seen them all
 coq                          ; proofs-as-programs
@@ -746,7 +751,7 @@ markdown                     ; writing docs for people to ignore
  +journal
  +hugo                       ; use Emacs for hugo blogging
  +noter                      ; enhanced PDF notetaking
- ;;+jupyter                    ; ipython/jupyter support for babel
+ +jupyter                    ; ipython/jupyter support for babel
  +pandoc                     ; export-with-pandoc support
  +gnuplot                    ; who doesn't like pretty pictures
  ;;+pomodoro                 ; be fruitful with the tomato technique
@@ -758,7 +763,7 @@ markdown                     ; writing docs for people to ignore
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
 (racket +lsp +xp)            ; a DSL for DSLs
-;;raku                         ; the artist formerly known as perl6
+raku                         ; the artist formerly known as perl6
 rest                         ; Emacs as a REST client
 ;;rst                        ; ReST in peace
 (ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
@@ -770,9 +775,9 @@ sml                          ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
-;;web                          ; the tubes
+web                          ; the tubes
 yaml                         ; JSON, but readable
-;;(zig +lsp)                   ; C, but simpler
+(zig +lsp)                   ; C, but simpler
 #+end_src
 
 **** Everything in Emacs

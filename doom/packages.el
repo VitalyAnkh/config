@@ -1,20 +1,21 @@
-;; [[file:config.org::*Workaround][Workaround:2]]
+;; [[file:config.org::*Workaround][Workaround:3]]
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
+(unpin! lsp-metals)
 (unpin! lsp-mode)
 (unpin! eglot)
 ;; test consult-recoll
 (package! consult-recoll)
-;;(package! all-the-icons :disable t)
+(package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
 (package! dash)
 (package! pkg-info)
 (package! epl)
-;; Workaround:2 ends here
+;; Workaround:3 ends here
 
 ;; -*- no-byte-compile: t; -*-
 

@@ -21,16 +21,16 @@
 (setq eldoc-echo-area-use-multiline-p nil)
 
 ;; make org latex preview images' baseline the same as the text
-;; (defun my-org-latex-preview-advice (beg end &rest _args)
-;;   (let* ((ov (car (overlays-in beg end)))
-;;          (img (cdr (overlay-get ov 'display)))
-;;          (new-img (plist-put img :ascent 90)))
-;;     (overlay-put ov 'display (cons 'image new-img))))
-;; (advice-add 'org--make-preview-overlay
-;;             :after #'my-org-latex-preview-advice)
+(defun my-org-latex-preview-advice (beg end &rest _args)
+  (let* ((ov (car (overlays-in beg end)))
+         (img (cdr (overlay-get ov 'display)))
+         (new-img (plist-put img :ascent 90)))
+    (overlay-put ov 'display (cons 'image new-img))))
+(advice-add 'org--make-preview-overlay
+            :after #'my-org-latex-preview-advice)
 ;; Workaround:1 ends here
 
-;; [[file:config.org::*Workaround][Workaround:3]]
+;; [[file:config.org::*Workaround][Workaround:4]]
 (use-package clang-format+
   :config
   (add-hook 'c-mode-common-hook #'clang-format+-mode)
@@ -44,18 +44,18 @@
             c++-mode
             c-mode
             org-msg-edit-mode)) ; doesn't need a formatter
-;; Workaround:3 ends here
+;; Workaround:4 ends here
 
-;; [[file:config.org::*Workaround][Workaround:4]]
+;; [[file:config.org::*Workaround][Workaround:5]]
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
-;; Workaround:4 ends here
+;; Workaround:5 ends here
 
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
-;; x-stretch-cursor t                              ; Stretch cursor to the glyph width
+ x-stretch-cursor t                               ; Stretch cursor to the glyph width
 )
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
@@ -102,7 +102,7 @@
 ;; [[file:config.org::*Mouse][Mouse:2]]
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-large-scroll-height 60
-     pixel-scroll-precision-interpolation-factor 30.0)
+      pixel-scroll-precision-interpolation-factor 30.0)
 ;; Mouse:2 ends here
 
 ;; [[file:config.org::*Buffer defaults][Buffer defaults:1]]
