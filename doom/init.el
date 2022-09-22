@@ -41,10 +41,10 @@
        (popup                       ; tame sudden yet inevitable temporary windows
         +all                        ; catch all popups that start with an asterix
         +defaults)                  ; default popup rules
-       ;;tabs                         ; an tab bar for Emacs
+       ;;tabs                       ; an tab bar for Emacs
        treemacs                     ; a project drawer, like neotree but cooler
        ;;unicode                    ; extended unicode support for various languages
-       (vc-gutter +pretty)                    ; vcs diff in the fringe
+       (vc-gutter +pretty)          ; vcs diff in the fringe
        vi-tilde-fringe              ; fringe tildes to mark beyond EOB
        (window-select
         ;;+switch-window             ; use switch-window other than ace window
@@ -58,7 +58,7 @@
        fold                         ; (nigh) universal code folding
        (format
         +onsave
-        ;;+only-format-changes-on-save
+        ;;+only-changes
         )                            ; automated prettiness
        ;;god                        ; run Emacs commands without modifier keys
        ;;lispy                      ; vim for lisp, for people who don't like vim
@@ -91,7 +91,7 @@
        ;;grammar                    ; tasing grammar mistake every you make
 
        :tools
-       ansible                      ; a crucible for infrastructure as code
+       ;;ansible                    ; a crucible for infrastructure as code
        biblio                       ; write you a PhD
        debugger                     ; FIXME stepping through code, to help you add bugs
        direnv                       ; be direct about your environment

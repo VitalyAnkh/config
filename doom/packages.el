@@ -4,9 +4,9 @@
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
-(unpin! lsp-metals)
 (unpin! lsp-mode)
 (unpin! eglot)
+(unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)
 (package! all-the-icons :disable t)
