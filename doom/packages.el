@@ -12,9 +12,7 @@
 ;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
-(package! f)
 (package! pkg-info)
-(package! epl)
 ;; Workaround:3 ends here
 
 ;; -*- no-byte-compile: t; -*-

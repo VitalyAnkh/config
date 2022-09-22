@@ -386,3 +386,4 @@ x-scheme-handler/unknown=microsoft-edge-dev.desktop
 x-scheme-handler/clash=clash_win.desktop
 text/org=emacs.desktop
 x-scheme-handler/jetbrains-gateway=jetbrains-gateway.desktop
+x-scheme-handler/logseq=Logseq.desktop
