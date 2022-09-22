@@ -326,7 +326,7 @@ Apparently this is used by ~GPG~, and all sorts of other things.
 Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 =~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
 make a difference, and I don't want to accidentally purge this file (I have done
-src_shell{rm -rf~/.emac.d~} before). I also want to cache as much as possible, as
+src_shell{rm -rf ~/.emac.d} before). I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutting down a lot.
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
@@ -373,10 +373,10 @@ Test some package
 (unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)
+;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
-(package! dash)
 (package! pkg-info)
 (package! epl)
 #+end_src
@@ -672,7 +672,7 @@ ein                          ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
 (lookup                      ; helps you navigate your code and documentation
- +dictionary                 ; dictionary/thesaurus is nice
+ ;;+dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
 (lsp +eglot)                 ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
@@ -5715,18 +5715,17 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-(package! seperate-inline :recipe
+(package! separate-inline :recipe
  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
-#+begin_src emacs-lisp
-(use-package seperate-inline
+#+begin_src emacs-lisp :tangle config.el
+(use-package separate-inline
   :hook ((org-mode-hook . separate-inline-mode)
          (org-mode-hook . (lambda ()
                             (add-hook 'separate-inline-mode-hook
                                       'separate-inline-use-default-rules-for-org-local
-                                      nil 'make-it-local))))
-  )
+                                      nil 'make-it-local)))))
 #+end_src
 **** Symbols
 

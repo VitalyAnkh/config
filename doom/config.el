@@ -2753,15 +2753,14 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook #'locally-defer-font-lock)
   (setq org-inline-src-prettify-results '("⟨" . "⟩"))
   (setq doom-themes-org-fontify-special-tags nil)
-  (package! seperate-inline :recipe
+  (package! separate-inline :recipe
    (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
-  (use-package seperate-inline
+  (use-package separate-inline
     :hook ((org-mode-hook . separate-inline-mode)
            (org-mode-hook . (lambda ()
                               (add-hook 'separate-inline-mode-hook
                                         'separate-inline-use-default-rules-for-org-local
-                                        nil 'make-it-local))))
-    )
+                                        nil 'make-it-local)))))
   (setq org-ellipsis " ▾ "
         org-hide-leading-stars t
         org-priority-highest ?A
@@ -4887,6 +4886,13 @@ SQL can be either the emacsql vector representation, or a string."
     (interactive)
     (unless org-roam-ui-mode (org-roam-ui-mode 1))
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
+
+(use-package separate-inline
+  :hook ((org-mode-hook . separate-inline-mode)
+         (org-mode-hook . (lambda ()
+                            (add-hook 'separate-inline-mode-hook
+                                      'separate-inline-use-default-rules-for-org-local
+                                      nil 'make-it-local)))))
 
 (after! ox-ascii
   (defvar org-ascii-convert-latex t

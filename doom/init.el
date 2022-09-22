@@ -101,7 +101,7 @@
        (eval +overlay)              ; run code, run (also, repls)
        ;;gist                       ; interacting with github gists
        (lookup                      ; helps you navigate your code and documentation
-        +dictionary                 ; dictionary/thesaurus is nice
+        ;;+dictionary                 ; dictionary/thesaurus is nice
         +docsets)                   ; ...or in Dash docsets locally
        (lsp +eglot)                 ; Language Server Protocol
        ;;macos                      ; MacOS-specific commands

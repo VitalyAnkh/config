@@ -9,10 +9,10 @@
 (unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)
+;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! f)
-(package! dash)
 (package! pkg-info)
 (package! epl)
 ;; Workaround:3 ends here
@@ -211,7 +211,7 @@
 (unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 
-(package! seperate-inline :recipe
+(package! separate-inline :recipe
  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 
 (package! org-pretty-tags)
