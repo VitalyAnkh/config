@@ -1,6 +1,10 @@
-;; [[file:config.org::*Workaround][Workaround:3]]
+;; [[file:config.org::*Workaround][Workaround:2]]
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+(package! separate-inline :recipe
+ (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! org-pretty-tags)
+(package! org-fragtog)
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
@@ -13,7 +17,7 @@
 (package! all-the-icons :disable t)
 ;; There are some problems in Emacs 29 which make doom not download these packages
 (package! pkg-info)
-;; Workaround:3 ends here
+;; Workaround:2 ends here
 
 ;; -*- no-byte-compile: t; -*-
 
@@ -69,11 +73,6 @@
 ;; [[file:config.org::*Etrace][Etrace:1]]
 (package! etrace :recipe (:host github :repo "aspiers/etrace"))
 ;; Etrace:1 ends here
-
-;; [[file:config.org::*Etrace][Etrace:2]]
-(use-package! etrace
-  :after elp)
-;; Etrace:2 ends here
 
 ;; [[file:config.org::*String inflection][String inflection:1]]
 (package! string-inflection)
@@ -209,14 +208,14 @@
 (unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 
-(package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+;;(package! separate-inline :recipe
+;; (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 
-(package! org-pretty-tags)
+;;(package! org-pretty-tags)
 
 (package! xenops)
 
-(package! org-fragtog)
+;;(package! org-fragtog)
 
 (package! engrave-faces)
 

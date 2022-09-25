@@ -354,17 +354,14 @@ This is a place I put workarounds. It should be empty in the best scenarios.
             :after #'my-org-latex-preview-advice)
 #+end_src
 
-#+begin_src emacs-lisp :tangle init.el
-;; fix doom's load order issue with recent emacs
-(defadvice! fixed-doom-module-list (fn &rest args)
-  :around #'doom-module-list
-  (nreverse (apply fn args)))
-#+end_src
-
 Test some package
 #+begin_src emacs-lisp :tangle packages.el
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+(package! separate-inline :recipe
+ (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! org-pretty-tags)
+(package! org-fragtog)
 (unpin! haskell-mode)
 (unpin! treemacs)
 (unpin! lsp-haskell)
@@ -2515,7 +2512,7 @@ investigation.
 (package! etrace :recipe (:host github :repo "aspiers/etrace"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle config.el
 (use-package! etrace
   :after elp)
 #+end_src
@@ -5713,8 +5710,8 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-(package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+;;(package! separate-inline :recipe
+;; (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -5782,7 +5779,7 @@ other settings.
 
 We may as well make tags prettier as well :)
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-pretty-tags)
+;;(package! org-pretty-tags)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5913,7 +5910,7 @@ have this be performed automatically with =xenops=.
 #+end_src
 OK, let's customize the default inline rendering a bit.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-fragtog)
+;;(package! org-fragtog)
 #+end_src
 
 #+begin_src emacs-lisp

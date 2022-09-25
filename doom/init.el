@@ -1,10 +1,3 @@
-;; [[file:config.org::*Workaround][Workaround:2]]
-;; fix doom's load order issue with recent emacs
-(defadvice! fixed-doom-module-list (fn &rest args)
-  :around #'doom-module-list
-  (nreverse (apply fn args)))
-;; Workaround:2 ends here
-
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load in.
