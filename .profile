@@ -7,6 +7,9 @@ export XIM_PROGRAM=fcitx
 export SDL_IM_MODULE=fcitx
 export CHROME_EXECUTABLE=google-chrome-stable
 
+# for blender
+export BLENDER_WAYLAND=1
+
 # allow nix install proprietary packages
 export NIXPKGS_ALLOW_UNFREE=1
 
