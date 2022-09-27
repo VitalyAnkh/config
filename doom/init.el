@@ -96,7 +96,7 @@
        (lookup                      ; helps you navigate your code and documentation
         ;;+dictionary                 ; dictionary/thesaurus is nice
         +docsets)                   ; ...or in Dash docsets locally
-       (lsp +eglot)                 ; Language Server Protocol
+       lsp                          ; Language Server Protocol
        ;;macos                      ; MacOS-specific commands
        (magit                       ; a git porcelain for Emacs
         +forge)                     ; interface with git forges

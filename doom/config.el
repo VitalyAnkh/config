@@ -35,8 +35,10 @@
   :config
   (add-hook 'c-mode-common-hook #'clang-format+-mode)
   (setq clang-format+-context 'modification)
-  (setq clang-format+-always-enable t)
-  )
+  (setq clang-format+-always-enable t))
+
+;; lsp-metals is broken on Emacs 29
+;;(setq lsp-metals-treeview-views nil)
 
 (setq +format-on-save-enabled-modes
       '(not emacs-lisp-mode    ; elisp's mechanisms are good enough

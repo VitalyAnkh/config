@@ -1,5 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export --path LD_LIBRARY_PATH:/usr/lib/\x1e/home/vitalyr/projects/dev/c/cog/build/core\x1e/home/vitalyr/projects/dev/c/cog/build/platform/\x1e/home/vitalyr/projects/dev/c/cog/build/platform/wayland/\x1e/home/vitalyr/projects/dev/c/cog/build/platform/headless/\x1e/home/vitalyr/projects/dev/c/cog/build/platform/drm/
 SETUVAR __fish_initialized:3400
 SETUVAR _fish_abbr_chez:chez\x2dscheme
 SETUVAR _fish_abbr_ci:code\x2dinsiders

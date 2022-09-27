@@ -366,6 +366,8 @@ Test some package
 (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
+;; lsp-metals is broken on Emacs 29
+(package! lsp-metals :disable t)
 (unpin! eglot)
 (unpin! git-gutter)
 ;; test consult-recoll
@@ -381,8 +383,10 @@ Test some package
   :config
   (add-hook 'c-mode-common-hook #'clang-format+-mode)
   (setq clang-format+-context 'modification)
-  (setq clang-format+-always-enable t)
-  )
+  (setq clang-format+-always-enable t))
+
+;; lsp-metals is broken on Emacs 29
+;;(setq lsp-metals-treeview-views nil)
 
 (setq +format-on-save-enabled-modes
       '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
@@ -669,7 +673,7 @@ ein                          ; tame Jupyter notebooks with emacs
 (lookup                      ; helps you navigate your code and documentation
  ;;+dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
-(lsp +eglot)                 ; Language Server Protocol
+lsp                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges

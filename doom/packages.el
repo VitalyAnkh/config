@@ -9,6 +9,8 @@
 (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
+;; lsp-metals is broken on Emacs 29
+(package! lsp-metals :disable t)
 (unpin! eglot)
 (unpin! git-gutter)
 ;; test consult-recoll
