@@ -137,6 +137,13 @@
 (unpin! lsp-mode)
 ;; LSP:1 ends here
 
+;; [[file:config.org::*~lsp-bridge~][~lsp-bridge~:1]]
+;; (package! lsp-bridge :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("*")))
+;; (package! acm :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("acm")))
+;; (package! popon)
+;; (package! acm-terminal :recipe (:host github :repo "twlz0ne/acm-terminal"))
+;; ~lsp-bridge~:1 ends here
+
 ;; [[file:config.org::*Lean][Lean:1]]
 (package! lean4-mode :recipe
   (:host github

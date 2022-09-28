@@ -23,9 +23,8 @@
        hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        ;;hydra                      ; quick documentation for related commands
        ;;indent-guides              ; highlighted indent columns, notoriously slow
-       (ligatures
-         ;;+extra
-         )                           ; ligatures and symbols to make your code pretty again
+       (ligatures ;;+extra
+          )                  ; ligatures and symbols to make your code pretty again
        ;;minimap                    ; show a map of the code on the side
        modeline                     ; snazzy, Atom-inspired modeline, plus API
        ;;nav-flash                  ; blink the current line after jumping
@@ -96,7 +95,7 @@
        (lookup                      ; helps you navigate your code and documentation
         ;;+dictionary                 ; dictionary/thesaurus is nice
         +docsets)                   ; ...or in Dash docsets locally
-       lsp                          ; Language Server Protocol
+       ;;lsp                          ; Language Server Protocol
        ;;macos                      ; MacOS-specific commands
        (magit                       ; a git porcelain for Emacs
         +forge)                     ; interface with git forges
@@ -156,8 +155,10 @@
        lua                          ; one-based indices? one-based indices
        markdown                     ; writing docs for people to ignore
        ;;nim                          ; python + lisp at the speed of c
-       (nix +lsp)                          ; I hereby declare "nix geht mehr!"
-       (ocaml +lsp)                        ; an objective camel
+       (nix ;;+lsp
+       )                          ; I hereby declare "nix geht mehr!"
+       (ocaml ;;+lsp
+       )                        ; an objective camel
        (org                         ; organize your plain life in plain text
         ;;+pretty                     ; yessss my pretties! (nice unicode symbols)
         +dragndrop                  ; drag & drop files/images into org buffers

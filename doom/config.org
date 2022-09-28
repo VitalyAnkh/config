@@ -450,8 +450,7 @@ default to be something roughly 80% of that size.
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
 (push  '(alpha-background . 95) default-frame-alist)
-(add-to-list 'initial-frame-alist '(fullscreen . maximized)
-             )
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 *** Auto-customisations
 By default changes made via a customisation interface are added to =init.el=.
@@ -590,9 +589,8 @@ doom-dashboard               ; a nifty splash screen for Emacs
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
 ;;indent-guides              ; highlighted indent columns, notoriously slow
-(ligatures
-  ;;+extra
-  )                           ; ligatures and symbols to make your code pretty again
+(ligatures ;;+extra
+   )                  ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
 ;;nav-flash                  ; blink the current line after jumping
@@ -673,7 +671,7 @@ ein                          ; tame Jupyter notebooks with emacs
 (lookup                      ; helps you navigate your code and documentation
  ;;+dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
-lsp                          ; Language Server Protocol
+;;lsp                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges
@@ -742,8 +740,10 @@ gdscript                     ; the language you waited for
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                          ; python + lisp at the speed of c
-(nix +lsp)                          ; I hereby declare "nix geht mehr!"
-(ocaml +lsp)                        ; an objective camel
+(nix ;;+lsp
+)                          ; I hereby declare "nix geht mehr!"
+(ocaml ;;+lsp
+)                        ; an objective camel
 (org                         ; organize your plain life in plain text
  ;;+pretty                     ; yessss my pretties! (nice unicode symbols)
  +dragndrop                  ; drag & drop files/images into org buffers
@@ -3673,6 +3673,29 @@ pip install ffi-navigator
     :server-id 'ffi-navigator
     :add-on? t))
   )
+#+end_src
+**** ~lsp-bridge~
+Test ~lsp-bridge~.
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! lsp-bridge :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("*")))
+;; (package! acm :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("acm")))
+;; (package! popon)
+;; (package! acm-terminal :recipe (:host github :repo "twlz0ne/acm-terminal"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(customize-set-variable 'company-global-modes
+                        (append company-global-modes '(python-mode)))
+
+(use-package! lsp-bridge
+  :hook
+  (python-mode . lsp-bridge-mode)
+  :init
+  (setq acm-enable-citre t))
+
+(unless (display-graphic-p)
+  (after! acm
+    (use-package! acm-terminal)))
 #+end_src
 ** Agda
 Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That's a bug and it's easy to fix.

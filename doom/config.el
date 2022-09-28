@@ -87,8 +87,7 @@
 ;;(add-to-list 'default-frame-alist '(height . 24))
 ;;(add-to-list 'default-frame-alist '(width . 80))
 (push  '(alpha-background . 95) default-frame-alist)
-(add-to-list 'initial-frame-alist '(fullscreen . maximized)
-             )
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 ;; Frame sizing:1 ends here
 
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
