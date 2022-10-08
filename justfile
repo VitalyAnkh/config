@@ -16,13 +16,21 @@ llvm:
   cd ~/projects/dev/cpp/llvm-project
   git pull
   cd build
-  CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra" \
+  CC=clang CXX=clang++ cmake -G "Ninja" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_USE_LINKER=mold \
+    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
+    -DLLVM_TARGETS_TO_BUILD="host" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
+    -DLLVM_LIT_ARGS=-v \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
+    -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libunwind" ../llvm
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el .
   git add -A
-  git commit "up"
+  git commit -m "up"
   git push
   echo "==== pull llvm-project done ===="
 
@@ -121,7 +129,7 @@ ghc:
 # git pull
 # cd build
 # CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
-#   -DCMAKE_BUILD_TYPE=Debug -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
+#   -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
 #   -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra"\
 #   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 # echo "==== pull Unreal Engine done ===="
@@ -165,7 +173,7 @@ mesa:
   cd ~/projects/dev/c/mesa
   git pull
   cd build
-  meson --reconfigure ..
+  meson --reconfigure .. -Dgallium-rusticl=true -Dopencl-spirv=true -Dshader-cache=true -Dllvm=true
   echo "==== pull mesa done ===="
 
 iced:

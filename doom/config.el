@@ -67,6 +67,7 @@
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t                     ; Different languages live together happily
+      warning-minimum-level  :error               ; Get rid of annoying warning messages
       org-return-follows-link t)                  ; Organise it!
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line

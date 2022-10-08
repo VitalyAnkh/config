@@ -366,6 +366,8 @@ Test some package
 (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
+(unpin! lsp-treemacs)
+;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
 (unpin! eglot)
@@ -374,8 +376,6 @@ Test some package
 (package! consult-recoll)
 ;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
-;; There are some problems in Emacs 29 which make doom not download these packages
-(package! pkg-info)
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -420,6 +420,7 @@ the following:
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t                     ; Different languages live together happily
+      warning-minimum-level  :error               ; Get rid of annoying warning messages
       org-return-follows-link t)                  ; Organise it!
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line

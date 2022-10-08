@@ -338,6 +338,16 @@ Description="键盘 - 俄语 - 俄语（打字机）"
 Language=ru
 Label=ru
 
+[keyboard-ru-ruchey_ru]
+Description="键盘 - 俄语 - 俄语（工程，RU）"
+Language=ru
+Label=ru
+
+[keyboard-ru-ruchey_en]
+Description="键盘 - 俄语 - 俄语（工程，EN）"
+Language=ru
+Label=en
+
 [keyboard-ru-legacy]
 Description="键盘 - 俄语 - 俄语（传统）"
 Language=ru
@@ -483,18 +493,8 @@ Description="键盘 - 俄语 - 俄语（Polyglot and Reactionary）"
 Language=ru
 Label=ru
 
-[keyboard-ru-ruchey_cyrillic]
-Description="键盘 - 俄语 - 俄语（工程，西里尔）"
-Language=ru
-Label=ru
-
-[keyboard-ru-ruchey_latin]
-Description="键盘 - 俄语 - 俄语（工程，拉丁）"
-Language=ru
-Label=us
-
 [keyboard-ru-winkeys-p]
-Description="键盘 - 俄语 - Russian (Programmer)"
+Description="键盘 - 俄语 - 俄语（适合程序员的）"
 Language=ru
 Label=winkeys-p
 
@@ -519,7 +519,7 @@ Language=fa
 Label=ir
 
 [keyboard-ir-azb]
-Description="键盘 - 波斯语 - Azerbaijani (Iran)"
+Description="键盘 - 波斯语 - 阿塞拜疆语（伊朗）"
 Language=azb
 Label=azb
 
@@ -1574,7 +1574,7 @@ Language=si
 Label=si
 
 [keyboard-lk-tam_unicode]
-Description="键盘 - 僧伽罗语（语音助记） - 泰米尔语（斯里兰卡，TamilNet '99）"
+Description="键盘 - 僧伽罗语（语音助记） - (Sri Lanka, TamilNet '99)"
 Language=ta
 Label=ta
 
@@ -1824,7 +1824,7 @@ Language=be
 Label=by
 
 [keyboard-by-phonetic]
-Description="键盘 - 白俄罗斯语 - Belarusian (phonetic)"
+Description="键盘 - 白俄罗斯语 - 白俄罗斯语（语音助记）"
 Language=be
 Label=by
 
@@ -1989,12 +1989,12 @@ Language=ta
 Label=ta
 
 [keyboard-in-tam]
-Description="键盘 - 印度语言 - Tamil (InScript, with Arabic numerals)"
+Description="键盘 - 印度语言 - 泰米尔语（InScript，带阿拉伯数字）"
 Language=ta
 Label=ta
 
 [keyboard-in-tam_tamilnumbers]
-Description="键盘 - 印度语言 - Tamil (InScript, with Tamil numerals)"
+Description="键盘 - 印度语言 - 泰米尔语（InScript，带泰米尔数字）"
 Language=ta
 Label=ta
 
@@ -2484,7 +2484,7 @@ Language=fr
 Label=fr
 
 [keyboard-ca-multix]
-Description="键盘 - 法语（加拿大） - Canadian (CSA)"
+Description="键盘 - 法语（加拿大） - 加拿大（CSA）"
 Language=fr
 Label=ca
 
@@ -2839,12 +2839,12 @@ Language=jax
 Label=id
 
 [keyboard-id-melayu-phonetic]
-Description="键盘 - 印尼语（拉丁） - Indonesian (Arab Melayu, phonetic)"
+Description="键盘 - 印尼语（拉丁） - 印尼语（Arab Melayu，语音助记）"
 Language=id
 Label=id
 
 [keyboard-id-melayu-phoneticx]
-Description="键盘 - 印尼语（拉丁） - Indonesian (Arab Melayu, extended phonetic)"
+Description="键盘 - 印尼语（拉丁） - 印尼语（Arab Melayu，扩展语音助记）"
 Language=id
 Label=id
 

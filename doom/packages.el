@@ -9,6 +9,8 @@
 (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
+(unpin! lsp-treemacs)
+;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
 (unpin! eglot)
@@ -17,8 +19,6 @@
 (package! consult-recoll)
 ;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
-;; There are some problems in Emacs 29 which make doom not download these packages
-(package! pkg-info)
 ;; Workaround:2 ends here
 
 ;; -*- no-byte-compile: t; -*-
