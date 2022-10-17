@@ -420,8 +420,8 @@ the following:
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t                     ; Different languages live together happily
-      warning-minimum-level  :error               ; Get rid of annoying warning messages
-      org-return-follows-link t)                  ; Organise it!
+      warning-minimum-level  :error               ; Who cares about warnings?
+      org-return-follows-link t)                  ; Organize it!
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -721,8 +721,8 @@ elm                          ; care for a cup of TEA?
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                        ; (dependent) types and (monadic) effects and Z3
 gdscript                     ; the language you waited for
-(go +lsp)                    ; the hipster dialect
-(haskell +lsp)               ; a language that's lazier than I am
+(go +lsp +tree-sitters)                    ; the hipster dialect
+(haskell +lsp +tree-sitters)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp)                        ;
 (json +lsp)                         ; At least it ain't XML
@@ -741,13 +741,12 @@ gdscript                     ; the language you waited for
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                          ; python + lisp at the speed of c
-(nix ;;+lsp
-)                          ; I hereby declare "nix geht mehr!"
-(ocaml ;;+lsp
-)                        ; an objective camel
+(nix +lsp)                          ; I hereby declare "nix geht mehr!"
+(ocaml +lsp)                        ; an objective camel
 (org                         ; organize your plain life in plain text
  ;;+pretty                     ; yessss my pretties! (nice unicode symbols)
  +dragndrop                  ; drag & drop files/images into org buffers
+ ;; use org-roam-dailies instead
  ;;+journal
  +hugo                       ; use Emacs for hugo blogging
  +noter                      ; enhanced PDF notetaking
@@ -762,13 +761,13 @@ markdown                     ; writing docs for people to ignore
 ;;purescript                 ; javascript, but functional
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-(racket +lsp +xp)            ; a DSL for DSLs
+(racket +lsp +xp +tree-sitters)            ; a DSL for DSLs
 raku                         ; the artist formerly known as perl6
 rest                         ; Emacs as a REST client
 ;;rst                        ; ReST in peace
-(ruby +rails)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-(rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-(scala +lsp)                 ; java, but good
+(ruby +rails +tree-sitters)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+(rust +lsp +tree-sitters)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+(scala +lsp +tree-sitters)                 ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
 sml                          ; no, the /other/ ML
@@ -777,7 +776,7 @@ sml                          ; no, the /other/ ML
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-(zig +lsp)                   ; C, but simpler
+(zig +lsp +tree-sitters)                   ; C, but simpler
 #+end_src
 
 **** Everything in Emacs
@@ -1667,10 +1666,16 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 From the =:config default= module.
 #+end_quote
 
-
-What a wonderful way to jump to buffer positions, and it uses the QWERTY
-home-row for jumping.
-
+What a wonderful way to jump to buffer positions.
+#+begin_src emacs-lisp :tangle config.el
+(use-package! avy
+  :init
+  (map! :leader :prefix ("g" . "goto")
+        :desc "avy-goto-char-2" "c" #'avy-goto-char-2
+        )
+  (global-set-key (kbd "C-'") 'avy-goto-char-2)
+  )
+#+end_src
 *** Rotate (window management)
 The =rotate= package just adds the ability to rotate window layouts, but that
 sounds nice to me.
@@ -3651,7 +3656,8 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
   (lsp-headerline-breadcrumb-enable t)
   (lsp-headerline-breadcrumb-segments '(symbols))
   (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-semantic-tokens-enable t)
+  ;; use tree-sitter to high-light code instead
+  (lsp-semantic-tokens-enable nil)
   (lsp-ui-doc-show-with-mouse t)
   (lsp-ui-doc-show-with-cursor nil)
   )

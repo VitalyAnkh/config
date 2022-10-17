@@ -67,8 +67,8 @@
       scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t                     ; Different languages live together happily
-      warning-minimum-level  :error               ; Get rid of annoying warning messages
-      org-return-follows-link t)                  ; Organise it!
+      warning-minimum-level  :error               ; Who cares about warnings?
+      org-return-follows-link t)                  ; Organize it!
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -473,6 +473,16 @@ nil
 ;; [[file:config.org::*Prompt to run setup script][Prompt to run setup script:2]]
 nil
 ;; Prompt to run setup script:2 ends here
+
+;; [[file:config.org::*Avy][Avy:1]]
+(use-package! avy
+  :init
+  (map! :leader :prefix ("g" . "goto")
+        :desc "avy-goto-char-2" "c" #'avy-goto-char-2
+        )
+  (global-set-key (kbd "C-'") 'avy-goto-char-2)
+  )
+;; Avy:1 ends here
 
 ;; [[file:config.org::*Which-key][Which-key:1]]
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
@@ -1678,7 +1688,8 @@ SQL can be either the emacsql vector representation, or a string."
   (lsp-headerline-breadcrumb-enable t)
   (lsp-headerline-breadcrumb-segments '(symbols))
   (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-semantic-tokens-enable t)
+  ;; use tree-sitter to high-light code instead
+  (lsp-semantic-tokens-enable nil)
   (lsp-ui-doc-show-with-mouse t)
   (lsp-ui-doc-show-with-cursor nil)
   )
