@@ -600,7 +600,7 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-;;tabs                       ; an tab bar for Emacs
+tabs                         ; a tab bar for Emacs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 (vc-gutter +pretty)          ; vcs diff in the fringe
@@ -1822,9 +1822,9 @@ Modal editing on wish! Use =moew= for modal life.
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
-  (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
-  (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
+  (keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
+  (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
+  (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
   ;; for doom emacs
   (map! :leader
         ;; make doom-leader-buffer-map alive
@@ -3012,9 +3012,9 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
         centaur-tabs-close-button "×"
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "LXGW WenKai" 160)
-  (global-set-key (kbd "C-<left>")  'centaur-tabs-backward)
-  (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
+  ;;(centaur-tabs-change-fonts "LXGW WenKai" 160)
+  (keymap-global-set "C-<"  'centaur-tabs-backward)
+  (keymap-global-set "C->" 'centaur-tabs-forward)
   )
 ;; (setq x-underline-at-descent-line t)
 #+end_src

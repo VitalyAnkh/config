@@ -546,9 +546,9 @@ nil
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  (define-key doom-leader-workspaces/windows-map (kbd "t") 'treemacs-select-window)
-  (global-set-key (kbd "M-j") 'kmacro-start-macro-or-insert-counter)
-  (global-set-key (kbd "M-k") 'kmacro-end-or-call-macro)
+  (keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
+  (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
+  (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
   ;; for doom emacs
   (map! :leader
         ;; make doom-leader-buffer-map alive
@@ -1167,9 +1167,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         centaur-tabs-close-button "×"
         centaur-tabs-set-bar 'above
         centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "LXGW WenKai" 160)
-  (global-set-key (kbd "C-<left>")  'centaur-tabs-backward)
-  (global-set-key (kbd "C-<right>") 'centaur-tabs-forward)
+  ;;(centaur-tabs-change-fonts "LXGW WenKai" 160)
+  (keymap-global-set "C-<"  'centaur-tabs-backward)
+  (keymap-global-set "C->" 'centaur-tabs-forward)
   )
 ;; (setq x-underline-at-descent-line t)
 ;; Centaur Tabs:1 ends here
