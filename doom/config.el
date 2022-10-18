@@ -1159,19 +1159,19 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Marginalia:1 ends here
 
 ;; [[file:config.org::*Centaur Tabs][Centaur Tabs:1]]
-(after! centaur-tabs
-  (centaur-tabs-mode -1)
-  (setq centaur-tabs-height 36
+(use-package centaur-tabs
+  :init
+  (setq centaur-tabs-height 27
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
-        centaur-tabs-close-button "×"
-        centaur-tabs-set-bar 'above
-        centaur-tabs-gray-out-icons 'buffer)
-  ;;(centaur-tabs-change-fonts "LXGW WenKai" 160)
+        centaur-tabs-set-bar 'above)
   (keymap-global-set "C-<"  'centaur-tabs-backward)
   (keymap-global-set "C->" 'centaur-tabs-forward)
+  :config
+  ;;FIXME: This font change doesn't work
+  (centaur-tabs-change-fonts "Latin Modern Mono" 140)
   )
-;; (setq x-underline-at-descent-line t)
+;;(setq x-underline-at-descent-line t)
 ;; Centaur Tabs:1 ends here
 
 ;; [[file:config.org::*All the icons][All the icons:1]]
