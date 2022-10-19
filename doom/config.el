@@ -21,13 +21,13 @@
 (setq eldoc-echo-area-use-multiline-p nil)
 
 ;; make org latex preview images' baseline the same as the text
-(defun my-org-latex-preview-advice (beg end &rest _args)
-  (let* ((ov (car (overlays-in beg end)))
-         (img (cdr (overlay-get ov 'display)))
-         (new-img (plist-put img :ascent 90)))
-    (overlay-put ov 'display (cons 'image new-img))))
-(advice-add 'org--make-preview-overlay
-            :after #'my-org-latex-preview-advice)
+;; (defun my-org-latex-preview-advice (beg end &rest _args)
+;;   (let* ((ov (car (overlays-in beg end)))
+;;          (img (cdr (overlay-get ov 'display)))
+;;          (new-img (plist-put img :ascent 90)))
+;;     (overlay-put ov 'display (cons 'image new-img))))
+;; (advice-add 'org--make-preview-overlay
+;;             :after #'my-org-latex-preview-advice)
 ;; Workaround:1 ends here
 
 ;; [[file:config.org::*Workaround][Workaround:3]]
@@ -120,8 +120,9 @@
 ;; [[file:config.org::*Font Face][Font Face:1]]
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
+      ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 23))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)

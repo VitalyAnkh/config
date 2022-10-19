@@ -189,6 +189,7 @@ application/wps-office.ppt=libreoffice-impress.desktop;
 text/x-tex=visual-studio-code.desktop;
 text/org=visual-studio-code.desktop;
 application/x-bittorrent=transmission-gtk.desktop;
+font/ttf=org.gnome.font-viewer.desktop;
 
 [Default Applications]
 x-scheme-handler/jetbrains=jetbrains-toolbox.desktop

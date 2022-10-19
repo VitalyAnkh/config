@@ -345,13 +345,13 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 (setq eldoc-echo-area-use-multiline-p nil)
 
 ;; make org latex preview images' baseline the same as the text
-(defun my-org-latex-preview-advice (beg end &rest _args)
-  (let* ((ov (car (overlays-in beg end)))
-         (img (cdr (overlay-get ov 'display)))
-         (new-img (plist-put img :ascent 90)))
-    (overlay-put ov 'display (cons 'image new-img))))
-(advice-add 'org--make-preview-overlay
-            :after #'my-org-latex-preview-advice)
+;; (defun my-org-latex-preview-advice (beg end &rest _args)
+;;   (let* ((ov (car (overlays-in beg end)))
+;;          (img (cdr (overlay-get ov 'display)))
+;;          (new-img (plist-put img :ascent 90)))
+;;     (overlay-put ov 'display (cons 'image new-img))))
+;; (advice-add 'org--make-preview-overlay
+;;             :after #'my-org-latex-preview-advice)
 #+end_src
 
 Test some package
@@ -809,8 +809,9 @@ aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
       doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
+      ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :weight 'light :size 23))
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 23))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -4262,7 +4263,7 @@ It's nice to be able to link to music
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
-      org-image-actual-width '(0.9)
+      org-image-actual-width '(0.8)
       org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
 #+end_src
 
@@ -5666,7 +5667,7 @@ Let's make title and headings a bit bigger.
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
 (custom-set-faces!
   '(org-document-title :height 1.3)
-  '(org-quote :font "Linux Libertine" :height 1.05)
+  '(org-quote :font "CMU Typewriter Text Italic" :height 1.05)
   '(org-table :font "Sarasa Mono SC" :height 1.05)
   '(outline-1 :height 1.25)
   '(outline-2 :height 1.15)
@@ -5975,7 +5976,7 @@ OK, let's customize the default inline rendering a bit.
                  :image-input-type "dvi"
                  :image-output-type "svg"
                  :image-size-adjust
-                 (0.8 . 0.8)
+                 (0.45 . 0.45)
                  :latex-compiler
                  ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
                  :image-converter
