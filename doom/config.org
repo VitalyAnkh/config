@@ -1760,7 +1760,9 @@ have the following.
   :config
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-)
+  ;;(setq aw-ignore-on nil)
+  ;;(setq aw-dispatch-always t)
+  )
 #+end_src
 *** Very large files
 
@@ -4583,7 +4585,8 @@ The agenda is nice, but a souped up version is nicer.
 #+end_src
 
 #+begin_src emacs-lisp
-(after! org-agenda
+(use-package org-agenda
+  :config
   (org-super-agenda-mode))
 
 (setq org-agenda-skip-scheduled-if-done t
@@ -5560,7 +5563,6 @@ cause issues. Let's make their failure less eventful.
 #+begin_src emacs-lisp
 (defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
   :around #'org-fancy-priorities-mode
-  :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 #+end_src
 **** Flycheck with org-lint
@@ -5761,8 +5763,8 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-;;(package! separate-inline :recipe
-;; (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! separate-inline :recipe
+ (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
