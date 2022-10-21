@@ -218,8 +218,8 @@
 (unpin! org-roam)
 (package! websocket) ; dependency of `org-roam-ui'
 
-(package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+;; (package! separate-inline :recipe
+;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 
 ;;(package! org-pretty-tags)
 

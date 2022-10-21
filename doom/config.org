@@ -5098,7 +5098,7 @@ truncated to fit within the limit using `org-reference-contraction-truncate-word
                         downcase
                         (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
                         (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
-                        puny-encode-(string  )
+                        puny-encode-string
                         (replace-regexp-in-string "^xn--\\(.*?\\) ?-?\\([a-z0-9]+\\)$" "\\2 \\1") ; rearrange punycode
                         (replace-regexp-in-string "[^A-Za-z0-9 ]" "") ; strip chars which need %-encoding in a uri
                         ) " +"))))
@@ -5763,8 +5763,8 @@ Doom theme's extra fontification is more problematic than helpful.
 **** Chinese Inline Markers
 Chinese character with inline markers must be surrounded by whitespace to have visual effects. Let's solve it.
 #+begin_src emacs-lisp :tangle packages.el
-(package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+;; (package! separate-inline :recipe
+;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
@@ -5974,19 +5974,19 @@ OK, let's customize the default inline rendering a bit.
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
       '((dvipng :programs
-                ("latex" "dvipng")
-                :description "dvi > png"
-                :message "you need to install the programs: latex and dvipng."
-                :image-input-type "dvi"
-                :image-output-type "png"
-                :image-size-adjust
-                (0.35 . 0.35)
-                :latex-compiler
-                ("latex -interaction nonstopmode -output-directory %o %f")
-                :image-converter
-                ("dvipng -D %D -T tight -o %O %f")
-                :transparent-image-converter
-                ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+         ("latex" "dvipng")
+         :description "dvi > png"
+         :message "you need to install the programs: latex and dvipng."
+         :image-input-type "dvi"
+         :image-output-type "png"
+         :image-size-adjust
+         (0.35 . 0.35)
+         :latex-compiler
+         ("latex -interaction nonstopmode -output-directory %o %f")
+         :image-converter
+         ("dvipng -D %D -T tight -o %O %f")
+         :transparent-image-converter
+         ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
         (dvisvgm :programs
                  ("latex" "dvisvgm")
                  :description "dvi > svg"

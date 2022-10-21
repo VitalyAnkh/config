@@ -2323,7 +2323,7 @@ SQL can be either the emacsql vector representation, or a string."
                           downcase
                           (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
                           (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
-                          puny-encode-(string  )
+                          puny-encode-string
                           (replace-regexp-in-string "^xn--\\(.*?\\) ?-?\\([a-z0-9]+\\)$" "\\2 \\1") ; rearrange punycode
                           (replace-regexp-in-string "[^A-Za-z0-9 ]" "") ; strip chars which need %-encoding in a uri
                           ) " +"))))
@@ -2788,8 +2788,8 @@ SQL can be either the emacsql vector representation, or a string."
   (add-hook 'org-mode-hook #'locally-defer-font-lock)
   (setq org-inline-src-prettify-results '("⟨" . "⟩"))
   (setq doom-themes-org-fontify-special-tags nil)
-  (package! separate-inline :recipe
-   (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+  ;; (package! separate-inline :recipe
+  ;;  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
   (use-package separate-inline
     :hook ((org-mode-hook . separate-inline-mode)
            (org-mode-hook . (lambda ()
@@ -2866,19 +2866,19 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-preview-latex-default-process 'dvisvgm)
   (setq org-preview-latex-process-alist
         '((dvipng :programs
-                  ("latex" "dvipng")
-                  :description "dvi > png"
-                  :message "you need to install the programs: latex and dvipng."
-                  :image-input-type "dvi"
-                  :image-output-type "png"
-                  :image-size-adjust
-                  (0.35 . 0.35)
-                  :latex-compiler
-                  ("latex -interaction nonstopmode -output-directory %o %f")
-                  :image-converter
-                  ("dvipng -D %D -T tight -o %O %f")
-                  :transparent-image-converter
-                  ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+           ("latex" "dvipng")
+           :description "dvi > png"
+           :message "you need to install the programs: latex and dvipng."
+           :image-input-type "dvi"
+           :image-output-type "png"
+           :image-size-adjust
+           (0.35 . 0.35)
+           :latex-compiler
+           ("latex -interaction nonstopmode -output-directory %o %f")
+           :image-converter
+           ("dvipng -D %D -T tight -o %O %f")
+           :transparent-image-converter
+           ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
           (dvisvgm :programs
                    ("latex" "dvisvgm")
                    :description "dvi > svg"
