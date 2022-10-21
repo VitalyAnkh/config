@@ -367,10 +367,11 @@ Test some package
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
+(unpin! ace-window)
+(unpin! avy)
 ;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
-(unpin! eglot)
 (unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)
@@ -672,7 +673,7 @@ ein                          ; tame Jupyter notebooks with emacs
 (lookup                      ; helps you navigate your code and documentation
  ;;+dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
-;;lsp                          ; Language Server Protocol
+lsp                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges
@@ -1752,7 +1753,15 @@ have the following.
             (setq-default abbrev-mode t)
             (setq abbrev-file-name (expand-file-name "abbrev.el" doom-user-dir))))
 #+end_src
-
+*** =ace-window=
+=ace-window= is really nice.
+#+begin_src emacs-lisp
+(use-package! ace-window
+  :config
+  (keymap-global-set "M-o" 'ace-window)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+)
+#+end_src
 *** Very large files
 
 The /very large files/ mode loads large files in chunks, allowing one to open
@@ -1824,7 +1833,7 @@ Modal editing on wish! Use =moew= for modal life.
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  (keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
+  ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
   ;; for doom emacs
@@ -2066,7 +2075,7 @@ Try =corfu=!
                    (assq 'global-mode-string mode-line-misc-info))
                   " ")))
 
-;; Set orderless filtering for LSP-mode completions
+;; Set orderless filtering for lsp-mode completions
 (add-hook 'lsp-completion-mode-hook
           (lambda ()
             (setf (alist-get 'lsp-capf completion-category-defaults) '((styles . (orderless))))))
@@ -3208,7 +3217,7 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    treemacs-indentation 1
    treemacs-recenter-after-file-follow t
    treemacs-recenter-after-tag-follow t
-   treemacs-text-scale -1.0
+   treemacs-text-scale -1.2
    treemacs-follow-mode t
    treemacs-width 25
    ;;treemacs-display-in-side-window nil
@@ -3222,6 +3231,13 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    ("C-x t C-t" . treemacs-find-file)
    ("C-x t M-t" . treemacs-find-tag))
   )
+#+end_src
+
+=treemacs= makes =ace-window= ignores its buffer. I don't like this behaviour. Let's tweak it.
+#+begin_src emacs-lisp
+(after! (treemacs ace-window)
+  (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers))
+)
 #+end_src
 ** Frivolities
 *** xkcd

@@ -500,6 +500,14 @@ nil
    ))
 ;; Which-key:2 ends here
 
+;; [[file:config.org::*=ace-window=][=ace-window=:1]]
+(use-package! ace-window
+  :config
+  (keymap-global-set "M-o" 'ace-window)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+)
+;; =ace-window=:1 ends here
+
 ;; [[file:config.org::*Very large files][Very large files:2]]
 ;; (use-package! vlf-setup
 ;;   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
@@ -548,7 +556,7 @@ nil
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  (keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
+  ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
   ;; for doom emacs
@@ -1321,7 +1329,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
    treemacs-indentation 1
    treemacs-recenter-after-file-follow t
    treemacs-recenter-after-tag-follow t
-   treemacs-text-scale -1.0
+   treemacs-text-scale -1.2
    treemacs-follow-mode t
    treemacs-width 25
    ;;treemacs-display-in-side-window nil
@@ -1336,6 +1344,12 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
    ("C-x t M-t" . treemacs-find-tag))
   )
 ;; Treemacs:4 ends here
+
+;; [[file:config.org::*Treemacs][Treemacs:5]]
+(after! (treemacs ace-window)
+  (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers))
+)
+;; Treemacs:5 ends here
 
 ;; [[file:config.org::*xkcd][xkcd:2]]
 (use-package! xkcd
