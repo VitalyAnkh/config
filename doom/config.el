@@ -136,11 +136,11 @@
                              ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
                              ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
                              (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "Noto Serif CJK KR Regular" nil 'prepend)
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
-                             ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
                              ))
 ;; Font Face:1 ends here
 
@@ -194,19 +194,19 @@ nil
 (defun +doom-dashboard-setup-modified-keymap ()
   (setq +doom-dashboard-mode-map (make-sparse-keymap))
   (map! :map +doom-dashboard-mode-map
-        :desc "Find file" :ne "f" #'find-file
-        :desc "Recent files" :ne "r" #'consult-recent-file
-        :desc "Config dir" :ne "C" #'doom/open-private-config
-        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
-        :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
-        :desc "Notes (roam)" :ne "n" #'org-roam-node-find
-        :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
+        :desc "Find file" :ng "f" #'find-file
+        :desc "Recent files" :ng "r" #'consult-recent-file
+        :desc "Config dir" :ng "C" #'doom/open-private-config
+        :desc "Open config.org" :ng "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
+        :desc "Open dotfile" :ng "." (cmd! (doom-project-find-file "~/.config/"))
+        :desc "Notes (roam)" :ng "n" #'org-roam-node-find
+        :desc "Switch buffer" :ng "b" #'+vertico/switch-workspace-buffer
         :desc "Switch buffers (all)" :ne "B" #'consult-buffer
-        :desc "IBuffer" :ne "i" #'ibuffer
-        :desc "Previous buffer" :ne "p" #'previous-buffer
-        :desc "Set theme" :ne "t" #'consult-theme
-        :desc "Quit" :ne "Q" #'save-buffers-kill-terminal
-        :desc "Show keybindings" :ne "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
+        :desc "IBuffer" :ng "i" #'ibuffer
+        :desc "Previous buffer" :ng "p" #'previous-buffer
+        :desc "Set theme" :ng "t" #'consult-theme
+        :desc "Quit" :ng "Q" #'save-buffers-kill-terminal
+        :desc "Show keybindings" :ng "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
 
 (add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
 (add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
@@ -2937,6 +2937,14 @@ SQL can be either the emacsql vector representation, or a string."
   ;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
   ;;   ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
   ;;   )
+  (add-hook! 'doom-load-theme-hook
+    (setq org-preview-latex-image-directory
+          (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+    (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
+      (with-current-buffer buffer
+        (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
+        (org-clear-latex-preview (point-min) (point-max))
+        (org--latex-preview-region (point-min) (point-max)))))
   (defun scimax-org-latex-fragment-justify (justification)
     "Justify the latex fragment at point with JUSTIFICATION.
   JUSTIFICATION is a symbol for 'left, 'center or 'right."
@@ -4782,21 +4790,6 @@ SQL can be either the emacsql vector representation, or a string."
 
 (use-package! org-glossary
   :hook (org-mode . org-glossary-mode))
-
-;; (evil-define-command evil-buffer-org-new (count file)
-;;   "Creates a new ORG buffer replacing the current window, optionally
-;;    editing a certain FILE"
-;;   :repeat nil
-;;   (interactive "P<f>")
-;;   (if file
-;;       (evil-edit file)
-;;     (let ((buffer (generate-new-buffer "*new org*")))
-;;       (set-window-buffer nil buffer)
-;;       (with-current-buffer buffer
-;;         (org-mode)))))
-;; (map! :leader
-;;       (:prefix "b"
-;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 
 (use-package! citar
   :when (modulep! :completion vertico)

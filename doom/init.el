@@ -193,12 +193,12 @@
        (zig +lsp +tree-sitters)                   ; C, but simpler
 
        :email
-       (:if (executable-find "mu") (mu4e +org +gmail))
-       notmuch
+       (:if (executable-find "mu") (mu4e +org))
+       ;;notmuch
        (wanderlust +gmail)
 
        :app
-       calendar                   ; A dated approach to timetabling
+       calendar                     ; A dated approach to timetabling
        ;;emms                       ; Multimedia in Emacs is music to my ears
        ;;everywhere                 ; *leave* Emacs!? You must be joking.
        ;;irc                        ; how neckbeards socialize

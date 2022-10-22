@@ -786,14 +786,14 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
 #+begin_src emacs-lisp :tangle no
-(:if (executable-find "mu") (mu4e +org +gmail))
-notmuch
+(:if (executable-find "mu") (mu4e +org))
+;;notmuch
 (wanderlust +gmail)
 #+end_src
 
 #+name: doom-app
 #+begin_src emacs-lisp
-calendar                   ; A dated approach to timetabling
+calendar                     ; A dated approach to timetabling
 ;;emms                       ; Multimedia in Emacs is music to my ears
 ;;everywhere                 ; *leave* Emacs!? You must be joking.
 ;;irc                        ; how neckbeards socialize
@@ -826,11 +826,11 @@ aspects are nice, but on others I prefer mononoki.
                              ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
                              ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
                              (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'kana "Noto Sans CJK JP Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'hangul "Noto Sans CJK KR Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "Noto Serif CJK KR Regular" nil 'prepend)
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
-                             ;;(set-fontset-font "fontset-default" 'cyrillic "Noto Sans CJK SC Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
                              ))
 #+end_src
 
@@ -1094,19 +1094,19 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
 (defun +doom-dashboard-setup-modified-keymap ()
   (setq +doom-dashboard-mode-map (make-sparse-keymap))
   (map! :map +doom-dashboard-mode-map
-        :desc "Find file" :ne "f" #'find-file
-        :desc "Recent files" :ne "r" #'consult-recent-file
-        :desc "Config dir" :ne "C" #'doom/open-private-config
-        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
-        :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
-        :desc "Notes (roam)" :ne "n" #'org-roam-node-find
-        :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
+        :desc "Find file" :ng "f" #'find-file
+        :desc "Recent files" :ng "r" #'consult-recent-file
+        :desc "Config dir" :ng "C" #'doom/open-private-config
+        :desc "Open config.org" :ng "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
+        :desc "Open dotfile" :ng "." (cmd! (doom-project-find-file "~/.config/"))
+        :desc "Notes (roam)" :ng "n" #'org-roam-node-find
+        :desc "Switch buffer" :ng "b" #'+vertico/switch-workspace-buffer
         :desc "Switch buffers (all)" :ne "B" #'consult-buffer
-        :desc "IBuffer" :ne "i" #'ibuffer
-        :desc "Previous buffer" :ne "p" #'previous-buffer
-        :desc "Set theme" :ne "t" #'consult-theme
-        :desc "Quit" :ne "Q" #'save-buffers-kill-terminal
-        :desc "Show keybindings" :ne "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
+        :desc "IBuffer" :ng "i" #'ibuffer
+        :desc "Previous buffer" :ng "p" #'previous-buffer
+        :desc "Set theme" :ng "t" #'consult-theme
+        :desc "Quit" :ng "Q" #'save-buffers-kill-terminal
+        :desc "Show keybindings" :ng "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
 
 (add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
 (add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
@@ -4310,7 +4310,7 @@ specific modes as desired.
 **** Extra functionality
 ***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
-#+begin_src emacs-lisp :tangle yes :noweb-ref none
+#+begin_src emacs-lisp :tangle no :noweb-ref none
 ;; (evil-define-command evil-buffer-org-new (count file)
 ;;   "Creates a new ORG buffer replacing the current window, optionally
 ;;    editing a certain FILE"
@@ -4321,7 +4321,8 @@ Let's also make creating an org buffer just that little bit easier.
 ;;     (let ((buffer (generate-new-buffer "*new org*")))
 ;;       (set-window-buffer nil buffer)
 ;;       (with-current-buffer buffer
-;;         (org-mode)))))
+;; (org-mode)
+;;        (setq-local doom-real-buffer-p t)))))
 ;; (map! :leader
 ;;       (:prefix "b"
 ;;        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
@@ -6046,7 +6047,7 @@ functionality from =bmc-maths=, so we'll load that too.
 
 Since we can, instead of making the background colour match the =default= face,
 let's make it transparent.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;; (setq org-format-latex-options
 ;;      (plist-put org-format-latex-options :background "Transparent"))
 ;; (with-eval-after-load 'font-latex
@@ -6061,6 +6062,21 @@ let's make it transparent.
 ;;   )
 #+end_src
 
+With the background taken care of, we just need to make sure we're using the
+theme-appropriate foreground.
+
+# TODO check that this is still needed.
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-load-theme-hook
+  (setq org-preview-latex-image-directory
+        (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+  (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
+    (with-current-buffer buffer
+      (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
+      (org-clear-latex-preview (point-min) (point-max))
+      (org--latex-preview-region (point-min) (point-max)))))
+#+end_src
 ***** Rendering speed tests
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
@@ -8684,7 +8700,7 @@ export to a PDF.
 (defun check-for-latex-packages (packages)
   (delq nil (mapcar (lambda (package)
                       (unless
-                          (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                          (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
                         package))
                     packages)))
 
@@ -8696,7 +8712,7 @@ export to a PDF.
       '(defun check-for-latex-packages (packages)
          (delq nil (mapcar (lambda (package)
                              (unless
-                                 (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                                 (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
                                package))
                            packages))))
      (pp-to-string
