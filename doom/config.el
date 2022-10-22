@@ -4929,6 +4929,8 @@ SQL can be either the emacsql vector representation, or a string."
                                       'separate-inline-use-default-rules-for-org-local
                                       nil 'make-it-local)))))
 
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
 (after! ox-ascii
   (defvar org-ascii-convert-latex t
     "Use latex2text to convert LaTeX elements to unicode.")

@@ -5966,7 +5966,7 @@ OK, let's customize the default inline rendering a bit.
 ;;(package! org-fragtog)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
