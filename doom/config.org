@@ -826,9 +826,9 @@ aspects are nice, but on others I prefer mononoki.
                              ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
                              ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
                              (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'hangul "Noto Serif CJK KR Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
                              ))
@@ -5702,7 +5702,7 @@ Let's make title and headings a bit bigger.
 It seems reasonable to have deadlines in the error face when they're passed.
 #+begin_src emacs-lisp
 (setq org-agenda-deadline-faces
-      '((1.001 . error)
+      '((1.01 . error)
         (1.0 . org-warning)
         (0.5 . org-upcoming-deadline)
         (0.0 . org-upcoming-distant-deadline)))
@@ -5963,6 +5963,7 @@ have this be performed automatically with =xenops=.
                      ("convert -density %D -trim -antialias %f -quality 100 %O"))))
 #+end_src
 OK, let's customize the default inline rendering a bit.
+
 #+begin_src emacs-lisp :tangle packages.el
 ;;(package! org-fragtog)
 #+end_src
@@ -5971,7 +5972,7 @@ OK, let's customize the default inline rendering a bit.
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (setq org-preview-latex-default-process 'dvisvgm)
 (setq org-preview-latex-process-alist
       '((dvipng :programs
@@ -6051,7 +6052,7 @@ let's make it transparent.
 ;; (setq org-format-latex-options
 ;;      (plist-put org-format-latex-options :background "Transparent"))
 ;; (with-eval-after-load 'font-latex
-;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+;;   (set-face-attribute 'font-latex-math-face nil :background  (face-attribute 'default :background))
 ;;   )
 ;; (defun set-latex-background-same-with-default ()
 ;;   "Set inline latex color correctly"
@@ -6067,7 +6068,7 @@ theme-appropriate foreground.
 
 # TODO check that this is still needed.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (add-hook! 'doom-load-theme-hook
   (setq org-preview-latex-image-directory
         (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
@@ -6327,8 +6328,11 @@ tag to headings for the content to be kept, but the heading itself ignored
 I want to use headings to provide a structure for writing that doesn't appear in
 the final documents.
 #+begin_src emacs-lisp
-(require 'ox-extra)
-(ox-extras-activate '(ignore-headlines))
+(use-package org
+  :init
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
+  )
 #+end_src
 
 Since I (roughly) track Org ~HEAD~, it makes sense to include the git version in

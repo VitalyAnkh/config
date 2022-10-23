@@ -136,9 +136,9 @@
                              ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
                              ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
                              (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'kana "Noto Serif CJK JP Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'hangul "Noto Serif CJK KR Regular" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Sans CJK SC Regular" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'kana "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'hangul "LXGW WenKai" nil 'prepend)
+                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
                              ))
@@ -2774,7 +2774,7 @@ SQL can be either the emacsql vector representation, or a string."
     '(outline-9 )
     )
   (setq org-agenda-deadline-faces
-        '((1.001 . error)
+        '((1.01 . error)
           (1.0 . org-warning)
           (0.5 . org-upcoming-deadline)
           (0.0 . org-upcoming-distant-deadline)))
@@ -2928,7 +2928,7 @@ SQL can be either the emacsql vector representation, or a string."
   ;; (setq org-format-latex-options
   ;;      (plist-put org-format-latex-options :background "Transparent"))
   ;; (with-eval-after-load 'font-latex
-  ;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
+  ;;   (set-face-attribute 'font-latex-math-face nil :background  (face-attribute 'default :background))
   ;;   )
   ;; (defun set-latex-background-same-with-default ()
   ;;   "Set inline latex color correctly"
@@ -3130,8 +3130,11 @@ SQL can be either the emacsql vector representation, or a string."
     (setq org-plot/gnuplot-script-preamble #'+org-plot-generate-theme)
     (setq org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))(doom-color 'teal)
   (setq org-export-headline-levels 5) ; I like nesting
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
+  (use-package org
+    :init
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines))
+    )
   (setq org-export-creator-string
         (format "Emacs %s (Org mode %s-%s)" emacs-version (org-release) (org-git-version)))
   (defun org-export-filter-text-acronym (text backend _info)
@@ -4923,6 +4926,53 @@ SQL can be either the emacsql vector representation, or a string."
                                       nil 'make-it-local)))))
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
+
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-process-alist
+      '((dvipng :programs
+         ("latex" "dvipng")
+         :description "dvi > png"
+         :message "you need to install the programs: latex and dvipng."
+         :image-input-type "dvi"
+         :image-output-type "png"
+         :image-size-adjust
+         (0.35 . 0.35)
+         :latex-compiler
+         ("latex -interaction nonstopmode -output-directory %o %f")
+         :image-converter
+         ("dvipng -D %D -T tight -o %O %f")
+         :transparent-image-converter
+         ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+        (dvisvgm :programs
+                 ("latex" "dvisvgm")
+                 :description "dvi > svg"
+                 :message "you need to install the programs: latex and dvisvgm."
+                 :image-input-type "dvi"
+                 :image-output-type "svg"
+                 :image-size-adjust
+                 (0.45 . 0.45)
+                 :latex-compiler
+                 ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
+      )
+
+(add-hook! 'doom-load-theme-hook
+  (setq org-preview-latex-image-directory
+        (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+  (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
+    (with-current-buffer buffer
+      (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
+      (org-clear-latex-preview (point-min) (point-max))
+      (org--latex-preview-region (point-min) (point-max)))))
 
 (after! ox-ascii
   (defvar org-ascii-convert-latex t
