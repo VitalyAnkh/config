@@ -1799,13 +1799,13 @@ SQL can be either the emacsql vector representation, or a string."
 
 (after! org
   (setq org-directory "~/org"                       ; let's put files here
-        org-journal-dir org-directory               ; let's keep things simple
         org-use-property-inheritance t              ; it's convenient to have properties inherited
         org-log-done 'time                          ; having the time a item is done sounds convenient
         org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
         org-export-in-background t                  ; run export processes in external emacs process
         org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
         org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+        org-export-allow-bind-keywords t     ; Bind keywords can be handy
         org-image-actual-width '(0.8)
         org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
   (setq org-babel-default-header-args
