@@ -432,6 +432,8 @@ the following:
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
+(global-visual-line-mode 1)                       ; Wrap lines at window edge, not at 80th character: my screen is wide enough!
+
 (scroll-bar-mode)                                 ; I like scroll bars
 
 ;; Useset C-z which is bound to =suspend-frame= by default
@@ -4046,7 +4048,6 @@ minad's =org-modern= is fashionate.
         org-modern-footnote
         (cons nil (cadr org-script-display))
         org-modern-progress nil
-        org-modern-priority nil
         org-modern-keyword
         '((t . t)
           ("title" . "𝙏")
@@ -9414,7 +9415,7 @@ priority of =mypyls=
 Set =Haskell= source code formatter.
 #+begin_src emacs-lisp
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "stylish-haskell"
+  (setq lsp-haskell-formatting-provider "fourmolu"
         haskell-interactive-popup-errors nil
         ))
 #+end_src
@@ -9611,7 +9612,7 @@ Start =wakatime= at when emacs launches:
 
 ** Input Method
 I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
-within Emacs. Let's add =smart-input-source= to support fcitx5.
+within Emacs. Let's add =emacs-smart-input-source= to support smart input method switching.
 #+begin_src emacs-lisp :tangle packages.el
 (package! sis :recipe (:host github :repo "VitalyAnkh/emacs-smart-input-source"
                            :files ("*.el" ) :branch "staging"))

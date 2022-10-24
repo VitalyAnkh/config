@@ -4704,7 +4704,6 @@ SQL can be either the emacsql vector representation, or a string."
         org-modern-footnote
         (cons nil (cadr org-script-display))
         org-modern-progress nil
-        org-modern-priority nil
         org-modern-keyword
         '((t . t)
           ("title" . "𝙏")
@@ -5374,7 +5373,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:config.org::*Haskell][Haskell:1]]
 (after! lsp-haskell
-  (setq lsp-haskell-formatting-provider "stylish-haskell"
+  (setq lsp-haskell-formatting-provider "fourmolu"
         haskell-interactive-popup-errors nil
         ))
 ;; Haskell:1 ends here
