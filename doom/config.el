@@ -78,6 +78,8 @@
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
+(global-visual-line-mode 1)                       ; Wrap lines at window edge, not at 80th character: my screen is wide enough!
+
 (scroll-bar-mode)                                 ; I like scroll bars
 
 ;; Useset C-z which is bound to =suspend-frame= by default
@@ -1701,6 +1703,7 @@ SQL can be either the emacsql vector representation, or a string."
   (lsp-keep-workspace-alive nil)
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
+  (lsp-enable-symbol-highlighting nil)
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-headerline-breadcrumb-enable t)
   (lsp-headerline-breadcrumb-segments '(symbols))

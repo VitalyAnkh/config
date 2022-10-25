@@ -18,17 +18,18 @@ llvm:
   cd build
   CC=clang CXX=clang++ cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="host" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libunwind" ../llvm
   cd ~/projects/dev/emacs-projects/llvm-tools
-  cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el .
+  cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
   git add -A
   git commit -m "up"
   git push
@@ -278,10 +279,14 @@ emacs:
   #!/usr/bin/env bash
   echo "=== pull emacs ==="
   cd ~/projects/dev/emacs
+  mkdir -p build
   git pull
   ./autogen.sh
-  CFLAGS="-ggdb3 -O0" CXXFLAGS="-ggdb3 -O0" LDFLAGS="-ggdb3" ./configure --with-modules --with-json
-  bear -- make -j12
+  CFLAGS="-ggdb3 -O0" CXXFLAGS="-ggdb3 -O0" LDFLAGS="-ggdb3" ./configure --with-modules \
+  --with-json \
+  --with-pgtk \
+  --with-xwidgets
+  bear -- make DESTDIR=./build -j20
   echo "=== pull emacs done ==="
 
 linux:

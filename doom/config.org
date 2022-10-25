@@ -3673,6 +3673,7 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
   (lsp-keep-workspace-alive nil)
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
+  (lsp-enable-symbol-highlighting nil)
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-headerline-breadcrumb-enable t)
   (lsp-headerline-breadcrumb-segments '(symbols))
