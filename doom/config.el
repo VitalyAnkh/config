@@ -727,8 +727,12 @@ Usage:
 
   (setq meow-expand-exclude-mode-list nil)
   (setq meow-expand-hint-remove-delay 1024)
+  ;; TODO: replace define-key with keymap-set
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+  ;;(keymap-set input-decode-map "C-[" 'meow-insert-exit)
+  ;;(keymap-set meow-insert-state-keymap "C-[" 'meow-insert-exit)
+
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil
         meow-expand-exclude-mode-list nil
