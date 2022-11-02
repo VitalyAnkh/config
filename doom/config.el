@@ -563,7 +563,7 @@ nil
   ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
-  ;; for doom emacs
+  ;; for doom emacs buffer management
   (map! :leader
         ;; make doom-leader-buffer-map alive
         (:prefix-map ("b" . "buffer")
@@ -585,12 +585,12 @@ nil
          :desc "Set bookmark"                "m"   #'bookmark-set
          :desc "Delete bookmark"             "M"   #'bookmark-delete
          :desc "Next buffer"                 "n"   #'next-buffer
-         :desc "New empty buffer"            "N"   #'evil-buffer-new
+         :desc "New empty buffer"            "N"   #'+default/new-buffer
          :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
          :desc "Previous buffer"             "p"   #'previous-buffer
          :desc "Revert buffer"               "r"   #'revert-buffer
          :desc "Save buffer"                 "s"   #'basic-save-buffer
-         :desc "Save all buffers"            "S"   #'evil-write-all
+         ;;:desc "Save all buffers"            "S"   #'evil-write-all
          :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
          :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
          :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
@@ -773,17 +773,6 @@ Usage:
 ;;          ("<tab>" . 'my-tab)
 ;;          ("TAB" . 'my-tab)))
 ;; Copilot:2 ends here
-
-;; [[file:config.org::*Annotate][Annotate:2]]
-;; (use-package annotate
-;;   :after org
-;;   :hook
-;;   (((text-mode prog-mode) . annotate-mode))
-;;   :config
-;;   (setq annotate-file (convert-standard-filename
-;;                        (file-name-concat org-directory "annotations")
-;;                        )))
-;; Annotate:2 ends here
 
 ;; [[file:config.org::*Consult][Consult:1]]
 (after! consult

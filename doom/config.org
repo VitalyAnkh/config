@@ -1840,7 +1840,7 @@ Modal editing on wish! Use =moew= for modal life.
   ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
-  ;; for doom emacs
+  ;; for doom emacs buffer management
   (map! :leader
         ;; make doom-leader-buffer-map alive
         (:prefix-map ("b" . "buffer")
@@ -1862,12 +1862,12 @@ Modal editing on wish! Use =moew= for modal life.
          :desc "Set bookmark"                "m"   #'bookmark-set
          :desc "Delete bookmark"             "M"   #'bookmark-delete
          :desc "Next buffer"                 "n"   #'next-buffer
-         :desc "New empty buffer"            "N"   #'evil-buffer-new
+         :desc "New empty buffer"            "N"   #'+default/new-buffer
          :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
          :desc "Previous buffer"             "p"   #'previous-buffer
          :desc "Revert buffer"               "r"   #'revert-buffer
          :desc "Save buffer"                 "s"   #'basic-save-buffer
-         :desc "Save all buffers"            "S"   #'evil-write-all
+         ;;:desc "Save all buffers"            "S"   #'evil-write-all
          :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
          :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
          :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
@@ -2057,7 +2057,7 @@ GitHub Copilot is awesome!
 #+end_src
 *** Corfu
 Try =corfu=!
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! corfu)
 (package! orderless)
 (package! kind-icon )
@@ -2168,11 +2168,11 @@ Try =corfu=!
 
 *** Annotate
 Use =annotate.el= to add comment gracely to your files!
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! annotate)
 #+end_src
 And store the annotation database (which is just a plain emacs-lisp file!) with my Org Mode files.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;; (use-package annotate
 ;;   :after org
 ;;   :hook
