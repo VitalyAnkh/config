@@ -58,6 +58,17 @@ build_local_emacs:
 
 test_local_emacs: trash_emacs_cache build_local_emacs
 
+clean_rust:
+  #!/usr/bin/env bash
+  trash-put $HOME/sdk/build/cache/*
+
+org:
+  #!/usr/bin/env bash
+  cd $HOME/org
+  git add -A
+  git commit -m "up"
+  git push
+
 build_taichi:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/taichi
