@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu v8 wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux 
+all: llvm taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux
 
 llvm:
   #!/usr/bin/env bash
@@ -142,7 +142,7 @@ ghc:
 # cd build
 # CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
 #   -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
-#   -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra"\
+#   -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;libcxx;libcxxabi"\
 #   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 # echo "==== pull Unreal Engine done ===="
 

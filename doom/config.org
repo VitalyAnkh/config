@@ -1601,7 +1601,7 @@ anything to be run.
 ;;       (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
 #+end_src
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :tangle no
 <<run-setup()>>
 #+end_src
 
