@@ -16,9 +16,11 @@ llvm:
   cd ~/projects/dev/cpp/llvm-project
   git pull
   cd build
+  #     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  # -DLLVM_OPTIMIZED_TABLEGEN=ON \
   CC=clang CXX=clang++ cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="host" \
@@ -27,7 +29,7 @@ llvm:
     -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libunwind" ../llvm
+    -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libunwind" ../llvm
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
   git add -A

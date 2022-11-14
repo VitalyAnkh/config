@@ -1,4 +1,3 @@
-set -x PATH /home/vitalyr/.opam/default/bin /home/vitalyr/sdk/lib/flutter/bin /home/vitalyr/sdk/app/jetbrains /home/vitalyr/.cargo/bin /home/vitalyr/.local/bin $HOME/.cabal/bin $HOME/.ghcup/bin $PATH /opt/anaconda/bin /opt/depot_tools
 # set -x TERM xterm
 # set -x http_proxy socks5://127.0.0.1:1080
 # set -x https_proxy socks5://127.0.0.1:1080
@@ -16,6 +15,8 @@ set fish_greeting
 
 source $HOME/.profile
 
+set -gx PATH /home/vitalyr/sdk/lib/flutter/bin /home/vitalyr/sdk/app/jetbrains /home/vitalyr/.cargo/bin /home/vitalyr/.local/bin $HOME/.cabal/bin $HOME/.ghcup/bin $PATH /opt/anaconda/bin /opt/depot_tools
+
 # include config.d/*
 
 zoxide init fish | source
@@ -24,4 +25,4 @@ mcfly init fish | source
 eval (opam env)
 set -gx WAKATIME_HOME "$HOME/.wakatime"
 
-string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
+#string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
