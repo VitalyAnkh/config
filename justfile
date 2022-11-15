@@ -26,10 +26,9 @@ llvm:
     -DLLVM_TARGETS_TO_BUILD="host" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
     -DLLVM_LIT_ARGS=-v \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="libc;libcxx;libunwind" ../llvm
+    -DLLVM_ENABLE_RUNTIMES="compiler-tr;libc;libcxx;libunwind" ../llvm
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
   git add -A
