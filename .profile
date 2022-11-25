@@ -7,6 +7,9 @@ export XIM_PROGRAM=fcitx
 export SDL_IM_MODULE=fcitx
 export CHROME_EXECUTABLE=google-chrome-stable
 
+# let rust's cargo use sparse registry
+export CARGO_UNSTABLE_SPARSE_REGISTRY=true
+
 # for blender
 export BLENDER_WAYLAND=1
 

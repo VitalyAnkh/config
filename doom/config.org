@@ -342,6 +342,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
     ((debug error) (signal (car err) (cdr err)))))
 (setq straight-repository-branch "develop")
 (setq native-comp-async-jobs-number 20)
+;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
 
 ;; make org latex preview images' baseline the same as the text
@@ -369,6 +370,7 @@ Test some package
 (unpin! lsp-treemacs)
 (unpin! ace-window)
 (unpin! avy)
+(unpin! straight)
 ;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
