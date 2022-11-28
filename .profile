@@ -1,3 +1,11 @@
+# set XDG environment variables
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share
+
+# for Doom Emacs
+export DOOMDIR=$XDG_CONFIG_HOME/doom
+
 # for fcitx5
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
@@ -21,9 +29,6 @@ export GOPROXY=https://goproxy.io,direct
 
 # make guake run under wayland
 export GUAKE_ENABLE_WAYLAND=1
-
-export XDG_CONFIG_HOME=$HOME/.config
-export DOOMDIR=$XDG_CONFIG_HOME/doom
 
 # for wlroots
 # yeah nvidia 515.43 driver supports VK_EXT_drm_image_format_modifier
@@ -73,7 +78,16 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-export PATH="/opt/riscv/bin:/home/vitalyr/.nix-profile/bin:/home/vitalyr/.local/share/coursier/bin:$PATH"
+export PATH="$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH:/home/vitalyr/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+
+export SDK_DIR=$HOME/sdk
+
+# for flutter
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+
+export WGPU_BACKEND=vulkan
+export GUAKE_ENABLE_WAYLAND=1
 
 # use ccache
 export PATH="/usr/lib/ccache/bin:$PATH"
