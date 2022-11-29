@@ -78,7 +78,7 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-export PATH="$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH:/home/vitalyr/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+export PATH="/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
 export SDK_DIR=$HOME/sdk
 
@@ -101,5 +101,5 @@ export PATH="$PATH:/home/vitalyr/projects/dev/cpp/circt/build/bin"
 export PATH="$PATH:/usr/lib/jvm/default/bin"
 
 # >>> add google depot_tools configuration >>>
-export PATH="$PATH:/home/vitalyr/sdk/app/depot_tools"
+export PATH="$PATH:$HOME/sdk/app/depot_tools"
 # <<< add google depot_tools configuration <<<
