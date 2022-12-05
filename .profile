@@ -78,7 +78,7 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-export PATH="/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+export PATH="/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
 export SDK_DIR=$HOME/sdk
 

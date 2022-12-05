@@ -3213,7 +3213,8 @@ Minick =evil='s ~/~ in =treemacs= buffer:
 #+begin_src emacs-lisp
 (after! (treemacs meow)
   ;; No EVIL, then I add this
-  (define-key treemacs-mode-map (kbd "/") 'meow-visit)
+  (keymap-set treemacs-mode-map "/" 'meow-visit)
+  (keymap-set treemacs-mode-map "e" 'treemacs-toggle-node)
 )
 #+end_src
 Adjust the face of =treemacs=. The =variable-pitch= is too large for a file explorer.
@@ -3674,7 +3675,11 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :custom
+  (map! :leader
+        (:prefix "t"
+         :desc "lsp treemacs symbols" "s" #'lsp-treemacs-symbols))
   (lsp-enable-file-watchers nil)
+  (lsp-treemacs-sync-mode)
   (lsp-ui-doc-position "Bottom")
   (lsp-keep-workspace-alive nil)
   (lsp-ui-doc-enable t)

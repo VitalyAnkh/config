@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux
 
 llvm:
   #!/usr/bin/env bash
@@ -91,6 +91,20 @@ build_taichi:
   export PATH="${LLVM_PATH}/bin:${CLANG_PATH}/bin:$PATH"
   python setup.py develop --user
   cp _skbuild/linux-x86_64-3.10/cmake-build/compile_commands.json .
+
+mold:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/mold
+  git pull
+
+config_mold:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/mold
+  mkdir build
+  cd build
+  CXXFLAGS="-fuse-ld=mold" CC=clang CXX=clang++ cmake -G "Ninja" \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
 
 build_circt:
   #!/usr/bin/env bash
