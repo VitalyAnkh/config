@@ -371,6 +371,7 @@ Test some package
 (unpin! ace-window)
 (unpin! avy)
 (unpin! straight)
+(unpin! embark)
 ;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
@@ -1765,11 +1766,17 @@ have the following.
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;;(setq aw-ignore-on nil)
-  ;;(setq aw-dispatch-always t)
+  (setq aw-dispatch-always t)
   )
 #+end_src
+*** Embark
+=embark= is a really nice package for interacting with the minibuffer.
+#+begin_src emacs-lisp
+(use-package embark
+  :config
+  (keymap-global-set "C-," 'embark-act))
+#+end_src
 *** Very large files
-
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 #+begin_src emacs-lisp :tangle packages.el

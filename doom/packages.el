@@ -13,6 +13,7 @@
 (unpin! ace-window)
 (unpin! avy)
 (unpin! straight)
+(unpin! embark)
 ;;(unpin! lsp-metals)
 ;; lsp-metals is broken on Emacs 29
 (package! lsp-metals :disable t)
