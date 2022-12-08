@@ -69,9 +69,7 @@ settled by the day. This is both my configuration, and a cautionary tale (just r
 
 ** Why Emacs?
 
-Emacs is [[https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor][not a text editor]], this is a common misnomer. It is far more apt to
-describe Emacs as /a Lisp machine providing a generic user-centric text
-manipulation environment/. That's quite a mouthful.
+Emacs is [[https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor][not a text editor]], this is a common misnomer. It is far more apt to describe Emacs as /a Lisp machine providing a generic user-centric text manipulation environment/. That's quite a mouthful.
 In simpler terms, one can think of Emacs as a platform for text-related
 applications. It's a vague and generic definition because Emacs itself is
 generic.
@@ -3984,7 +3982,7 @@ Then adding a regex for it to =~/.config/git/config=
 There are actually three possible package statements I may want to use for Org.
 
 If I'm on a machine where I can push changes, I want to be able to develop Org.
-I can check this by checking the content of the SSH key =~/.ssh/id_ed25519.pub=.
+I can check this by checking the content of the SSH key =~/.ssh/id_rsa.pub=.
 1. If this key exists and there isn't a repo at
    =$straight-base-dir/straight/repos/org-mode= with the right remote, we should
    install it as such.
@@ -3999,15 +3997,15 @@ correct package statement needed.
 (condition-case nil
     (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
   (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
-(let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
-                    (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
+(let ((dev-key (and (file-exists-p "~/.ssh/id_rsa.pub")
+                    (= 0 (shell-command "cat ~/.ssh/id_rsa.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
                  (and (file-exists-p default-directory)
                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
                        :pre-build
                        (with-temp-file "org-version.el"
-                         (insert "(fset 'org-release (lambda () \"9.5\"))\n"
+                         (insert "(fset 'org-release (lambda () \"9.6\"))\n"
                                  (format "(fset 'org-git-version (lambda () \"%s\"))\n"
                                          (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
                                  "(provide 'org-version)\n"))

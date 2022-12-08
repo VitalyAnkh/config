@@ -11,6 +11,8 @@
 !brasero/
 !cataclysm-dda/
 !catfish/
+# vscode's flags
+!code-flags.conf
 !containers/
 !dconf/
 !doom/

@@ -159,7 +159,7 @@
 (package! ob-sagemath)
 ;; Sage Math:1 ends here
 
-(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file "org-version.el" (insert "(fset 'org-release (lambda () \"9.5\"))
+(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file "org-version.el" (insert "(fset 'org-release (lambda () \"9.6\"))
 " (format "(fset 'org-git-version (lambda () \"%s\"))
 " (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
 ")) :includes org) :pin nil)
