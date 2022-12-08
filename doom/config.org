@@ -1764,7 +1764,6 @@ have the following.
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;;(setq aw-ignore-on nil)
-  (setq aw-dispatch-always t)
   )
 #+end_src
 *** Embark
