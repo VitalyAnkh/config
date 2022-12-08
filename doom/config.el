@@ -500,7 +500,7 @@ nil
 ;; Which-key:2 ends here
 
 ;; [[file:config.org::*=ace-window=][=ace-window=:1]]
-(use-package! ace-window
+(use-package ace-window
   :config
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -953,7 +953,7 @@ Usage:
 ;; Auto activating snippets:2 ends here
 
 ;; [[file:config.org::*Etrace][Etrace:2]]
-(use-package! etrace
+(use-package etrace
   :after elp)
 ;; Etrace:2 ends here
 
@@ -999,7 +999,7 @@ Usage:
 ;; Info colours:2 ends here
 
 ;; [[file:config.org::*Theme magic][Theme magic:3]]
-(use-package! theme-magic
+(use-package theme-magic
   :commands theme-magic-from-emacs
   :config
   (defadvice! theme-magic--auto-extract-16-doom-colors ()
@@ -1051,7 +1051,7 @@ Usage:
 ;; Emojify:2 ends here
 
 ;; [[file:config.org::*Keycast][Keycast:2]]
-(use-package! keycast
+(use-package keycast
   :commands keycast-mode
   :config
   (define-minor-mode keycast-mode
@@ -1189,7 +1189,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; All the icons:1 ends here
 
 ;; [[file:config.org::*Prettier page breaks][Prettier page breaks:2]]
-(use-package! page-break-lines
+(use-package page-break-lines
   :commands page-break-lines-mode
   :init
   (autoload 'turn-on-page-break-lines-mode "page-break-lines")
@@ -1352,7 +1352,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Treemacs:5 ends here
 
 ;; [[file:config.org::*xkcd][xkcd:2]]
-(use-package! xkcd
+(use-package xkcd
   :commands (xkcd-get-json
              xkcd-download xkcd-get
              ;; now for funcs from my extension of this pkg
@@ -1632,7 +1632,7 @@ SQL can be either the emacsql vector representation, or a string."
 ;; xkcd:3 ends here
 
 ;; [[file:config.org::*Selectric][Selectric:2]]
-(use-package! selectic-mode
+(use-package selectic-mode
   :commands selectic-mode)
 ;; Selectric:2 ends here
 
@@ -1663,7 +1663,7 @@ SQL can be either the emacsql vector representation, or a string."
 ;; Spray:2 ends here
 
 ;; [[file:config.org::*Elcord][Elcord:2]]
-(use-package! elcord
+(use-package elcord
   :commands elcord-mode
   :config
   (setq elcord-use-major-mode-as-main-icon t))
@@ -1681,7 +1681,7 @@ SQL can be either the emacsql vector representation, or a string."
 ;; Flycheck:1 ends here
 
 ;; [[file:config.org::*Systemd][Systemd:2]]
-(use-package! systemd
+(use-package systemd
   :defer t)
 ;; Systemd:2 ends here
 
@@ -1748,13 +1748,16 @@ SQL can be either the emacsql vector representation, or a string."
 ;; Grammarly:2 ends here
 
 ;; [[file:config.org::*Meson][Meson:2]]
-(add-hook 'meson-mode-hook 'company-mode)
-(setq auto-mode-alist
-      (append
-       '(
-         ("\\meson.build\\'" . meson-mode)
-         )
-       auto-mode-alist))
+(use-package meson-mode
+  :config
+  (add-hook 'meson-mode-hook 'company-mode)
+  (setq auto-mode-alist
+        (append
+         '(
+           ("\\meson.build\\'" . meson-mode)
+           )
+         auto-mode-alist))
+  )
 ;; Meson:2 ends here
 
 ;; [[file:config.org::*OCaml][OCaml:1]]

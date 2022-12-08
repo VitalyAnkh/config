@@ -1759,7 +1759,7 @@ have the following.
 *** =ace-window=
 =ace-window= is really nice.
 #+begin_src emacs-lisp
-(use-package! ace-window
+(use-package ace-window
   :config
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -2548,7 +2548,7 @@ investigation.
 #+end_src
 
 #+begin_src emacs-lisp :tangle config.el
-(use-package! etrace
+(use-package etrace
   :after elp)
 #+end_src
 
@@ -2664,7 +2664,7 @@ colour utilities from Doom themes to easily grab sensible colours and generate
 lightened versions --- let's do that.
 
 #+begin_src emacs-lisp
-(use-package! theme-magic
+(use-package theme-magic
   :commands theme-magic-from-emacs
   :config
   (defadvice! theme-magic--auto-extract-16-doom-colors ()
@@ -2836,7 +2836,7 @@ having something that doesn't cover up screen content is nice.
 
 Let's just make sure this is lazy-loaded appropriately.
 #+begin_src emacs-lisp
-(use-package! keycast
+(use-package keycast
   :commands keycast-mode
   :config
   (define-minor-mode keycast-mode
@@ -3068,7 +3068,7 @@ these as horizontal rules.
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! page-break-lines
+(use-package page-break-lines
   :commands page-break-lines-mode
   :init
   (autoload 'turn-on-page-break-lines-mode "page-break-lines")
@@ -3263,7 +3263,7 @@ XKCD comics are fun.
 
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+begin_src emacs-lisp
-(use-package! xkcd
+(use-package xkcd
   :commands (xkcd-get-json
              xkcd-download xkcd-get
              ;; now for funcs from my extension of this pkg
@@ -3552,7 +3552,7 @@ amuse oneself. Introducing: typewriter sounds!
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! selectic-mode
+(use-package selectic-mode
   :commands selectic-mode)
 #+end_src
 
@@ -3566,7 +3566,7 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-(use-package! wttrin
+(use-package wttrin
   :commands wttrin)
 #+end_src
 
@@ -3616,7 +3616,7 @@ about it?
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! elcord
+(use-package elcord
   :commands elcord-mode
   :config
   (setq elcord-use-major-mode-as-main-icon t))
@@ -3656,7 +3656,7 @@ For editing systemd unit files
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! systemd
+(use-package systemd
   :defer t)
 #+end_src
 
@@ -3731,7 +3731,7 @@ Test ~lsp-bridge~.
 (customize-set-variable 'company-global-modes
                         (append company-global-modes '(python-mode)))
 
-(use-package! lsp-bridge
+(use-package lsp-bridge
   :hook
   (python-mode . lsp-bridge-mode)
   :init
@@ -3789,13 +3789,16 @@ Meson is a great build tool for =C++=, much more ergonomic than CMake.
 #+end_src
 
 #+begin_src emacs-lisp
-(add-hook 'meson-mode-hook 'company-mode)
-(setq auto-mode-alist
-      (append
-       '(
-         ("\\meson.build\\'" . meson-mode)
-         )
-       auto-mode-alist))
+(use-package meson-mode
+  :config
+  (add-hook 'meson-mode-hook 'company-mode)
+  (setq auto-mode-alist
+        (append
+         '(
+           ("\\meson.build\\'" . meson-mode)
+           )
+         auto-mode-alist))
+  )
 #+end_src
 ** LLVM Tools
 Add major modes for LLVM's =LLVM IR= and =TableGen=.
