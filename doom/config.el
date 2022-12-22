@@ -562,10 +562,9 @@ nil
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
-  ;; for doom emacs buffer management
+  ;;for doom emacs buffer management
   (map! :leader
         ;; make doom-leader-buffer-map alive
         (:prefix-map ("b" . "buffer")
@@ -889,7 +888,7 @@ Usage:
 
 ;; [[file:config.org::*Company][Company:1]]
 (after! company
-  (setq company-idle-delay 0.5
+  (setq company-idle-delay 0.2
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
@@ -5012,7 +5011,7 @@ information."
         (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
             (cdr unicode) latex)))))
 
-(use-package! ox-gfm
+(use-package ox-gfm
   :after ox)
 
 ;; [[file:config.org::*Compilation][Compilation:1]]

@@ -34,7 +34,7 @@ config_llvm:
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_TARGETS_TO_BUILD="host" \
+    -DLLVM_TARGETS_TO_BUILD="host;NVPTX" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \

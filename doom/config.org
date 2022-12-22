@@ -1843,10 +1843,9 @@ Modal editing on wish! Use =moew= for modal life.
     (meow/setup-leader)
 )
 (defun set-useful-keybindings()
-  ;;(keymap-set doom-leader-workspaces/windows-map "t" 'treemacs-select-window)
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
-  ;; for doom emacs buffer management
+  ;;for doom emacs buffer management
   (map! :leader
         ;; make doom-leader-buffer-map alive
         (:prefix-map ("b" . "buffer")
@@ -2362,7 +2361,7 @@ It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 #+begin_src emacs-lisp
 (after! company
-  (setq company-idle-delay 0.5
+  (setq company-idle-delay 0.2
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort) ;; make aborting less annoying.
@@ -8719,7 +8718,8 @@ export to a PDF.
 #+name: org-missing-latex-packages
 #+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list[,0] :var org-latex-font-packages-list=org-latex-font-packages-list
 (setq org-required-latex-packages (append org-latex-required-packages-list
-                                          (mapcar #'car org-latex-font-packages-list)))
+                                            org-latex-font-packages-list))
+                                          ;;(mapcar #'car org-latex-font-packages-list)))
 
 (defun check-for-latex-packages (packages)
   (delq nil (mapcar (lambda (package)
@@ -8864,7 +8864,7 @@ features that GitHub has.
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
-(use-package! ox-gfm
+(use-package ox-gfm
   :after ox)
 #+end_src
 
