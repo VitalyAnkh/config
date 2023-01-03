@@ -362,12 +362,16 @@ Test some package
 (package! org-pretty-tags)
 (package! org-fragtog)
 (unpin! haskell-mode)
-(unpin! treemacs)
+;; TODO: fix this with (set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-#<frame [^*]*\\*" :ignore t)
+(package! treemacs :pin "f377ae6abdb4fc67467666675d1237d1c1947fd8")
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
 (unpin! ace-window)
 (unpin! avy)
+(unpin! vertico)
+(unpin! consult)
+(unpin! marginalia)
 (unpin! straight)
 (unpin! embark)
 ;;(unpin! lsp-metals)
@@ -834,6 +838,9 @@ aspects are nice, but on others I prefer mononoki.
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
+                             (add-to-list 'display-buffer-alist
+                                          '("^ \\*Treemacs\\*" display-buffer-in-side-window
+                                            (side . left) (window-width . 25)))
                              ))
 #+end_src
 
@@ -1788,9 +1795,27 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 *** Dirvish
 Doom has a dirvish in ~dired~ module now, but I want to tweak some defaults.
 #+begin_src emacs-lisp :tangle yes
-(setq dirvish-hide-details t
-      dirvish-side-follow-buffer-file t
-      )
+;; for Emacs 29's drag and drop support
+(setq dired-mouse-drag-files t)
+(setq mouse-drag-and-drop-region-cross-program t)
+(setq mouse-1-click-follows-link nil)
+
+(use-package dirvish
+  :config
+  (setq dirvish-hide-details t
+        dirvish-side-follow-buffer-file t)
+  (keymap-set dirvish-mode-map "<mouse-1>" 'dirvish-subtree-toggle-or-open)
+  (keymap-set dirvish-mode-map "<mouse-2>" 'dired-mouse-find-file-other-window)
+  (keymap-set dirvish-mode-map "<mouse-3>" 'dired-mouse-find-file)
+  (map! :map dirvish-mode-map
+        :n "b" #'dirvish-goto-bookmark
+        :n "z" #'dirvish-show-history
+        :n "f" #'dirvish-file-info-menu
+        :n "F" #'dirvish-toggle-fullscreen
+        :n "l" #'dired-find-file
+        :n "h" #'dired-up-directory
+        :localleader
+        "h" #'dired-omit-mode))
 #+end_src
 *** Straight
 Let =straight= use our own =org=.
@@ -3222,6 +3247,10 @@ Minick =evil='s ~/~ in =treemacs= buffer:
 #+end_src
 Adjust the face of =treemacs=. The =variable-pitch= is too large for a file explorer.
 #+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+             '("^ \\*Treemacs\\*" display-buffer-in-side-window
+               (side . left) (window-width . 25)))
+
 (use-package treemacs
   :config
   (setq
@@ -3236,14 +3265,15 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    treemacs-width 25
    ;;treemacs-display-in-side-window nil
    )
+
   :bind
   (:map global-map
-   ("C-x t 1"   . treemacs-delete-other-windows)
-   ("C-x t t"   . treemacs)
-   ("C-x t d"   . treemacs-select-directory)
-   ("C-x t B"   . treemacs-bookmark)
-   ("C-x t C-t" . treemacs-find-file)
-   ("C-x t M-t" . treemacs-find-tag))
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag))
   )
 #+end_src
 
