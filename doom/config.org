@@ -3802,14 +3802,20 @@ Use ~Lean~ to prove you are a prover!
 #+begin_src emacs-lisp :tangle packages.el
 (package! lean4-mode :recipe
   (:host github
-   :repo "leanprover/lean4"
-   :files ("lean4-mode/*.el")))
-      #+end_src
+   :repo "leanprover/lean4-mode"
+   :files ("*.el")))
+#+end_src
 
 ~Lean~ has its own input method to input unicode characters. Let's make it more plansant.
 #+begin_src emacs-lisp :tangle no
 (add-hook 'lean-mode-hook
           (lambda ()  (setq-default sis-english-source "Lean")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(use-package lean4-mode
+  ;; to defer loading the package until required
+  :commands (lean4-mode))
 #+end_src
 ** Meson
 Meson is a great build tool for =C++=, much more ergonomic than CMake.

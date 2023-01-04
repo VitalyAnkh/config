@@ -1772,6 +1772,12 @@ SQL can be either the emacsql vector representation, or a string."
 ;; )  ; or lsp-deferred
 ;; Grammarly:2 ends here
 
+;; [[file:config.org::*Lean][Lean:3]]
+(use-package lean4-mode
+  ;; to defer loading the package until required
+  :commands (lean4-mode))
+;; Lean:3 ends here
+
 ;; [[file:config.org::*Meson][Meson:2]]
 (use-package meson-mode
   :config
