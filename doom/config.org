@@ -3803,7 +3803,7 @@ Use ~Lean~ to prove you are a prover!
 (package! lean4-mode :recipe
   (:host github
    :repo "leanprover/lean4-mode"
-   :files ("*.el")))
+   :files ("data" "*.el")))
 #+end_src
 
 ~Lean~ has its own input method to input unicode characters. Let's make it more plansant.
@@ -3818,7 +3818,7 @@ Use ~Lean~ to prove you are a prover!
   :commands (lean4-mode))
 #+end_src
 ** Meson
-Meson is a great build tool for =C++=, much more ergonomic than CMake.
+Meson is a great build tool for ~C~ and ~C++~, much more ergonomic than CMake.
 #+begin_src emacs-lisp :tangle packages.el
 (package! meson-mode)
 #+end_src
@@ -3832,8 +3832,7 @@ Meson is a great build tool for =C++=, much more ergonomic than CMake.
          '(
            ("\\meson.build\\'" . meson-mode)
            )
-         auto-mode-alist))
-  )
+         auto-mode-alist)))
 #+end_src
 ** LLVM Tools
 Add major modes for LLVM's =LLVM IR= and =TableGen=.

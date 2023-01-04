@@ -1787,8 +1787,7 @@ SQL can be either the emacsql vector representation, or a string."
          '(
            ("\\meson.build\\'" . meson-mode)
            )
-         auto-mode-alist))
-  )
+         auto-mode-alist)))
 ;; Meson:2 ends here
 
 ;; [[file:config.org::*OCaml][OCaml:1]]

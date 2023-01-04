@@ -143,7 +143,7 @@
 (package! lean4-mode :recipe
   (:host github
    :repo "leanprover/lean4-mode"
-   :files ("*.el")))
+   :files ("data" "*.el")))
 ;; Lean:1 ends here
 
 ;; [[file:config.org::*Meson][Meson:1]]
