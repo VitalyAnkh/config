@@ -32,27 +32,9 @@
 ;; Workaround:1 ends here
 
 ;; [[file:config.org::*Workaround][Workaround:3]]
-(use-package clang-format+
-  :config
-  (add-hook 'c-mode-common-hook #'clang-format+-mode)
-  (setq clang-format+-context 'modification)
-  (setq clang-format+-always-enable t))
-
-;; lsp-metals is broken on Emacs 29
-;;(setq lsp-metals-treeview-views nil)
-
-(setq +format-on-save-enabled-modes
-      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
-            cpp-mode  ; use clang-format+ for C/C++
-            c++-mode
-            c-mode
-            org-msg-edit-mode)) ; doesn't need a formatter
-;; Workaround:3 ends here
-
-;; [[file:config.org::*Workaround][Workaround:4]]
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
-;; Workaround:4 ends here
+;; Workaround:3 ends here
 
 ;; [[file:config.org::*Simple settings][Simple settings:1]]
 (setq-default
@@ -72,7 +54,8 @@
       org-return-follows-link t                   ; Organize it!
       dired-mouse-drag-files t                    ; for Emacs 29's drag and drop support
       mouse-drag-and-drop-region-cross-program t
-      mouse-1-click-follows-link nil)
+      mouse-1-click-follows-link nil
+      )
 
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line
@@ -1762,6 +1745,21 @@ SQL can be either the emacsql vector representation, or a string."
 ;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
 ;; Agda:1 ends here
+
+;; [[file:config.org::*C/C++][C/C++:2]]
+(use-package clang-format+
+  :config
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+  (setq clang-format+-context 'modification)
+  (setq clang-format+-always-enable t))
+
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
+            cpp-mode  ; use clang-format+ for C/C++
+            c++-mode
+            c-mode
+            org-msg-edit-mode)) ; doesn't need a formatter
+;; C/C++:2 ends here
 
 ;; [[file:config.org::*Grammarly][Grammarly:2]]
 ;; (use-package lsp-grammarly

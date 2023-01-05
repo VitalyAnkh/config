@@ -355,8 +355,6 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 
 Test some package
 #+begin_src emacs-lisp :tangle packages.el
-(package! clang-format+
-  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (package! separate-inline :recipe
  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
@@ -384,23 +382,6 @@ Test some package
 (package! all-the-icons :disable t)
 #+end_src
 
-#+begin_src emacs-lisp :tangle config.el
-(use-package clang-format+
-  :config
-  (add-hook 'c-mode-common-hook #'clang-format+-mode)
-  (setq clang-format+-context 'modification)
-  (setq clang-format+-always-enable t))
-
-;; lsp-metals is broken on Emacs 29
-;;(setq lsp-metals-treeview-views nil)
-
-(setq +format-on-save-enabled-modes
-      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
-            cpp-mode  ; use clang-format+ for C/C++
-            c++-mode
-            c-mode
-            org-msg-edit-mode)) ; doesn't need a formatter
-#+end_src
 
 #+begin_src emacs-lisp :tangle config.el
 (after! projectile
@@ -430,7 +411,8 @@ the following:
       org-return-follows-link t                   ; Organize it!
       dired-mouse-drag-files t                    ; for Emacs 29's drag and drop support
       mouse-drag-and-drop-region-cross-program t
-      mouse-1-click-follows-link nil)
+      mouse-1-click-follows-link nil
+      )
 
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line
@@ -3783,6 +3765,27 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
 ;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
 ;;                                  ("\\.lagda.md\\'" . agda2-mode)))
       #+end_src
+** C/C++
+=clang-format-plus= could format C/C++ code only in the modified region. Only formating modified code is a function long awaited, and [[https://github.com/microsoft/vscode/pull/104994][is provided by vscode two years ago]]. Hope I will implement this for any language in the future.
+#+begin_src emacs-lisp :tangle packages.el
+(package! clang-format+
+  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(use-package clang-format+
+  :config
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+  (setq clang-format+-context 'modification)
+  (setq clang-format+-always-enable t))
+
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
+            cpp-mode  ; use clang-format+ for C/C++
+            c++-mode
+            c-mode
+            org-msg-edit-mode)) ; doesn't need a formatter
+#+end_src
 ** Grammarly
 I use =grammarly= to check my writing.
 #+begin_src emacs-lisp :tangle packages.Symbol's function definition is void: consult--readl

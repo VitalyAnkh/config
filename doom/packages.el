@@ -1,6 +1,4 @@
 ;; [[file:config.org::*Workaround][Workaround:2]]
-(package! clang-format+
-  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
 (package! separate-inline :recipe
  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
@@ -138,6 +136,11 @@
 ;; (package! popon)
 ;; (package! acm-terminal :recipe (:host github :repo "twlz0ne/acm-terminal"))
 ;; ~lsp-bridge~:1 ends here
+
+;; [[file:config.org::*C/C++][C/C++:1]]
+(package! clang-format+
+  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+;; C/C++:1 ends here
 
 ;; [[file:config.org::*Lean][Lean:1]]
 (package! lean4-mode :recipe
