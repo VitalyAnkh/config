@@ -417,7 +417,7 @@ the following:
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
  x-stretch-cursor t                               ; Stretch cursor to the glyph width
-)
+ )
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       auto-save-default t                         ; Nobody likes to lose work, I certainly don't
@@ -427,7 +427,11 @@ the following:
       scroll-margin 2                             ; It's nice to maintain a little margin
       word-wrap-by-category t                     ; Different languages live together happily
       warning-minimum-level  :error               ; Who cares about warnings?
-      org-return-follows-link t)                  ; Organize it!
+      org-return-follows-link t                   ; Organize it!
+      dired-mouse-drag-files t                    ; for Emacs 29's drag and drop support
+      mouse-drag-and-drop-region-cross-program t
+      mouse-1-click-follows-link nil)
+
 
 ;;(display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -441,7 +445,7 @@ the following:
 
 (scroll-bar-mode)                                 ; I like scroll bars
 
-;; Useset C-z which is bound to =suspend-frame= by default
+;; Unset C-z which is bound to =suspend-frame= by default
 (global-unset-key (kbd "C-z"))
 #+end_src
 *** Frame sizing
@@ -1795,10 +1799,6 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 *** Dirvish
 Doom has a dirvish in ~dired~ module now, but I want to tweak some defaults.
 #+begin_src emacs-lisp :tangle yes
-;; for Emacs 29's drag and drop support
-(setq dired-mouse-drag-files t)
-(setq mouse-drag-and-drop-region-cross-program t)
-(setq mouse-1-click-follows-link nil)
 
 (use-package dirvish
   :config

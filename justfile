@@ -22,6 +22,22 @@ llvm:
   git push
   echo "==== pull llvm-project done ===="
 
+config_lean:
+  #!/usr/bin/env bash
+  #git clone https://github.com/leanprover/lean4 --recurse-submodules
+  git config submodule.recurse true
+  cd ~/projects/dev/lean/lean4
+  mkdir -p build/release
+  cd build/release
+  LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../..
+
+lean:
+  #!/usr/bin/env bash
+  #git clone https://github.com/leanprover/lean4 --recurse-submodules
+  cd ~/projects/dev/lean/lean4/build/release
+  bear -- make -j20
+  cp compile_commands.json ../../
+
 config_llvm:
   #!/usr/bin/env bash
   echo "==== pull llvm-project ===="
