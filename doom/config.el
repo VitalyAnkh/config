@@ -493,15 +493,19 @@ nil
 (use-package ace-window
   :config
   (keymap-global-set "M-o" 'ace-window)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  ;;(setq aw-ignore-on nil)
-  )
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 ;; =ace-window=:1 ends here
 
 ;; [[file:config.org::*Embark][Embark:1]]
 (use-package embark
   :config
-  (keymap-global-set "C-," 'embark-act))
+  (keymap-global-set "C-," 'embark-act)
+  ;; TODO: this doesn't work
+  ;; file one wayland to open a file with external programs
+  ;; (map minibuffer-local-map
+  ;;       :n "o" #'embark-open-externally
+  ;;       )
+  )
 ;; Embark:1 ends here
 
 ;; [[file:config.org::*Very large files][Very large files:2]]
@@ -1322,10 +1326,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Treemacs:3 ends here
 
 ;; [[file:config.org::*Treemacs][Treemacs:4]]
-(add-to-list 'display-buffer-alist
-             '("^ \\*Treemacs\\*" display-buffer-in-side-window
-               (side . left) (window-width . 25)))
-
 (use-package treemacs
   :config
   (setq
@@ -1338,8 +1338,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
    treemacs-text-scale -1.2
    treemacs-follow-mode t
    treemacs-width 25
-   ;;treemacs-display-in-side-window nil
    )
+  (treemacs-follow-mode)
+  ;;(set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-* [^*]*\\*" :size 0.25 :side 'left :quit nil)
 
   :bind
   (:map global-map

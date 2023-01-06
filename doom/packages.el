@@ -6,6 +6,7 @@
 (unpin! haskell-mode)
 ;; TODO: fix this with (set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-#<frame [^*]*\\*" :ignore t)
 (package! treemacs :pin "f377ae6abdb4fc67467666675d1237d1c1947fd8")
+;;(unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
@@ -17,8 +18,9 @@
 (unpin! straight)
 (unpin! embark)
 ;;(unpin! lsp-metals)
-;; lsp-metals is broken on Emacs 29
+;; lsp-metals is broken on Emacs 29 or newer
 (package! lsp-metals :disable t)
+(package! multiple-cursors :disable t)
 (unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)

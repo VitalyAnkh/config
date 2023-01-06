@@ -362,6 +362,7 @@ Test some package
 (unpin! haskell-mode)
 ;; TODO: fix this with (set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-#<frame [^*]*\\*" :ignore t)
 (package! treemacs :pin "f377ae6abdb4fc67467666675d1237d1c1947fd8")
+;;(unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
@@ -373,8 +374,9 @@ Test some package
 (unpin! straight)
 (unpin! embark)
 ;;(unpin! lsp-metals)
-;; lsp-metals is broken on Emacs 29
+;; lsp-metals is broken on Emacs 29 or newer
 (package! lsp-metals :disable t)
+(package! multiple-cursors :disable t)
 (unpin! git-gutter)
 ;; test consult-recoll
 (package! consult-recoll)
@@ -1755,16 +1757,20 @@ have the following.
 (use-package ace-window
   :config
   (keymap-global-set "M-o" 'ace-window)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  ;;(setq aw-ignore-on nil)
-  )
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+end_src
 *** Embark
 =embark= is a really nice package for interacting with the minibuffer.
 #+begin_src emacs-lisp
 (use-package embark
   :config
-  (keymap-global-set "C-," 'embark-act))
+  (keymap-global-set "C-," 'embark-act)
+  ;; TODO: this doesn't work
+  ;; file one wayland to open a file with external programs
+  ;; (map minibuffer-local-map
+  ;;       :n "o" #'embark-open-externally
+  ;;       )
+  )
 #+end_src
 *** Very large files
 The /very large files/ mode loads large files in chunks, allowing one to open
@@ -3229,10 +3235,6 @@ Minick =evil='s ~/~ in =treemacs= buffer:
 #+end_src
 Adjust the face of =treemacs=. The =variable-pitch= is too large for a file explorer.
 #+begin_src emacs-lisp
-(add-to-list 'display-buffer-alist
-             '("^ \\*Treemacs\\*" display-buffer-in-side-window
-               (side . left) (window-width . 25)))
-
 (use-package treemacs
   :config
   (setq
@@ -3245,8 +3247,9 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    treemacs-text-scale -1.2
    treemacs-follow-mode t
    treemacs-width 25
-   ;;treemacs-display-in-side-window nil
    )
+  (treemacs-follow-mode)
+  ;;(set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-* [^*]*\\*" :size 0.25 :side 'left :quit nil)
 
   :bind
   (:map global-map
