@@ -1,6 +1,6 @@
 ;; [[file:config.org::*Workaround][Workaround:2]]
 (package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
 (package! org-fragtog)
 (unpin! haskell-mode)
@@ -10,10 +10,19 @@
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
+(package! magit :recipe (:branch "main"))
+(package! ghub :recipe (:branch "main"))
+(unpin! emacsql)
+(unpin! magit-gitflow)
+(unpin! magit-popup)
+(unpin! magit-todos)
+(unpin! magit)
 (unpin! ace-window)
+(unpin! persp-mode)
 (unpin! avy)
 (unpin! vertico)
 (unpin! consult)
+(unpin! compat)
 (unpin! marginalia)
 (unpin! straight)
 (unpin! embark)
@@ -23,7 +32,7 @@
 (package! multiple-cursors :disable t)
 (unpin! git-gutter)
 ;; test consult-recoll
-(package! consult-recoll)
+;;(package! consult-recoll)
 ;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
 ;; Workaround:2 ends here
@@ -168,10 +177,7 @@
 (package! ob-sagemath)
 ;; Sage Math:1 ends here
 
-(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :pre-build (with-temp-file "org-version.el" (insert "(fset 'org-release (lambda () \"9.6\"))
-" (format "(fset 'org-git-version (lambda () \"%s\"))
-" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)) "(provide 'org-version)
-")) :includes org) :pin nil)
+(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode" :files ("*.el" "lisp/*.el" "etc") :includes org) :pin nil)
 (unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"

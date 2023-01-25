@@ -8,6 +8,7 @@ SETUVAR _fish_abbr_e:LANG\x3den_US\x2eUTF8
 SETUVAR _fish_abbr_ec:emacsclient\x20\x2d\x2dcreate\x2dframe\x20\x2d\x2dalternate\x2deditor\x3d\x22\x22
 SETUVAR _fish_abbr_eman:LANG\x3den_US\x2eUTF8\x20man
 SETUVAR _fish_abbr_eqqp:env\x20QT_QPA_PLATFORM\x3d\x5c\x27\x5c
+SETUVAR _fish_abbr_ex:exercism
 SETUVAR _fish_abbr_ff:env\x20MOZ_ENABLE_WAYLAND\x3d1\x20firefox\x2ddeveloper\x2dedition
 SETUVAR _fish_abbr_firefox_2D_developer_2D_edition:env\x20MOZ_ENABLE_WAYLAND\x3d1\x20firefox\x2ddeveloper\x2dedition
 SETUVAR _fish_abbr_gl:git\x20pull

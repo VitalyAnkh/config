@@ -31,6 +31,26 @@ config_lean:
   cd build/release
   LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../..
 
+config_torch_mlir:
+  #!/usr/bin/env bash
+  cd ~/projects/dev/cpp/torch-mlir
+  # -DPython3_FIND_VIRTUALENV=ONLY \
+  # git submodule update --init
+  git submodule update --recursive
+  git pull
+  export LLVM_INSTALL_DIR=/home/vitalyr/projects/dev/cpp/llvm-project
+  cmake -GNinja -Bbuild \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DMLIR_DIR="$LLVM_INSTALL_DIR/lib/cmake/mlir/" \
+  -DLLVM_DIR="$LLVM_INSTALL_DIR/lib/cmake/llvm/" \
+  -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+  -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DLIBTORCH_CACHE=ON
+  -DLLVM_TARGETS_TO_BUILD=host .
+
 lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
@@ -58,7 +78,6 @@ config_llvm:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" ../llvm
-
 
 trash_emacs_cache:
   #!/usr/bin/env bash

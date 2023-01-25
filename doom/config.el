@@ -21,6 +21,14 @@
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
 
+;; debug vertico--exhibit error
+(defun force-debug (func &rest args)
+  (condition-case e
+      (apply func args)
+    ((debug error) (signal (car e) (cdr e)))))
+
+
+(advice-add #'vertico--exhibit :around #'force-debug)
 ;; make org latex preview images' baseline the same as the text
 ;; (defun my-org-latex-preview-advice (beg end &rest _args)
 ;;   (let* ((ov (car (overlays-in beg end)))
@@ -1173,7 +1181,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 ;; Marginalia:1 ends here
 
-;; [[file:config.org::*Centaur Tabs][Centaur Tabs:1]]
+;; [[file:config.org::*Tabs][Tabs:1]]
 (use-package centaur-tabs
   :init
   (setq centaur-tabs-height 27
@@ -1181,12 +1189,18 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         centaur-tabs-set-bar 'nil)
   (keymap-global-set "C-<"  'centaur-tabs-backward)
   (keymap-global-set "C->" 'centaur-tabs-forward)
-  :config
   ;;FIXME: This font change doesn't work
-  (centaur-tabs-change-fonts "Latin Modern Mono" 140)
-  )
+  ;;(centaur-tabs-change-fonts "Latin Modern Mono" 140)
+)
 ;;(setq x-underline-at-descent-line t)
-;; Centaur Tabs:1 ends here
+
+;; (use-package tab-line
+;;   :init
+;;   (global-tab-line-mode)
+;;   :config
+;;   (keymap-global-set "C-<" 'tab-line-switch-to-prev-tab)
+;;   (keymap-global-set "C->" 'tab-line-switch-to-next-tab))
+;; Tabs:1 ends here
 
 ;; [[file:config.org::*All the icons][All the icons:1]]
 (after! all-the-icons
@@ -1779,13 +1793,13 @@ SQL can be either the emacsql vector representation, or a string."
 ;; [[file:config.org::*Meson][Meson:2]]
 (use-package meson-mode
   :config
-  (add-hook 'meson-mode-hook 'company-mode)
-  (setq auto-mode-alist
-        (append
-         '(
-           ("\\meson.build\\'" . meson-mode)
-           )
-         auto-mode-alist)))
+  (add-hook 'meson-mode-hook 'company-mode))
+;; (setq auto-mode-alist
+;;       (append
+;;        '(
+;;          ("\\meson.build\\'" . meson-mode)
+;;          )
+;;        auto-mode-alist))
 ;; Meson:2 ends here
 
 ;; [[file:config.org::*OCaml][OCaml:1]]
@@ -4615,7 +4629,7 @@ SQL can be either the emacsql vector representation, or a string."
           (strike-through . "\\sout{%s}")
           (underline . "\\uline{%s}")
           (verbatim . verb)))
-  ;; No missing LaTeX packags detected
+  nil
   (setq org-beamer-theme "[progressbar=foot]metropolis")
   (defun org-beamer-p (info)
     (eq 'beamer (and (plist-get info :back-end) (org-export-backend-name (plist-get info :back-end)))))

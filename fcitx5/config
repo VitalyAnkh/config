@@ -54,6 +54,10 @@ CompactInputMethodInformation=True
 ShowFirstInputMethodInformation=True
 # 默认页大小
 DefaultPageSize=9
+# 覆盖 Xkb 选项
+OverrideXkbOption=False
+# 自定义 Xkb 选项
+CustomXkbOption=
 # Force Enabled Addons
 EnabledAddons=
 # Force Disabled Addons

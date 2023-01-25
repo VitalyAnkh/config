@@ -343,6 +343,14 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
 
+;; debug vertico--exhibit error
+(defun force-debug (func &rest args)
+  (condition-case e
+      (apply func args)
+    ((debug error) (signal (car e) (cdr e)))))
+
+
+(advice-add #'vertico--exhibit :around #'force-debug)
 ;; make org latex preview images' baseline the same as the text
 ;; (defun my-org-latex-preview-advice (beg end &rest _args)
 ;;   (let* ((ov (car (overlays-in beg end)))
@@ -356,7 +364,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 Test some package
 #+begin_src emacs-lisp :tangle packages.el
 (package! separate-inline :recipe
- (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
 (package! org-fragtog)
 (unpin! haskell-mode)
@@ -366,10 +374,19 @@ Test some package
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
+(package! magit :recipe (:branch "main"))
+(package! ghub :recipe (:branch "main"))
+(unpin! emacsql)
+(unpin! magit-gitflow)
+(unpin! magit-popup)
+(unpin! magit-todos)
+(unpin! magit)
 (unpin! ace-window)
+(unpin! persp-mode)
 (unpin! avy)
 (unpin! vertico)
 (unpin! consult)
+(unpin! compat)
 (unpin! marginalia)
 (unpin! straight)
 (unpin! embark)
@@ -379,7 +396,7 @@ Test some package
 (package! multiple-cursors :disable t)
 (unpin! git-gutter)
 ;; test consult-recoll
-(package! consult-recoll)
+;;(package! consult-recoll)
 ;; all-the-icons is broken with the latest version of Emacs
 (package! all-the-icons :disable t)
 #+end_src
@@ -3025,7 +3042,7 @@ shadow)=, I don't like that.
                     (doom-blend 'red 'orange (- size-index 1)))))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
-*** Centaur Tabs
+*** Tabs
 #+begin_quote
 From the =:ui tabs= module.
 #+end_quote
@@ -3048,11 +3065,17 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
         centaur-tabs-set-bar 'nil)
   (keymap-global-set "C-<"  'centaur-tabs-backward)
   (keymap-global-set "C->" 'centaur-tabs-forward)
-  :config
   ;;FIXME: This font change doesn't work
-  (centaur-tabs-change-fonts "Latin Modern Mono" 140)
-  )
+  ;;(centaur-tabs-change-fonts "Latin Modern Mono" 140)
+)
 ;;(setq x-underline-at-descent-line t)
+
+;; (use-package tab-line
+;;   :init
+;;   (global-tab-line-mode)
+;;   :config
+;;   (keymap-global-set "C-<" 'tab-line-switch-to-prev-tab)
+;;   (keymap-global-set "C->" 'tab-line-switch-to-next-tab))
 #+end_src
 
 *** All the icons
@@ -3832,13 +3855,13 @@ Meson is a great build tool for ~C~ and ~C++~, much more ergonomic than CMake.
 #+begin_src emacs-lisp
 (use-package meson-mode
   :config
-  (add-hook 'meson-mode-hook 'company-mode)
-  (setq auto-mode-alist
-        (append
-         '(
-           ("\\meson.build\\'" . meson-mode)
-           )
-         auto-mode-alist)))
+  (add-hook 'meson-mode-hook 'company-mode))
+;; (setq auto-mode-alist
+;;       (append
+;;        '(
+;;          ("\\meson.build\\'" . meson-mode)
+;;          )
+;;        auto-mode-alist))
 #+end_src
 ** LLVM Tools
 Add major modes for LLVM's =LLVM IR= and =TableGen=.
@@ -4045,12 +4068,12 @@ correct package statement needed.
                  (and (file-exists-p default-directory)
                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
-                       :pre-build
-                       (with-temp-file "org-version.el"
-                         (insert "(fset 'org-release (lambda () \"9.6\"))\n"
-                                 (format "(fset 'org-git-version (lambda () \"%s\"))\n"
-                                         (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
-                                 "(provide 'org-version)\n"))
+                       ;;:pre-build
+                       ;; (with-temp-file "org-version.el"
+                       ;;   (insert "(fset 'org-release (lambda () \"9.6\"))\n"
+                       ;;           (format "(fset 'org-git-version (lambda () \"%s\"))\n"
+                       ;;                   (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
+                       ;;           "(provide 'org-version)\n"))
                        :includes org)))
   (prin1-to-string
    `(package! org-mode
@@ -8758,49 +8781,49 @@ export to a PDF.
 
 #+name: org-missing-latex-packages
 #+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list[,0] :var org-latex-font-packages-list=org-latex-font-packages-list
-(setq org-required-latex-packages (append org-latex-required-packages-list
-                                            org-latex-font-packages-list))
-                                          ;;(mapcar #'car org-latex-font-packages-list)))
+;; (setq org-required-latex-packages (append org-latex-required-packages-list
+;;                                           ;; org-latex-font-packages-list))
+;;                                           (mapcar #'car org-latex-font-packages-list)))
 
-(defun check-for-latex-packages (packages)
-  (delq nil (mapcar (lambda (package)
-                      (unless
-                          (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
-                        package))
-                    packages)))
+;; (defun check-for-latex-packages (packages)
+;;   (delq nil (mapcar (lambda (package)
+;;                       (unless
+;;                           (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
+;;                         package))
+;;                     packages)))
 
-(if-let ((missing-pkgs (check-for-latex-packages org-required-latex-packages)))
-    (concat
-     (pp-to-string `(setq org-required-latex-packages ',org-required-latex-packages))
-     (message ";; Detected missing LaTeX packages: %s\n" (mapconcat #'identity missing-pkgs ", "))
-     (pp-to-string
-      '(defun check-for-latex-packages (packages)
-         (delq nil (mapcar (lambda (package)
-                             (unless
-                                 (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
-                               package))
-                           packages))))
-     (pp-to-string
-      '(defun +org-warn-about-missing-latex-packages (&rest _)
-         (message "Checking for missing LaTeX packages...")
-         (sleep-for 0.4)
-         (if-let (missing-pkgs (check-for-latex-packages org-required-latex-packages))
-             (message "%s You are missing the following LaTeX packages: %s."
-                      (propertize "Warning!" 'face '(bold warning))
-                      (mapconcat (lambda (pkg) (propertize pkg 'face 'font-lock-variable-name-face))
-                                 missing-pkgs
-                                 ", "))
-           (message "%s You have all the required LaTeX packages. Run %s to make this message go away."
-                    (propertize "Success!" 'face '(bold success))
-                    (propertize "doom sync" 'face 'font-lock-keyword-face))
-           (advice-remove 'org-latex-export-to-pdf #'+org-warn-about-missing-latex-packages))
-         (sleep-for 1)))
-     (pp-to-string
-      '(advice-add 'org-latex-export-to-pdf :before #'+org-warn-about-missing-latex-packages)))
-  ";; No missing LaTeX packags detected")
+;; (if-let ((missing-pkgs (check-for-latex-packages org-required-latex-packages)))
+;;     (concat
+;;      (pp-to-string `(setq org-required-latex-packages ',org-required-latex-packages))
+;;      (message ";; Detected missing LaTeX packages: %s\n" (mapconcat #'identity missing-pkgs ", "))
+;;      (pp-to-string
+;;       '(defun check-for-latex-packages (packages)
+;;          (delq nil (mapcar (lambda (package)
+;;                              (unless
+;;                                  (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
+;;                                package))
+;;                            packages))))
+;;      (pp-to-string
+;;       '(defun +org-warn-about-missing-latex-packages (&rest _)
+;;          (message "Checking for missing LaTeX packages...")
+;;          (sleep-for 0.4)
+;;          (if-let (missing-pkgs (check-for-latex-packages org-required-latex-packages))
+;;              (message "%s You are missing the following LaTeX packages: %s."
+;;                       (propertize "Warning!" 'face '(bold warning))
+;;                       (mapconcat (lambda (pkg) (propertize pkg 'face 'font-lock-variable-name-face))
+;;                                  missing-pkgs
+;;                                  ", "))
+;;            (message "%s You have all the required LaTeX packages. Run %s to make this message go away."
+;;                     (propertize "Success!" 'face '(bold success))
+;;                     (propertize "doom sync" 'face 'font-lock-keyword-face))
+;;            (advice-remove 'org-latex-export-to-pdf #'+org-warn-about-missing-latex-packages))
+;;          (sleep-for 1)))
+;;      (pp-to-string
+;;       '(advice-add 'org-latex-export-to-pdf :before #'+org-warn-about-missing-latex-packages)))
+;;   ";; No missing LaTeX packags detected")
 #+end_src
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :tangle no
 <<org-missing-latex-packages()>>
 #+end_src
 *** Beamer Export
