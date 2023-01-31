@@ -497,12 +497,12 @@ nil
    ))
 ;; Which-key:2 ends here
 
-;; [[file:config.org::*=ace-window=][=ace-window=:1]]
+;; [[file:config.org::*ace-window][ace-window:1]]
 (use-package ace-window
   :config
   (keymap-global-set "M-o" 'ace-window)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-;; =ace-window=:1 ends here
+;; ace-window:1 ends here
 
 ;; [[file:config.org::*Embark][Embark:1]]
 (use-package embark
@@ -2501,7 +2501,6 @@ SQL can be either the emacsql vector representation, or a string."
   as returned by `org-export-new-reference'."
     :override #'org-export-format-reference
     (if (stringp reference) reference (format "org%07x" reference)))
-  (setq org-id-method 'ts)
   (defun unpackaged/org-element-descendant-of (type element)
     "Return non-nil if ELEMENT is a descendant of TYPE.
   TYPE should be an element type, like `item' or `paragraph'.
@@ -2993,113 +2992,6 @@ SQL can be either the emacsql vector representation, or a string."
         (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
         (org-clear-latex-preview (point-min) (point-max))
         (org--latex-preview-region (point-min) (point-max)))))
-  (defun scimax-org-latex-fragment-justify (justification)
-    "Justify the latex fragment at point with JUSTIFICATION.
-  JUSTIFICATION is a symbol for 'left, 'center or 'right."
-    (interactive
-     (list (intern-soft
-            (completing-read "Justification (left): " '(left center right)
-                             nil t nil nil 'left))))
-    (let* ((ov (ov-at))
-           (beg (ov-beg ov))
-           (end (ov-end ov))
-           (shift (- beg (line-beginning-position)))
-           (img (overlay-get ov 'display))
-           (img (and (and img (consp img) (eq (car img) 'image)
-                          (image-type-available-p (plist-get (cdr img) :type)))
-                     img))
-           space-left offset)
-      (when (and img
-                 ;; This means the equation is at the start of the line
-                 (= beg (line-beginning-position))
-                 (or
-                  (string= "" (s-trim (buffer-substring end (line-end-position))))
-                  (eq 'latex-environment (car (org-element-context)))))
-        (setq space-left (- (window-max-chars-per-line) (car (image-size img)))
-              offset (floor (cond
-                             ((eq justification 'center)
-                              (- (/ space-left 2) shift))
-                             ((eq justification 'right)
-                              (- space-left shift))
-                             (t
-                              0))))
-        (when (>= offset 0)
-          (overlay-put ov 'before-string (make-string offset ?\ ))))))
-  
-  (defun scimax-org-latex-fragment-justify-advice (beg end image imagetype)
-    "After advice function to justify fragments."
-    (scimax-org-latex-fragment-justify (or (plist-get org-format-latex-options :justify) 'left)))
-  
-  
-  (defun scimax-toggle-latex-fragment-justification ()
-    "Toggle if LaTeX fragment justification options can be used."
-    (interactive)
-    (if (not (get 'scimax-org-latex-fragment-justify-advice 'enabled))
-        (progn
-          (advice-add 'org--format-latex-make-overlay :after 'scimax-org-latex-fragment-justify-advice)
-          (put 'scimax-org-latex-fragment-justify-advice 'enabled t)
-          (message "Latex fragment justification enabled"))
-      (advice-remove 'org--format-latex-make-overlay 'scimax-org-latex-fragment-justify-advice)
-      (put 'scimax-org-latex-fragment-justify-advice 'enabled nil)
-      (message "Latex fragment justification disabled")))
-  ;; Numbered equations all have (1) as the number for fragments with vanilla
-  ;; org-mode. This code injects the correct numbers into the previews so they
-  ;; look good.
-  (defun scimax-org-renumber-environment (orig-func &rest args)
-    "A function to inject numbers in LaTeX fragment previews."
-    (let ((results '())
-          (counter -1)
-          (numberp))
-      (setq results (cl-loop for (begin . env) in
-                             (org-element-map (org-element-parse-buffer) 'latex-environment
-                               (lambda (env)
-                                 (cons
-                                  (org-element-property :begin env)
-                                  (org-element-property :value env))))
-                             collect
-                             (cond
-                              ((and (string-match "\\\\begin{equation}" env)
-                                    (not (string-match "\\\\tag{" env)))
-                               (cl-incf counter)
-                               (cons begin counter))
-                              ((string-match "\\\\begin{align}" env)
-                               (prog2
-                                   (cl-incf counter)
-                                   (cons begin counter)
-                                 (with-temp-buffer
-                                   (insert env)
-                                   (goto-char (point-min))
-                                   ;; \\ is used for a new line. Each one leads to a number
-                                   (cl-incf counter (count-matches "\\\\$"))
-                                   ;; unless there are nonumbers.
-                                   (goto-char (point-min))
-                                   (cl-decf counter (count-matches "\\nonumber")))))
-                              (t
-                               (cons begin nil)))))
-  
-      (when (setq numberp (cdr (assoc (point) results)))
-        (setf (car args)
-              (concat
-               (format "\\setcounter{equation}{%s}\n" numberp)
-               (car args)))))
-  
-    (apply orig-func args))
-  
-  
-  (defun scimax-toggle-latex-equation-numbering ()
-    "Toggle whether LaTeX fragments are numbered."
-    (interactive)
-    (if (not (get 'scimax-org-renumber-environment 'enabled))
-        (progn
-          (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-          (put 'scimax-org-renumber-environment 'enabled t)
-          (message "Latex numbering enabled"))
-      (advice-remove 'org-create-formula-image #'scimax-org-renumber-environment)
-      (put 'scimax-org-renumber-environment 'enabled nil)
-      (message "Latex numbering disabled.")))
-  
-  (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-  (put 'scimax-org-renumber-environment 'enabled t)
   (after! org-plot
     (defvar +org-plot-term-size '(1050 . 650)
       "The size of the GNUPlot terminal, in the form (WIDTH . HEIGHT).")
@@ -4728,7 +4620,8 @@ SQL can be either the emacsql vector representation, or a string."
   (add-to-list '+org-babel-mode-alist '(jags . ess-jags))
 )
 
-(setq org-id-method 'ts)
+;; reverted, to keep compatibility with logseq
+;;(setq org-id-method 'ts)
 
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
