@@ -4468,6 +4468,7 @@ Use =org-cite= to insert, update and generate citations.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (unpin! citar)
 (package! citeproc)
+(unpin! citeproc)
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 #+end_src
 
@@ -7749,7 +7750,7 @@ There are also some obsolete entries in the default value, specifically
 (setq org-latex-default-packages-alist
       '(("AUTO" "inputenc" t ("pdflatex"))
         ("T1" "fontenc" t ("pdflatex"))
-        ("" "xcolor" nil) ; Generally useful
+        ("" "xcolor" t)
         ("" "hyperref" nil)))
 #+end_src
 **** Font collections

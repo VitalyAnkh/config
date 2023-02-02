@@ -212,6 +212,7 @@
 
 (unpin! citar)
 (package! citeproc)
+(unpin! citeproc)
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 
 (package! org-super-agenda)

@@ -4018,7 +4018,7 @@ SQL can be either the emacsql vector representation, or a string."
   (setq org-latex-default-packages-alist
         '(("AUTO" "inputenc" t ("pdflatex"))
           ("T1" "fontenc" t ("pdflatex"))
-          ("" "xcolor" nil) ; Generally useful
+          ("" "xcolor" t)
           ("" "hyperref" nil)))
   (setq org-export-async-debug t)
   (defvar org-latex-default-fontset 'noto
