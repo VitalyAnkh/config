@@ -5088,8 +5088,10 @@ with it.
 (use-package org-roam
   :defer t
   :config
-  (setq org-roam-directory org-directory)
-  )
+  (setq org-roam-directory org-directory
+        org-roam-dailies-directory "journals/"
+        org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target
+                                             (file+head "%<%Y_%m_%d>.org" "#+title: %<%Y-%m-%d>\n")))))
 
 (use-package! websocket
   :after org-roam)
