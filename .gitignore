@@ -61,3 +61,6 @@
 
 **/elpa/**
 **/eln-cache/**
+doom/config.el
+doom/packages.el
+doom/init.el
