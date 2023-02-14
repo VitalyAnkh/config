@@ -1,10 +1,10 @@
 [Groups/0]
 # Group Name
-Name=Lang
+Name=Languages
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=keyboard-de-neo_qwerty
+DefaultIM=shuangpin
 
 [Groups/0/Items/0]
 # Name
@@ -14,35 +14,17 @@ Layout=
 
 [Groups/0/Items/1]
 # Name
-Name=mozc
-# Layout
-Layout=
-
-[Groups/0/Items/2]
-# Name
-Name=keyboard-de-neo_qwerty
-# Layout
-Layout=
-
-[Groups/0/Items/3]
-# Name
-Name=keyboard-ru-phonetic_winkeys
-# Layout
-Layout=
-
-[Groups/0/Items/4]
-# Name
-Name=keyboard-fr-latin9
+Name=shuangpin
 # Layout
 Layout=
 
 [Groups/1]
 # Group Name
-Name=Languages
+Name=Lang
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=shuangpin
+DefaultIM=keyboard-de-neo_qwerty
 
 [Groups/1/Items/0]
 # Name
@@ -52,7 +34,25 @@ Layout=
 
 [Groups/1/Items/1]
 # Name
-Name=shuangpin
+Name=mozc
+# Layout
+Layout=
+
+[Groups/1/Items/2]
+# Name
+Name=keyboard-de-neo_qwerty
+# Layout
+Layout=
+
+[Groups/1/Items/3]
+# Name
+Name=keyboard-ru-phonetic_winkeys
+# Layout
+Layout=
+
+[Groups/1/Items/4]
+# Name
+Name=keyboard-fr-latin9
 # Layout
 Layout=
 

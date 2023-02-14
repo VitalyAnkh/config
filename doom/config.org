@@ -2021,20 +2021,6 @@ Modal editing on wish! Use =moew= for modal life.
    '("\\" . quoted-insert)
    ;;'("<escape>" . mode-line-other-buffer)
    )
-  ;; Let =C-[= be the =ESC= of =evil= in =meow=:
-  (defun meow-insert-define-key (&rest keybindings)
-    "Define key for insert state.
-
-Usage:
-  (meow-insert-define-key
-   '(\"C-<space>\" . meow-insert-exit))"
-    (mapcar (lambda (key-ref)
-              (define-key meow-insert-state-keymap
-                (kbd (car key-ref))
-                (meow--parse-def (cdr key-ref))))
-            keybindings))
-  (meow-insert-define-key
-   '("\C-[" . meow-insert-exit))
 
   (setq meow-expand-exclude-mode-list nil)
   (setq meow-expand-hint-remove-delay 1024)
@@ -2226,7 +2212,7 @@ And store the annotation database (which is just a plain emacs-lisp file!) with 
 From the =:completion vertico= module.
 #+end_quote
 
-Since we're using [[Marginalia]] too, the separation between buffers and files is
+Since we're using 10 [[Marginalia]] too, the separation between buffers and files is
 already clear, and there's no need for a different face.
 
 #+begin_src emacs-lisp
@@ -4098,6 +4084,8 @@ Let =org-id-method= be time stamp. =uuid= is not informative for humans.
 #+begin_src emacs-lisp :tangle config.el
 ;; reverted, to keep compatibility with logseq
 ;;(setq org-id-method 'ts)
+;; make org-babel use lower case keyword, avoid logseq's bug
+(setq org-babel-results-keyword "results")
 #+end_src
 
 **** Visuals
