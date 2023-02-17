@@ -333,6 +333,11 @@ my home machine is pretty safe, and my laptop is shutting down a lot.
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle config.el
+;; (global-tab-line-mode)
+;; (keymap-global-set "C-<" 'tab-line-switch-to-prev-tab)
+;; (keymap-global-set "C->" 'tab-line-switch-to-next-tab)
+(setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
+
 (defadvice copilot--complete-post-command (around intercept activate)
   (condition-case err
       ad-do-it
@@ -1691,7 +1696,7 @@ What a wonderful way to jump to buffer positions.
         :desc "avy-goto-char-2" "c" #'avy-goto-char-2
         )
   (setq avy-all-windows t)
-  (global-set-key (kbd "C-'") 'avy-goto-char-2)
+  (keymap-global-set "C-'" 'avy-goto-char-2)
   )
 #+end_src
 *** Rotate (window management)
@@ -1848,29 +1853,29 @@ Modal editing on wish! Use =moew= for modal life.
 
 #+begin_src emacs-lisp
 (defun meow/setup-leader ()
- (map! :leader
-  "?" #'meow-cheatsheet
-  "/" #'meow-keypad-describe-key
-  "1" #'meow-digit-argument
-  "2" #'meow-digit-argument
-  "3" #'meow-digit-argument
-  "4" #'meow-digit-argument
-  "5" #'meow-digit-argument
-  "6" #'meow-digit-argument
-  "7" #'meow-digit-argument
-  "8" #'meow-digit-argument
-  "9" #'meow-digit-argument
-  "0" #'meow-digit-argument))
+  (map! :leader
+        "?" #'meow-cheatsheet
+        "/" #'meow-keypad-describe-key
+        "1" #'meow-digit-argument
+        "2" #'meow-digit-argument
+        "3" #'meow-digit-argument
+        "4" #'meow-digit-argument
+        "5" #'meow-digit-argument
+        "6" #'meow-digit-argument
+        "7" #'meow-digit-argument
+        "8" #'meow-digit-argument
+        "9" #'meow-digit-argument
+        "0" #'meow-digit-argument))
 
 (defun meow/setup-doom-keybindings()
-    (map! :map meow-normal-state-keymap
-    doom-leader-key doom-leader-map)
-    (map! :map meow-motion-state-keymap
-     doom-leader-key doom-leader-map)
-    (map! :map meow-beacon-state-keymap
-     doom-leader-key nil)
-    (meow/setup-leader)
-)
+  (map! :map meow-normal-state-keymap
+        doom-leader-key doom-leader-map)
+  (map! :map meow-motion-state-keymap
+        doom-leader-key doom-leader-map)
+  (map! :map meow-beacon-state-keymap
+        doom-leader-key nil)
+  (meow/setup-leader)
+  )
 (defun set-useful-keybindings()
   (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
   (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
@@ -1882,10 +1887,10 @@ Modal editing on wish! Use =moew= for modal life.
          :desc "Previous buffer"             "["   #'previous-buffer
          :desc "Next buffer"                 "]"   #'next-buffer
          (:when (modulep! :ui workspaces)
-          :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
-          :desc "Switch buffer"              "B" #'switch-to-buffer)
+           :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
+           :desc "Switch buffer"              "B" #'switch-to-buffer)
          (:unless (modulep! :ui workspaces)
-          :desc "Switch buffer"               "b"   #'switch-to-buffer)
+           :desc "Switch buffer"               "b"   #'switch-to-buffer)
          :desc "Clone buffer"                "c"   #'clone-indirect-buffer
          :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
          :desc "Kill buffer"                 "d"   #'kill-current-buffer
@@ -1919,19 +1924,19 @@ Modal editing on wish! Use =moew= for modal life.
   ;;(meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
   (map!
    (:when (modulep! :ui workspaces)
-    :n "C-t"   #'+workspace/new
-    :n "C-S-t" #'+workspace/display
-    :g "M-1"   #'+workspace/switch-to-0
-    :g "M-2"   #'+workspace/switch-to-1
-    :g "M-3"   #'+workspace/switch-to-2
-    :g "M-4"   #'+workspace/switch-to-3
-    :g "M-5"   #'+workspace/switch-to-4
-    :g "M-6"   #'+workspace/switch-to-5
-    :g "M-7"   #'+workspace/switch-to-6
-    :g "M-8"   #'+workspace/switch-to-7
-    :g "M-9"   #'+workspace/switch-to-8
-    :g "M-0"   #'+workspace/switch-to-final
-    ))
+     :n "C-t"   #'+workspace/new
+     :n "C-S-t" #'+workspace/display
+     :g "M-1"   #'+workspace/switch-to-0
+     :g "M-2"   #'+workspace/switch-to-1
+     :g "M-3"   #'+workspace/switch-to-2
+     :g "M-4"   #'+workspace/switch-to-3
+     :g "M-5"   #'+workspace/switch-to-4
+     :g "M-6"   #'+workspace/switch-to-5
+     :g "M-7"   #'+workspace/switch-to-6
+     :g "M-8"   #'+workspace/switch-to-7
+     :g "M-9"   #'+workspace/switch-to-8
+     :g "M-0"   #'+workspace/switch-to-final
+     ))
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
@@ -2019,6 +2024,8 @@ Modal editing on wish! Use =moew= for modal life.
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("\\" . quoted-insert)
+   ;;TODO: for C-[ translate to ESC, this doesn't work
+   ;;'("ESC" . meow-insert-exit)
    ;;'("<escape>" . mode-line-other-buffer)
    )
 
@@ -2027,6 +2034,9 @@ Modal editing on wish! Use =moew= for modal life.
   ;; TODO: replace define-key with keymap-set
   (define-key input-decode-map (kbd "C-[") [control-bracketleft])
   (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+  ;; (meow-define-keys 'insert
+  ;;   '("ESC" . meow-insert-exit))
+
   ;;(keymap-set input-decode-map "C-[" 'meow-insert-exit)
   ;;(keymap-set meow-insert-state-keymap "C-[" 'meow-insert-exit)
 
@@ -3054,13 +3064,6 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
   ;;(centaur-tabs-change-fonts "Latin Modern Mono" 140)
 )
 ;;(setq x-underline-at-descent-line t)
-
-;; (use-package tab-line
-;;   :init
-;;   (global-tab-line-mode)
-;;   :config
-;;   (keymap-global-set "C-<" 'tab-line-switch-to-prev-tab)
-;;   (keymap-global-set "C->" 'tab-line-switch-to-next-tab))
 #+end_src
 
 *** All the icons

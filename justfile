@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book
 
 llvm:
   #!/usr/bin/env bash
@@ -78,6 +78,36 @@ config_llvm:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" ../llvm
+
+build_local_llvm:
+  #!/usr/bin/env bash
+  echo "==== pull llvm-project ===="
+  cd ~/projects/dev/cpp/llvm-vr/
+  git pull
+  trash-put build
+  mkdir -p build
+  cd build
+  CC=clang CXX=clang++ cmake -G "Ninja" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_USE_LINKER=mold \
+    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
+    -DLLVM_ENABLE_PROJECTS="mlir" \
+    -DLLVM_LIT_ARGS=-v \
+    -DLLVM_CCACHE_BUILD=ON \
+    -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCMAKE_CXX_STANDARD=17 ../llvm
+  time ninja
+  trash-put $HOME/sdk/lib/llvm
+  cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
+
+triton:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/triton
+  mkdir -p build
+  cd build
+  cmake ../ -G Ninja -DMLIR_DIR=$HOME/sdk/lib/llvm/cmake/mlir -DTRITON_BUILD_PYTHON_MODULE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 trash_emacs_cache:
   #!/usr/bin/env bash
@@ -408,3 +438,13 @@ chisel-book:
   make
   cp chisel-book.pdf ~/nutstore_files/Books/计算机科学/计算机体系结构/
   echo "==== pull chisel-book done ===="
+
+algoxy-book:
+  #!/usr/bin/env bash
+  echo "==== pull algoxy-book ===="
+  cd ~/projects/dev/tex/AlgoXY
+  git pull
+  make
+  cp algoxy-en.pdf ~/nutstore_files/Books/计算机科学/算法/
+  cp algoxy-zh-cn.pdf ~/nutstore_files/Books/计算机科学/算法/
+  echo "==== pull algoxy-book done ===="
