@@ -1,9 +1,9 @@
 [Animation]
-Frames=10
+Frames=6
 
 [Appearance]
 BackgroundColor=233,215,255
-BackgroundColorOpacity=80
+BackgroundColorOpacity=93
 Blur=true
 HideSkinBorders=true
 Skin=ROUNDED-DARK
@@ -12,6 +12,10 @@ Translucency=true
 
 [Dialogs]
 FirstRun=false
+
+[Shortcuts]
+next-session=Ctrl+Shift+N
+previous-session=Ctrl+Shift+P
 
 [Window]
 DynamicTabTitles=true

@@ -395,15 +395,12 @@ Test some package
 (unpin! marginalia)
 (unpin! straight)
 (unpin! embark)
-;;(unpin! lsp-metals)
-;; lsp-metals is broken on Emacs 29 or newer
-(package! lsp-metals :disable t)
+(unpin! centaur-tabs)
+(unpin! lsp-metals)
 (package! multiple-cursors :disable t)
 (unpin! git-gutter)
 ;; test consult-recoll
 ;;(package! consult-recoll)
-;; all-the-icons is broken with the latest version of Emacs
-(package! all-the-icons :disable t)
 #+end_src
 
 
@@ -11508,7 +11505,7 @@ minor tweaks.
 #+begin_src emacs-lisp
 (setq +org-msg-accent-color "#1a5fb4"
       org-msg-greeting-fmt "\nHi%s,\n\n"
-      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@VitalyR@@html:</b>@@\n#+end_signature")
 (map! :map org-msg-edit-mode-map
       :after org-msg
       :n "G" #'org-msg-goto-body)

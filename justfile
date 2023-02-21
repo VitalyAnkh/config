@@ -444,6 +444,7 @@ algoxy-book:
   echo "==== pull algoxy-book ===="
   cd ~/projects/dev/tex/AlgoXY
   git pull
+  git clean -fdx
   make
   cp algoxy-en.pdf ~/nutstore_files/Books/计算机科学/算法/
   cp algoxy-zh-cn.pdf ~/nutstore_files/Books/计算机科学/算法/
