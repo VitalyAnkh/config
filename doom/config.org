@@ -375,7 +375,7 @@ Test some package
 (unpin! haskell-mode)
 ;; TODO: fix this with (set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-#<frame [^*]*\\*" :ignore t)
 (package! treemacs :pin "f377ae6abdb4fc67467666675d1237d1c1947fd8")
-;;(unpin! treemacs)
+;; (unpin! treemacs)
 (unpin! lsp-haskell)
 (unpin! lsp-mode)
 (unpin! lsp-treemacs)
@@ -397,9 +397,9 @@ Test some package
 (unpin! embark)
 (unpin! centaur-tabs)
 (unpin! lsp-metals)
+(unpin! elisp-tree-sitter)
 (package! multiple-cursors :disable t)
 (unpin! git-gutter)
-;; test consult-recoll
 ;;(package! consult-recoll)
 #+end_src
 
@@ -719,7 +719,7 @@ associated file.
       +local)                ; types of types of types of types...
 ;;beancount                    ; mind the GAAP
 (cc +lsp +tree-sitter)       ; C/C++/Obj-C madness
-clojure                      ; java with a lisp
+(clojure +tree-sitter)                      ; java with a lisp
 common-lisp                  ; if you've seen one lisp, you've seen them all
 coq                          ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
@@ -736,8 +736,8 @@ elm                          ; care for a cup of TEA?
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                        ; (dependent) types and (monadic) effects and Z3
 gdscript                     ; the language you waited for
-(go +lsp +tree-sitters)                    ; the hipster dialect
-(haskell +lsp +tree-sitters)               ; a language that's lazier than I am
+(go +lsp +tree-sitter)                    ; the hipster dialect
+(haskell +lsp +tree-sitter)               ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp)                        ;
 (json +lsp)                         ; At least it ain't XML
@@ -776,13 +776,13 @@ markdown                     ; writing docs for people to ignore
 ;;purescript                 ; javascript, but functional
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-(racket +lsp +xp +tree-sitters)            ; a DSL for DSLs
+(racket +lsp +xp +tree-sitter)            ; a DSL for DSLs
 raku                         ; the artist formerly known as perl6
 rest                         ; Emacs as a REST client
 ;;rst                        ; ReST in peace
-(ruby +rails +tree-sitters)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-(rust +lsp +tree-sitters)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-(scala +lsp +tree-sitters)                 ; java, but good
+(ruby +rails +tree-sitter)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+(rust +lsp +tree-sitter)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+(scala +lsp +tree-sitter)                 ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
 sml                          ; no, the /other/ ML
@@ -791,7 +791,7 @@ sml                          ; no, the /other/ ML
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-(zig +lsp +tree-sitters)                   ; C, but simpler
+(zig +lsp +tree-sitter)                   ; C, but simpler
 #+end_src
 
 **** Everything in Emacs
@@ -2023,7 +2023,7 @@ Modal editing on wish! Use =moew= for modal life.
    '("\\" . quoted-insert)
    ;;TODO: for C-[ translate to ESC, this doesn't work
    ;;'("ESC" . meow-insert-exit)
-   ;;'("<escape>" . mode-line-other-buffer)
+   ;;'("<escape>" . meow-insert-exit)
    )
 
   (setq meow-expand-exclude-mode-list nil)
@@ -2034,8 +2034,8 @@ Modal editing on wish! Use =moew= for modal life.
   ;; (meow-define-keys 'insert
   ;;   '("ESC" . meow-insert-exit))
 
-  ;;(keymap-set input-decode-map "C-[" 'meow-insert-exit)
-  ;;(keymap-set meow-insert-state-keymap "C-[" 'meow-insert-exit)
+  ;; (keymap-set input-decode-map "C-[" 'meow-insert-exit)
+  ;; (keymap-set meow-insert-state-keymap "C-[" 'meow-insert-exit)
 
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil
@@ -4044,35 +4044,58 @@ correct package statement needed.
 
 #+name: org-pkg-statement
 #+begin_src emacs-lisp :tangle no
-(condition-case nil
-    (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
-  (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
-(let ((dev-key (and (file-exists-p "~/.ssh/id_rsa.pub")
-                    (= 0 (shell-command "cat ~/.ssh/id_rsa.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
-      (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
-                 (and (file-exists-p default-directory)
-                      (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
-      (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
-                       ;;:pre-build
-                       ;; (with-temp-file "org-version.el"
-                       ;;   (insert "(fset 'org-release (lambda () \"9.6\"))\n"
-                       ;;           (format "(fset 'org-git-version (lambda () \"%s\"))\n"
-                       ;;                   (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
-                       ;;           "(provide 'org-version)\n"))
-                       :includes org)))
-  (prin1-to-string
-   `(package! org-mode
-      :recipe (,@(cond ((and dev-key dev-pkg)
-                        (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
-                       (t
-                        (list :host 'github :repo "emacs-straight/org-mode")))
-               ,@recipe-common)
-      :pin nil)))
+;; (condition-case nil
+;;     (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
+;;   (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
+;; (let ((dev-key (and (file-exists-p "~/.ssh/id_rsa.pub")
+;;                     (= 0 (shell-command "cat ~/.ssh/id_rsa.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
+;;       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
+;;                  (and (file-exists-p default-directory)
+;;                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
+;;       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
+;;                        ;;:pre-build
+;;                        ;; (with-temp-file "org-version.el"
+;;                        ;;   (insert "(fset 'org-release (lambda () \"9.6\"))\n"
+;;                        ;;           (format "(fset 'org-git-version (lambda () \"%s\"))\n"
+;;                        ;;                   (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
+;;                        ;;           "(provide 'org-version)\n"))
+;;                        :includes org)))
+;;   (prin1-to-string
+;;    `(package! org-mode
+;;       :recipe (,@(cond ((and dev-key dev-pkg)
+;;                         (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
+;;                        (t
+;;                         (list :host 'github :repo "emacs-straight/org-mode")))
+;;                ,@recipe-common)
+;;       :pin nil)))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
-<<org-pkg-statement()>>
-(unpin! org-mode) ; there be bugs
+;;<<org-pkg-statement()>>
+(package! org :recipe
+  (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
+         (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
+         :files
+         (:defaults "etc")
+         :build t :pre-build
+         (with-temp-file "org-version.el"
+           (require 'lisp-mnt)
+           (let
+               ((version
+                 (with-temp-buffer
+                   (insert-file-contents "lisp/org.el")
+                   (lm-header "version")))
+                (git-version
+                 (string-trim
+                  (with-temp-buffer
+                    (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+                    (buffer-string)))))
+             (insert
+              (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+              (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+              "(provide 'org-version)\n"))))
+  :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
+(unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
