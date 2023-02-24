@@ -744,7 +744,7 @@ gdscript                     ; the language you waited for
 (java +lsp)                  ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp)                 ; Python, R, and MATLAB in a blender
-(kotlin +lsp)                ; a better, slicker Java(Script)
+;;(kotlin +lsp)                ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
@@ -4072,29 +4072,30 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 ;;<<org-pkg-statement()>>
-(package! org :recipe
-  (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
-         (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
-         :files
-         (:defaults "etc")
-         :build t :pre-build
-         (with-temp-file "org-version.el"
-           (require 'lisp-mnt)
-           (let
-               ((version
-                 (with-temp-buffer
-                   (insert-file-contents "lisp/org.el")
-                   (lm-header "version")))
-                (git-version
-                 (string-trim
-                  (with-temp-buffer
-                    (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-                    (buffer-string)))))
-             (insert
-              (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-              (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-              "(provide 'org-version)\n"))))
-  :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
+;; (package! org :recipe
+;;   (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
+;;          (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
+;;          :files
+;;          (:defaults "etc")
+;;          :build t :pre-build
+;;          (with-temp-file "org-version.el"
+;;            (require 'lisp-mnt)
+;;            (let
+;;                ((version
+;;                  (with-temp-buffer
+;;                    (insert-file-contents "lisp/org.el")
+;;                    (lm-header "version")))
+;;                 (git-version
+;;                  (string-trim
+;;                   (with-temp-buffer
+;;                     (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+;;                     (buffer-string)))))
+;;              (insert
+;;               (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+;;               (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+;;               "(provide 'org-version)\n"))))
+;;   :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
+(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode"))
 (unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
@@ -4116,6 +4117,7 @@ Let =org-id-method= be time stamp. =uuid= is not informative for humans.
 minad's =org-modern= is fashionate.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-modern)
+(unpin! org-modern)
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
