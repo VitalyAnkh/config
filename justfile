@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org
 
 llvm:
   #!/usr/bin/env bash
@@ -36,20 +36,26 @@ config_torch_mlir:
   cd ~/projects/dev/cpp/torch-mlir
   # -DPython3_FIND_VIRTUALENV=ONLY \
   # git submodule update --init
-  git submodule update --recursive
+  #git submodule update --recursive
+  #   -DMLIR_DIR="$LLVM_INSTALL_DIR/lib/cmake/mlir/" \
+  # -DLLVM_DIR="$LLVM_INSTALL_DIR/lib/cmake/llvm/" \
+  mkdir -p build
   git pull
-  export LLVM_INSTALL_DIR=/home/vitalyr/projects/dev/cpp/llvm-project
-  cmake -GNinja -Bbuild \
+  export LLVM_INSTALL_DIR=/home/vitalyr/projects/dev/cpp/llvm-vr/build
+  CC=clang CXX=clang cmake -G Ninja -Bbuild \
   -DCMAKE_BUILD_TYPE=Release \
-  -DMLIR_DIR="$LLVM_INSTALL_DIR/lib/cmake/mlir/" \
-  -DLLVM_DIR="$LLVM_INSTALL_DIR/lib/cmake/llvm/" \
+  -DLLVM_EXTERNAL_PROJECTS="torch-mlir;torch-mlir-dialects" \
+  -DLLVM_EXTERNAL_TORCH_MLIR_SOURCE_DIR="$PWD" \
+  -DLLVM_EXTERNAL_TORCH_MLIR_DIALECTS_SOURCE_DIR="$PWD"/externals/llvm-external-projects/torch-mlir-dialects \
   -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
   -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
   -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
   -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-  -DLIBTORCH_CACHE=ON
-  -DLLVM_TARGETS_TO_BUILD=host .
+  -DLIBTORCH_CACHE=ON \
+  -DLLVM_TARGETS_TO_BUILD=host $HOME/projects/dev/cpp/llvm-vr/llvm
+  cd build
+  time ninja
 
 lean:
   #!/usr/bin/env bash
@@ -62,16 +68,17 @@ config_llvm:
   #!/usr/bin/env bash
   echo "==== pull llvm-project ===="
   cd ~/projects/dev/cpp/llvm-project/
-  trash-put build
+  # trash-put build
   mkdir -p build
   cd build
-  CC=clang CXX=clang++ cmake -G "Ninja" \
+  cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="host;NVPTX" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
+    -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
@@ -81,33 +88,48 @@ config_llvm:
 
 build_local_llvm:
   #!/usr/bin/env bash
-  echo "==== pull llvm-project ===="
+  echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
   git pull
   trash-put build
   mkdir -p build
   cd build
-  CC=clang CXX=clang++ cmake -G "Ninja" \
+  CC=clang CXX=clang++ cmake -G "Ninja" ./ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_ENABLE_PROJECTS="mlir" \
+    -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_CXX_STANDARD=17 ../llvm
   time ninja
-  trash-put $HOME/sdk/lib/llvm
-  cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
+  # trash-put $HOME/sdk/lib/llvm
+  # cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
+  echo "==== build local llvm done ===="
 
 triton:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/triton
   mkdir -p build
   cd build
-  cmake ../ -G Ninja -DMLIR_DIR=$HOME/sdk/lib/llvm/cmake/mlir -DTRITON_BUILD_PYTHON_MODULE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  cmake ../ -G Ninja \
+  -DTRITON_BUILD_PYTHON_MODULE=ON \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DMLIR_DIR=$HOME/projects/dev/cpp/llvm-vr/build/lib/cmake/mlir \
+  -DLLVM_DIR=$HOME/projects/dev/cpp/llvm-vr/build/lib/cmake/llvm \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+
+  #cmake --build .
+  # test
+  # pip install -e '.tests'
+  # pytest -vs test/unit
 
 trash_emacs_cache:
   #!/usr/bin/env bash
@@ -173,16 +195,26 @@ config_mold:
 
 build_circt:
   #!/usr/bin/env bash
-  mkdir -p $HOME/projects/dev/cpp/circt/llvm/build
   cd $HOME/projects/dev/cpp/circt/llvm/build
+  # build llvm
+  #ninja
+  #ninja check-mlir
+  cd $HOME/projects/dev/cpp/circt/build
+  time ninja
+
+config_circt:
+  #!/usr/bin/env bash
+  mkdir -p $HOME/projects/dev/cpp/circt/llvm/build
+  cd $HOME/projects/dev/cpp/circt/
+  git pull
+  cd $HOME/projects/dev/cpp/circt/llvm/build
+  # config llvm
   cmake -G Ninja ../llvm \
   -DLLVM_ENABLE_PROJECTS="mlir" \
   -DLLVM_TARGETS_TO_BUILD="host" \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-  ninja
-  ninja check-mlir
   # build circt
   mkdir -p $HOME/projects/dev/cpp/circt/build
   cd $HOME/projects/dev/cpp/circt/build
