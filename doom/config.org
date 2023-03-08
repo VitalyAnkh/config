@@ -5982,7 +5982,7 @@ What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we c
 have this be performed automatically with =xenops=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! xenops)
+;; (package! xenops)
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle no

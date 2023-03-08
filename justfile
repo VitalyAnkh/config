@@ -279,7 +279,8 @@ godot:
   echo "==== pull godot ===="
   cd ~/projects/dev/cpp/godot
   git pull
-  scons platform=linuxbsd -j 12 target=release_debug compiledb=true
+  scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes
+  #builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_miniupnpc=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no
   echo "==== pull godot done ===="
 
 v8:
@@ -346,11 +347,12 @@ blender:
   #!/usr/bin/env bash
   echo "==== pull blender ===="
   cd ~/projects/dev/c/blender-git/lib
-  svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_centos7_x86_64
+  proxychains -q svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_x86_64_glibc_228
   cd ~/projects/dev/c/blender-git/blender
-  make update
-  make debug developer ccache ninja
-  cp ../build_linux_debug/compile_commands.json .
+  proxychains -q make update
+  LD=mold make debug ninja
+  #developer ccache
+  cp ../build_linux_debug/compile_commands.json ./
   echo "==== pull blender done ===="
 
 redox:
