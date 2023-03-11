@@ -174,7 +174,7 @@ build_taichi:
   export LLVM_PATH=$HOME/sdk/lib/taichi/taichi-llvm-10.0.0-linux
   #. .venv/bin/activate
   export LD=mold
-  export TAICHI_CMAKE_ARGS="-DCMAKE_CXX_COMPILER=${CLANG_PATH}/bin/clang++   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON $TAICHI_CMAKE_ARGS"
+  export TAICHI_CMAKE_ARGS="-DCMAKE_CXX_COMPILER=${CLANG_PATH}/bin/clang++  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON $TAICHI_CMAKE_ARGS"
   export PATH="${LLVM_PATH}/bin:${CLANG_PATH}/bin:$PATH"
   python setup.py develop --user
   cp _skbuild/linux-x86_64-3.10/cmake-build/compile_commands.json .
@@ -191,7 +191,7 @@ config_mold:
   cd build
   CXXFLAGS="-fuse-ld=mold" CC=clang CXX=clang++ cmake -G "Ninja" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
+  -DCMAKE_BUILD_TYPE=Debug ../
 
 build_circt:
   #!/usr/bin/env bash
@@ -350,9 +350,19 @@ blender:
   proxychains -q svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_x86_64_glibc_228
   cd ~/projects/dev/c/blender-git/blender
   proxychains -q make update
-  LD=mold make debug ninja
+  make ccache debug ninja
+  mkdir -p ../build
+  cd ../build
+  #CC=clang CXX=clang++
+  #-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  #CFLAGS="-fopenmp" CXXFLAGS="-fopenmp"
+  cmake -G "Ninja" \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DWITH_LINKER_MOLD=ON ../blender
+  #ninja -j12
   #developer ccache
-  cp ../build_linux_debug/compile_commands.json ./
+  cp ./compile_commands.json ../blender
   echo "==== pull blender done ===="
 
 redox:
@@ -450,7 +460,7 @@ perfbook:
   echo "==== pull perfbook ===="
   cd ~/projects/dev/book/perfbook
   git pull
-  make 1c
+  LANG=en_US.UTF8 make 1c
   cp perfbook-1c.pdf ~/nutstore_files/Books/计算机科学/计算机底层/
   echo "==== pull perfbook done ===="
 
