@@ -909,15 +909,12 @@ I find the ~doom-one-light~ really nice. Oh, and with the nice selection doom pr
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-one-light)
-(use-package doom-themes
-  :config
-  ;;Global settings (defaults)
-  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t ; if nil, italics is universally disabled
-        doom-themes-treemacs-enable-variable-pitch nil)
-  (doom-themes-treemacs-config)
-  (doom-themes-org-config)
-  )
+;;Global settings (defaults)
+(setq
+ doom-themes-enable-bold nil    ; if nil, bold is universally disabled
+ doom-themes-enable-italic t ; if nil, italics is universally disabled
+ doom-themes-treemacs-enable-variable-pitch nil)
+(doom-themes-org-config)
 ;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
 ;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 ;; (delq! t custom-theme-load-path)
@@ -3184,6 +3181,7 @@ Quite often there are superfluous files I'm not that interested in. There's no
 good reason for them to take up space. Let's add a mechanism to ignore them.
 #+begin_src emacs-lisp
 (after! (treemacs dired)
+  (doom-themes-treemacs-config)
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
   (defvar treemacs-file-ignore-globs '()
