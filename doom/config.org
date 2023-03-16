@@ -354,7 +354,6 @@ This is a place I put workarounds. It should be empty in the best scenarios.
       (apply func args)
     ((debug error) (signal (car e) (cdr e)))))
 
-
 (advice-add #'vertico--exhibit :around #'force-debug)
 ;; make org latex preview images' baseline the same as the text
 ;; (defun my-org-latex-preview-advice (beg end &rest _args)
@@ -1700,6 +1699,19 @@ sounds nice to me.
 (package! rotate)
 #+end_src
 
+#+begin_src emacs-lisp :tangle config.el
+(use-package rotate
+  :defer t
+  :init
+  (keymap-set window-prefix-map "SPC" 'rotate-layout)
+  (keymap-set window-prefix-map "r" 'rotate-window)
+  (keymap-set window-prefix-map "m v" 'rotate:main-vertical)
+  (keymap-set window-prefix-map "m h" 'rotate:main-horizontal)
+  (keymap-set window-prefix-map "e v" 'rotate:even-vertical)
+  (keymap-set window-prefix-map "e h" 'rotate:even-horizontal)
+  )
+#+end_src
+
 *** Emacs Everywhere
 The name says it all. It's loaded and set up (a bit) by =:app everywhere=, however
 as I develop this I want the unpinned version I have as a submodule.
@@ -1803,6 +1815,7 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 Doom has a dirvish in ~dired~ module now, but I want to tweak some defaults.
 #+begin_src emacs-lisp :tangle yes
 (use-package dirvish
+  :defer t
   :config
   (setq dirvish-hide-details t
         dirvish-side-follow-buffer-file t)
@@ -1823,6 +1836,7 @@ Doom has a dirvish in ~dired~ module now, but I want to tweak some defaults.
 Let =straight= use our own =org=.
 #+begin_src emacs-lisp
 (use-package straight
+  :defer t
   :config
   (add-to-list 'straight-built-in-pseudo-packages 'org)
   )

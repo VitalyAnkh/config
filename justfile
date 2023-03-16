@@ -60,8 +60,11 @@ config_torch_mlir:
 lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
+  cd ~/projects/dev/lean/lean4/
+  proxychains -q git pull
   cd ~/projects/dev/lean/lean4/build/release
   bear -- make -j20
+  mv ../../compile_commands.json ../../compile_commands.json.bak
   cp compile_commands.json ../../
 
 config_llvm:
