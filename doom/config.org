@@ -846,9 +846,6 @@ aspects are nice, but on others I prefer mononoki.
                              (set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
-                             (add-to-list 'display-buffer-alist
-                                          '("^ \\*Treemacs\\*" display-buffer-in-side-window
-                                            (side . left) (window-width . 25)))
                              ))
 #+end_src
 
@@ -913,10 +910,11 @@ I find the ~doom-one-light~ really nice. Oh, and with the nice selection doom pr
 (setq
  ;; doom-themes-enable-bold nil    ; if nil, bold is universally disabled
  doom-themes-enable-italic t ; if nil, italics is universally disabled
+ doom-themes-padded-modeline t
  doom-themes-treemacs-enable-variable-pitch nil)
 (doom-themes-org-config)
-;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
-;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
 ;; (delq! t custom-theme-load-path)
 #+end_src
 
@@ -5781,19 +5779,19 @@ Let's make title and headings a bit bigger.
 #+begin_src emacs-lisp
 ;; disable =solaire-mode= for org-mode
 (add-hook 'org-mode-hook (lambda () (solaire-mode -1)))
+
 (custom-set-faces!
   '(org-document-title :height 1.3)
   '(org-quote :font "CMU Typewriter Text Italic" :height 1.05)
   '(org-table :font "Sarasa Mono SC" :height 1.05)
-  '(outline-1 :height 1.25)
-  '(outline-2 :height 1.15)
-  '(outline-3 :height 1.12)
-  '(outline-4 :height 1.09)
-  '(outline-5 :height 1.06)
-  '(outline-6 :height 1.03)
-  '(outline-8 :height 1.01)
-  '(outline-9 )
-  )
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
 #+end_src
 
 It seems reasonable to have deadlines in the error face when they're passed.

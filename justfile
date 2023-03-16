@@ -236,7 +236,7 @@ rocm:
   export LLVM_BUILD=$HOME/projects/dev/cpp/llvm-project/build
   cmake -G "Ninja" -DCMAKE_PREFIX_PATH=$LLVM_BUILD -DCMAKE_EXPORT_COMPILE_COMMANDS=ON   -DLLVM_USE_LINKER=mold ..
   #ninja all
-  echo "==== pull ROcm-Device-Libs done ===="
+  echo "==== pull ROCm-Device-Libs done ===="
 
 taichi:
   #!/usr/bin/env bash
@@ -321,7 +321,7 @@ wlroots:
   echo "==== pull wlroots ===="
   cd ~/projects/dev/c/wlroots
   git pull
-  meson build --reconfigure
+  meson setup build
   echo "==== pull wlroots done ===="
 
 mutter:
@@ -329,7 +329,7 @@ mutter:
   echo "==== pull mutter ===="
   cd ~/projects/dev/c/mutter
   git pull
-  meson build --reconfigure
+  meson setup build
   echo "==== pull mutter done ===="
 
 riscv-isa-sim:
@@ -452,7 +452,7 @@ bevy:
   #!/usr/bin/env bash
   echo "==== pull bevy ===="
   cd ~/projects/dev/bevy
-  git pull
+  proxychains -q git pull
   echo "==== pull bevy done ===="
 
 perfbook:
