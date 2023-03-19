@@ -14,7 +14,7 @@ llvm:
   #!/usr/bin/env bash
   echo "==== pull llvm-project ===="
   cd ~/projects/dev/cpp/llvm-project
-  git pull
+  proxychains -q git pull
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
   git add -A
@@ -74,18 +74,21 @@ config_llvm:
   # trash-put build
   mkdir -p build
   cd build
-  cmake -G "Ninja" \
+  cmake -G Ninja \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_TARGETS_TO_BUILD="host;NVPTX" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;openmp" \
+    -DLLVM_TARGETS_TO_BUILD="host;NVPTX;RISCV" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;libclc;clang-tools-extra;openmp;lldb" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" ../llvm
 
@@ -93,23 +96,24 @@ build_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
-  git pull
+  proxychains -q git pull
   trash-put build
   mkdir -p build
   cd build
-  CC=clang CXX=clang++ cmake -G "Ninja" ./ \
+  cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_ENABLE_PROJECTS="mlir" \
+    -DLLVM_ENABLE_PROJECTS="lldb;clang;clang-tools-extra;mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" \
     -DCMAKE_CXX_STANDARD=17 ../llvm
-  time ninja
+  time ninja -j12
   # trash-put $HOME/sdk/lib/llvm
   # cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
   echo "==== build local llvm done ===="

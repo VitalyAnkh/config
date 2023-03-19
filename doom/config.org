@@ -386,6 +386,7 @@ Test some package
 (unpin! magit-popup)
 (unpin! magit-todos)
 (unpin! magit)
+(unpin! popwin)
 (unpin! ace-window)
 (unpin! persp-mode)
 (unpin! avy)
@@ -399,14 +400,25 @@ Test some package
 (unpin! lsp-metals)
 (unpin! elisp-tree-sitter)
 (package! multiple-cursors :disable t)
+(unpin! all-the-icons)
+;; (package! all-the-icons :disable t)
 (unpin! git-gutter)
 ;;(package! consult-recoll)
+;; (package! emacs-nerd-icons
+;;   :recipe (:type git
+;;            :host github
+;;            :repo "rainstormstudio/emacs-nerd-icons"
+;;            :files ("*.el" "data")))
 #+end_src
 
 
 #+begin_src emacs-lisp :tangle config.el
 (after! projectile
   (add-to-list 'projectile-project-root-files "stack.yaml"))
+;; (use-package emacs-nerd-icons
+;;   :custom
+;;   (emacs-nerd-icons-font-family "FiraCode Nerd Font") ;; The Nerd Font you want to use in GUI
+;;   )
 #+end_src
 ** Better defaults
 *** Simple settings
@@ -907,7 +919,7 @@ I find the ~doom-one-light~ really nice. Oh, and with the nice selection doom pr
 (setq doom-theme 'doom-one-light)
 ;;Global settings (defaults)
 (setq
- ;; doom-themes-enable-bold nil    ; if nil, bold is universally disabled
+ doom-themes-enable-bold nil ; if nil, bold is universally disabled
  doom-themes-enable-italic t ; if nil, italics is universally disabled
  doom-themes-padded-modeline t
  doom-themes-treemacs-enable-variable-pitch nil)
@@ -3745,6 +3757,7 @@ pip install ffi-navigator
 
 #+begin_src emacs-lisp
 (use-package lsp
+  :defer t
   :custom
   (lsp-register-client
    (make-lsp-client
@@ -3782,16 +3795,12 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
 #+begin_src emacs-lisp
 (setq auto-mode-alist
       (append
-       '(
-         ("\\.agda\\'" . agda2-mode)
-         ("\\.lagda.md\\'" . agda2-mode)
-         )
+       '(("\\.agda\\'" . agda2-mode)
+         ("\\.lagda.md\\'" . agda2-mode))
        auto-mode-alist))
-;; (add-to-list 'auto-mode-alist '( ("\\.agda\\'" . agda2-mode)
-;;                                  ("\\.lagda.md\\'" . agda2-mode)))
-      #+end_src
+#+end_src
 ** C/C++
-=clang-format-plus= could format C/C++ code only in the modified region. Only formating modified code is a function long awaited, and [[https://github.com/microsoft/vscode/pull/104994][is provided by vscode two years ago]]. Hope I will implement this for any language in the future.
+=clang-format-plus= could format C/C++ code only in the modified region. Only formating modified code is a function long awaited, and [[https://github.com/microsoft/vscode/pull/104994][is provided by vscode three years ago]]. Hope I will implement this feature for any languages in the future.
 #+begin_src emacs-lisp :tangle packages.el
 (package! clang-format+
   :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
