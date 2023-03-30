@@ -923,7 +923,7 @@ I find the ~doom-one-light~ really nice. Oh, and with the nice selection doom pr
  doom-themes-enable-italic t ; if nil, italics is universally disabled
  doom-themes-padded-modeline t
  doom-themes-treemacs-enable-variable-pitch nil)
-(doom-themes-org-config)
+;; (doom-themes-org-config)
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 ;; (delq! t custom-theme-load-path)
@@ -3919,6 +3919,14 @@ I love auto-formatting =OCaml= code.
          :target nil
          :cwd nil)))
 #+end_src
+** WSGL
+Why not use WebGPU?
+#+begin_src emacs-lisp :tangle packages.el
+(package! wgsl-mode :recipe
+  (:host github
+   :repo "acowley/wgsl-mode"
+   :files ("wgsl-mode.el")))
+#+end_src
 ** Plaintext
 It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
 possible to do this without modifying the buffer, so let's condition this block
@@ -4402,6 +4410,10 @@ It's nice to be able to link to music
       org-export-allow-bind-keywords t     ; Bind keywords can be handy
       org-image-actual-width '(0.8)
       org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
+;; used for avy-go-to-char-2
+(keymap-unset org-mode-map "C-'")
+;; used for embark-act
+(keymap-unset org-mode-map "C-,")
 #+end_src
 
 I also like the src_elisp{:comments} header-argument, so let's make that a
@@ -5807,14 +5819,12 @@ Let's make title and headings a bit bigger.
   '(org-document-title :height 1.3)
   '(org-quote :font "CMU Typewriter Text Italic" :height 1.05)
   '(org-table :font "Sarasa Mono SC" :height 1.05)
-  '(outline-1 :weight extra-bold :height 1.25)
-  '(outline-2 :weight bold :height 1.15)
-  '(outline-3 :weight bold :height 1.12)
-  '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.06)
-  '(outline-6 :weight semi-bold :height 1.03)
-  '(outline-8 :weight semi-bold)
-  '(outline-9 :weight semi-bold))
+  '(outline-1  :height 1.25)
+  '(outline-2  :height 1.15)
+  '(outline-3  :height 1.12)
+  '(outline-4  :height 1.09)
+  '(outline-5  :height 1.06)
+  '(outline-6  :height 1.03))
 #+end_src
 
 It seems reasonable to have deadlines in the error face when they're passed.

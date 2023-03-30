@@ -92,6 +92,21 @@ config_llvm:
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" ../llvm
 
+config_cuda_play:
+  #!/usr/bin/env bash
+  echo "==== config CUDA play ===="
+  cd $HOME/projects/dev/cpp/cuda_play
+  mkdir -p build
+  cd build
+  cmake -G "Ninja" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
+    # -DCMAKE_CXX_STANDARD=17
+  echo "==== config CUDA play done ===="
+
+
+
 build_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
