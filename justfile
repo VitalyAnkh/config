@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator
 
 llvm:
   #!/usr/bin/env bash
@@ -483,7 +483,8 @@ perfbook:
   cd ~/projects/dev/book/perfbook
   git pull
   LANG=en_US.UTF8 make 1c
-  cp perfbook-1c.pdf ~/nutstore_files/Books/计算机科学/计算机底层/
+  chmod 0600 /home/vitalyr/nutstore_files/Books/计算机科学/计算机底层/perfbook-1c.pdf
+  cp perfbook-1c.pdf ~/nutstore_files/Books/计算机科学/计算机底层/perfbook-1c.pdf
   echo "==== pull perfbook done ===="
 
 eoc:
@@ -495,6 +496,16 @@ eoc:
   chmod 0600 /home/vitalyr/nutstore_files/Books/计算机科学/编译原理/essentials-of-compilation.pdf
   cp book.pdf ~/nutstore_files/Books/计算机科学/编译原理/essentials-of-compilation.pdf
   echo "==== pull Essentials-of-Compilation done ===="
+
+verilator:
+  #!/usr/bin/env bash
+  echo "==== pull verilator ===="
+  cd ~/projects/dev/cpp/verilator
+  git pull
+  autoconf
+  ./configure
+  bear -- make -j12 objdir=./build
+  echo "==== pull verilator done ===="
 
 chisel-book:
   #!/usr/bin/env bash

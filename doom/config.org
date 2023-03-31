@@ -4411,9 +4411,9 @@ It's nice to be able to link to music
       org-image-actual-width '(0.8)
       org-footnote-auto-adjust t)                 ; let org orgnize footnotes autometely
 ;; used for avy-go-to-char-2
-(keymap-unset org-mode-map "C-'")
+(keymap-set org-mode-map "C-'" 'avy-goto-char-2)
 ;; used for embark-act
-(keymap-unset org-mode-map "C-,")
+(keymap-set org-mode-map "C-," 'embark-act)
 #+end_src
 
 I also like the src_elisp{:comments} header-argument, so let's make that a
