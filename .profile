@@ -33,7 +33,7 @@ export GUAKE_ENABLE_WAYLAND=1
 # for wlroots
 # yeah nvidia 515.43 driver supports VK_EXT_drm_image_format_modifier
 export WLR_RENDERER=vulkan
-export WLR_NO_HARDWARE_CURSORS=1
+#export WLR_NO_HARDWARE_CURSORS=1
 
 # for nvidia proprietary driver
 export LIBVA_DRIVER_NAME=vdpau

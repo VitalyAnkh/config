@@ -164,12 +164,10 @@ trash_emacs_cache:
 build_local_emacs:
   #!/usr/bin/env bash
   cd $HOME/projects/aur/emacs-pgtk-git/src/emacs-git
+  git clean -fdx
   make bootstrap-clean
   make clean
   cd $HOME/projects/aur/emacs-pgtk-git/
-  trash-put ./src/emacs-git/lisp/*elc
-  trash-put ./src/emacs-git/lisp/progmodes/*elc
-  trash-put ./src/emacs-git/lisp/emacs-lisp/*elc
   mksrcinfo
   #makepkg -si
   #proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force

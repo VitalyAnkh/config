@@ -24,6 +24,7 @@
 !fontconfig/
 !gconf/
 !go/
+!hypr/
 !input_method/
 !justfile
 !mako/

@@ -381,6 +381,7 @@ Test some package
 (unpin! lsp-treemacs)
 (package! magit :recipe (:branch "main"))
 (package! ghub :recipe (:branch "main"))
+(unpin! forge)
 (unpin! emacsql)
 (unpin! magit-gitflow)
 (unpin! magit-popup)
@@ -445,6 +446,7 @@ the following:
       dired-mouse-drag-files t                    ; for Emacs 29's drag and drop support
       mouse-drag-and-drop-region-cross-program t
       mouse-1-click-follows-link nil
+      server-raise-frame nil
       )
 
 
@@ -834,11 +836,11 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 19)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'extra-light :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 16)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 35)
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 23)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 23))
+      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 20)
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 20))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -8486,7 +8488,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+name: latex-non-ascii-char-substitutions
 | Character | LaTeX       |
 |-----------+-------------|
-| ɑ          | \(\alpha\)       |
+| ɑ          | \(\alpha\)        |
 | β          | \(\beta\)        |
 | γ          | \(\gamma\)        |
 | δ          | \(\delta\)        |
@@ -8495,14 +8497,14 @@ able to handle anyway. For them we define a table of LaTeX translations
 | ζ          | \(\zeta\)        |
 | η          | \(\eta\)        |
 | θ          | \(\theta\)        |
-| ϑ         | \(\vartheta\)       |
+| ϑ          | \(\vartheta\)        |
 | ι          | \(\iota\)        |
 | κ          | \(\kappa\)        |
 | λ          | \(\lambda\)        |
 | μ          | \(\mu\)        |
 | ν          | \(\nu\)        |
 | ξ          | \(\xi\)        |
-| π         | \(\pi\)       |
+| π          | \(\pi\)        |
 | ϖ         | \(\varpi\)       |
 | ρ          | \(\rho\)        |
 | ϱ          | \(\varrho\) |
@@ -8510,23 +8512,23 @@ able to handle anyway. For them we define a table of LaTeX translations
 | ς          | \(\varsigma\)        |
 | τ          | \(\tau\)        |
 | υ          | \(\upsilon\)        |
-| ϕ         | \(\phi\)        |
+| ϕ         | \(\phi\)       |
 | φ         | \(\varphi\)       |
 | ψ         | \(\psi\)       |
 | ω         | \(\omega\)       |
-| Γ         | \(\Gamma\)       |
+| Γ          | \(\Gamma\)        |
 | Δ         | \(\Delta\)       |
 | Θ         | \(\Theta\)       |
 | Λ         | \(\Lambda\)       |
-| Ξ         | \(\Xi\)       |
+| Ξ          | \(\Xi\)        |
 | Π         | \(\Pi\)       |
 | Σ         | \(\Sigma\)       |
 | Υ         | \(\Upsilon\)       |
 | Φ         | \(\Phi\)       |
 | Ψ         | \(\Psi\)       |
 | Ω         | \(\Omega\)       |
-| א         | \(\aleph\)        |
-| ב         | \(\beth\)       |
+| א          | \(\aleph\)        |
+| ב          | \(\beth\)        |
 | ד          | \(\daleth\) |
 | ג          | \(\gimel\)        |
 
