@@ -61,9 +61,7 @@ I tried out the =spacemacs= distribution a bit, but it wasn't quite to my liking
 Then I heard about =doom emacs= and thought I may as well give that a try.
 TLDR; it's great.
 
-Now I've discovered the wonders of literate programming, and am becoming more
-settled by the day. This is both my configuration, and a cautionary tale (just replace
-"Linux" with "Emacs" in the comic below).
+Now I've discovered the wonders of literate programming, and am becoming more settled by the day. This is both my configuration, and a cautionary tale (just replace "Linux" with "Emacs" in the comic below).
 
 [[xkcd:456]]
 
@@ -837,7 +835,7 @@ trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 16)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 35)
+      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 30)
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 20)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :size 20))
