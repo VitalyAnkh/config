@@ -112,7 +112,7 @@ build_local_llvm:
   echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
   proxychains -q git pull
-  trash-put build
+  # trash-put build
   mkdir -p build
   cd build
   cmake -G "Ninja" \

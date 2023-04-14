@@ -103,3 +103,6 @@ export PATH="$PATH:/usr/lib/jvm/default/bin"
 # >>> add google depot_tools configuration >>>
 export PATH="$PATH:$HOME/sdk/app/depot_tools"
 # <<< add google depot_tools configuration <<<
+
+# for local tools
+export PATH="$PATH:/usr/local/bin"
