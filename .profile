@@ -36,8 +36,6 @@ export WLR_RENDERER=vulkan
 #export WLR_NO_HARDWARE_CURSORS=1
 
 # for nvidia proprietary driver
-export LIBVA_DRIVER_NAME=vdpau
-export VDPAU_DRIVER=nvidia
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export GBM_BACKEND=nvidia-drm
 
@@ -103,6 +101,9 @@ export PATH="$PATH:/usr/lib/jvm/default/bin"
 # >>> add google depot_tools configuration >>>
 export PATH="$PATH:$HOME/sdk/app/depot_tools"
 # <<< add google depot_tools configuration <<<
+
+# for firefox to use nvidia va-api
+export MOZ_DISABLE_RDD_SANDBOX=1
 
 # for local tools
 export PATH="$PATH:/usr/local/bin"

@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys
 
 llvm:
   #!/usr/bin/env bash
@@ -160,6 +160,12 @@ trash_emacs_cache:
   trash-put $HOME/.config/.emacs.d/eln-cache
   trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
+
+yosys:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/yosys
+  git pull
+  bear -- make -j12
 
 build_local_emacs:
   #!/usr/bin/env bash
