@@ -107,3 +107,9 @@ export MOZ_DISABLE_RDD_SANDBOX=1
 
 # for local tools
 export PATH="$PATH:/usr/local/bin"
+
+# for lean
+export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
+
+# for intel oneapi
+export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin"

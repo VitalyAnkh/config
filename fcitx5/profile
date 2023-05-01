@@ -24,7 +24,7 @@ Name=Lang
 # Layout
 Default Layout=us
 # Default Input Method
-DefaultIM=keyboard-ru-phonetic_winkeys
+DefaultIM=mozc
 
 [Groups/1/Items/0]
 # Name

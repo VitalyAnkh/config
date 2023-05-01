@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys
+all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
 
 llvm:
   #!/usr/bin/env bash
@@ -96,13 +96,14 @@ config_cuda_play:
   #!/usr/bin/env bash
   echo "==== config CUDA play ===="
   cd $HOME/projects/dev/cpp/cuda_play
+  trash-put build
   mkdir -p build
   cd build
   cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_CXX_STANDARD=23 \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
-    # -DCMAKE_CXX_STANDARD=17
   echo "==== config CUDA play done ===="
 
 
@@ -473,6 +474,13 @@ ra:
   cd ~/projects/dev/rust-projects/rust-analyzer
   git pull
   echo "==== pull rust-analyzer done ===="
+
+egui:
+  #!/usr/bin/env bash
+  echo "==== pull egui ===="
+  cd ~/projects/dev/rust-projects/egui
+  git pull
+  echo "==== pull egui done ===="
 
 bevy:
   #!/usr/bin/env bash
