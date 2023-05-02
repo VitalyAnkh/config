@@ -25,7 +25,7 @@
 !gconf/
 !go/
 !hypr/
-!input_method/
+#!input_method/
 !justfile
 !mako/
 !microsoft-edge-dev-flags.conf

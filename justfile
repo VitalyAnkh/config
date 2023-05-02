@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
+all: mpv llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
 
 llvm:
   #!/usr/bin/env bash
@@ -332,9 +332,20 @@ mesa:
   echo "==== pull mesa ===="
   cd ~/projects/dev/c/mesa
   git pull
-  cd build
-  meson --reconfigure .. -Dgallium-rusticl=true -Dopencl-spirv=true -Dshader-cache=true -Dllvm=true
+  mkdir -p build
+  meson setup --reconfigure -Dgallium-rusticl=true -Dopencl-spirv=true -Dshader-cache=true -Dllvm=true ./build
+  meson compile -C build
   echo "==== pull mesa done ===="
+
+mpv:
+  #!/usr/bin/env bash
+  echo "==== pull mpv ===="
+  cd ~/projects/dev/c-projects/mpv
+  git pull
+  mkdir -p build
+  meson setup --reconfigure build
+  meson compile -C build
+  echo "==== pull mpv done ===="
 
 iced:
   #!/usr/bin/env bash
