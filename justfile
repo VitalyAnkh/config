@@ -8,7 +8,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: mpv llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
+all: servo mpv llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
 
 llvm:
   #!/usr/bin/env bash
@@ -485,6 +485,13 @@ ra:
   cd ~/projects/dev/rust-projects/rust-analyzer
   git pull
   echo "==== pull rust-analyzer done ===="
+
+servo:
+  #!/usr/bin/env bash
+  echo "==== pull servo ===="
+  cd ~/projects/dev/rust-projects/servo
+  git pull
+  echo "==== pull servo done ===="
 
 egui:
   #!/usr/bin/env bash

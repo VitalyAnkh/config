@@ -113,3 +113,7 @@ export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
 
 # for intel oneapi
 export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin"
+
+export DISABLE_QT5_COMPAT=1
+
+export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
