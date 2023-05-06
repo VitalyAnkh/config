@@ -108,20 +108,21 @@ config_cuda_play:
 
 
 
-build_local_llvm:
+install_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
   proxychains -q git pull
-  # trash-put build
+  trash-put build
   mkdir -p build
   cd build
   cmake -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_ENABLE_PROJECTS="lldb;clang;clang-tools-extra;mlir" \
+    -DLLVM_ENABLE_PROJECTS="clang;mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
@@ -129,8 +130,10 @@ build_local_llvm:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" \
     -DCMAKE_CXX_STANDARD=17 ../llvm
-  time ninja -j12
-  # trash-put $HOME/sdk/lib/llvm
+  cmake --build .
+  trash-put $HOME/sdk/lib/llvm/*
+  #DESTDIR="" cmake --install .
+  cmake --install .
   # cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
   echo "==== build local llvm done ===="
 

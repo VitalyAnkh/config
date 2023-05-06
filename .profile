@@ -117,3 +117,6 @@ export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin"
 export DISABLE_QT5_COMPAT=1
 
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
+
+# for mlir-sys
+export MLIR_SYS_160_PREFIX=$HOME/sdk/lib/llvm
