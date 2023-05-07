@@ -1,6 +1,7 @@
 bt := '0'
 
 export RUST_BACKTRACE := bt
+export LLVM_INSTALL_DIR := "/home/vitalyr/sdk/lib/llvm"
 
 log := "warn"
 
@@ -33,29 +34,56 @@ config_lean:
 
 config_torch_mlir:
   #!/usr/bin/env bash
+  echo "==== config torch-mlir ===="
   cd ~/projects/dev/cpp/torch-mlir
   # -DPython3_FIND_VIRTUALENV=ONLY \
   # git submodule update --init
+  #-DLLVM_EXTERNAL_TORCH_MLIR_DIALECTS_SOURCE_DIR="$PWD"/externals/llvm-external-projects/torch-mlir-dialects \
+    #-DLLVM_EXTERNAL_PROJECTS="torch-mlir;torch-mlir-dialects" \
+    #-DLLVM_EXTERNAL_TORCH_MLIR_SOURCE_DIR="$PWD"\
   #git submodule update --recursive
-  #   -DMLIR_DIR="$LLVM_INSTALL_DIR/lib/cmake/mlir/" \
-  # -DLLVM_DIR="$LLVM_INSTALL_DIR/lib/cmake/llvm/" \
-  mkdir -p build
   git pull
-  export LLVM_INSTALL_DIR=/home/vitalyr/projects/dev/cpp/llvm-vr/build
-  CC=clang CXX=clang cmake -G Ninja -Bbuild \
-  -DCMAKE_BUILD_TYPE=Release \
+  mkdir -p build
+  cmake -G Ninja -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DMLIR_DIR="$LLVM_INSTALL_DIR/lib/cmake/mlir/" \
+    -DLLVM_DIR="$LLVM_INSTALL_DIR/lib/cmake/llvm/" \
+    -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DLIBTORCH_CACHE=ON \
+    -DLLVM_TARGETS_TO_BUILD=host ./
+  # cd build
+  # time ninja
+  echo "==== config torch-mlir done ===="
+
+build_torch_mlir:
+  #!/usr/bin/env bash
+  echo "==== config torch-mlir ===="
+  cd ~/projects/dev/cpp/torch-mlir
+  pwd
+  proxychains -q git submodule update --recursive
+  git pull
+  # Set the variant of libtorch to build link against. `shared`|`static` and optionally `cxxabi11`
+  trash-put build
+  mkdir -p build
+  cmake -G Ninja -B build \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DPython3_FIND_VIRTUALENV=ONLY \
+  -DLLVM_ENABLE_PROJECTS=mlir \
   -DLLVM_EXTERNAL_PROJECTS="torch-mlir;torch-mlir-dialects" \
   -DLLVM_EXTERNAL_TORCH_MLIR_SOURCE_DIR="$PWD" \
   -DLLVM_EXTERNAL_TORCH_MLIR_DIALECTS_SOURCE_DIR="$PWD"/externals/llvm-external-projects/torch-mlir-dialects \
-  -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
-  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-  -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DLIBTORCH_SRC_BUILD=ON \
+  -DLIBTORCH_VARIANT=shared \
+  -DLLVM_USE_LINKER=mold \
+  -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
   -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-  -DLIBTORCH_CACHE=ON \
-  -DLLVM_TARGETS_TO_BUILD=host $HOME/projects/dev/cpp/llvm-vr/llvm
-  cd build
-  time ninja
+  -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+  -DLLVM_TARGETS_TO_BUILD=host externals/llvm-project/llvm
+  echo "==== config torch-mlir done ===="
 
 lean:
   #!/usr/bin/env bash
@@ -69,28 +97,28 @@ lean:
 
 config_llvm:
   #!/usr/bin/env bash
-  echo "==== pull llvm-project ===="
-  cd ~/projects/dev/cpp/llvm-project/
-  # trash-put build
-  mkdir -p build
-  cd build
-  cmake -G Ninja \
+  echo "==== config llvm-project ===="
+  cd $HOME/projects/dev/cpp/llvm-project/
+  trash-put build
+    # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    # -DCMAKE_CXX_COMPILER=clang++ \
+    # -DCMAKE_C_COMPILER=clang \
+    # -DLLVM_USE_LINKER=mold \
+  cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DLLVM_USE_LINKER=mold \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="host;NVPTX;RISCV" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;libclc;clang-tools-extra;openmp;lldb" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;libclc;clang-tools-extra;lldb" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" ../llvm
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind"
+  echo "==== config llvm-project done ===="
+
 
 config_cuda_play:
   #!/usr/bin/env bash
