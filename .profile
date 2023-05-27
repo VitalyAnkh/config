@@ -112,11 +112,12 @@ export PATH="$PATH:/usr/local/bin"
 export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
 
 # for intel oneapi
-export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin"
+export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin:/opt/Xilinx/Vivado/2022.2/bin/"
 
 export DISABLE_QT5_COMPAT=1
 
-export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"
+export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 
 # for mlir-sys
 export MLIR_SYS_160_PREFIX=$HOME/sdk/lib/llvm
+export CUDA_INSTALL_PATH=/opt/cuda

@@ -731,7 +731,7 @@ associated file.
       +local)                ; types of types of types of types...
 ;;beancount                    ; mind the GAAP
 (cc +lsp +tree-sitter)       ; C/C++/Obj-C madness
-(clojure +tree-sitter)                      ; java with a lisp
+(clojure +lsp +tree-sitter)                      ; java with a lisp
 (common-lisp +lsp +tree-sitter)                  ; if you've seen one lisp, you've seen them all
 coq                          ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
@@ -786,24 +786,40 @@ markdown                     ; writing docs for people to ignore
 ;;php                        ; perl's insecure younger brother
 ;;plantuml                   ; diagrams for confusing people more
 ;;purescript                 ; javascript, but functional
-(python +lsp +pyright +tree-sitter)       ; beautiful is better than ugly
+(python
+ +lsp
+ +pyright
+ +tree-sitter)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-(racket +lsp +xp +tree-sitter)            ; a DSL for DSLs
-(raku +lsp +tree-sitter)                         ; the artist formerly known as perl6
+(racket
+ +lsp
+ +xp
+ +tree-sitter)            ; a DSL for DSLs
+(raku
+ +lsp
+ +tree-sitter)                         ; the artist formerly known as perl6
 rest                         ; Emacs as a REST client
 ;;rst                        ; ReST in peace
 (ruby +rails +tree-sitter)                ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-(rust +lsp +tree-sitter)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-(scala +lsp +tree-sitter)                 ; java, but good
+(rust
+ +lsp
+ +tree-sitter)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+(scala
+ +lsp
+ +tree-sitter)                 ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
-(sml +lsp +tree-sitter)                          ; no, the /other/ ML
+(sml
+ +lsp
+ +tree-sitter)                          ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-(zig +lsp +tree-sitter)                   ; C, but simpler
+(zig
+ +lsp
+ +tree-sitter)                   ; C, but simpler
 #+end_src
 
 **** Everything in Emacs
@@ -3770,25 +3786,57 @@ pip install ffi-navigator
 **** ~lsp-bridge~
 Test ~lsp-bridge~.
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! lsp-bridge :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("*")))
-;; (package! acm :recipe (:host github :repo "manateelazycat/lsp-bridge" :files ("acm")))
-;; (package! popon)
-;; (package! acm-terminal :recipe (:host github :repo "twlz0ne/acm-terminal"))
+(package! lsp-bridge
+  :recipe (:host github
+           :repo "manateelazycat/lsp-bridge"
+           :files ("*.el" "*.py" "acm" "core" "langserver"
+                   "multiserver" "resources")))
+(package! popon
+  :recipe (:host nil :repo "https://codeberg.org/akib/emacs-popon.git"))
+(package! acm-terminal
+  :recipe (:host github :repo "twlz0ne/acm-terminal"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-(customize-set-variable 'company-global-modes
-                        (append company-global-modes '(python-mode)))
+#+begin_src emacs-lisp :tangle yes
+;; (customize-set-variable 'company-global-modes
+;;                         (append company-global-modes '(python-mode)))
 
-(use-package lsp-bridge
-  :hook
-  (python-mode . lsp-bridge-mode)
-  :init
-  (setq acm-enable-citre t))
+;; (use-package lsp-bridge
+;;   :hook
+;;   (python-mode . lsp-bridge-mode)
+;;   :init
+;;   (setq acm-enable-citre t))
 
-(unless (display-graphic-p)
-  (after! acm
-    (use-package! acm-terminal)))
+;; (use-package lsp-bridge
+;;   :delight (lsp-bridge-mode "")
+;;   :config
+;;   (require 'yasnippet)
+;;   (yas-global-mode 1)
+
+;;   (require 'lsp-bridge)
+;;   (global-lsp-bridge-mode)
+;;   (setq lsp-bridge-c-lsp-server "clangd"
+;;         acm-enable-yas nil
+;;         acm-enable-tabnine nil
+;;         lsp-bridge-enable-hover-diagnostic t
+;;         acm-enable-codeium t)
+;;   ;; (setq lsp-bridge-signature-show-function 'lsp-bridge-signature-posframe)
+;;   (map! :mode prog-mode
+;;         (:leader
+;;          :desc "Rename symbol" "c r" #'lsp-bridge-rename
+;;          :desc "Diagnostics list" "c x" #'lsp-bridge-diagnostic-list
+;;          :desc "Code actions" "c a" #'lsp-bridge-code-action
+;;          :desc "Format document" "c f" #'lsp-bridge-code-format))
+
+;;   (add-to-list '+lookup-definition-functions #'lsp-bridge-find-def)
+;;   (add-to-list '+lookup-implementations-functions #'lsp-bridge-find-impl)
+;;   (add-to-list '+lookup-references-functions #'lsp-bridge-find-references)
+;;   (add-to-list '+lookup-type-definition-functions #'lsp-bridge-find-type-def)
+;;   (add-to-list '+lookup-documentation-functions #'lsp-bridge-popup-documentation)
+
+;;   (unless (display-graphic-p)
+;;     (with-eval-after-load 'acm
+;;       (require 'acm-terminal))))
 #+end_src
 ** Agda
 Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That's a bug and it's easy to fix.

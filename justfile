@@ -15,7 +15,7 @@ llvm:
   #!/usr/bin/env bash
   echo "==== pull llvm-project ===="
   cd ~/projects/dev/cpp/llvm-project
-  proxychains -q git pull
+  git pull
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
   git add -A
@@ -32,7 +32,7 @@ config_lean:
   cd build/release
   LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../..
 
-config_torch_mlir:
+config_torch_mlir_with_external_project:
   #!/usr/bin/env bash
   echo "==== config torch-mlir ===="
   cd ~/projects/dev/cpp/torch-mlir
@@ -58,12 +58,12 @@ config_torch_mlir:
   # time ninja
   echo "==== config torch-mlir done ===="
 
-build_torch_mlir:
+config_torch_mlir:
   #!/usr/bin/env bash
   echo "==== config torch-mlir ===="
   cd ~/projects/dev/cpp/torch-mlir
   pwd
-  proxychains -q git submodule update --recursive
+  git submodule update --recursive
   git pull
   # Set the variant of libtorch to build link against. `shared`|`static` and optionally `cxxabi11`
   trash-put build
@@ -89,7 +89,7 @@ lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
   cd ~/projects/dev/lean/lean4/
-  proxychains -q git pull
+  git pull
   cd ~/projects/dev/lean/lean4/build/release
   bear -- make -j20
   mv ../../compile_commands.json ../../compile_commands.json.bak
@@ -103,7 +103,6 @@ config_llvm:
     # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     # -DCMAKE_CXX_COMPILER=clang++ \
     # -DCMAKE_C_COMPILER=clang \
-    # -DLLVM_USE_LINKER=mold \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=Debug \
@@ -115,6 +114,7 @@ config_llvm:
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17 \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind"
   echo "==== config llvm-project done ===="
@@ -140,7 +140,7 @@ install_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
-  proxychains -q git pull
+  git pull
   trash-put build
   mkdir -p build
   cd build
@@ -535,7 +535,7 @@ bevy:
   #!/usr/bin/env bash
   echo "==== pull bevy ===="
   cd ~/projects/dev/bevy
-  proxychains -q git pull
+  git pull
   echo "==== pull bevy done ===="
 
 perfbook:
