@@ -1,7 +1,7 @@
 *
 *.log
 !alacritty/
-!albert/
+!albert/*
 !ardour6/
 !aseprite/
 !autostart/
@@ -25,7 +25,7 @@
 !gconf/
 !go/
 !hypr/
-#!input_method/
+!input_method/
 !justfile
 !mako/
 !microsoft-edge-dev-flags.conf
@@ -37,6 +37,7 @@
 !sway/
 !vim/
 !wofi/
+!zoxide/*
 !bochsrc.disk
 !build-redox.sh
 !build_taichi.sh
@@ -59,7 +60,6 @@
 !yakuakerc
 !ysyx_set_env.sh
 !ysyx_unset_env.sh
-
 
 **/elpa/**
 **/eln-cache/**
