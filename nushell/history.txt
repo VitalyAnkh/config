@@ -1292,3 +1292,230 @@ ec .gitignore
 git st
 git rm -r --cached ./
 git st
+git add -A
+git st
+git commit -m "move '.log' to .gitignore's end"
+git st
+pqp
+git push
+nvfortran --version
+pqd sync -u
+emacs --version
+pqp
+pqp
+pqp clash-verge
+heroic 
+paru clash-verge
+pqp clash-verge
+sudo pacman -R clash-verge
+pqp clash-verge
+ls
+pqp
+zi bevy
+pq git pull
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+zi config
+git st
+git diff
+git diff nushell/history.txt
+cd nushell/
+git st
+file history.txt
+ec history.txt
+zi bevy
+nvfortran --version
+nu
+nvfortran --version
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_foxes --release
+zi hpc_sdk
+git st
+ls
+cd modulefiles/
+ls
+cd nvhpc-hpcx-cuda12/
+ls
+cd 23.5
+ls
+file `23.5`
+ec `23.5`
+ls
+cd ..
+ls
+cd ..
+ls
+fd nvfortran
+cd Linux_x86_64/23.5/
+ls
+cd compilers/
+ls
+cd bin
+ls
+cd ..
+ls
+zi servo
+git st
+git stash
+pq git pull
+git pull
+zi unreal
+ls
+file .gitignore
+ec .gitignore
+git st
+git rm -r --cached ./
+git st
+git add -A
+git commit -m "update .gitignore"
+git st
+git log
+git st
+pqp
+CC=gcc-12 CXX=g++-12 proxychains -q ./mach build -d
+pqp fxload
+zi blender
+ls
+git st
+cd dconf/
+ls
+git st
+ls
+cd user
+git st
+bat user
+file user
+zi unreal_play
+ls
+ec .gitignore
+git st
+zi servo
+git stash apply
+git st
+cd components/webgpu/
+pq cargo update
+cargo build
+pq rustup update
+pqp
+zi aur
+git st
+ls
+git clone ssh://aur@aur.archlinux.org/vivado.git
+cd vivado/
+ls
+ll
+pq nix search nixpkgs emacs
+pqp
+pqp
+ls
+cp ../emacs-pgtk-git/.gitignore ./
+ls
+ll
+lla
+ls -a
+git st
+ec PKGBUILD
+git st
+git diff
+mksrcinfo 
+git st
+git add -A
+git commit -m "Update to 2023.1"
+git st
+git push
+pqp
+which kill
+echo $env.PATH
+ps aux
+ps -aux
+ps
+pqp
+gcc-11 --version
+gcc --version
+clang --version
+pqp cataclysm
+CC=gcc-12 CXX=g++-12 proxychains -q ./mach build -d
+CC=gcc-12 CXX=g++-12 proxychains -q paru cataclysm
+zi emacs-projects
+ls
+zi rust-projects
+ls
+cd rune
+ls
+git pull
+onefetch
+git log
+pq cargo run -- --gui
+git st
+git co -b bevy_iced_gui
+git st
+ls
+cd src
+ls
+touch bevy_iced_gui.rs
+cargo add bevy_iced
+pq cargo run -- --gui
+pq cargo run -- --bevy_iced_gui
+pq cargo run -- --bevy-iced-gui
+git st
+git diff
+pq cargo run -- --bevy-iced-gui
+WINIT_UNIX_BACKEND=wayland pq cargo run -- --bevy-iced-gui
+x11
+xeyes
+WINIT_UNIX_BACKEND=x11 pq cargo run -- --bevy-iced-gui
+cd ..
+WINIT_UNIX_BACKEND=x11 pq cargo run -- --bevy-iced-gui
+WINIT_UNIX_BACKEND=wayland pq cargo run -- --bevy-iced-gui
+WINIT_UNIX_BACKEND=wayland pq cargo run --features=wayland -- --bevy-iced-gui
+cargo run --features=wayland -- --bevy-iced-gui
+RUST_LOG=debug RUST_BACKTRACE=1 cargo run --features=wayland -- --bevy-iced-gui
+zi rune
+git st
+pqp
+RUST_LOG=debug RUST_BACKTRACE=1 pq cargo run --features=wayland -- --bevy-iced-gui
+ls
+WINIT_UNIX_BACKEND=wayland pq cargo run -- --bevy-iced-gui
+pqp
+pqp zotero-beta
+type curl
+ls
+pqp atuin
+mkdir ~/.local/share/atuin/
+ls
+zi nushell
+ec env.nu
+ec config.nu
+flang-new --help
+ls
+git st
+ls
+ec config.nu
+ls
+zi fish
+ls
+pqp
+nvidia-smi 
+ping steampowred.com
+ping steampowered.com
+pqd sync -u
+pqp
+ec config.fish
+pqp
+pqp
+git st
+git diff nushell/env.nu
+zi nushell/
+zi nushell
+ls
+ec env.nu
+ls
+sudo btrfs filesystem show
+pqp zotero-beta
+pqp
+ls
+ls
+git st
+ls
+zi nushell
+ls
+git st
+ec env.nu

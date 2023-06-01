@@ -544,6 +544,7 @@ let-env config = {
 source ~/.config/zoxide/zoxide.nu
 # I think starship is a little bit over post-modern
 # source ~/.config/starship/init.nu
+#source ~/.local/share/atuin/init.nu
 
 alias ll = lsd -l
 alias pqp = proxychains -q paru

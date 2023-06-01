@@ -104,3 +104,4 @@ doom/config.el
 doom/packages.el
 doom/init.el
 *.log
+*.dump

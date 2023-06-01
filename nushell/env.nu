@@ -93,3 +93,4 @@ let-env PATH = ($env.PATH | split row (char esep) | prepend '/usr/lib/ccache/bin
 
 zoxide init nushell | save -f ~/.config/zoxide/zoxide.nu
 # starship init nu | save -f ~/.config/starship/init.nu
+# atuin init nu | save ~/.local/share/atuin/init.nu
