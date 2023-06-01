@@ -1,8 +1,0 @@
-- hosts: localhost
-  become: true
-  connection: local
-  pre_tasks: 
-    - name: full system upgrade
-      pacman:
-        update-cache: true
-        upgrade: true

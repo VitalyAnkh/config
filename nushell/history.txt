@@ -1,0 +1,1280 @@
+ls
+ll
+l
+ll
+pqp
+hx
+helix
+zi 
+help
+help str
+help str substring
+help str trim
+pqp
+ls
+git st
+fish
+pqp
+ls
+zi 
+nu.env-path
+$nu.env-path
+code /home/vitalyr/.config/nushell/env.nu
+ls
+starship
+starship init
+starship init nu
+help save
+man save
+which save
+where save
+$nu.env-path
+date
+ls
+ll
+ls
+kill nu
+$nu.env-path
+$nu.config-path
+ls
+ll
+pqp
+ls
+ll
+ls
+ll
+nu
+nu
+quit
+nu
+nu
+zi nushell
+ll
+zi nushell
+zi servo
+zi clone
+zi build
+ec 
+pqp
+zi config
+ls
+ll
+ls
+git st
+ec .gitignore
+ls
+tp nu
+ls
+ec config.nu
+ls
+zi config
+tp nu
+ls
+git st
+git diff .gitignore
+git diff doom/config.org
+git add -A
+git st
+git commit -m "add nushell config<\n>"
+git st
+git log
+ls
+ll
+time fish -i -c exit
+which time
+time nu -i -c exit
+time bash -i -c exit
+time fish -i -c exit
+git st
+ls
+nu --version
+where nu
+whereis nu
+which whereis
+pacman -Qo /usr/bin/whereis
+ls
+pqp nu
+ppq nu
+pqp nu
+pqp nushell
+which nu
+whereis nu
+nu --version
+ls
+zi bevy
+ls
+git st
+which ls
+ls
+cd nushell
+ls
+$nu.env
+$nu.env-path
+$nu.current-exe
+cargo uninstall nu
+/usr/bin/ls
+ls
+zi bevy
+ls
+zi config
+ls
+cd tilix
+ls
+ls --help
+ls -s
+tp #justfile#
+ls
+zi bevy
+git st
+ls
+pqp command-not-found
+zi confg
+zi config
+zi fish
+ls
+git st
+cd functions/
+ls
+git log fish_prompt.fish
+cd ..
+ls
+zi pacman
+ls
+cd pkg
+ls
+cd ..
+ls
+cd /var/log/
+ls
+cat pacman.log
+ls
+ec .
+ec .gitignore
+git st
+cp zoxide.nu ./zoxide/
+mkdir zoxide
+ls
+cp zoxide.nu ./zoxide/
+ls
+git st
+ec nushell/
+git st
+ec nushell/config.nu
+ls
+zi pacman
+$nu.current-exe
+$nu.os-info
+neofetch 
+git st
+git add zoxide/
+git st
+ec .gitignore
+git st
+rm #justfile#
+rm "#justfile#"
+ls
+git st
+ec .gitignore
+git st
+zi config
+ls
+git st
+git --version
+ls
+mkdir starship
+ec config.nu
+ec .gitignore
+ls
+git st
+nvidia-smi 
+ls
+ec nushell/config.nu
+ls
+zi agda
+git st
+git pull
+zi agda
+git pull
+zi servo
+ls
+git st
+git pull
+git restore Cargo.lock
+git st
+git restore Cargo.lock
+git pull
+ls
+proxychains -q cabal install Agda --allow-newer --overwrite-policy=always
+ls
+pq ghcup list
+./mach build -d
+pq ghcup list
+ls
+agda-mode locate
+agda --version
+zi agda
+git pull
+elan --help
+lean --version
+which lean
+elan update
+pq elan update
+make install-bin
+git st
+git pull
+pqp
+pq cs update
+fish
+pqp
+nu
+pqp
+nu
+nu
+nu
+nu
+fish
+nu
+fish
+nu
+nu
+fish
+fish
+ls
+fish
+ls
+helix /home/vitalyr/.config/nushell/env.nu
+zi config
+ls
+zi config
+cd .config
+ls
+ec nushell/config.nu
+cd zoxide/
+ls
+tp zoxide.nu
+ls
+zi config
+cd ..
+ls
+which nu
+$nu.config-path
+$nu.env-path
+nix-env -h
+ec nushell/env.nu
+git st
+ls
+ll
+pqp
+ls
+zoxide
+pqp zoxide
+paru zoxide
+$HOME
+echo $HOME
+ls
+ec nushell/env.nu
+which nu
+zi conifg
+zi config
+pqp
+ls
+cargo uninstall zoxide
+ls
+$PATH
+echo $PATH
+echo PATH
+env
+icpx --version
+zi cuda_play
+ls
+icpx -fsycl -fsycl-targets=nvptx64-nvidia-cuda oneapi_play.cpp -o oneapi_play
+./oneapi_play
+zi fish
+pqp firefox-nightly-bin
+opam --help
+ec .
+ls
+zoom
+echo $nu.path
+echo $nu.env-path
+echo $nu.startup-time
+echo $nu.home-path
+echo $nu.history-path
+echo $nu.scope
+$env.PATH
+ls
+$env.PATH
+flang-new -h
+ls
+opam update
+source ~/.profile
+. ~/.profile
+$env.XDG_CONFIG_HOME
+pqp foot-git
+pqp epoll-shim
+ls
+pqp foot
+pqp foot-git
+zi bevy
+ proxychains -q env RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example screenshot
+git pull
+pq git pull
+ proxychains -q env RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example screenshot
+pqp
+ec .
+zi bevy
+ proxychains -q env RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example screenshot
+ proxychains -q env RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_fox
+ proxychains -q env RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_foxes
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_foxes
+ls
+pqp
+paru heroic
+pqp epoll
+zi foot
+cd ../foot
+ls
+ec foot.ini
+pqp
+sudo update-grub 
+btm
+pqp
+pqp qbit
+ls
+qt6ct
+zi servo
+git st
+ls
+zi rust_play
+git pull
+git st
+CC=gcc-12 CXX=g++-12 ./mach build -d
+cargo run -p tutorial2_surface --bin tutorial_surface
+cargo run -p tutorial2_surface --bin tutorial2
+cargo run -p tutorial2_surface --bin tutorial2_surface
+CC=gcc-12 CXX=g++-12 pq ./mach build -d
+zi bevy
+ls
+sudo snapper list
+sudo snapper delete 339-560
+sudo snapper list
+pqp
+pqp digital
+pqp digital-git
+archlinux-java status
+sudo archlinux-java set java-11-openjdk
+pqp
+which java
+java --version
+pqp digital-git
+sudo archlinux-java set java-20-openjdk
+java --version
+digital
+sudo archlinux-java set java-11-openjdk
+digital
+sudo archlinux-java set java-20-openjdk
+java --version
+pqp
+ps | where cpu > 0
+ps
+which ps
+pqp
+sudo archlinux-java set java-20-openjdk
+pqp
+btm
+pqd 
+pqp
+zi config
+cd nushell/
+ls
+ec config.nu
+pqd sync
+ec config.nu
+pqd sync
+pqd sync -u
+z
+z config
+pqp
+pq rustup update
+rustc --version
+pqd sync -u
+pqp emacs-pgtk
+zi config
+just trash_emacs_cache
+zi repos
+tp org
+pqd sync -u
+pqd sync
+emacs
+zi aur
+ls
+cd emacs-pgtk-git/
+ls
+pqp
+makepkg -si
+zi config
+just trash_emacs_cache
+zi repos
+tp org
+zi config
+pqd sync -u
+pqp
+pqd sync
+pqd sync -u
+just all
+pqp cataclysm
+CC=gcc-12 CXX=g++-12 pq cataclysm
+export CC=gcc-12
+CC=gcc-12 CXX=g++-12 proxychain -q paru cataclysm
+CC=gcc-12 CXX=g++-12 proxychains -q paru cataclysm
+zi airshipper
+ls
+cd profiles/
+ls
+cd default/
+zi rust-projects
+ls
+git clone git@github.com:veloren/Airshipper.git cataclysm-god
+voleron
+zi airshipper
+ls
+cd profiles/
+ls
+cd default/
+ls
+veloren
+pq airshipper
+pqp
+pqp unreal
+ls
+`Unreal Engine/`
+cd ..
+ls
+zi unreal
+ls
+cd Engine/
+ls
+cd Binaries/
+ls
+cd ..
+ls
+zi application
+ls
+ec unreal-engine.desktop
+ls
+zi unreal
+/opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+ls
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+zi unreal
+ls
+cd ..
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+cd unreal/
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor unreal_play/
+ls
+tp unreal_play/
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+ls
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+btm
+nvidia-smi 
+unrealSDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+ls
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor unreal_play2
+ls
+cd unreal_play2
+ls
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor ./unreal_play2
+pwd
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor /home/vitalyr/projects/dev/unreal/unreal_play2
+ls
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+cd ..
+cd /opt/unreal-engine/
+ls
+chmod -R a+rwX /opt/unreal-engine/Engine
+sudo chmod -R a+rwX /opt/unreal-engine/Engine
+ls
+ll
+sudo chmod 777 ./
+ls
+ll
+cd ..
+sudo chmod 777 unreal-engine/
+ls
+ll
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+ls
+lla
+ll
+EditorSDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+nvidia-smi 
+pqp
+nu
+nu
+pqp
+pqp firefox-nightly-bin
+zi config
+pq rustup update
+git st
+git add -A
+git commit -m "add dataclysm config"
+git st
+git push
+pqd sync -u
+pqp vivado
+zi vivado
+zi clone
+ls
+cd vivado
+ls
+git st
+pqp
+zi redox
+git st
+pqd sync -u
+zi agda
+make pull
+zi unreal
+cd ../unreal_play
+git st
+git init
+git st
+git add -A
+du -sh
+du
+pq make pull
+du -l
+du --help
+/bin/du -sh
+git st
+git commit -m "Initial commit"
+git st
+touch .gitignore
+ls
+ec .gitignore
+ls
+tp Saved/Logs/
+tp Saved/Crashes/
+ec .gitignore
+git st
+ls
+ls -l
+echo $env.PATH
+echo $env.EDITOR
+git st
+git diff
+git stash
+pq make pull
+tldr ln
+pq tldr --update
+glances
+pq cargo install-update --all
+pqp
+zoxide --version
+which zoxide
+zi llvm
+pqd sync -u
+which zig
+pqp zig
+zls --version
+zi godot
+ls
+git st
+zi godot
+git log
+pq git pull
+git pull
+git remote -v
+git st
+git pull
+make all
+git stash apply
+git st
+make all
+just godot
+pqp
+zi cudafor
+zi hpc
+ls
+cd ..
+fd cudafor
+code Linux_x86_64/23.3/compilers/src/cudafor.f90
+ec Linux_x86_64/23.3/compilers/src/cudafor.f90
+ls
+pqp
+pqp
+sudo snapper list
+sudo snapper help
+sudo snapper --help
+sudo snapper --list
+sudo snapper list
+sudo snapper delete 561-584
+pqp
+paru
+snapper list-configs
+sudo pacman -Syu
+pqp
+pq cs update
+pq ghcup list
+pqp red-alert
+pqp open-ra
+pqp openra
+openra
+pacman -Ql openra
+openra-ra
+pqp
+nvidia-smi 
+SDL_VIDEODRIVER=x11 openra-ra
+openra-ra
+openra-cnc 
+zi config
+cd openra/
+ls
+pqp openra
+openra-ra
+neofetch 
+SDL_VIDEODRIVER=x11 openra-ra
+openra-ra
+ls
+zi config
+cd openra/
+ls
+ec settings.yaml
+SDL_VIDEODRIVER=x11 openra-ra
+ls
+pqp
+pqp
+ls
+pqp
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+nix-channel --update
+nix-env -u
+pq nix-env -u
+pq nix-channel --update
+pq nix-env -u
+pqp
+zi servo
+git st
+git stash
+pq git pull
+pqp firefox-nightly-bin
+git pull
+git st
+git stash apply
+cd components/webgpu/
+git st
+ls
+cargo build
+pqd sync -u
+cargo update
+pq cargo update
+git st
+ls
+pq cargo build
+pq ghcup list
+ls
+ghc --version
+ls
+ghci
+pqp ghci
+which lean4-lsp
+lean4-lsp
+lean4 --version
+lean --version
+elan
+hls --version
+haskell-language-server
+elan update
+ec env.nu
+haskell-language-server -h
+haskell-language-server-wrapper -h
+which lean 
+which leanpkg
+whereis lean
+cd ../../
+ls
+cd .elan/
+ls
+cd toolchains/
+ls
+cd leanprover--lean4---nightly/
+ls
+cd bin
+ls
+leanmake --version
+which leanmake
+nix-env -u lean
+nix-env -e lean
+nix-env -e lean4
+emacs
+ls
+ls | rg lean
+which lean
+file /home/vitalyr/.nix-profile/bin/lean
+nix-env -e elan
+lean
+which lean
+elan --version
+ec env.nu
+lean
+which lean
+elan update
+elan --help
+elan
+$env.PATH
+elan
+elan --help
+/home/vitalyr/.elan/toolchains/leanprover--lean4---nightly/bin/elan
+elan
+pqp elan
+agda --version
+which agda
+pqp
+ocaml --version
+pq cabal update
+which ocaml
+opam update
+whereis ocaml
+cd .opam/
+ls
+nix-env -i elan
+gcc --version
+whereis gcc
+/opt/cuda/bin/gcc --version
+file /opt/cuda/bin/gcc
+nix/store/s33zmwm9rpq2scdls08i711g12rh7ppr-user-environment/bin/gcc --version
+pq nix-env -i elan
+/nix/store/s33zmwm9rpq2scdls08i711g12rh7ppr-user-environment/bin/gcc --version
+elan --help
+opam upgrade
+which lean
+eval $(opam env)
+opam env
+all
+all 1 0
+ocaml --version
+which ocaml
+pqp ocaml
+pqp
+zi agda
+pq git pull
+git pull
+steam-runtime 
+steam
+steam-native 
+nu
+nu
+nu
+nu
+fish
+fish
+pqp
+pqp
+haskell-language-server-wrapper -h
+$env.PATH
+zi nushell
+ls
+haskell-language-server-wrapper -h
+pqp
+$env.XDG_CONFIG_HOME
+$env.XDG_CONFIG_HOME/go
+ec env.nu
+pqp
+pqd sync -u
+ion
+pqp ion
+pqp ion-shell
+pqp emacs-pgtk-git
+zi config
+just trash_emacs_cache
+zi repos
+tp org
+pqp
+date
+date now
+ls
+date format
+date now
+ls
+date format
+date now | date format
+date help
+date --help
+ec env.nu
+pqd sync -u
+pqd sync
+emacs
+haskell-language-server-wrapper -h
+nu
+nu
+nu
+nu
+nu
+haskell-language-server-wrapper -h
+zi config
+ls
+cd /usr/lib/emacs/ls
+cd /usr/lib/emacs/
+ls
+cd 30.0.50/
+ls
+cd native-lisp/
+ls
+cd emacs-pgtk-git/
+ls
+cd 30.0.50-b8695516/
+ls
+file AT386-b4139e9e-893f6c67.eln
+readelf -h
+ls
+zi nushell
+ls
+ec env.nu
+readelf -p .comment AT386-b4139e9e-893f6c67.eln
+pqd sync -u
+which clangd
+whereis clangd
+ls
+zi fortran
+ls
+flang-new -fc1 -fdebug-pre-fir-tree do_concurrent.f90
+pqp
+bat history.txt
+paru
+pqp bat
+pq cargo install bat --force
+pqd sync -u
+pqp zotero
+xeyes
+fdsaflds\
+zi nushell
+pqp
+skija
+pqp skija
+bat
+cargo uninstall bat
+xeyes
+pqp
+pqp
+ls
+pqp
+ls
+zi kitty
+ls
+ec kitty.conf
+kill kitty
+ls
+llsfds
+ls
+nvidia-smi 
+mathematica 
+pqp
+kill tilix
+ls
+lsfdsals
+ls
+zi flang
+ls
+zi config
+zi servo
+ls
+fds
+ls
+zi servo
+ls
+git st
+cd components/webgpu/
+cd ..
+git stash
+git pull
+git stash apply
+cd components/webgpu/
+cargo build
+pq rustup update
+pqp
+nvidia-smi 
+zi servo
+ls
+nvidia-smi 
+ls
+zi kitty
+ls
+ec kitty.conf
+ls
+zi kitty
+ls
+kill kitty
+ec /etc/environment
+sudo nvim /etc/environment
+git st
+ls
+pqp goldendict
+ls
+paru unreal
+zi unreal
+ls
+goldendict 
+SDL_VIDEODRIVER=x11 /opt/unreal-engine/Engine/Binaries/Linux/UnrealEditor
+pqp
+ls
+zi servo
+ls
+zi servo
+ls
+zi nushell
+ls
+zi kitty
+ls
+ec kitty.conf
+kfdsa 
+ls
+kitty
+ls
+zi kitty
+ec kitty.conf
+kitty
+zi config
+git st
+ec .gitignore
+git st
+ec .gitignore
+git st
+cd ..
+git st
+ls
+git st
+pqp
+emacs --version
+xeyes
+/usr/lib/
+ls
+file libSDL2-2.0.so
+file libSDL2-2.0.so.0
+LD_PRELOAD="/usr/lib/libSDL2-2.0.so:/usr/lib32/libSDL2-2.0.so" steam-native
+pqp nvidia
+LD_PRELOAD="/usr/lib/libSDL2-2.0.so:/usr/lib32/libSDL2-2.0.so" steam-native
+pqp nvidia
+pqp nvidia-open
+pqp
+zi kitty
+ls
+lds
+ls
+sudo journalctl -x -b
+kitty
+ls
+zi servo
+kitty
+ls
+kitty
+ls
+touch kitty.sample.conf
+fpsapfj
+ls
+cat kitty.sample.conf
+ec kitty.sample.conf
+ec kitty.conf
+ec kitty.conf
+ls
+ec kitty.sample.conf
+ls
+kitty
+ls
+convert -h
+ls
+zi Pictures
+ls
+cd beauty/
+cd 艺术/
+ls
+pwd
+ec kitty.conf
+kill kitty
+ls
+zi kitty
+ls
+zi Pictures
+ls
+zi beauty/
+ls
+convert Gustav_Klimt_-_Allegory_of_Sculpture_-_1889.jpg Gustav_Klimt_-_Allegory_of_Sculpture_-_1889.png
+ls
+kitty
+cd /home/vitalyr/Pictures/beauty
+zi Pictures
+ls
+pwd
+kitty
+ls
+kitty
+zi kitty
+ec kitty.conf
+ec kitty.conf
+btm
+ls
+pqp zotero
+pqp
+pqp nvidia-beta
+ls ls
+pq rustup update
+pqd sync -u
+sudo btrfs filesystem show
+sudo snapper list
+pqp nvidia-beta
+pqp
+gnome-tweaks 
+blender
+zi config
+pqp
+just perfbook
+just all
+pqp nvidia-beta
+pqp
+pqd sync -u
+pqp firefox-nightly-bin
+zi git st
+zi llvm
+zi llvm-tools
+git st
+git diff HEAD~1 HEAD
+zi rust_play
+git st
+ls
+cd wgpu_tutorial/
+ls
+cargo new bevy_test
+git st
+cd bevy_test/
+ls
+cargo add bevy
+cargo run -p bevy_test
+echo $env.WAYLAND_DEBUG
+echo $env.WAYLAND_DISPLAY
+cargo run -p bevy_test
+pq cargo run -p bevy_test
+cargo run -p bevy_test
+../../target/debug/bevy_test
+cargo run -p bevy_test
+cargo run -p bevy_testcd ..
+cd ..
+ls
+touch shell.nix
+ls
+ec shell.nix
+nix-shell 
+pq nix-shell 
+ls
+pq nix-channel --update
+pqp
+zi bevy
+git pull
+pq git pull
+git st
+git co main
+pq git pull
+git st
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_foxes
+git st
+pqp
+pq nix-channel --update
+ls
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --example many_foxes --release
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example many_foxes --release
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --example many_foxes --release
+neofetch 
+ls
+git st
+ls
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --example many_foxes --release
+Hyprland 
+ls
+airshipper
+WINIT_UNIX_BACKEND=x11 airshipper
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example spawner
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d/spawner
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d/spawner | rg spawner
+cd examples/3d/
+ls
+cd ../..
+ls
+fd spawner
+git co add_wm_class
+git st
+tp screenshot-0.png
+tp screenshot-1.png
+git st
+git rebase main
+git st
+git log
+git st
+git remote -v
+git push github --force-with-lease
+git st
+pqp
+pqd sync -u
+ls
+ls
+pqd sync -u
+pqp
+git st
+nix-shell
+ls
+zi nushell
+ls
+ec config.nu
+zi kitty
+ec kitty.conf
+pqp
+kitty
+kill kitty
+ls
+zi bevy
+ls
+zi iced
+pqp
+zi bevy
+git st
+git co main
+git co -b enable_wayland_csd
+git st
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+git st
+git diff
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+git st
+git diff
+git add -A
+git commit -m "Add winit's wayland-csd-adwaita feature to Bevy's wayland feature"
+git push github
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+git st
+git co main
+git st
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+git st
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run -p tour
+RUST_BACKTRACE=1 RUST_LOG=info WGPU_BACKEND=vulkan cargo run --features wayland --example 3d_scene
+pq cargo deny check bans
+pq cargo deny check bans | code -
+pqp
+pqp
+pqd sync -u
+pqp nvidia-beta
+pqd sync -u
+pqp firefox-nightly-bin
+pqp nvidia-open
+sudo snapper list
+sudo snapper delete 585-686
+sudo btrfs filesystem show
+pqp oneapi
+zi cuda_play
+ls
+ipp --version
+ippcp --version
+zi oneapi
+ls
+cd compiler/
+ls
+cd latest/
+ls
+cd lib/l
+cd lib/
+ls
+cd ..
+ls
+cd linux/
+ls
+cd bin
+ls
+icpx --version
+./icpx --version
+pqp emacs-pgtk-git
+ls
+cd ia32/
+ls
+cd ..
+ls
+cd intel64/
+ls
+cd ..
+ls
+ll
+icpx
+which icpx
+echo $env.PATH
+pqp
+flang-new -h
+flang-new --help
+zi nushell
+ls
+which gcc
+conda --version
+jshell
+cd .local/bin
+ls
+zi config
+just trash_emacs_cache
+zi repos
+tp org
+jshell
+ls
+echo $env.PATH
+pqd sync -u
+ec env.nu
+bon
+zi profile.d
+ls
+ll
+ec config.nu
+source_nvhpc
+ls
+file nvhpc.sh
+cat nvhpc.sh
+source 
+source /etc/profile.d/nvhpc.sh
+nvfortran 
+nvfortran -h
+nvfortran --version
+source_oneapi
+icpx
+ls
+nvcc
+zi cuda
+ls
+cd ibn
+cd bin
+ls
+./nvcc --version
+zi nushell
+ec env.nu
+nvcc --version
+emacs --version
+nvaccelinfo 
+ls
+cd ..
+git st
+git diff .gitignore
+git rm -r --cached .
+git st
+cd misc/
+ls
+cat root-profile
+cd ..
+git st
+cat doom/snippets/latex-mode/enumerate
+git st
+git rm -r --cached .
+git st
+git rm -r --cached .
+git st
+git rm -r --cached ./
+git st
+git rm -r --cached ./
+git add -A
+git st
+git add -A
+git st
