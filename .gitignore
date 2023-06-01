@@ -1,5 +1,4 @@
 *
-*.log
 !alacritty/
 !alacritty/*
 !albert/
@@ -24,8 +23,8 @@
 !catfish/*
 # vscode's flags
 !code-flags.conf
-!/containers
-!/containers/*
+!containers
+!containers/*
 !dconf/
 !dconf/*
 !doom
@@ -54,6 +53,7 @@
 !kitty
 !kitty/*
 !make
+!mako/
 !mako/*
 !microsoft-edge-dev-flags.conf
 !misc/
@@ -103,3 +103,4 @@
 doom/config.el
 doom/packages.el
 doom/init.el
+*.log

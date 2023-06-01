@@ -1278,3 +1278,17 @@ git add -A
 git st
 git add -A
 git st
+git add -A
+git st
+git commit -m "update .gitignore, make git-ignore except some subdirectories work"
+git st
+git push
+ls
+ec .gitignore
+git st
+git rm -r --cached ./
+git st
+ec .gitignore
+git st
+git rm -r --cached ./
+git st
