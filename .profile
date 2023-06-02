@@ -76,7 +76,7 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-export PATH="/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+export PATH="$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
 export SDK_DIR=$HOME/sdk
 
@@ -112,7 +112,7 @@ export PATH="$PATH:/usr/local/bin"
 export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
 
 # for intel oneapi
-export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin:/opt/Xilinx/Vivado/2022.2/bin/"
+# export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin:/opt/Xilinx/Vivado/2022.2/bin/"
 
 export DISABLE_QT5_COMPAT=1
 

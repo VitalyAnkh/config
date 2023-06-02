@@ -1519,3 +1519,18 @@ zi nushell
 ls
 git st
 ec env.nu
+pqp nvidia-beta
+pqp zotero-beta
+pqp zotero
+pqp
+ls
+git st
+nvfortran --version
+icpx --version
+echo $env.LD_LIBRARY_PATH
+nvfortran --version
+which nvfortran
+nvfortran --version
+which nvfortran
+echo $env.PATH
+echo $env.LD_LIBRARY_PATH
