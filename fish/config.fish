@@ -1,22 +1,18 @@
-# erase the GDK_BACKEND variable
-# set -e GDK_BACKEND
 set fish_greeting
-
-# TODO: which config set the LD_LIBRARY_PATH variable?
-# it shouldn't do this.
-# set -e LD_LIBRARY_PATH
-
-source $HOME/.profile
+# if test -e /home/vitalyr/.nix-profile/etc/profile.d/nix.fish; . /home/vitalyr/.nix-profile/etc/profile.d/nix.fish; end # added by Nix installer
 
 # include config.d/*
 
 zoxide init fish | source
 # mcfly init fish | source
 
+source $HOME/.profile
+
 eval (opam env)
 set -gx WAKATIME_HOME "$HOME/.wakatime"
 
 #string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
+abbr -a -- am ambient
 abbr -a -- soneapi "bash -c 'source /opt/intel/oneapi/setvars.sh ; exec fish'"
 abbr -a -- snvhpc "bash -c 'source /etc/profile.d/nvhpc.sh ; exec fish'"
 abbr -a -- q QT_QPA_PLATFORM= # imported from a universal variable, see `help abbr`
@@ -51,6 +47,7 @@ abbr -a -- setproxy 'set socks_proxy socks5://127.0.0.1:1080; echo "Socks5 Proxy
 abbr -a -- tg telegram-desktop
 abbr -a -- usp 'set -e socks_proxy; echo "Socks Proxy off";'
 abbr -a -- rm_llvm_env 'set PATH (string match -v /home/vitalyr/projects/dev/cpp/llvm-project/build/bin $PATH)'
+abbr -a -- rm_nix_env 'set PATH (string match -v /home/vitalyr/.nix-profile/bin $PATH)'
 abbr -a -- chez chez-scheme
 abbr -a -- tp trash-put
 abbr -a -- set_llvm_env 'set PATH /home/vitalyr/projects/dev/cpp/llvm-project/build/bin $PATH'

@@ -850,11 +850,11 @@ fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer mononoki.
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :weight 'light :size 16)
-      doom-big-font (font-spec :family "JetBrains Mono" :weight 'light :size 30)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 28)
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 20)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 20))
+      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 18)
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -3294,7 +3294,7 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    treemacs-indentation 1
    treemacs-recenter-after-file-follow t
    treemacs-recenter-after-tag-follow t
-   treemacs-text-scale -1.2
+   treemacs-text-scale -1.1
    treemacs-follow-mode t
    treemacs-width 25
    )
@@ -3316,7 +3316,7 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
 #+begin_src emacs-lisp
 (after! (treemacs ace-window)
   (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers))
-)
+  )
 #+end_src
 ** Frivolities
 *** xkcd

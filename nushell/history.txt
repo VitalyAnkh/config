@@ -1534,3 +1534,20 @@ nvfortran --version
 which nvfortran
 echo $env.PATH
 echo $env.LD_LIBRARY_PATH
+pqp
+zi config
+ec justfile
+soneapi
+fish
+snvhpc
+fish
+soneapi
+which ld
+which mold
+ec justfile
+ec .profile
+kill kitty
+echo $env.PATH
+pqp nushell
+ls
+git st

@@ -33,7 +33,7 @@ export GUAKE_ENABLE_WAYLAND=1
 # for wlroots
 # yeah nvidia 515.43 driver supports VK_EXT_drm_image_format_modifier
 export WLR_RENDERER=vulkan
-#export WLR_NO_HARDWARE_CURSORS=1
+export WLR_NO_HARDWARE_CURSORS=1
 
 # for nvidia proprietary driver
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
@@ -50,7 +50,7 @@ export MOZ_WEBRENDER=1
 export SAL_USE_VCLPLUGIN=gtk3
 
 # For Qt5
-export QT_QPA_PLATFORM=wayland
+# export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
 #export QT_SCREEN_SCALE_FACTOR=1
@@ -61,7 +61,7 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=0
 export ECORE_EVAS_ENGINE=wayland_egl
 export ELM_ENGINE=wayland_egl
 # For SDL
-export SDL_VIDEODRIVER=wayland
+export SDL_VIDEODRIVER="wayland,x11"
 # For Flatpak
 # flatpak run --socket=wayland
 # For GLFW
@@ -76,7 +76,7 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-export PATH="$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+export PATH="$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin"
 
 export SDK_DIR=$HOME/sdk
 
@@ -121,3 +121,4 @@ export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 # for mlir-sys
 export MLIR_SYS_160_PREFIX=$HOME/sdk/lib/llvm
 export CUDA_INSTALL_PATH=/opt/cuda
+export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
