@@ -401,7 +401,6 @@ Test some package
 (unpin! elisp-tree-sitter)
 (package! multiple-cursors :disable t)
 (unpin! all-the-icons)
-;; (package! all-the-icons :disable t)
 (unpin! git-gutter)
 ;;(package! consult-recoll)
 ;; (package! emacs-nerd-icons
@@ -413,8 +412,6 @@ Test some package
 
 
 #+begin_src emacs-lisp :tangle config.el
-(after! projectile
-  (add-to-list 'projectile-project-root-files "stack.yaml"))
 ;; (use-package emacs-nerd-icons
 ;;   :custom
 ;;   (emacs-nerd-icons-font-family "FiraCode Nerd Font") ;; The Nerd Font you want to use in GUI
@@ -2473,6 +2470,8 @@ add package src directories to projectile. This isn't desirable in my opinion.
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+(after! projectile
+  (add-to-list 'projectile-project-root-files "stack.yaml"))
 #+end_src
 
 *** Ispell
