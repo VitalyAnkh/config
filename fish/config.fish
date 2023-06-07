@@ -56,3 +56,8 @@ abbr -a -- pc proxychains
 abbr -a -- gl 'git pull'
 abbr -a -- pq 'proxychains -q'
 abbr -a -- sle 'set PATH /home/vitalyr/projects/dev/cpp/llvm-project/build/bin $PATH'
+abbr -a --position anywhere -- V '--version'
+abbr -a -- pqo "pacman -Qo"
+abbr -a -- pql "pacman -Ql"
+abbr -a -- pqi "pacman -Qi"
+abbr -a -- pfio "platformio"

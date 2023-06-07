@@ -3686,7 +3686,7 @@ about it?
   (setq elcord-use-major-mode-as-main-icon t))
 #+end_src
 *** Flycheck
-I don't like the default error checking. Let's make.
+I don't like the default error checking. Let's tweak.
 #+begin_src emacs-lisp
 (defun init-flycheck-hook ()
   (remove-hook 'post-command-hook 'flycheck-maybe-display-error-at-point-soon 'local)
@@ -3870,7 +3870,7 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
 #+end_src
 ** Grammarly
 I use =grammarly= to check my writing.
-#+begin_src emacs-lisp :tangle packages.Symbol's function definition is void: consult--readl
+#+begin_src emacs-lisp :tangle packages.el
 ;;(package! lsp-grammarly)
 #+end_src
 
@@ -3881,6 +3881,13 @@ I use =grammarly= to check my writing.
 ;;                        (lsp)))
 ;; )  ; or lsp-deferred
 #+end_src
+** Just
+=just= is a command runner. It's a great tool to run commands like =Makefile=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! just-mode
+  :recipe (:host github :repo "leon-barrett/just-mode.el"))
+#+end_src
+
 ** Lean
 Use ~Lean~ to prove you are a prover!
 
@@ -8534,27 +8541,27 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+name: latex-non-ascii-char-substitutions
 | Character | LaTeX       |
 |-----------+-------------|
-| ɑ          | \(\alpha\)        |
+| ɑ         | \(\alpha\)       |
 | β          | \(\beta\)        |
 | γ          | \(\gamma\)        |
 | δ          | \(\delta\)        |
 | ε          | \(\epsilon\)        |
 | ϵ          | \(\varepsilon\)        |
 | ζ          | \(\zeta\)        |
-| η          | \(\eta\)        |
+| η         | \(\eta\)       |
 | θ          | \(\theta\)        |
-| ϑ          | \(\vartheta\)        |
+| ϑ         | \(\vartheta\)       |
 | ι          | \(\iota\)        |
-| κ          | \(\kappa\)        |
+| κ         | \(\kappa\)       |
 | λ          | \(\lambda\)        |
-| μ          | \(\mu\)        |
+| μ         | \(\mu\)       |
 | ν          | \(\nu\)        |
 | ξ          | \(\xi\)        |
-| π          | \(\pi\)        |
+| π         | \(\pi\)       |
 | ϖ         | \(\varpi\)       |
 | ρ          | \(\rho\)        |
-| ϱ          | \(\varrho\) |
-| σ          | \(\sigma\)        |
+| ϱ         | \(\varrho\) |
+| σ         | \(\sigma\)       |
 | ς          | \(\varsigma\)        |
 | τ          | \(\tau\)        |
 | υ          | \(\upsilon\)        |
@@ -8562,20 +8569,20 @@ able to handle anyway. For them we define a table of LaTeX translations
 | φ         | \(\varphi\)       |
 | ψ         | \(\psi\)       |
 | ω         | \(\omega\)       |
-| Γ          | \(\Gamma\)        |
+| Γ         | \(\Gamma\)       |
 | Δ         | \(\Delta\)       |
 | Θ         | \(\Theta\)       |
 | Λ         | \(\Lambda\)       |
-| Ξ          | \(\Xi\)        |
+| Ξ         | \(\Xi\)       |
 | Π         | \(\Pi\)       |
 | Σ         | \(\Sigma\)       |
 | Υ         | \(\Upsilon\)       |
 | Φ         | \(\Phi\)       |
 | Ψ         | \(\Psi\)       |
 | Ω         | \(\Omega\)       |
-| א          | \(\aleph\)        |
-| ב          | \(\beth\)        |
-| ד          | \(\daleth\) |
+| א         | \(\aleph\)        |
+| ב         | \(\beth\)       |
+| ד         | \(\daleth\) |
 | ג          | \(\gimel\)        |
 
 #+name: gen-latex-non-ascii-char-substitutions
