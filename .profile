@@ -122,3 +122,7 @@ export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 export MLIR_SYS_160_PREFIX=$HOME/sdk/lib/llvm
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+
+export JAVA_HOME=$HOME/.jdks/temurin-19.0.2
+
+export PATH="$HOME/.jdks/temurin-19.0.2/bin:$PATH"

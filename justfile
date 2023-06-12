@@ -95,6 +95,12 @@ lean:
   mv ../../compile_commands.json ../../compile_commands.json.bak
   cp compile_commands.json ../../
 
+deploy_emacs:
+  #!/usr/bin/env bash
+  cd ~/
+  zip -r emacs.d.zip .emacs.d
+  mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
+
 config_llvm:
   #!/usr/bin/env bash
   echo "==== config llvm-project ===="
