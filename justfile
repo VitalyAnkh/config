@@ -101,30 +101,45 @@ deploy_emacs:
   zip -r emacs.d.zip .emacs.d
   mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
 
-config_llvm:
+
+config_latest_llvm:
   #!/usr/bin/env bash
   echo "==== config llvm-project ===="
   cd $HOME/projects/dev/cpp/llvm-project/
+  git pull
   trash-put build
     # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     # -DCMAKE_CXX_COMPILER=clang++ \
     # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@17/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@17/bin/clang \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@17 \
+    -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_TARGETS_TO_BUILD="host;NVPTX;RISCV" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;libclc;clang-tools-extra;lldb" \
+    -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind"
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind"
   echo "==== config llvm-project done ===="
 
+install_latest_llvm:
+  #!/usr/bin/env bash
+  echo "==== build newest llvm ===="
+  cd $HOME/projects/dev/cpp/llvm-project/build
+  cmake --build .
+  sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
+  sudo ln -s /usr/local/opt/llvm@17 /usr/local/opt/llvm
+  echo "==== build newest llvm done ===="
 
 config_cuda_play:
   #!/usr/bin/env bash
@@ -140,20 +155,21 @@ config_cuda_play:
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
   echo "==== config CUDA play done ===="
 
-
-
 install_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
   cd ~/projects/dev/cpp/llvm-vr/
-  git pull
+  # git pull
   trash-put build
   mkdir -p build
   cd build
-  cmake -G "Ninja" \
+  cmake ../llvm -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@16 \
     -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_ENABLE_PROJECTS="clang;mlir" \
@@ -162,25 +178,24 @@ install_local_llvm:
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libc;libcxx;libcxxabi;libunwind" \
-    -DCMAKE_CXX_STANDARD=17 ../llvm
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt"
   cmake --build .
-  trash-put $HOME/sdk/lib/llvm/*
-  #DESTDIR="" cmake --install .
-  cmake --install .
-  # cmake -DCMAKE_INSTALL_PREFIX=$HOME/sdk/lib/llvm -P cmake_install.cmake
+  # trash-put $HOME/sdk/lib/llvm/*
+  sudo cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build local llvm done ===="
 
 triton:
   #!/usr/bin/env bash
+  export LLVM_ROOT_DIR=/usr/local/opt/llvm@17
   cd $HOME/projects/dev/cpp/triton
   mkdir -p build
   cd build
+  export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
+  export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
   cmake ../ -G Ninja \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DTRITON_BUILD_PYTHON_MODULE=ON \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DMLIR_DIR=$HOME/projects/dev/cpp/llvm-vr/build/lib/cmake/mlir \
-  -DLLVM_DIR=$HOME/projects/dev/cpp/llvm-vr/build/lib/cmake/llvm \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
   -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
@@ -593,3 +608,5 @@ algoxy-book:
   cp algoxy-en.pdf ~/nutstore_files/Books/计算机科学/算法/
   cp algoxy-zh-cn.pdf ~/nutstore_files/Books/计算机科学/算法/
   echo "==== pull algoxy-book done ===="
+
+book: perfbook chisel-book algoxy-book eoc

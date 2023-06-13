@@ -92,7 +92,7 @@ export PATH="/usr/lib/ccache/bin:$PATH"
 
 export PATH="$PATH:/opt/cuda/bin"
 
-export PATH="$PATH:/home/vitalyr/projects/dev/cpp/llvm-project/build/bin"
+# export PATH="$PATH:/home/vitalyr/projects/dev/cpp/llvm-project/build/bin"
 export PATH="$PATH:/home/vitalyr/projects/dev/cpp/circt/build/bin"
 
 # for jshell
@@ -119,10 +119,12 @@ export DISABLE_QT5_COMPAT=1
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 
 # for mlir-sys
-export MLIR_SYS_160_PREFIX=$HOME/sdk/lib/llvm
+export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
+export PATH="/usr/local/opt/llvm@17/bin:$PATH"
+
 export JAVA_HOME=$HOME/.jdks/temurin-19.0.2
 
-export PATH="$HOME/.jdks/temurin-19.0.2/bin:$PATH"
+export PATH="$JAVA_HOME/bin:$PATH"

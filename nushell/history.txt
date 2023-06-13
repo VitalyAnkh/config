@@ -1551,3 +1551,9 @@ echo $env.PATH
 pqp nushell
 ls
 git st
+ls
+flang-new --help
+which flang-new
+just triton
+zi config
+ec .profile

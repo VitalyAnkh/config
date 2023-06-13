@@ -84,7 +84,7 @@ let-env NU_PLUGIN_DIRS = [
 ]
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-let-env PATH = ($env.PATH | split row (char esep) | prepend '/usr/lib/ccache/bin' | append '~/.nix-profile/bin' | append '~/.cargo/bin' | append '~/.local/bin' | append '~/projects/dev/cpp/llvm-project/build/bin' | append '~/.ghcup/bin' | append '~/.elan/toolchains/leanprover--lean4---nightly/bin' | append
+let-env PATH = ($env.PATH | split row (char esep) | prepend '/usr/lib/ccache/bin' | append '~/.nix-profile/bin' | append '~/.cargo/bin' | append '~/.local/bin' | append '~/.ghcup/bin' | append '~/.elan/toolchains/leanprover--lean4---nightly/bin' | append
 '~/.local/share/coursier/bin' | append '~/sdk/lib/flutter/bin' | append '/usr/bin/vendor_perl/' | append '/usr/lib/jvm/default/bin' | append '/usr/local/bin' | append '~/.local/bin' | append '/home/vitalyr/.local/share/gem/ruby/3.0.0/bin' | append '/opt/intel/oneapi/compiler/latest/linux/bin' | append '/opt/cuda/bin' | append '/opt/anaconda/bin')
 
 # let-env XDG_CONFIG_HOME = ~/.config
