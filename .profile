@@ -105,9 +105,6 @@ export PATH="$PATH:$HOME/sdk/app/depot_tools"
 # for firefox to use nvidia va-api
 export MOZ_DISABLE_RDD_SANDBOX=1
 
-# for local tools
-export PATH="$PATH:/usr/local/bin"
-
 # for lean
 export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
 
@@ -118,13 +115,17 @@ export DISABLE_QT5_COMPAT=1
 
 export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 
-# for mlir-sys
+# for the rust crate mlir-sys
 export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
+
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
 export PATH="/usr/local/opt/llvm@17/bin:$PATH"
 
 export JAVA_HOME=$HOME/.jdks/temurin-19.0.2
+
+# for local tools
+export PATH="/usr/local/bin:$PATH"
 
 export PATH="$JAVA_HOME/bin:$PATH"
