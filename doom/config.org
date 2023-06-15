@@ -851,8 +851,8 @@ aspects are nice, but on others I prefer mononoki.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-big-font (font-spec :family "JetBrains Mono" :size 28)
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 18)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
+      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 16)
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 16))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
