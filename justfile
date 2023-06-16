@@ -466,6 +466,14 @@ mutter:
   meson setup build
   echo "==== pull mutter done ===="
 
+mutter:
+  #!/usr/bin/env bash
+  echo "==== config vlc ===="
+  cd ~/projects/dev/c/vlc
+  git pull
+  meson setup build
+  echo "==== config vlc done ===="
+
 riscv-isa-sim:
   #!/usr/bin/env bash
   echo "==== pull riscv-isa-sim ===="
