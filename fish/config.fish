@@ -15,6 +15,7 @@ set -gx WAKATIME_HOME "$HOME/.wakatime"
 abbr -a -- am ambient
 abbr -a -- soneapi "bash -c 'source /opt/intel/oneapi/setvars.sh ; exec fish'"
 abbr -a -- snvhpc "bash -c 'source /etc/profile.d/nvhpc.sh ; exec fish'"
+abbr -a -- sconda "bash -c 'source /etc/profile.d/conda.sh ; exec fish'"
 abbr -a -- q QT_QPA_PLATFORM= # imported from a universal variable, see `help abbr`
 abbr -a -- ls lsd
 abbr -a -- qtx 'env QT_QPA_PLATFORM=xcb'

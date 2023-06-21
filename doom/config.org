@@ -336,12 +336,18 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 ;; (keymap-global-set "C->" 'tab-line-switch-to-next-tab)
 (setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
 
+;; I like line numbers
+(use-package! global-display-line-numbers-mode
+  :hook (prog-mode . global-display-line-numbers-mode))
+
 (defadvice copilot--complete-post-command (around intercept activate)
   (condition-case err
       ad-do-it
     ;; Let the debugger run
     ((debug error) (signal (car err) (cdr err)))))
+
 (setq straight-repository-branch "develop")
+
 (setq native-comp-async-jobs-number 20)
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)

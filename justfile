@@ -181,6 +181,8 @@ install_llvm_for_triton:
 
 config_and_install_llvm_for_triton: config_llvm_for_triton install_llvm_for_triton
 
+config_and_install_latest_llvm: config_latest_llvm install_latest_llvm
+
 config_cuda_play:
   #!/usr/bin/env bash
   echo "==== config CUDA play ===="
@@ -466,7 +468,7 @@ mutter:
   meson setup build
   echo "==== pull mutter done ===="
 
-mutter:
+vlc:
   #!/usr/bin/env bash
   echo "==== config vlc ===="
   cd ~/projects/dev/c/vlc
