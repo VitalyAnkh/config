@@ -136,7 +136,7 @@ install_latest_llvm:
   #!/usr/bin/env bash
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-project/build
-  cmake --build .
+  cmake --build . -j8
   sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
   sudo ln -s /usr/local/opt/llvm@17 /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
@@ -175,7 +175,7 @@ install_llvm_for_triton:
   #!/usr/bin/env bash
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-triton/build
-  cmake --build .
+  cmake --build . -j8
   sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
   echo "==== build newest llvm done ===="
 
