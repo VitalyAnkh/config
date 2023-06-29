@@ -374,6 +374,7 @@ Test some package
 (package! separate-inline :recipe
   (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
+(package! yasnippet :disable t)
 (package! org-fragtog)
 (unpin! haskell-mode)
 (unpin! treemacs)
@@ -386,6 +387,8 @@ Test some package
 (package! magit :recipe (:branch "main"))
 (package! ghub :recipe (:branch "main"))
 (unpin! forge)
+(unpin! yasnippet)
+(unpin! auto-yasnippet)
 (unpin! emacsql)
 (unpin! magit-gitflow)
 (unpin! magit-popup)
@@ -397,6 +400,7 @@ Test some package
 (unpin! avy)
 (unpin! vertico)
 (unpin! closql)
+(unpin! centaur-tabs)
 (unpin! consult)
 (unpin! compat)
 (unpin! marginalia)
@@ -857,8 +861,8 @@ aspects are nice, but on others I prefer mononoki.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-big-font (font-spec :family "JetBrains Mono" :size 28)
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 16)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 16))
+      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
+      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -3874,6 +3878,15 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
             c-mode
             org-msg-edit-mode)) ; doesn't need a formatter
 #+end_src
+** CUDA
+Use =c++-mode= to edit =.cu= files. It's more suitable than =cuda-mode=.
+#+begin_src emacs-lisp
+(setq auto-mode-alist
+      (append
+       '(("\\.cu\\'" . c++-mode))
+       auto-mode-alist))
+#+end_src
+
 ** Grammarly
 I use =grammarly= to check my writing.
 #+begin_src emacs-lisp :tangle packages.el
