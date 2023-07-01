@@ -4206,6 +4206,7 @@ correct package statement needed.
 ;;               "(provide 'org-version)\n"))))
 ;;   :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
 (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode"))
+(unpin! org-mode)
 (unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"

@@ -91,7 +91,6 @@ lean:
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
   cd ~/projects/dev/lean/lean4/build/release
   make -j10
-  cp compile_commands.json ../../
 
 deploy_emacs:
   #!/usr/bin/env bash
@@ -489,9 +488,9 @@ blender:
   #!/usr/bin/env bash
   echo "==== pull blender ===="
   cd ~/projects/dev/c/blender-git/lib
-  proxychains -q svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_x86_64_glibc_228
+  svn checkout https://svn.blender.org/svnroot/bf-blender/trunk/lib/linux_x86_64_glibc_228
   cd ~/projects/dev/c/blender-git/blender
-  proxychains -q make update
+  make update
   make ccache debug ninja
   mkdir -p ../build
   cd ../build
