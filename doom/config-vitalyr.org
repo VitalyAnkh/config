@@ -312,6 +312,7 @@ for more info).
 #!/usr/bin/env bash
 #+end_src
 ** Personal Information
+
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
 (setq user-full-name "VitalyR"
@@ -328,6 +329,976 @@ my home machine is pretty safe, and my laptop is shutting down a lot.
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 #+end_src
+** Confpkg
+*** Motivation
+
+Previously, all of my configuration was directly tangled into =config.el=. This
+/almost/ satisfies my use. Occasionally though, I'd want to apply or extract a
+/specific bit/ of my config in an elisp script, such as some of my Org-export
+customisations. This is a hassle, either loading my entire config (of which 90%
+simply complicates the state), or manually copying the relevant code in pieces,
+one source block at a time (just a different kind of hassle). While I'd like to
+think my config is "greater than the sum of its parts", much of it can be safely
+clumped into self-contained packets of functionality.
+
+One afternoon I thought "wouldn't it be nice if I could just load a few of those
+self-contained chunks of my config", then I started thinking about how I could
+have that /and/ =config.el=. This is the result.
+
+*** Design
+
+It's already natural to organise blocks of config under sections, and we can use
+=:noweb-ref= with a =header-args:emacs-lisp= property to direct all child source
+blocks into a single parent. We could have two parents, one tangling to
+=subconf/config-X.el= and the other to =config.el=, however this will duplicate
+any evaluations required to generate the content, which isn't great
+(particularly for things which take a moment, like checking for LaTeX
+packages). Instead we can /just/ write to the =subconf/*= files and then at the
+end of tangling extract their contents into =config.el=.
+
+#+begin_src dot :file misc/confpkg.svg :results file graphics
+digraph {
+    graph [bgcolor="transparent"];
+    node  [shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="Alegreya Sans"];
+    edge  [color="#aaaaaa" penwidth="1.2" fontname="Alegreya Sans"]
+    rankdir="LR"
+    "config.org" [color="#4db5bd"]
+    "config.el" [color="#e69055"]
+    node[color="#a991f1"]
+    "subconf/config-magit.el"
+    "subconf/config-org.el"
+    "subconf/config-?.el"
+    node[color="#51afef"]
+    "config.org" -> "Magit#src1" -> "subconf/config-magit.el" -> "config.el"
+    "config.org" -> "Magit#src2" -> "subconf/config-magit.el"
+    "config.org" -> "Org#src1" -> "subconf/config-org.el" -> "config.el"
+    "config.org" -> "Org#src2" -> "subconf/config-org.el"
+    "config.org" -> "Org#..." -> "subconf/config-org.el"
+    "config.org" -> "(etc.)#..." -> "subconf/config-?.el" -> "config.el"
+}
+#+end_src
+
+#+caption: Flow of code information from the literate config into the generated files.
+#+attr_html: :class invertible :alt DAG showing code block info go to config-*.el files then config.el
+#+attr_latex: :width 0.7\linewidth
+#+RESULTS:
+[[file:misc/confpkg.svg]]
+
+To set this up within each section, instead of manually repeating a common form
+we can generate the form and supply the relevant section properties via a babel
+call keyword, like so:
+
+#+begin_src org
+,* Subject
+
+,#+call: confpkg("subject")
+
+,#+begin_src emacs-lisp
+;; Code that configures the subject...
+,#+end_src
+#+end_src
+
+This isn't entirely straightforward, but with some mild abuse of noweb and babel
+we can make it work!
+
+*** Preparation
+
+This approach is built around =#+call= invocations that affect the tangling.
+Unfortunately for this use-case, babel call keywords are not executed on tangle.
+Tangled noweb blocks /are/ however, and so we can fudge the behaviour we want by
+tangling a noweb block to a temp file, with a noweb block that executes babel
+calls in the buffer.
+
+#+name: confpkg-prepare
+#+begin_src emacs-lisp :noweb no-export
+(condition-case nil
+    (progn
+      (message "Intitialising confpkg")
+      <<bootstrap>>
+      (org-fold-core-ignore-fragility-checks
+        (org-babel-map-executables nil
+          (when (eq (org-element-type (org-element-context)) 'babel-call)
+            (org-babel-lob-execute-maybe)))))
+  (quit (revert-buffer t t t)))
+#+end_src
+
+See the [[Bootstrap]] section for an explanation of the =<<bootstrap>>= noweb reference.
+
+#+header: :tangle (expand-file-name (make-temp-name "emacs-org-babel-excuses/confpkg-prepare-") temporary-file-directory)
+#+begin_src emacs-lisp :noweb no-export :mkdirp yes :export-embed no
+<<confpkg-prepare()>>
+#+end_src
+
+*** Setup
+
+Before generating the template with babel, we want to keep track of:
++ How many config groups are created
++ Information about each config group
+
+To do this we can simply create two variables. Due to temp-buffer shenanigans,
+we'll have to use global variables here.
+
+Then we need to set up the two final phases of this process:
++ Creating =config.el=
++ Cleaning up the superfluous generated content
+
+To trigger the final phases we'll add a hook to ~org-babel-post-tangle-hook~. Once
+again, it would be preferred if this was done locally, but it needs to be
+global. To avoid this causing headaches down the line we'll make sure when
+implementing the hook function to have it remove itself from the hook when
+executed.
+
+#+name: confpkg-setup
+#+begin_src emacs-lisp :results silent :noweb no-export
+(setq confpkg--num 0
+      confpkg--list nil)
+
+<<confpkg-dependency-analysis>>
+<<confpkg-strip-package-statements>>
+<<confpkg-create-config>>
+(defun confpkg-cleanup ()
+ <<confpkg-cleanup>>
+  )
+<<confpkg-finaliser>>
+
+<<confpkg-clear-old-files>>
+
+(add-hook 'org-babel-tangle-finished-hook #'confpkg-tangle-finalise)
+#+end_src
+
+To avoid generating cruft, it would also be good to get rid of old tangled
+config files at the start.
+
+#+name: confpkg-clear-old-files
+#+begin_src emacs-lisp
+(make-directory "subconf" t)
+(dolist (conf-file (directory-files "subconf" t "config-.*\\.el"))
+  (delete-file conf-file))
+#+end_src
+
+Now to have this take effect, we can just use a babel call keyword. Thanks to
+the preparation step this will be executed during tangling.
+
+#+call: confpkg-setup[:results none]()
+
+*** Package generation
+
+Now we actually implement the =confpkg= babel function. We could just direct the
+output into the =subconf/config-X.el= file without any extra steps, but why not be
+a bit fancier and make it more like a package.
+
+To do this, we'll have =confpkg= load a template and then fill it in using
+~format-spec~. To make sure this is actually used, we'll call ~org-set-property~ to
+modify the parent heading, and register the config group with the variables we
+created earlier.
+
+#+name: confpkg
+#+begin_src elisp :var name="" needs="" after="" pre="" prefix="config-" via="copy" :results silent raw :noweb no-export
+;; Babel block for use with #+call
+;; Arguments:
+;;  - name, the name of the config sub-package
+;;  - needs, (when non-empty) required system executable(s)
+;;  - after, required features
+;;  - pre, a noweb reference to code that should be executed eagerly,
+;;    and not deferred via after. The code is not included in the
+;;    generated .el file and should only be used in dire situations.
+;;  - prefix, the package prefix ("config-" by default)
+;;  - via, how this configuration should be included in config.el,
+;;    the current options are:
+;;    + "copy", copy the configuration lisp
+;;    + "require", insert a require statement
+;;    + "none", do not do anything to load this configuration.
+;;      This only makes sense when configuration is either being
+;;      temporarily disabled or loaded indirectly/elsewhere.
+(when (or (string-empty-p needs)
+          (cl-every #'executable-find (delq nil (split-string needs ","))))
+  (let* ((name (if (string-empty-p name)
+                   (save-excursion
+                     (and (org-back-to-heading-or-point-min t)
+                          (substring-no-properties
+                           (org-element-interpret-data
+                            (org-element-property :title (org-element-at-point))))))
+                 name))
+         (after
+          (cond
+           ((string-empty-p after) nil)
+           ((string-match-p "\\`[^()]+\\'" after)
+            (intern after)) ; Single feature.
+           (t after)))
+         (pre (and (not (string-empty-p pre)) pre))
+         (confpkg-name
+          (concat prefix (replace-regexp-in-string
+                          "[^a-z-]" "-" (downcase name))))
+         (confpkg-file (expand-file-name (concat confpkg-name ".el")
+                                         "subconf")))
+    (unless (file-exists-p confpkg-file)
+      (make-empty-file confpkg-file t))
+    (cl-incf confpkg--num)
+    (org-set-property
+     "header-args:emacs-lisp"
+     (format ":tangle no :noweb-ref %s" confpkg-name))
+    (push (list :name name
+                :package confpkg-name
+                :file confpkg-file
+                :after after
+                :pre pre
+                :via (intern via)
+                :package-statements nil)
+          confpkg--list)
+    (format-spec
+     "#+begin_src emacs-lisp :tangle %f :mkdirp yes :noweb no-export :noweb-ref none :comments no
+<<confpkg-template>>
+,#+end_src"
+     `((?n . ,confpkg--num)
+       (?p . ,confpkg-name)
+       (?f . ,confpkg-file)
+       (?Y . ,(format-time-string "%Y"))
+       (?B . ,(format-time-string "%B"))
+       (?m . ,(format-time-string "%m"))
+       (?d . ,(format-time-string "%d"))
+       (?M . ,(format-time-string "%M"))
+       (?S . ,(format-time-string "%S"))))))
+#+end_src
+
+Now all that's needed is a template to be used.
+
+#+name: confpkg-template
+#+begin_src emacs-lisp :eval no
+;;; %p.el --- Generated package (no.%n) from my config -*- lexical-binding: t; -*-
+;;
+;; Copyright (C) %Y TEC
+;;
+;; Author: VitalyR <https://git.tecosaur.net/tec>
+;; Maintainer: VitalyR <contact@tecosaur.net>
+;; Created: %B %d, %Y
+;; Modified: %B %d, %Y
+;; Version: %Y.%m.%d
+;; Homepage: https://git.tecosaur.net/tec/emacs-config
+;; Package-Requires: ((emacs \"27.1\"))
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;
+;;  Generated package (no.%n) from my config.
+;;
+;;  This is liable to have unstated dependencies, and reply on other bits of
+;;  state from other configuration blocks. Only use this if you know /exactly/
+;;  what you are doing.
+;;
+;;  This may function nicely as a bit of self-contained functionality, or it
+;;  might be a horrid mix of functionalities and state.
+;;
+;;  Hopefully, in future static analysis will allow this to become more
+;;  properly package-like.
+;;
+;;; Code:
+
+<<%p>>
+
+(provide '%p)
+;;; %p.el ends here
+#+end_src
+
+This currently makes the included content look much more package-like that in
+truly is. However, I hope that some static analysis in future will allow for
+dependency information to be collected and included.
+
+Lastly, should there be an issue or interruption, it's possible that the
+modifications from =#+call: confpkg= may persist. If I've been good with my
+committing, resolving this should be as simple as reverting unstaged changes.
+So... back in reality, it would be nice to have a way to clean up =confpkg=
+residue.
+
+#+name: confpkg-cleanup
+#+begin_src emacs-lisp :results none
+(org-fold-core-ignore-fragility-checks
+  (org-babel-map-executables nil
+    (when (and (eq (org-element-type (org-element-context)) 'babel-call)
+               (equal (org-element-property :call (org-element-context)) "confpkg"))
+      (org-babel-remove-result)
+      (org-entry-delete nil "header-args:emacs-lisp"))))
+#+end_src
+
+*** Identify cross-package dependencies
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref confpkg-dependency-analysis
+:END:
+
+At a basic level, we can search for regexp expressions indicating the definition
+of functions or variables and search for their usage.
+
+#+begin_src emacs-lisp
+(defun confpkg--rough-extract-definitions (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (let (symbols)
+      (while (re-search-forward
+              (rx line-start (* (any ?\s ?\t)) "("
+                  (or "defun" "defmacro" "defsubst" "defgeneric" "defalias" "defvar" "defcustom" "defface" "deftheme"
+                      "cl-defun" "cl-defmacro" "cl-defsubst" "cl-defmethod" "cl-defstruct" "cl-defgeneric" "cl-deftype")
+                  (+ (any ?\s ?\t))
+                  (group (+ (any "A-Z" "a-z" "0-9"
+                                 ?+ ?- ?* ?/ ?_ ?~ ?! ?@ ?$ ?% ?^ ?& ?= ?: ?< ?> ?{ ?})))
+                  (or blank ?\n))
+              nil t)
+        (push (match-string 1) symbols))
+      symbols)))
+#+end_src
+
+Continuing our rough regexp approach, we can construct a similar function to
+look for uses of symbols.
+
+#+begin_src emacs-lisp
+(defun confpkg--rough-uses-p (file symbols)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((symbols (copy-sequence symbols)) uses-p)
+      (while symbols
+        (goto-char (point-min))
+        (if (re-search-forward (rx word-start (literal (car symbols)) word-end) nil t)
+            (setq uses-p t symbols nil)
+          (setq symbols (cdr symbols))))
+      uses-p)))
+#+end_src
+
+Now we can put these two functions together to annotate ~confpkg--list~ with their
+(confpkg) dependencies.
+
+#+begin_src emacs-lisp
+(defun confpkg-annotate-list-dependencies ()
+  (dolist (confpkg confpkg--list)
+    (plist-put confpkg :defines
+               (confpkg--rough-extract-definitions
+                (plist-get confpkg :file))))
+  (dolist (confpkg confpkg--list)
+    (let ((after (plist-get confpkg :after))
+          requires)
+      (dolist (other-confpkg confpkg--list)
+        (when (and (not (eq other-confpkg confpkg))
+                   (confpkg--rough-uses-p (plist-get confpkg :file)
+                                          (plist-get other-confpkg :defines)))
+          (push (plist-get other-confpkg :package) requires)))
+      (when (and after (symbolp after))
+        (push after requires))
+      (plist-put confpkg :requires requires))))
+#+end_src
+
+Finally, we can use this information to edit the confpkg files to add the
+necessary ~require~ statements.
+
+#+begin_src emacs-lisp
+(defun confpkg-write-dependencies ()
+  (dolist (confpkg confpkg--list)
+    (when (plist-get confpkg :requires)
+      (with-temp-buffer
+        (setq buffer-file-name (plist-get confpkg :file))
+        (insert-file-contents buffer-file-name)
+        (re-search-forward "^;;; Code:\n")
+        (insert "\n")
+        (dolist (req (plist-get confpkg :requires))
+          (insert (format "(require '%s)\n" req)))
+        (write-region nil nil buffer-file-name)
+        (set-buffer-modified-p nil)))))
+#+end_src
+
+*** Commenting out ~package!~ statements
+
+It's easy enough to set ~package!~ statements to tangle to =packages.el=, however
+with our noweb ref approach they will /also/ go to the config files. This could be
+viewed as a problem, but I actually think it's rather nice to have the package
+information with the config. So, we can look for an immediate ~package!~ statement
+and simply comment it out. As a bonus, we can also then record which packages
+are needed for each block of config.
+
+#+name: confpkg-strip-package-statements
+#+begin_src emacs-lisp
+(defun confpkg-comment-out-package-statements ()
+  (dolist (confpkg confpkg--list)
+    (with-temp-buffer
+      (setq buffer-file-name (plist-get confpkg :file))
+      (insert-file-contents buffer-file-name)
+      (goto-char (point-min))
+      (while (re-search-forward "^;;; Code:\n[[:space:]\n]*(\\(package!\\|unpin!\\)[[:space:]\n]+\\([^[:space:]]+\\)\\b" nil t)
+        (plist-put confpkg :package-statements
+                   (nconc (plist-get confpkg :package-statements)
+                          (list (match-string 2))))
+        (let* ((start (progn (beginning-of-line) (point)))
+               (end (progn (forward-sexp 1)
+                           (if (looking-at "[\t ]*;.*")
+                               (line-end-position)
+                             (point))))
+               (contents (buffer-substring start end))
+               paste-start paste-end
+               (comment-start ";")
+               (comment-padding "   ")
+               (comment-end ""))
+          (delete-region start (1+ end))
+          (re-search-backward "^;;; Code:")
+          (beginning-of-line)
+          (insert ";;  Package statement:\n")
+          (setq paste-start (point))
+          (insert contents)
+          (setq paste-end (point))
+          (insert  "\n;;\n")
+          (comment-region paste-start paste-end 2)))
+      (when (buffer-modified-p)
+        (write-region nil nil buffer-file-name)
+        (set-buffer-modified-p nil)))))
+#+end_src
+
+*** Creating the config file
+
+After all the subconfig files have been tangled, we need to collect their
+content and put them together into =config.el=. For this, all that's needed is a
+function to go through the registered config groups and put their content in a
+tempbuffer. We can call this with the finalising step.
+
+#+name: confpkg-create-config
+#+begin_src emacs-lisp
+(defun confpkg-create-config ()
+  (let ((revert-without-query '("config\\.el"))
+        (keywords (org-collect-keywords '("AUTHOR" "EMAIL")))
+        (original-buffer (current-buffer)))
+    (with-temp-buffer
+      (insert
+       (format ";;; config.el -*- lexical-binding: t; -*-
+
+;; SPDX-FileCopyrightText: © 2020-%s %s <%s>
+;; SPDX-License-Identifier: MIT
+
+;; Generated at %s from the literate configuration.
+
+(add-to-list 'load-path %S)\n"
+               (format-time-string "%Y")
+               (cadr (assoc "AUTHOR" keywords))
+               (cadr (assoc "EMAIL" keywords))
+               (format-time-string "%FT%T%z")
+               (replace-regexp-in-string
+                (regexp-quote (getenv "HOME")) "~"
+                (expand-file-name "subconf/"))))
+      (mapc
+       (lambda (confpkg)
+         (insert
+          (if (eq 'none (plist-get confpkg :via))
+              (format "\n;;; %s intentionally omitted.\n" (plist-get confpkg :name))
+            (with-temp-buffer
+              (cond
+               ((eq 'copy (plist-get confpkg :via))
+                (insert-file-contents (plist-get confpkg :file))
+                (goto-char (point-min))
+                (narrow-to-region
+                 (re-search-forward "^;;; Code:\n+")
+                 (progn
+                   (goto-char (point-max))
+                   (re-search-backward (format "[^\n\t ][\n\t ]*\n[\t ]*(provide '%s)" (plist-get confpkg :package)))
+                   (match-end 0))))
+               ((eq 'require (plist-get confpkg :via))
+                (insert (format "(require '%s)\n" (plist-get confpkg :package))))
+               (t (insert (format "(warn \"%s confpkg :via has unrecognised value: %S\" %S %S)"
+                                  (plist-get confpkg :name) (plist-get confpkg :via)))))
+              (goto-char (point-min))
+              (insert "\n;;:------------------------"
+                      "\n;;; " (plist-get confpkg :name)
+                      "\n;;:------------------------\n\n")
+              (when (plist-get confpkg :defines)
+                (insert ";; This block defines "
+                        (mapconcat
+                         (lambda (d) (format "`%s'" d))
+                         (plist-get confpkg :defines)
+                         ", ")
+                        ".")
+                (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\), \\([^, ]+\\).\\="
+                                          (line-beginning-position) t)
+                  (replace-match "\\1, \\2, and \\3."))
+                (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\).\\="
+                                          (line-beginning-position) t)
+                  (replace-match "\\1 and \\2."))
+                (insert "\n\n")
+                (forward-line -2)
+                (setq-local comment-start ";")
+                (fill-comment-paragraph)
+                (forward-paragraph 1)
+                (forward-line 1))
+              (if (equal (plist-get confpkg :package) "config-confpkg-timings")
+                  (progn
+                    (goto-char (point-max))
+                    (insert "\n\n\
+(confpkg-create-record 'doom-pre-config (float-time (time-subtract (current-time) before-init-time)))
+(confpkg-start-record 'config)
+(confpkg-create-record 'config-defered 0.0 'config)
+(confpkg-create-record 'set-hooks 0.0 'config-defered)
+(confpkg-create-record 'load-hooks 0.0 'config-defered)
+(confpkg-create-record 'requires 0.0 'root)\n"))
+                (let ((after (plist-get confpkg :after))
+                      (pre (and (plist-get confpkg :pre)
+                                (org-babel-expand-noweb-references
+                                 (list "emacs-lisp"
+                                       (format "<<%s>>" (plist-get confpkg :pre))
+                                       '((:noweb . "yes")
+                                         (:comments . "none")))
+                                 original-buffer)))
+                      (name (replace-regexp-in-string
+                             "config--?" ""
+                             (plist-get confpkg :package))))
+                  (if after
+                      (insert (format "(confpkg-with-record '%S\n"
+                                      (list (concat "hook: " name) 'set-hooks))
+                              (if pre
+                                  (concat ";; Begin pre\n" pre "\n;; End pre\n")
+                                "")
+                              (format (if (symbolp after) ; If single feature.
+                                          "  (with-eval-after-load '%s\n"
+                                        "  (after! %s\n")
+                                      after))
+                    (when pre
+                      (insert "\n;; Begin pre (unnecesary since after is unused)\n"
+                              pre
+                              "\n;; End pre\n")))
+                  (insert
+                   (format "(confpkg-with-record '%S\n"
+                           (list (concat "load: " name)
+                                 (if after 'load-hooks 'config)))))
+                (goto-char (point-max))
+                (when (string-match-p ";" (thing-at-point 'line))
+                  (insert "\n"))
+                (insert ")")
+                (when (plist-get confpkg :after)
+                  (insert "))"))
+                (insert "\n"))
+              (buffer-string)))))
+       (let ((confpkg-timings ;; Ensure timings is put first.
+              (cl-some (lambda (p) (and (equal (plist-get p :package) "config-confpkg-timings") p))
+                       confpkg--list)))
+         (append (list confpkg-timings)
+                 (nreverse (remove confpkg-timings confpkg--list)))))
+      (insert "\n(confpkg-finish-record 'config)\n\n;;; config.el ends here")
+      (write-region nil nil "config.el" nil :silent))))
+#+end_src
+
+Applying lexical binding to the config file is good for a number of reasons,
+among which it's (slightly) faster than dynamic binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]] for
+more info).
+
+*** Quieter output
+
+All the babel evaluation here ends up being quite noisy (along with a few other
+things during tangle), let's see if we can change that.
+
+#+name: confpkg-quieter-output
+#+begin_src emacs-lisp
+(when noninteractive
+  (unless (fboundp 'doom-shut-up-a)
+    (defun doom-shut-up-a (fn &rest args)
+      (let ((standard-output #'ignore)
+            (inhibit-message t))
+        (apply fn args))))
+  (advice-add 'org-babel-expand-body:emacs-lisp :around #'doom-shut-up-a)
+  ;; Quiet some other annoying messages
+  (advice-add 'sh-set-shell :around #'doom-shut-up-a)
+  (advice-add 'rng-what-schema :around #'doom-shut-up-a)
+  (advice-add 'python-indent-guess-indent-offset :around #'doom-shut-up-a))
+#+end_src
+
+#+call: confpkg-quieter-output()
+
+*** Reporting load time information
+
+#+call: confpkg("Confpkg timings")
+
+When generating the config we added a form to collect load-time information.
+
+#+begin_src emacs-lisp
+(defvar confpkg-load-time-tree (list (list 'root)))
+(defvar confpkg-record-branch (list 'root))
+(defvar confpkg-record-num 0)
+#+end_src
+
+It would be good to process ~confpkg-load-times~ at the end to make it more
+useful, and provide a function to display load time information from it. This is
+to aid in identification of confpkgs that take particularly long to load, and
+thus would benefit from some attention.
+
+To extract the per-confpkg load times, we can just take the difference in
+~(float-time)~ and exclude the first entry.
+
+#+begin_src emacs-lisp
+(defun confpkg-create-record (name elapsed &optional parent enclosing)
+  (let ((parent (assoc (or parent (car confpkg-record-branch))
+                       confpkg-load-time-tree))
+        (record (cons name (list (list 'self
+                                       :name (format "%s" name)
+                                       :num (cl-incf confpkg-record-num)
+                                       :elapsed elapsed
+                                       :enclosing enclosing)))))
+    (push record confpkg-load-time-tree)
+    (push record (cdr parent))
+    record))
+
+(defun confpkg-start-record (name &optional parent)
+  (let ((record (confpkg-create-record name 0.0e+NaN parent t)))
+    (plist-put (cdadr record) :start (float-time))
+    (push name confpkg-record-branch)
+    record))
+
+(defun confpkg-finish-record (name)
+  (let ((self-record (cdar (last (cdr (assoc name confpkg-load-time-tree))))))
+    (plist-put self-record :elapsed
+               (- (float-time) (plist-get self-record :start) 0.0))
+    (unless (equal (car confpkg-record-branch) name)
+      (message "Warning: Confpkg timing record expected to finish %S, instead found %S. %S"
+               name (car confpkg-record-branch) confpkg-record-branch))
+    (setq confpkg-record-branch (cdr confpkg-record-branch))))
+#+end_src
+
+A convenience macro could be nice to have.
+
+#+begin_src emacs-lisp
+(defmacro confpkg-with-record (name &rest body)
+  "Create a time record around BODY.
+The record must have a NAME."
+  (declare (indent 1))
+  (let ((name-val (make-symbol "name-val"))
+        (record-spec (make-symbol "record-spec")))
+    `(let* ((,name-val ,name)
+            (,record-spec (if (consp ,name-val) ,name-val (list ,name-val))))
+       (apply #'confpkg-start-record ,record-spec)
+       (unwind-protect
+           (progn ,@body)
+         (confpkg-finish-record (car ,record-spec))))))
+#+end_src
+
+It would also be nice to collect some other load-time-related information.
+
+#+begin_src emacs-lisp
+(defadvice! +require--log-timing-a (orig-fn feature &optional filename noerror)
+  :around #'require
+  (if (or (featurep feature)
+          (eq feature 'cus-start) ; HACK Why!?!
+          (assoc (format "require: %s" feature) confpkg-load-time-tree))
+      (funcall orig-fn feature filename noerror)
+    (confpkg-with-record (list (format "require: %s" feature)
+                               (and (eq (car confpkg-record-branch) 'root)
+                                    'requires))
+      (funcall orig-fn feature filename noerror))))
+#+end_src
+
+At last, we'll go to some pains to make a nice result tabulation function.
+
+I will readily admit that this function is absolutely horrible. I just spent an
+evening adding to it till it worked then stopped touching it. Maybe in the
+future I'll go back to it and try to clean up the implementation.
+
+#+begin_src emacs-lisp
+(defun confpkg-timings-report (&optional sort-p node)
+  "Display a report on load-time information.
+Supply SORT-P (or the universal argument) to sort the results.
+NODE defaults to the root node."
+  (interactive
+   (list (and current-prefix-arg t)))
+  (let ((buf (get-buffer-create "*Confpkg Load Time Report*"))
+        (depth 0)
+        num-pad name-pad max-time max-total-time max-depth)
+    (cl-labels
+        ((sort-records-by-time
+          (record)
+          (let ((self (assoc 'self record)))
+            (append (list self)
+                    (sort (nreverse (remove self (cdr record)))
+                          (lambda (a b)
+                            (> (or (plist-get (alist-get 'self a) :total) 0.0)
+                               (or (plist-get (alist-get 'self b) :total) 0.0)))))))
+         (print-record
+          (record)
+          (cond
+           ((eq (car record) 'self)
+            (insert
+             (propertize
+              (string-pad (number-to-string (plist-get (cdr record) :num)) num-pad)
+              'face 'font-lock-keyword-face)
+             " "
+             (propertize
+              (apply #'concat
+                     (make-list (1- depth) "• "))
+              'face 'font-lock-comment-face)
+             (string-pad (format "%s" (plist-get (cdr record) :name)) name-pad)
+             (make-string (* (- max-depth depth) 2) ?\s)
+             (propertize
+              (format "%.4fs" (plist-get (cdr record) :elapsed))
+              'face
+              (list :foreground
+                    (doom-blend 'orange 'green
+                                (/ (plist-get (cdr record) :elapsed) max-time))))
+             (if (= (plist-get (cdr record) :elapsed)
+                    (plist-get (cdr record) :total))
+                 ""
+               (concat "   (Σ="
+                       (propertize
+                        (format "%.3fs" (plist-get (cdr record) :total))
+                        'face
+                        (list :foreground
+                              (doom-blend 'orange 'green
+                                          (/ (plist-get (cdr record) :total) max-total-time))))
+                       ")"))
+             "\n"))
+           (t
+            (cl-incf depth)
+            (mapc
+             #'print-record
+             (if sort-p
+                 (sort-records-by-time record)
+               (reverse (cdr record))))
+            (cl-decf depth))))
+         (flatten-records
+          (records)
+          (if (eq (car records) 'self)
+              (list records)
+            (mapcan
+             #'flatten-records
+             (reverse (cdr records)))))
+         (tree-depth
+          (records &optional depth)
+          (if (eq (car records) 'self)
+              (or depth 0)
+            (1+ (cl-reduce #'max (cdr records) :key #'tree-depth))))
+         (mapreduceprop
+          (list map reduce prop)
+          (cl-reduce
+           reduce list
+           :key
+           (lambda (p) (funcall map (plist-get (cdr p) prop)))))
+         (elaborate-timings
+          (record)
+          (if (eq (car record) 'self)
+              (plist-get (cdr record) :elapsed)
+            (let ((total (cl-reduce #'+ (cdr record)
+                                    :key #'elaborate-timings))
+                  (self (cdr (assoc 'self record))))
+              (if (plist-get self :enclosing)
+                  (prog1
+                      (plist-get self :elapsed)
+                    (plist-put self :total (plist-get self :elapsed))
+                    (plist-put self :elapsed
+                               (- (* 2 (plist-get self :elapsed)) total)))
+                (plist-put self :total total)
+                total))))
+         (elaborated-timings
+          (record)
+          (let ((record (copy-tree record)))
+            (elaborate-timings record)
+            record)))
+      (let* ((tree
+              (elaborated-timings
+               (append '(root)
+                       (copy-tree
+                        (alist-get (or node 'root)
+                                   confpkg-load-time-tree
+                                   nil nil #'equal))
+                       '((self :num 0 :elapsed 0)))))
+             (flat-records
+              (cl-remove-if
+               (lambda (rec) (= (plist-get (cdr rec) :num) 0))
+               (flatten-records tree))))
+        (setq max-time (mapreduceprop flat-records #'identity #'max :elapsed)
+              max-total-time (mapreduceprop flat-records #'identity #'max :total)
+              name-pad (mapreduceprop flat-records #'length #'max :name)
+              num-pad (mapreduceprop flat-records
+                                     (lambda (n) (length (number-to-string n)))
+                                     #'max :num)
+              max-depth (tree-depth tree))
+        (with-current-buffer buf
+          (erase-buffer)
+          (setq-local outline-regexp "[0-9]+ *\\(?:• \\)*")
+          (outline-minor-mode 1)
+          (use-local-map (make-sparse-keymap))
+          (local-set-key "TAB" #'outline-toggle-children)
+          (local-set-key "\t" #'outline-toggle-children)
+          (local-set-key (kbd "<backtab>") #'outline-show-subtree)
+          (local-set-key (kbd "C-<iso-lefttab>")
+                         (eval `(cmd! (if current-prefix-arg
+                                          (outline-show-all)
+                                        (outline-hide-sublevels (+ ,num-pad 2))))))
+          (insert
+           (propertize
+            (concat (string-pad "#" num-pad) " "
+                    (string-pad "Confpkg"
+                                (+ name-pad (* 2 max-depth) -3))
+                    (format " Load Time (Σ=%.3fs)\n"
+                            (plist-get (cdr (assoc 'self tree)) :total)))
+            'face '(:inherit (tab-bar-tab bold) :extend t :underline t)))
+          (dolist (record (if sort-p
+                              (sort-records-by-time tree)
+                            (reverse (cdr tree))))
+            (unless (eq (car record) 'self)
+              (print-record record)))
+          (set-buffer-modified-p nil)
+          (goto-char (point-min)))
+        (pop-to-buffer buf)))))
+#+end_src
+
+*** Finalise
+
+At last, to clean up the content inserted by the babel calls we can just revert
+the buffer. As long as ~org-babel-pre-tangle-hook~ hasn't been modified,
+~save-buffer~ will be run at the start of the tangle process and so reverting will
+take us back to just before the tangle started.
+
+Since this is /the/ function added as the post-tangle hook, we also need to remove
+the function from the hook and call the =config.el= creation function.
+
+#+name: confpkg-finaliser
+#+begin_src emacs-lisp
+(defun confpkg-tangle-finalise ()
+  (remove-hook 'org-babel-tangle-finished-hook #'confpkg-tangle-finalise)
+  (revert-buffer t t t)
+  (confpkg-comment-out-package-statements)
+  (confpkg-annotate-list-dependencies)
+  (confpkg-create-config)
+  (confpkg-write-dependencies)
+  (message "Processed %s elisp files" (length confpkg--list)))
+#+end_src
+
+Within ~confpkg-tangle-finalise~ we carefully order each step so that
+the most important steps go first, to minimise the impact should a particular
+step fail.
+
+*** Bootstrap
+
+This system makes use of some recent commits introduced to Org, such as [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/commit/?id=cb8bf4a0d][this
+noweb expansion bugfix]] which will be included in Org 9.5.4. This is
+problematic if using Emacs 28.2 or older, so to get around this we must go
+through a bootstrap process.
+
+[[xkcd:1739]]
+
+To start with, we'll check if we are:
++ Running an Org version prior to 9.5.4
++ Running in a ~noninteractive~ session
++ Using an Org that's not installed in the user directory
++ In a session with the symbol ~exit!~ defined
+
+#+name: bootstrap
+#+begin_src emacs-lisp :noweb no-export
+(let ((required-org-version "9.6")
+      (standard-output t))
+  (when (and (version< (org-version) required-org-version)
+             (not (string-match-p (regexp-quote (expand-file-name "~"))
+                                  (locate-library "org"))))
+    (cond
+     ((and noninteractive (fboundp 'exit!))
+      (print! (warn (format "Detected conditions provoking a config bootstrap (Org %s)" (org-version))))
+      (print! (start "Initiating bootstrap..."))
+      <<bootstrap-perform>>
+      )
+     (t (message "Installed Org version %s is too old, %s is needed.\nRun \"doom sync\" to fix."
+                 (org-version) required-org-version)))))
+#+end_src
+
+If these conditions are met, we can assume that the loaded Org version is
+insufficient, and that it's likely a Emacs is currently running a command like
+=doom sync=, and so it makes sense to perform the 3-step bootstrap.
+1. Temporarily rename =config.org= to =config.original.org=.
+2. Create a new =config.org= that when tangled results in Org being installed.
+3. Swap back to the original =config.org=, and re-sync.
+
+#+name: bootstrap-perform
+#+begin_src emacs-lisp :noweb no-export
+(print! (item "Temporarily relocating config.org to config.original.org"))
+(rename-file "config.org" "config.original.org" t)
+<<boostrap-create-transient-config>>
+(print! (item "%s") (bold "Re-running sync"))
+(exit! :restart) ; Re-run =doom sync= with the transient config.
+#+end_src
+
+With the approach worked out, we just need to generate a snipped that will
+create a new =config.org= that when tangled:
++ Tangles our Org recipe to =packages.el=
++ Swaps back to the original =config.org=
++ Re-runs =doom sync=
+
+#+name: boostrap-create-transient-config
+#+begin_src emacs-lisp :noweb no-export
+(print! (item "Creating minimal init.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     ";;; init.el -*- lexical-binding: t; -*-\n\n"
+     (pp (quote
+          <<bootstrap-init>>
+          )))
+    (write-region nil nil "init.el")))
+
+(print! (item "Creating boostrap config.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     (org-element-interpret-data
+      (list
+       '(keyword (:key "title" :value "Boostrap Stage 1 Config" :post-blank 1))
+       `(src-block
+         (:language "emacs-lisp"
+          :value ,(pp (quote (progn
+                               <<boostrap-transition>>
+                               )))
+          :name "bootstrap-transition"
+          :post-blank 1))
+       `(src-block
+         (:language "emacs-lisp"
+          :parameters
+          ,(concat ":noweb no-export "
+                   ":tangle (expand-file-name (make-temp-name \"emacs-org-babel-excuses/confpkg-prepare-\") temporary-file-directory) "
+                   ":mkdirp yes")
+          :value ,(concat "<<" ; Split to avoid (prematurely) creating a noweb reference.
+                          "bootstrap-transition()"
+                          ">>\n"))))))
+    (write-region nil nil "config.org")))
+#+end_src
+
+For the bootstrap we need a minimal =init.el=, just the literate module should be
+sufficient.
+
+#+name: bootstrap-init
+#+begin_src emacs-lisp
+(doom! :config literate)
+#+end_src
+
+This =config.org= simply provides an entry point for us to run elisp during
+tangle. We just need to make use of it to install Org and re-sync the original
+configuration.
+
+#+name: boostrap-transition
+#+begin_src emacs-lisp :noweb no-export
+(setq standard-output t)
+
+(print! (start "Starting second stage of the bootstrap."))
+(print! (item "Creating minimal packages.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     ";; -*- no-byte-compile: t; -*-\n\n"
+     (pp (quote
+          <<org-pkg-statement()>>
+          )))
+    (write-region nil nil "packages.el")))
+
+(doom-packages-install)
+
+(print! (item "Switching back to original config.org"))
+(rename-file "config.original.org" "config.org" t)
+
+(print! (item "%s") (bold "Re-running sync"))
+(exit! :restart)
+#+end_src
+
+There we go, that should do the trick, so long as we call the =bootstrap= block at
+the start of the tangle process. This is done by calling =bootstrap= within the
+[[Preparation][confpkg preparation]] stage.
+
+
 ** Workaround
 This is a place I put workarounds. It should be empty in the best scenarios.
 #+begin_src emacs-lisp :tangle config.el
@@ -377,8 +1348,7 @@ Test some package
 (package! separate-inline :recipe
   (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! org-pretty-tags)
-(package! yasnippet :disable t)
-(package! org-fragtog)
+(package! yasnippet)
 (package! org-xlatex :recipe
   (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
 (unpin! haskell-mode)
@@ -854,6 +1824,38 @@ calendar                     ; A dated approach to timetabling
 ;;irc                        ; how neckbeards socialize
 (rss +org)                   ; emacs as an RSS reader
 ;;twitter                    ; twitter client https://twitter.com/vnought
+#+end_src
+*** Profiles
+
+Doom has support for multiple configuration profiles. For general usage, this
+isn't a particularly useful feature, but for niche use cases it's fantastic.
+
+#+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el :noweb-ref none
+((orgdev (env ("DOOMDIR" . "~/.config/org-dev"))))
+#+end_src
+
+**** Org development profile
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref none
+:END:
+
+For development purposes, it's handy to have a more minimal config without my
+many customisations and interacting packages. Let's go ahead and create a
+near-minimal new config:
+
+#+begin_src emacs-lisp :tangle ../org-dev/init.el :mkdirp yes
+;;; init.el -*- lexical-binding: t; -*-
+(doom! :completion vertico
+       :config (default +bindings))
+#+end_src
+
+#+begin_src emacs-lisp :tangle ../org-dev/packages.el :noweb no-export
+(unpin! org) ; there be bugs
+#+end_src
+
+#+begin_src emacs-lisp :tangle ../org-dev/config.el
+(require 'org)
+;; (load-theme 'modus-operandi t)
 #+end_src
 
 *** Visual Settings
@@ -4205,61 +5207,54 @@ I can check this by checking the content of the SSH key =~/.ssh/id_rsa.pub=.
 To account for this situation properly, we need a short script to determine the
 correct package statement needed.
 
+
 #+name: org-pkg-statement
-#+begin_src emacs-lisp :tangle no
-;; (condition-case nil
-;;     (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
-;;   (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
-;; (let ((dev-key (and (file-exists-p "~/.ssh/id_rsa.pub")
-;;                     (= 0 (shell-command "cat ~/.ssh/id_rsa.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
-;;       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
-;;                  (and (file-exists-p default-directory)
-;;                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
-;;       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
-;;                        ;;:pre-build
-;;                        ;; (with-temp-file "org-version.el"
-;;                        ;;   (insert "(fset 'org-release (lambda () \"9.6\"))\n"
-;;                        ;;           (format "(fset 'org-git-version (lambda () \"%s\"))\n"
-;;                        ;;                   (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
-;;                        ;;           "(provide 'org-version)\n"))
-;;                        :includes org)))
-;;   (prin1-to-string
-;;    `(package! org-mode
-;;       :recipe (,@(cond ((and dev-key dev-pkg)
-;;                         (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
-;;                        (t
-;;                         (list :host 'github :repo "emacs-straight/org-mode")))
-;;                ,@recipe-common)
-;;       :pin nil)))
+#+begin_src emacs-lisp :noweb-ref none
+(or (require 'doom (expand-file-name "lisp/doom.el"
+                                     (or (bound-and-true-p doom-emacs-dir)
+                                         user-emacs-directory)))
+    (setq doom-local-dir
+          (expand-file-name ".local/" (or (bound-and-true-p doom-emacs-dir)
+                                          user-emacs-directory))))
+(let ((dev-key-p (and (file-exists-p "~/.ssh/id_ed25519.pub")
+                      (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
+      (recipe-common '(:files (:defaults "etc")
+                       :build t
+                       :pre-build
+                       (with-temp-file "org-version.el"
+                         (require 'lisp-mnt)
+                         (let ((version ;; (lm-version "lisp/org.el")
+                                (with-temp-buffer
+                                  (insert-file-contents "lisp/org.el")
+                                  (lm-header "version")))
+                               (git-version (string-trim
+                                             (with-temp-buffer
+                                               (call-process "git" nil t nil
+                                                             "rev-parse" "--short" "HEAD")
+                                               (buffer-string)))))
+                           (insert (format "(defun org-release () \"The release version of Org.\" %S)\n"
+                                           version)
+                                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"
+                                           git-version)
+                                   "(provide 'org-version)\n"))))))
+  (with-temp-buffer
+    (insert
+     (pp `(package! org
+            :recipe (,@(if dev-key-p
+                           (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
+                                 :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
+                         (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
+                               :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
+                     ,@recipe-common)
+            :pin nil)))
+    (untabify (point-min) (point-max))
+    (buffer-string)))
 #+end_src
 
-#+begin_src emacs-lisp :noweb no-export
+
+#+begin_src emacs-lisp :tangle packages.el :noweb no-export
 <<org-pkg-statement()>>
-;;(package! org :recipe
-;;   (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
-;;          (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
-;;          :files
-;;          (:defaults "etc")
-;;          :build t :pre-build
-;;          (with-temp-file "org-version.el"
-;;            (require 'lisp-mnt)
-;;            (let
-;;                ((version
-;;                  (with-temp-buffer
-;;                    (insert-file-contents "lisp/org.el")
-;;                    (lm-header "version")))
-;;                 (git-version
-;;                  (string-trim
-;;                   (with-temp-buffer
-;;                     (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-;;                     (buffer-string)))))
-;;              (insert
-;;               (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-;;               (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-;;               "(provide 'org-version)\n"))))
-;;   :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
-;; ;; (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode"))
-;;(unpin! org) ; there be bugs
+(unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))

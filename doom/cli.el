@@ -6,9 +6,9 @@
 
 (advice-add 'org-babel-execute-src-block :around #'doom-shut-up-a)
 
-;; [[file:config.org::*Elisp REPL][Elisp REPL:1]]
-(defcli! repl ((in-rlwrap-p ["--rl"] "For internal use only."))
+(defcli! repl ((in-rlwrap-p ("--rl") "For internal use only."))
   "Start an elisp REPL."
+  (require 'core-start)
   (when (and (executable-find "rlwrap") (not in-rlwrap-p))
     ;; For autocomplete
     (setq autocomplete-file "/tmp/doom_elisp_repl_symbols")
@@ -21,8 +21,8 @@
               (insert sym "\n"))))
         (write-region nil nil autocomplete-file)))
     (princ "\e[F")
-    (throw 'exit (list "rlwrap" "-f" autocomplete-file
-                       (concat doom-emacs-dir "bin/doom") "repl" "--rl")))
+    (exit! "rlwrap" "-f" autocomplete-file
+           (concat doom-emacs-dir "bin/doom") "repl" "--rl"))
 
   (doom-initialize-packages)
   (require 'engrave-faces-ansi)
@@ -114,4 +114,26 @@ FUNC shall be a function taking one argument."
       ;; C-d causes an end-of-file error
       (end-of-file (princ "exit\n") (kill-emacs 0)))
     (unless accumulated-input (princ "\n"))))
-;; Elisp REPL:1 ends here
+
+(defcli! htmlize (file)
+  "Export a FILE buffer to HTML."
+
+  (print! "Htmlizing %s" file)
+
+  (doom-initialize)
+  (require 'highlight-numbers)
+  (require 'highlight-quoted)
+  (require 'rainbow-delimiters)
+  (require 'engrave-faces-html)
+
+  ;; Lighten org-mode
+  (when (string= "org" (file-name-extension file))
+    (setcdr (assoc 'org after-load-alist) nil)
+    (setq org-load-hook nil)
+    (require 'org)
+    (setq org-mode-hook nil)
+    (add-hook 'engrave-faces-before-hook
+              (lambda () (if (eq major-mode 'org-mode)
+                        (org-show-all)))))
+
+  (engrave-faces-html-file file))

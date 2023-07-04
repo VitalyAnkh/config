@@ -1326,8 +1326,8 @@ the start of the tangle process. This is done by calling =bootstrap= within the
 
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
-(setq user-full-name "VitalyR"
-      user-mail-address "vitalyankh@gmail.com")
+(setq user-full-name "TEC"
+      user-mail-address "contact@tecosaur.net")
 #+end_src
 Apparently this is used by ~GPG~, and all sorts of other things.
 
@@ -1339,112 +1339,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
-#+end_src
-** Workaround
-
-#+call: confpkg("!Pkg Workaround")
-
-This is a place I put workarounds. It should be empty in the best scenarios.
-
-Test some packages.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! separate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
-(package! org-pretty-tags)
-(package! yasnippet)
-(package! org-xlatex :recipe
-  (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
-(unpin! haskell-mode)
-(unpin! treemacs)
-(unpin! lsp-haskell)
-(unpin! lsp-java)
-(unpin! lsp-mode)
-(unpin! dap-mode)
-(unpin! yaml)
-(unpin! lsp-treemacs)
-(package! magit :recipe (:branch "main"))
-(package! ghub :recipe (:branch "main"))
-(unpin! forge)
-(unpin! yasnippet)
-(unpin! auto-yasnippet)
-(unpin! emacsql)
-(unpin! magit-gitflow)
-(unpin! magit-popup)
-(unpin! magit-todos)
-(unpin! magit)
-(unpin! popwin)
-(unpin! ace-window)
-(unpin! persp-mode)
-(unpin! avy)
-(unpin! vertico)
-(unpin! closql)
-(unpin! centaur-tabs)
-(unpin! consult)
-(unpin! compat)
-(unpin! marginalia)
-(unpin! straight)
-(unpin! embark)
-(unpin! centaur-tabs)
-(unpin! lsp-metals)
-(unpin! elisp-tree-sitter)
-(package! multiple-cursors :disable t)
-(unpin! all-the-icons)
-(unpin! git-gutter)
-;;(package! consult-recoll)
-;; (package! emacs-nerd-icons
-;;   :recipe (:type git
-;;            :host github
-;;            :repo "rainstormstudio/emacs-nerd-icons"
-;;            :files ("*.el" "data")))
-#+end_src
-
-
-#+begin_src emacs-lisp :tangle config.el
-(setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
-
-;; I like line numbers
-(use-package! global-display-line-numbers-mode
-  :hook (prog-mode . global-display-line-numbers-mode))
-
-(defadvice copilot--complete-post-command (around intercept activate)
-  (condition-case err
-      ad-do-it
-    ;; Let the debugger run
-    ((debug error) (signal (car err) (cdr err)))))
-
-(setq straight-repository-branch "develop")
-
-(setq native-comp-async-jobs-number 20)
-;; TODO to make eglot show function's signature within one line
-(setq eldoc-echo-area-use-multiline-p nil)
-(setq org-element-use-cache nil)
-;; debug vertico--exhibit error
-(defun force-debug (func &rest args)
-  (condition-case e
-      (apply func args)
-    ((debug error) (signal (car e) (cdr e)))))
-
-(advice-add #'vertico--exhibit :around #'force-debug)
-;; make org latex preview images' baseline the same as the text
-;; (defun my-org-latex-preview-advice (beg end &rest _args)
-;;   (let* ((ov (car (overlays-in beg end)))
-;;          (img (cdr (overlay-get ov 'display)))
-;;          (new-img (plist-put img :ascent 90)))
-;;     (overlay-put ov 'display (cons 'image new-img))))
-;; (advice-add 'org--make-preview-overlay
-;;             :after #'my-org-latex-preview-advice)
-(use-package org-xlatex
-  :after (org)
-  :hook (org-mode . org-xlatex-mode))
-#+end_src
-
-
-#+begin_src emacs-lisp :tangle config.el
-;; (use-package emacs-nerd-icons
-;;   :custom
-;;   (emacs-nerd-icons-font-family "FiraCode Nerd Font") ;; The Nerd Font you want to use in GUI
-;;   )
 #+end_src
 
 ** Better defaults
@@ -1470,24 +1364,12 @@ changes Doom makes:
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
-      warning-minimum-level  :error               ; Who cares about warnings?
-      word-wrap-by-category t                     ; Different languages live together happily
-      mouse-drag-and-drop-region-cross-program t
-      mouse-1-click-follows-link nil
-      server-raise-frame nil
       display-time-default-load-average nil)      ; I don't think I've ever found this useful
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 
 (unless (string-match-p "^Power N/A" (battery))   ; On laptops...
   (display-battery-mode 1))                       ; it's nice to know how much power you have
-
-(global-visual-line-mode 1)                       ; Wrap lines at window edge, not at 80th character: my screen is wide enough!
-
-(scroll-bar-mode)                                 ; I like scroll bars
-
-;; Unset C-z which is bound to =suspend-frame= by default
-(global-unset-key (kbd "C-z"))
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+end_src
@@ -1505,8 +1387,8 @@ Then, for creating new frames within the same Emacs instance, we'll just set the
 default to be something roughly 80% of that size.
 
 #+begin_src emacs-lisp
-(push  '(alpha-background . 95) default-frame-alist)
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
 #+end_src
 
 *** Auto-customisations
@@ -1695,7 +1577,7 @@ zen                          ; distraction-free coding or writing
 
 #+name: doom-editor
 #+begin_src emacs-lisp
-;; (evil +everywhere)           ; come to the dark side, we have cookies
+(evil +everywhere)           ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
 (format)                     ; automated prettiness
@@ -1723,7 +1605,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 ;;eshell                     ; the elisp shell that works everywhere
 ;;shell                      ; simple shell REPL for Emacs
 ;;term                       ; basic terminal emulator for Emacs
-;; vterm                        ; the best terminal emulation in Emacs
+vterm                        ; the best terminal emulation in Emacs
 #+end_src
 
 #+name: doom-checkers
@@ -1738,10 +1620,10 @@ grammar                      ; tasing grammar mistake every you make
 ansible                      ; a crucible for infrastructure as code
 biblio                       ; Writes a PhD for you (citation needed)
 ;;debugger                   ; FIXME stepping through code, to help you add bugs
-direnv                     ; be direct about your environment
-;; docker                       ; port everything to containers
-editorconfig               ; let someone else argue about tabs vs spaces
-ein                        ; tame Jupyter notebooks with emacs
+;;direnv                     ; be direct about your environment
+docker                       ; port everything to containers
+;;editorconfig               ; let someone else argue about tabs vs spaces
+;;ein                        ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
 (lookup                      ; helps you navigate your code and documentation
@@ -1759,7 +1641,7 @@ rgb                          ; creating color strings
 ;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
-tree-sitter                ; syntax and parsing, sitting in a tree...
+;;tree-sitter                ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
@@ -1776,12 +1658,12 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-(agda +local)                       ; types of types of types of types...
+;;agda                       ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
-(cc +lsp)                  ; C > C++ == 1
+;;(cc +lsp)                  ; C > C++ == 1
 ;;clojure                    ; java with a lisp
-common-lisp                ; if you've seen one lisp, you've seen them all
-coq                        ; proofs-as-programs
+;;common-lisp                ; if you've seen one lisp, you've seen them all
+;;coq                        ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
 ;;csharp                     ; unity, .NET, and mono shenanigans
 data                         ; config/data formats
@@ -1904,6 +1786,7 @@ near-minimal new config:
 #+begin_src emacs-lisp :tangle ../doom.orgdev/init.el :mkdirp yes
 ;;; init.el -*- lexical-binding: t; -*-
 (doom! :completion vertico
+       :editor evil
        :config (default +bindings))
 #+end_src
 
@@ -1925,30 +1808,11 @@ trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer Fira.
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 28)
-      ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
-(add-hook 'after-init-hook (lambda ()
-                             ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-                             (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
-                             (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
-                             (set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
-                             ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
-                             ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
-                             (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'kana "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'hangul "LXGW WenKai" nil 'prepend)
-                             (set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
-                             ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
-                             (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
-                             ))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
 #+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
@@ -2004,8 +1868,10 @@ listing the missing fonts should appear for at least half a second.
 
 **** Theme
 
+~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
+
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-one-light)
+(setq doom-theme 'doom-vibrant)
 #+end_src
 
 Oh, and with the nice selection doom provides there's no reason for me to want
@@ -2031,7 +1897,7 @@ Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 
 #+begin_src emacs-lisp
-;; (setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'relative)
 #+end_src
 
 *** Some helper macros
@@ -2217,22 +2083,22 @@ htmlize package doesn't.
 Let's make creating an Org buffer just that little bit easier.
 
 #+begin_src emacs-lisp
-;; (evil-define-command +evil-buffer-org-new (count file)
-;;   "Creates a new ORG buffer replacing the current window, optionally
-;;    editing a certain FILE"
-;;   :repeat nil
-;;   (interactive "P<f>")
-;;   (if file
-;;       (evil-edit file)
-;;     (let ((buffer (generate-new-buffer "*new org*")))
-;;       (set-window-buffer nil buffer)
-;;       (with-current-buffer buffer
-;;         (org-mode)
-;;         (setq-local doom-real-buffer-p t)))))
+(evil-define-command +evil-buffer-org-new (count file)
+  "Creates a new ORG buffer replacing the current window, optionally
+   editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)
+        (setq-local doom-real-buffer-p t)))))
 
-;; (map! :leader
-;;       (:prefix "b"
-;;        :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
+(map! :leader
+      (:prefix "b"
+       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
 #+end_src
 
 *** Dashboard
@@ -2906,8 +2772,7 @@ dashboard.
   (with-current-buffer (get-buffer +doom-dashboard-name)
     (setq-local line-spacing 0.2
                 mode-line-format nil
-                ;; evil-normal-state-cursor (list nil)
-)))
+                evil-normal-state-cursor (list nil))))
 #+end_src
 
 Now we can just add this as a mode hook.
@@ -2957,33 +2822,11 @@ frame size or theme is changed.
 *** Editor interaction
 **** Mouse buttons
 
-#+call: confpkg("Mouse")
+#+call: confpkg("Better jumper mouse")
 
 #+begin_src emacs-lisp
 (map! :n [mouse-8] #'better-jumper-jump-backward
       :n [mouse-9] #'better-jumper-jump-forward)
-#+end_src
-
-I love mouse menus.
-
-#+begin_src emacs-lisp
-(setq mouse-yank-at-point nil)
-#+end_src
-
-Thanks to Po Lu, scrolling in emacs is great again!
-
-#+begin_src emacs-lisp
-(pixel-scroll-precision-mode 1)
-(setq pixel-scroll-precision-large-scroll-height 60
-      pixel-scroll-precision-interpolation-factor 30.0)
-#+end_src
-
-We could Drag text from emacs to other apps. Thanks to Po Lu!
-
-#+begin_src emacs-lisp
- (setq
-  mouse-drag-and-drop-region-cross-program t
-  mouse-drag-and-drop-region t)
 #+end_src
 
 *** Window title
@@ -3203,24 +3046,24 @@ anything to be run.
 
 #+name: run-setup
 #+begin_src emacs-lisp :tangle no
-;; (if (file-exists-p "setup.sh")
-;;     (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
-;;         (message ";; Setup script is empty")
-;;       (message ";; Detected content in the setup script")
-;;       (pp-to-string
-;;        `(unless noninteractive
-;;           (defun +config-run-setup ()
-;;             (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
-;;                                        (propertize "Warning!" 'face '(bold warning))))
-;;               (find-file (expand-file-name "setup.sh" doom-private-dir))
-;;               (when (yes-or-no-p "Would you like to run this script?")
-;;                 (async-shell-command "./setup.sh"))))
-;;           (add-hook! 'doom-init-ui-hook
-;;             (run-at-time nil nil #'+config-run-setup)))))
-;;   (message ";; setup.sh did not exist during tangle. Tangle again.")
-;;   (pp-to-string
-;;    `(unless noninteractive
-;;       (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
+(if (file-exists-p "setup.sh")
+    (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
+        (message ";; Setup script is empty")
+      (message ";; Detected content in the setup script")
+      (pp-to-string
+       `(unless noninteractive
+          (defun +config-run-setup ()
+            (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
+                                       (propertize "Warning!" 'face '(bold warning))))
+              (find-file (expand-file-name "setup.sh" doom-private-dir))
+              (when (yes-or-no-p "Would you like to run this script?")
+                (async-shell-command "./setup.sh"))))
+          (add-hook! 'doom-init-ui-hook
+            (run-at-time nil nil #'+config-run-setup)))))
+  (message ";; setup.sh did not exist during tangle. Tangle again.")
+  (pp-to-string
+   `(unless noninteractive
+      (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
@@ -3379,7 +3222,7 @@ The =rotate= package just adds the ability to rotate window layouts, but that
 sounds nice to me.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! rotate)
+(package! rotate :pin "4e9ac3ff800880bd9b705794ef0f7c99d72900a6")
 #+end_src
 
 *** Emacs Everywhere
@@ -3390,31 +3233,31 @@ The name says it all. It's loaded and set up (a bit) by =:app everywhere=, howev
 as I develop this I want the unpinned version I have as a submodule.
 
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! emacs-everywhere :recipe (:host github :repo "tecosaur/emacs-everywhere"))
-;; (unpin! emacs-everywhere)
+(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere"))
+(unpin! emacs-everywhere)
 #+end_src
 
 Additionally, I'm going to make some personal choices that aren't made in the
 Doom module.
 
 #+begin_src emacs-lisp
-;; (use-package! emacs-everywhere
-;;   :if (daemonp)
-;;   :config
-;;   (require 'spell-fu)
-;;   (setq emacs-everywhere-major-mode-function #'org-mode
-;;         emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
-;;   (defadvice! emacs-everywhere-raise-frame ()
-;;     :after #'emacs-everywhere-set-frame-name
-;;     (setq emacs-everywhere-frame-name (format emacs-everywhere-frame-name-format
-;;                                 (emacs-everywhere-app-class emacs-everywhere-current-app)
-;;                                 (truncate-string-to-width
-;;                                  (emacs-everywhere-app-title emacs-everywhere-current-app)
-;;                                  45 nil nil "…")))
-;;     ;; need to wait till frame refresh happen before really set
-;;     (run-with-timer 0.1 nil #'emacs-everywhere-raise-frame-1))
-;;   (defun emacs-everywhere-raise-frame-1 ()
-;;     (call-process "wmctrl" nil nil nil "-a" emacs-everywhere-frame-name)))
+(use-package! emacs-everywhere
+  :if (daemonp)
+  :config
+  (require 'spell-fu)
+  (setq emacs-everywhere-major-mode-function #'org-mode
+        emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
+  (defadvice! emacs-everywhere-raise-frame ()
+    :after #'emacs-everywhere-set-frame-name
+    (setq emacs-everywhere-frame-name (format emacs-everywhere-frame-name-format
+                                (emacs-everywhere-app-class emacs-everywhere-current-app)
+                                (truncate-string-to-width
+                                 (emacs-everywhere-app-title emacs-everywhere-current-app)
+                                 45 nil nil "…")))
+    ;; need to wait till frame refresh happen before really set
+    (run-with-timer 0.1 nil #'emacs-everywhere-raise-frame-1))
+  (defun emacs-everywhere-raise-frame-1 ()
+    (call-process "wmctrl" nil nil nil "-a" emacs-everywhere-frame-name)))
 #+end_src
 
 *** Which-key
@@ -3459,32 +3302,6 @@ have the following.
             (setq-default abbrev-mode t)
             (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
 #+end_src
-*** ace-window
-#+call: confpkg("Ace-window")
-
-=ace-window= is really nice.
-#+begin_src emacs-lisp
-(use-package ace-window
-  :config
-  (keymap-global-set "M-o" 'ace-window)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
-#+end_src
-*** Embark
-#+call: confpkg("!Pkg embark")
-
-=embark= is a really nice package for interacting with the minibuffer.
-
-#+begin_src emacs-lisp
-(use-package embark
-  :config
-  (keymap-global-set "C-," 'embark-act)
-  ;; TODO: this doesn't work
-  ;; file one wayland to open a file with external programs
-  ;; (map minibuffer-local-map
-  ;;       :n "o" #'embark-open-externally
-  ;;       )
-  )
-#+end_src
 
 *** Very large files
 
@@ -3494,7 +3311,8 @@ The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el")))
+(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
+  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
@@ -3617,256 +3435,39 @@ could be slightly nicer though.
 #+begin_src emacs-lisp
 (setq eros-eval-result-prefix "⟹ ") ; default =>
 #+end_src
-*** Meow
-#+call: confpkg("!Pkg Meow")
 
-Modal editing on wish! Use =moew= for modal life.
-#+begin_src emacs-lisp :tangle packages.el
-(package! meow)
-#+end_src
+*** EVIL
+
+#+call: confpkg("!Pkg evil")
+
+#+begin_quote
+From the =:editor evil= module.
+#+end_quote
+
+When I want to make a substitution, I want it to be global more often than not
+--- so let's make that the default.
+
+Now, EVIL cares a fair bit about keeping compatibility with Vim's default
+behaviour. I don't. There are some particular settings that I'd rather be
+something else, so let's change them.
 
 #+begin_src emacs-lisp
-(defun meow/setup-leader ()
-  (map! :leader
-        "?" #'meow-cheatsheet
-        "/" #'meow-keypad-describe-key
-        "1" #'meow-digit-argument
-        "2" #'meow-digit-argument
-        "3" #'meow-digit-argument
-        "4" #'meow-digit-argument
-        "5" #'meow-digit-argument
-        "6" #'meow-digit-argument
-        "7" #'meow-digit-argument
-        "8" #'meow-digit-argument
-        "9" #'meow-digit-argument
-        "0" #'meow-digit-argument))
-
-(defun meow/setup-doom-keybindings()
-  (map! :map meow-normal-state-keymap
-        doom-leader-key doom-leader-map)
-  (map! :map meow-motion-state-keymap
-        doom-leader-key doom-leader-map)
-  (map! :map meow-beacon-state-keymap
-        doom-leader-key nil)
-  (meow/setup-leader)
-  )
-(defun set-useful-keybindings()
-  (keymap-global-set "M-j" 'kmacro-start-macro-or-insert-counter)
-  (keymap-global-set "M-k" 'kmacro-end-or-call-macro)
-  ;;for doom emacs buffer management
-  (map! :leader
-        ;; make doom-leader-buffer-map alive
-        (:prefix-map ("b" . "buffer")
-         :desc "Toggle narrowing"            "-"   #'doom/toggle-narrow-buffer
-         :desc "Previous buffer"             "["   #'previous-buffer
-         :desc "Next buffer"                 "]"   #'next-buffer
-         (:when (modulep! :ui workspaces)
-           :desc "Switch workspace buffer"    "b" #'persp-switch-to-buffer
-           :desc "Switch buffer"              "B" #'switch-to-buffer)
-         (:unless (modulep! :ui workspaces)
-           :desc "Switch buffer"               "b"   #'switch-to-buffer)
-         :desc "Clone buffer"                "c"   #'clone-indirect-buffer
-         :desc "Clone buffer other window"   "C"   #'clone-indirect-buffer-other-window
-         :desc "Kill buffer"                 "d"   #'kill-current-buffer
-         :desc "ibuffer"                     "i"   #'ibuffer
-         :desc "Kill buffer"                 "k"   #'kill-current-buffer
-         :desc "Kill all buffers"            "K"   #'doom/kill-all-buffers
-         :desc "Switch to last buffer"       "l"   #'evil-switch-to-windows-last-buffer
-         :desc "Set bookmark"                "m"   #'bookmark-set
-         :desc "Delete bookmark"             "M"   #'bookmark-delete
-         :desc "Next buffer"                 "n"   #'next-buffer
-         :desc "New empty buffer"            "N"   #'+default/new-buffer
-         :desc "Kill other buffers"          "O"   #'doom/kill-other-buffers
-         :desc "Previous buffer"             "p"   #'previous-buffer
-         :desc "Revert buffer"               "r"   #'revert-buffer
-         :desc "Save buffer"                 "s"   #'basic-save-buffer
-         ;;:desc "Save all buffers"            "S"   #'evil-write-all
-         :desc "Save buffer as root"         "u"   #'doom/sudo-save-buffer
-         :desc "Pop up scratch buffer"       "x"   #'doom/open-scratch-buffer
-         :desc "Switch to scratch buffer"    "X"   #'doom/switch-to-scratch-buffer
-         :desc "Bury buffer"                 "z"   #'bury-buffer
-         :desc "Kill buried buffers"         "Z"   #'doom/kill-buried-buffers)
-        )
-  )
-
-(defun meow-setup ()
-  (set-useful-keybindings)
-  (meow/setup-doom-keybindings)
-  ;; for doom emacs
-  ;;(add-to-list 'meow-keymap-alist (cons 'leader doom-leader-map))
-  ;;(meow-normal-define-key (cons "SPC" doom-leader-map))
-  ;;(meow-motion-overwrite-define-key (cons "SPC" doom-leader-map))
-  (map!
-   (:when (modulep! :ui workspaces)
-     :n "C-t"   #'+workspace/new
-     :n "C-S-t" #'+workspace/display
-     :g "M-1"   #'+workspace/switch-to-0
-     :g "M-2"   #'+workspace/switch-to-1
-     :g "M-3"   #'+workspace/switch-to-2
-     :g "M-4"   #'+workspace/switch-to-3
-     :g "M-5"   #'+workspace/switch-to-4
-     :g "M-6"   #'+workspace/switch-to-5
-     :g "M-7"   #'+workspace/switch-to-6
-     :g "M-8"   #'+workspace/switch-to-7
-     :g "M-9"   #'+workspace/switch-to-8
-     :g "M-0"   #'+workspace/switch-to-final
-     ))
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev))
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
-   )
-
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("/" . meow-visit)
-   '("a" . meow-append)
-   '("A" . meow-join)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-symbol)
-   '("E" . meow-mark-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-mark-word)
-   '("M" . meow-mark-symbol)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("P" . pop-to-mark-command)
-   '("q" . meow-open-below)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-grab)
-   '("w" . meow-next-word)
-   '("x" . meow-line)
-   '("X" . meow-line-expand)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("\\" . quoted-insert)
-   ;;TODO: for C-[ translate to ESC, this doesn't work
-   ;;'("ESC" . meow-insert-exit)
-   ;;'("<escape>" . meow-insert-exit)
-   )
-
-  (setq meow-expand-exclude-mode-list nil)
-  (setq meow-expand-hint-remove-delay 1024)
-  ;; TODO: replace define-key with keymap-set
-  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-  (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
-  ;; (meow-define-keys 'insert
-  ;;   '("ESC" . meow-insert-exit))
-
-  ;; (keymap-set input-decode-map "C-[" 'meow-insert-exit)
-  ;; (keymap-set meow-insert-state-keymap "C-[" 'meow-insert-exit)
-
-  (setq meow-use-clipboard t
-        meow-visit-sanitize-completion nil
-        meow-expand-exclude-mode-list nil
-        meow-expand-hint-remove-delay 1024
-        )
-  (add-to-list 'meow-mode-state-list '(hexl-mode . normal))
-  )
-(use-package meow
-  :config
-  (require 'meow)
-  (meow-setup)
-  (meow-global-mode 1)
-  )
+(after! evil
+  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 #+end_src
 
-*** Copilot
+I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
+contributes a typing delay. I'm not sure it's much, but it is an extra
+~pre-command-hook~ that I don't benefit from, so...
+It seems that there's a dedicated package for this, so instead of just disabling
+the mode on startup, let's prevent installation of the package.
 
-#+call: confpkg("!Pkg Copilot")
-
-GitHub Copilot is awesome!
-#+begin_src emacs-lisp :tangle packages.el
-(package! copilot :recipe (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el")))
+#+begin_src emacs-lisp :tangle packages.el :noweb-ref none
+(package! evil-escape :disable t)
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
-(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
-(defun my-tab ()
-  (interactive)
-  (or (copilot-accept-completion)
-      (company-indent-or-complete-common nil)))
-;; complete by copilot first, then company-mode
-(use-package! copilot
-  :after company
-  :hook (prog-mode . copilot-mode)
-  :hook (text-mode . copilot-mode)
-  :bind (("C-TAB" . 'copilot-accept-completion-by-word)
-         ("C-<tab>" . 'copilot-accept-completion-by-word)
-         :map company-active-map
-         ("<tab>" . 'my-tab)
-         ("TAB" . 'my-tab)
-         :map company-mode-map
-         ("<tab>" . 'my-tab)
-         ("TAB" . 'my-tab)))
-;; (use-package! copilot
-;;   :after corfu
-;;   :hook (prog-mode . copilot-mode)
-;;   :hook (text-mode . copilot-mode)
-;;   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
-;;          ("C-<tab>" . 'copilot-accept-completion-by-word)
-;;          :map corfu-map
-;;          ("<tab>" . 'my-tab)
-;;          ("TAB" . 'my-tab)))
-#+end_src
 *** Consult
 
 #+call: confpkg("!Pkg Consult")
@@ -4124,8 +3725,7 @@ are just waiting to be saved!
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
-  ;; (add-hook 'evil-normal-state-entry-hook #'company-abort)
-) ;; make aborting less annoying.
+  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+end_src
 
 Now, the improvements from ~precedent~ are mostly from remembering history, so
@@ -4286,7 +3886,8 @@ That's no problem though, we just need to help TRAMP find them.
 
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
-(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets"))
+(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4301,7 +3902,7 @@ Sometimes pressing =TAB= is just too much.
 This makes it a breeze to take lovely screenshots.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! screenshot :recipe (:host github :repo "tecosaur/screenshot"))
+(package! screenshot :recipe (:local-repo "lisp/screenshot"))
 #+end_src
 
 #+attr_html: :class invertible :alt Example screenshot.el screenshot
@@ -4355,7 +3956,7 @@ Nested snippets are good, so let's enable that.
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
-(package! string-inflection)
+(package! string-inflection :pin "50ad54970b3cc79b6b83979bde9889ad9a9e1a9c")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4378,15 +3979,14 @@ For when you want to change the case pattern for a symbol.
         :desc "under_score" "_" #'string-inflection-underscore
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
-  ;; (after! evil
-  ;;   (evil-define-operator evil-operator-string-inflection (beg end _type)
-  ;;     "Define a new evil operator that cycles symbol casing."
-  ;;     :move-point nil
-  ;;     (interactive "<R>")
-  ;;     (string-inflection-all-cycle)
-  ;;     (setq evil-repeat-info '([?g ?~])))
-  ;;   (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection))
-)
+  (after! evil
+    (evil-define-operator evil-operator-string-inflection (beg end _type)
+      "Define a new evil operator that cycles symbol casing."
+      :move-point nil
+      (interactive "<R>")
+      (string-inflection-all-cycle)
+      (setq evil-repeat-info '([?g ?~])))
+    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
 #+end_src
 
 *** Smart parentheses
@@ -4416,7 +4016,7 @@ and colouring 🙂.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! info-colors)
+(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
 #+end_src
 
 To use this we'll just hook it into =Info=.
@@ -4438,13 +4038,13 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes)
+(package! modus-themes :pin "18dd2457d233859ad4d102d797d6744525177ac4")
 #+end_src
 
 *** Spacemacs themes
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! spacemacs-theme)
+(package! spacemacs-theme :pin "1ec73d68b0f120f92538d9a329a3a46e32f74510")
 #+end_src
 
 *** Theme magic
@@ -4453,7 +4053,7 @@ so I'd like to make sure we have a recent version.
 
 With all our fancy Emacs themes, my terminal is missing out!
 #+begin_src emacs-lisp :tangle packages.el
-(package! theme-magic)
+(package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
 #+end_src
 
 This operates using =pywal=, which is present in some repositories, but most
@@ -4504,17 +4104,17 @@ would be nice if it was, just slightly. Surprisingly, I couldn't find a package
 for this, so I made one.
 
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! simple-comment-markup :recipe (:host github :repo "tecosaur/simple-comment-markup"))
+(package! simple-comment-markup :recipe (:local-repo "lisp/simple-comment-markup"))
 #+end_src
 
 Let's use both basic Org markup and Markdown code backticks, to cover most
 situations decently.
 
 #+begin_src emacs-lisp
-;; (use-package! simple-comment-markup
-;;   :hook (prog-mode . simple-comment-markup-mode)
-;;   :config
-;;   (setq simple-comment-markup-set '(org markdown-code)))
+(use-package! simple-comment-markup
+  :hook (prog-mode . simple-comment-markup-mode)
+  :config
+  (setq simple-comment-markup-set '(org markdown-code)))
 #+end_src
 
 *** Emojify
@@ -5547,12 +5147,12 @@ Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
 roll our [[file:lisp/wttrin/wttrin.el][own version]].
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! wttrin :recipe (:host :local-repo "lisp/wttrin"))
+(package! wttrin :recipe (:local-repo "lisp/wttrin"))
 #+end_src
 
 #+begin_src emacs-lisp
-;; (use-package! wttrin
-;;   :commands wttrin)
+(use-package! wttrin
+  :commands wttrin)
 #+end_src
 
 *** Spray
@@ -5626,80 +5226,6 @@ For editing systemd unit files
 #+end_src
 
 * Applications
-** Time Tracking System
-*** wakatime
-
-#+call: confpkg("!Pkg Wakatime")
-
-Use wakatime to track your coding time!
-#+begin_src emacs-lisp :tangle packages.el
-(package! wakatime-mode)
-#+end_src
-
-Start =wakatime= at when emacs launches:
-#+begin_src emacs-lisp
-(use-package wakatime-mode
-  :config
-  (global-wakatime-mode)
-  )
-#+end_src
-
-
-** Input Method
-
-#+call: confpkg("!Pkg Smart-input-source")
-
-I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
-within Emacs. Let's add =emacs-smart-input-source= to support smart input method switching.
-#+begin_src emacs-lisp :tangle packages.el
-(package! sis :recipe (:host github :repo "VitalyAnkh/emacs-smart-input-source"
-                           :files ("*.el" ) :branch "staging"))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! sis
-  ;;:hook
-  ;;enable the /follow context/ and /inline region/ mode for specific buffers
-  ;;(((text-mode prog-mode) . sis-context-mode)
-  ;; ((text-mode prog-mode) . sis-inline-mod
-  :after meow
-  ;;:defer-incrementally meow
-  :config
-  (sis-ism-lazyman-config "1" "2" 'fcitx5)
-  (add-hook 'meow-insert-exit-hook #'sis-set-english)
-  (add-to-list 'sis-context-hooks 'meow-insert-exit-hook)
-  ;; (defun describe-key-sis ()
-  ;;   (interactive)
-  ;;   (sis-set-english)
-  ;;   (sis-global-respect-mode 0)
-  ;;   (describe-key (help--read-key-sequence))
-  ;;   (sis-global-respect-mode t))
-  ;; :bind (("C-h k" . describe-key-sis))
-  )
-#+end_src
-
-*** Use =emacs-rime=
-
-#+call: confpkg()
-
-#+begin_src emacs-lisp :tangle packages.el
-;;(package! rime)
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-;; (use-package rime
-;;   :custom
-;;   (default-input-method "rime")
-;;   (rime-user-data-dir "~/.config/input_method/rime")
-;;   (rime-disable-predicates
-;;    '(meow-normal-mode-p
-;;      meow-motion-mode-p
-;;      meow-keypad-mode-p
-;;      meow-beacon-mode-p
-;;      ))
-;;   )
-#+end_src
-
 ** Ebooks
 
 #+call: confpkg()
@@ -6540,7 +6066,7 @@ To interface with this, we'll use a my =lexic= package.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
 
 #+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
-(package! lexic :recipe (:host github :repo "tecosaur/lexic"))
+(package! lexic :recipe (:local-repo "lisp/lexic"))
 #+end_src
 
 Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
@@ -7423,7 +6949,7 @@ We also want to define ~mu4e-compose-from-mailto~.
 
 It would also be nice to change the name pre-filled in =From:= when drafting.
 #+begin_src emacs-lisp
-(defvar mu4e-from-name "VitalyR"
+(defvar mu4e-from-name "Timothy"
   "Name used in \"From:\" template.")
 (defadvice! mu4e~draft-from-construct-renamed (orig-fn)
   "Wrap `mu4e~draft-from-construct-renamed' to change the name."
@@ -7751,10 +7277,10 @@ Now let's set up that signature.
 (defvar +mu4e-org-ml-signature
   (cons
    "All the best,
-VitalyR
+Timothy
 
 -- \
-VitalyR (‘VitalyR’/‘vr’).
+Timothy (‘tecosaur’/‘TEC’), Org mode contributor.
 Learn more about Org mode at <https://orgmode.org/>.
 Support Org development at <https://liberapay.com/org-mode>,
 or support my work at <https://liberapay.com/tec>.
@@ -8092,7 +7618,8 @@ correct package statement needed.
 (unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
-           :files ("lisp/*.el")))
+           :files ("lisp/*.el"))
+  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
 #+end_src
 
 **** Visuals
@@ -8253,21 +7780,21 @@ recognising the pgtk window system]].
 
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! ob-julia :recipe (:host github :repo "tecosaur/ob-julia" :files ("*.el" "julia")))
+(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 #+end_src
 
 #+begin_src emacs-lisp
-;; (use-package! ob-julia
-;;   :commands org-babel-execute:julia
-;;   :config
-;;   (setq org-babel-julia-command-arguments
-;;         `("--sysimage"
-;;           ,(when-let ((img "~/.local/lib/julia.so")
-;;                       (exists? (file-exists-p img)))
-;;              (expand-file-name img))
-;;           "--threads"
-;;           ,(number-to-string (- (doom-system-cpus) 2))
-;;           "--banner=no")))
+(use-package! ob-julia
+  :commands org-babel-execute:julia
+  :config
+  (setq org-babel-julia-command-arguments
+        `("--sysimage"
+          ,(when-let ((img "~/.local/lib/julia.so")
+                      (exists? (file-exists-p img)))
+             (expand-file-name img))
+          "--threads"
+          ,(number-to-string (- (doom-system-cpus) 2))
+          "--banner=no")))
 #+end_src
 
 ***** HTTP requests
@@ -8290,7 +7817,8 @@ I like the idea of being able to make HTTP requests with Babel.
 
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
+  :pin "cf51df7b87e0d32ba13ac5380557e81d9845d81b")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8335,7 +7863,7 @@ Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
 to make that right again, and this package makes that even easier to do.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-pandoc-import :recipe
-  (:host github :repo "tecosaur/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
+  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8350,7 +7878,7 @@ to make that right again, and this package makes that even easier to do.
 For glossary-type entries, there's a nice package for this I'm developing.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-glossary :recipe (:host github :repo "tecosaur/org-glossary"))
+(package! org-glossary :recipe (:local-repo "lisp/org-glossary"))
 #+end_src
 
 Other than hooking this to =org-mode=, we also want to set a collection root and
@@ -8384,7 +7912,7 @@ probably =latexdiff=. There are a few annoying steps involved here, and so I've
 written a package to streamline the process.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! orgdiff :recipe (:host github :repo "tecosaur/orgdiff"))
+(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 #+end_src
 
 The only little annoyance is the fact that =latexdiff= uses ~#FF0000~ and ~#0000FF~ as
@@ -8418,7 +7946,7 @@ post-processing the =latexdiff= result.
 
 It's nice to be able to link to music
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-music :recipe (:host github :repo "tecosaur/org-music"))
+(package! org-music :recipe (:local-repo "lisp/org-music"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -12206,7 +11734,7 @@ The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting
 exporting that as LaTeX commands.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! engrave-faces :recipe (:host github :repo "tecosaur/engrave-faces"))
+(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -12859,7 +12387,7 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 which I have implemented in the package =ox-chameleon=.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! ox-chameleon :recipe (:host github :repo "tecosaur/ox-chameleon"))
+(package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13684,7 +13212,7 @@ but more convenient, like =;=.
 This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol input.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! laas :recipe (:host github :repo "tecosaur/LaTeX-auto-activating-snippets"))
+(package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13752,7 +13280,7 @@ sometimes I'd like to act on the textual content and so would like a plaintext v
 Thanks to src_shell{pdftotext} we have a convenient way of performing this conversion.
 I've integrated this into a little package, =pdftotext.el=.
 #+begin_src emacs-lisp :tangle (if (executable-find "pdftotext") "packages.el" "no")
-;; (package! pdftotext :recipe (:host github :repo "tecosaur/pdftotext"))
+(package! pdftotext :recipe (:local-repo "lisp/pdftotext"))
 #+end_src
 
 The output can be slightly nicer without spelling errors, and with prettier page
@@ -13764,20 +13292,20 @@ sure =pdf-tools= doesn't take priority.
 Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by default.
 
 #+begin_src emacs-lisp
-;; (use-package! pdftotext
-;;   :init
-;;   (unless (display-graphic-p)
-;;     (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
-;;     (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
-;;   :config
-;;   (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
-;;   ;; For prettyness
-;;   (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
-;;   (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
-;;   ;; I have no idea why this is needed
-;;   (map! :map pdftotext-mode-map
-;;         "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
-;;         "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
+(use-package! pdftotext
+  :init
+  (unless (display-graphic-p)
+    (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
+    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
+  :config
+  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
+  ;; For prettyness
+  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
+  (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
+  ;; I have no idea why this is needed
+  (map! :map pdftotext-mode-map
+        "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
+        "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
 
 #+end_src
 
@@ -13849,7 +13377,7 @@ update-mime-database ~/.local/share/mime
 For =DataToolkit.jl=-formatted TOML files, I've made a major mode.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! conf-data-toml :recipe (:host github :repo "tecosaur/conf-data-toml"))
+(package! conf-data-toml :recipe (:local-repo "lisp/conf-data-toml"))
 #+end_src
 
 Since the major mode is autoloaded, all we need to do is register an appropriate
@@ -13922,7 +13450,8 @@ I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io
 Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
+(package! beancount :recipe (:host github :repo "beancount/beancount-mode")
+  :pin "687775da63784d153a3c1cfee9801090c6b51842")
 #+end_src
 
 #+begin_src emacs-lisp
