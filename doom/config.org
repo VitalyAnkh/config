@@ -1778,7 +1778,7 @@ associated file.
 #+begin_src emacs-lisp
 (agda +local)                       ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
-(cc +lsp)                  ; C > C++ == 1
+(cc +lsp +tree-sitter)                  ; C > C++ == 1
 ;;clojure                    ; java with a lisp
 common-lisp                ; if you've seen one lisp, you've seen them all
 coq                        ; proofs-as-programs
@@ -1796,11 +1796,11 @@ ess                          ; emacs speaks statistics
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
 ;;gdscript                   ; the language you waited for
-;;(graphql +lsp)             ; Give queries a REST
+(graphql +lsp)             ; Give queries a REST
 (go +lsp)                    ; the hipster dialect
 ;;(haskell +lsp)             ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
-;;idris                      ;
+(idris +lsp)                     ;
 json                         ; At least it ain't XML
 ;;(java +lsp)                ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
@@ -1810,7 +1810,7 @@ json                         ; At least it ain't XML
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
  +fold)                      ; fold the clutter away nicities
-;;lean                       ; proof that mathematicians need help
+(lean +lsp)                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
@@ -1820,7 +1820,7 @@ nix                          ; I hereby declare "nix geht mehr!"
 ;;ocaml                      ; an objective camel
 (org                         ; organize your plain life in plain text
  +dragndrop                  ; drag & drop files/images into org buffers
- ;;+hugo                     ; use Emacs for hugo blogging
+ +hugo                     ; use Emacs for hugo blogging
  +noter                      ; enhanced PDF notetaking
  +jupyter                    ; ipython/jupyter support for babel
  +pandoc                     ; export-with-pandoc support
@@ -1833,13 +1833,13 @@ nix                          ; I hereby declare "nix geht mehr!"
 ;;purescript                 ; javascript, but functional
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-;;racket                     ; a DSL for DSLs
-;;raku                       ; the artist formerly known as perl6
+(racket +lsp)                    ; a DSL for DSLs
+(raku +lsp)                      ; the artist formerly known as perl6
 ;;rest                       ; Emacs as a REST client
 ;;rst                        ; ReST in peace
-;;(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+;; (ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
 (rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-;;scala                      ; java, but good
+scala                      ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
 ;;sml                        ; no, the /other/ ML
@@ -1848,7 +1848,7 @@ sh                           ; she sells {ba,z,fi}sh shells on the C xor
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-;;zig                        ; C, but simpler
+(zig +lsp)                        ; C, but simpler
 #+end_src
 
 **** Input
@@ -5230,6 +5230,51 @@ Now, we just identify the files in question.
         "*/_region_.tex"))
 #+end_src
 
+Mimick =evil='s ~/~ in =treemacs= buffer:
+
+#+begin_src emacs-lisp
+(after! (treemacs meow)
+  ;; No EVIL, then I add this
+  (keymap-set treemacs-mode-map "/" 'meow-visit)
+  (keymap-set treemacs-mode-map "e" 'treemacs-toggle-node)
+)
+#+end_src
+Adjust the face of =treemacs=. The =variable-pitch= is too large for a file explorer.
+#+begin_src emacs-lisp
+(use-package treemacs
+  :config
+  (setq
+   treemacs-file-event-delay 1000
+   treemacs-follow-after-init t
+   treemacs-file-follow-delay 0.1
+   treemacs-indentation 1
+   treemacs-recenter-after-file-follow t
+   treemacs-recenter-after-tag-follow t
+   treemacs-text-scale -1.1
+   treemacs-follow-mode t
+   treemacs-width 25
+   )
+  (treemacs-follow-mode)
+  ;;(set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-* [^*]*\\*" :size 0.25 :side 'left :quit nil)
+
+  :bind
+  (:map global-map
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag))
+  )
+#+end_src
+
+=treemacs= makes =ace-window= ignores its buffer. I don't like this behaviour. Let's tweak it.
+#+begin_src emacs-lisp
+(after! (treemacs ace-window)
+  (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers))
+  )
+#+end_src
+
 ** Frivolities
 *** xkcd
 
@@ -5600,7 +5645,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "d0c9ace493d088bc70f7422705ff27dfcf162cca")
+(package! elcord)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7839,6 +7884,119 @@ moves the point with ~message-goto-<location>~.
 #+end_src
 
 * Language configuration
+** LSP
+
+#+call: confpkg("!Pkg LSP")
+
+Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp client in Emacs has some nuisances. Let's tweak it.
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! lsp-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :custom
+  (map! :leader
+        (:prefix "t"
+         :desc "lsp treemacs symbols" "s" #'lsp-treemacs-symbols))
+  (lsp-enable-file-watchers nil)
+  (lsp-treemacs-sync-mode)
+  (lsp-ui-doc-position "Bottom")
+  (lsp-keep-workspace-alive nil)
+  (lsp-ui-doc-enable t)
+  (lsp-ui-sideline-enable nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-headerline-breadcrumb-enable t)
+  (lsp-headerline-breadcrumb-segments '(symbols))
+  (lsp-headerline-breadcrumb-enable-diagnostics nil)
+  ;; use tree-sitter to high-light code instead
+  (lsp-semantic-tokens-enable nil)
+  (lsp-ui-doc-show-with-mouse t)
+  (lsp-ui-doc-show-with-cursor nil)
+  )
+#+end_src
+
+*** ffi-navigator
+Make sure to install the =ffi-navigator= first.
+#+begin_src bash
+pip install ffi-navigator
+#+end_src
+
+=ffi-navigator= is a package that provides a way to navigate foreign function interfaces (C/C++ code) in =Python=. It relies on =lsp-mode= which offers multiple language server for one file, so we need to load it.
+
+#+begin_src emacs-lisp
+(use-package lsp
+  :defer t
+  :custom
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection '("python3" "-m" "ffi_navigator.langserver"))
+    :major-modes '(python-mode c++-mode)
+    :server-id 'ffi-navigator
+    :add-on? t))
+  )
+#+end_src
+
+**** ~lsp-bridge~
+
+#+call: confpkg("!Pkg lsp-bridge")
+
+Test ~lsp-bridge~.
+#+begin_src emacs-lisp :tangle packages.el
+(package! lsp-bridge
+  :recipe (:host github
+           :repo "manateelazycat/lsp-bridge"
+           :files ("*.el" "*.py" "acm" "core" "langserver"
+                   "multiserver" "resources")))
+(package! popon
+  :recipe (:host nil :repo "https://codeberg.org/akib/emacs-popon.git"))
+(package! acm-terminal
+  :recipe (:host github :repo "twlz0ne/acm-terminal"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; (customize-set-variable 'company-global-modes
+;;                         (append company-global-modes '(python-mode)))
+
+;; (use-package lsp-bridge
+;;   :hook
+;;   (python-mode . lsp-bridge-mode)
+;;   :init
+;;   (setq acm-enable-citre t))
+
+;; (use-package lsp-bridge
+;;   :delight (lsp-bridge-mode "")
+;;   :config
+;;   (require 'yasnippet)
+;;   (yas-global-mode 1)
+
+;;   (require 'lsp-bridge)
+;;   (global-lsp-bridge-mode)
+;;   (setq lsp-bridge-c-lsp-server "clangd"
+;;         acm-enable-yas nil
+;;         acm-enable-tabnine nil
+;;         lsp-bridge-enable-hover-diagnostic t
+;;         acm-enable-codeium t)
+;;   ;; (setq lsp-bridge-signature-show-function 'lsp-bridge-signature-posframe)
+;;   (map! :mode prog-mode
+;;         (:leader
+;;          :desc "Rename symbol" "c r" #'lsp-bridge-rename
+;;          :desc "Diagnostics list" "c x" #'lsp-bridge-diagnostic-list
+;;          :desc "Code actions" "c a" #'lsp-bridge-code-action
+;;          :desc "Format document" "c f" #'lsp-bridge-code-format))
+
+;;   (add-to-list '+lookup-definition-functions #'lsp-bridge-find-def)
+;;   (add-to-list '+lookup-implementations-functions #'lsp-bridge-find-impl)
+;;   (add-to-list '+lookup-references-functions #'lsp-bridge-find-references)
+;;   (add-to-list '+lookup-type-definition-functions #'lsp-bridge-find-type-def)
+;;   (add-to-list '+lookup-documentation-functions #'lsp-bridge-popup-documentation)
+
+;;   (unless (display-graphic-p)
+;;     (with-eval-after-load 'acm
+;;       (require 'acm-terminal))))
+#+end_src
+
 ** General
 *** File Templates
 
@@ -7851,6 +8009,202 @@ need to have a template assigned.
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
+#+end_src
+** Agda
+
+#+call: confpkg()
+
+Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That's a bug and it's easy to fix.
+#+begin_src emacs-lisp
+(setq auto-mode-alist
+      (append
+       '(("\\.agda\\'" . agda2-mode)
+         ("\\.lagda.md\\'" . agda2-mode))
+       auto-mode-alist))
+#+end_src
+** C/C++
+#+call: confpkg("!Pkg clang-format")
+
+=clang-format-plus= could format C/C++ code only in the modified region. Only formating modified code is a function long awaited, and [[https://github.com/microsoft/vscode/pull/104994][is provided by vscode three years ago]]. Hope I will implement this feature for any languages in the future.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! clang-format+
+  :recipe (:host github :repo "SavchenkoValeriy/emacs-clang-format-plus"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(use-package clang-format+
+  :config
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+  (setq clang-format+-context 'modification)
+  (setq clang-format+-always-enable t))
+
+(setq +format-on-save-enabled-modes
+      '(not emacs-lisp-mode    ; elisp's mechanisms are good enough
+            cpp-mode  ; use clang-format+ for C/C++
+            c++-mode
+            c-mode
+            org-msg-edit-mode)) ; doesn't need a formatter
+#+end_src
+** CUDA
+
+#+call: confpkg()
+
+Use =c++-mode= to edit =.cu= files. It's more suitable than =cuda-mode=.
+#+begin_src emacs-lisp
+(setq auto-mode-alist
+      (append
+       '(("\\.cu\\'" . c++-mode))
+       auto-mode-alist))
+#+end_src
+
+** Grammarly
+
+#+call: confpkg("!Pkg Grammarly"")
+
+I use =grammarly= to check my writing.
+#+begin_src emacs-lisp :tangle packages.el
+;;(package! lsp-grammarly)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (use-package lsp-grammarly
+;;   :hook (text-mode . (lambda ()
+;;                        (require 'lsp-grammarly)
+;;                        (lsp)))
+;; )  ; or lsp-deferred
+#+end_src
+** Just
+
+#+call: confpkg("!Pkg just-mode")
+
+=just= is a command runner. It's a great tool to run commands like =Makefile=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! just-mode
+  :recipe (:host github :repo "leon-barrett/just-mode.el"))
+#+end_src
+
+** Lean
+
+#+call: confpkg("!Pkg lean4")
+
+Use ~Lean~ to prove you are a prover!
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! lean4-mode :recipe
+  (:host github
+   :repo "leanprover/lean4-mode"
+   :files ("data" "*.el")))
+#+end_src
+
+~Lean~ has its own input method to input unicode characters. Let's make it more plansant.
+#+begin_src emacs-lisp :tangle no
+(add-hook 'lean-mode-hook
+          (lambda ()  (setq-default sis-english-source "Lean")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle config.el
+(use-package lean4-mode
+  ;; to defer loading the package until required
+  :commands (lean4-mode))
+#+end_src
+** Meson
+
+#+call: confpkg("!Pkg meson")
+
+Meson is a great build tool for ~C~ and ~C++~, much more ergonomic than CMake.
+#+begin_src emacs-lisp :tangle packages.el
+(package! meson-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package meson-mode
+  :config
+  (add-hook 'meson-mode-hook 'company-mode))
+;; (setq auto-mode-alist
+;;       (append
+;;        '(
+;;          ("\\meson.build\\'" . meson-mode)
+;;          )
+;;        auto-mode-alist))
+#+end_src
+
+** LLVM Tools
+
+#+call: confpkg("!Pkg LLVM")
+
+Add major modes for LLVM's =LLVM IR= and =TableGen=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! llvm :recipe
+  (:host github
+   :repo "VitalyAnkh/llvm-tools"
+   :files ("*.el")))
+;; Use my own fork of the llvm-tools which located in the llvm-project monorepo
+#+end_src
+
+** Sage Math
+
+#+call: confpkg("!Pkg sage-shell")
+
+=Sage Math= is good, use it.
+#+begin_src emacs-lisp :tangle packages.el
+(package! sage-shell-mode)
+(package! ob-sagemath)
+#+end_src
+** OCaml
+
+#+call: confpkg("!Pkg OCaml")
+
+I love auto-formatting =OCaml= code.
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'ocamlformat-before-save)
+#+end_src
+** Rust
+#+call: confpkg()
+
+#+begin_src emacs-lisp
+(after! rustic
+  (setq rustic-lsp-server 'rust-analyzer
+        lsp-rust-analyzer-cargo-watch-command "clippy"
+        lsp-rust-analyzer-cargo-load-out-dirs-from-check t
+        lsp-rust-analyzer-proc-macro-enable t
+        lsp-rust-analyzer-display-chaining-hints t
+        lsp-rust-analyzer-display-parameter-hints t
+        lsp-rust-analyzer-server-display-inlay-hints t
+        lsp-rust-all-features t
+        rustic-format-on-save t
+)
+)
+(use-package dap-mode
+  :config
+  (require 'dap-lldb)
+  (require 'dap-gdb-lldb)
+  (require 'dap-cpptools)
+  (dap-register-debug-template
+   "Rust::LLDB Run Configuration"
+   (list :type "lldb"
+         :request "launch"
+         :name "LLDB::Run"
+	    :gdbpath "rust-lldb"
+         :target nil
+         :cwd nil)))
+#+end_src
+** WSGL
+#+call: confpkg("!Pkg WebGPU")
+
+Why not use WebGPU?
+#+begin_src emacs-lisp :tangle packages.el
+(package! wgsl-mode :recipe
+  (:host github
+   :repo "acowley/wgsl-mode"
+   :files ("wgsl-mode.el")))
+#+end_src
+** WebAssembly
+#+call: confpkg("!Pkg WebAssembly")
+
+Oh, post-modern VM runs everything anywhere!
+#+begin_src emacs-lisp :tangle packages.el
+(package! wat-mode :recipe (:host github :repo "devonsparks/wat-mode"))
 #+end_src
 
 ** Plaintext
@@ -9185,8 +9539,8 @@ Org-roam is nice by itself, but there are so /extra/ nice packages which integra
 with it.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
-(package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(package! websocket) ; dependency of `org-roam-ui'
 #+end_src
 
 #+begin_src emacs-lisp
@@ -10163,8 +10517,8 @@ theme-appropriate foreground.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|------------+---------------|
-| 135 \pm 2 ms | 215 \pm 3 ms    |
+|------------+----------------|
+| 135 \pm 2 ms | 215 \pm 3 ms     |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~.
@@ -10175,10 +10529,10 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time | Resulting file size |
-|--------------------+------------+---------------------|
-| ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
-| ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
+| Tool chain          | Total time | Resulting file size |
+|---------------------+------------+---------------------|
+| ~latex~ + ~dvipng~      | 226 \pm 2 ms | 7 KiB               |
+| ~latex~ + ~dvisvgm~     | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
@@ -12720,51 +13074,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX       |
-|-----------+-------------|
-| ɑ         | \(\alpha\)       |
-| β          | \(\beta\)        |
-| γ          | \(\gamma\)        |
-| δ          | \(\delta\)        |
-| ε          | \(\epsilon\)        |
-| ϵ          | \(\varepsilon\)        |
-| ζ          | \(\zeta\)        |
-| η         | \(\eta\)       |
-| θ          | \(\theta\)        |
-| ϑ         | \(\vartheta\)       |
-| ι          | \(\iota\)        |
-| κ         | \(\kappa\)       |
-| λ          | \(\lambda\)        |
-| μ         | \(\mu\)       |
-| ν          | \(\nu\)        |
-| ξ          | \(\xi\)        |
-| π         | \(\pi\)       |
-| ϖ         | \(\varpi\)       |
-| ρ          | \(\rho\)        |
+| Character | LaTeX |
+|-----------+-------|
+| ɑ         | \(\alpha\) |
+| β          | \(\beta\)  |
+| γ          | \(\gamma\)  |
+| δ          | \(\delta\)  |
+| ε          | \(\epsilon\)  |
+| ϵ          | \(\varepsilon\)  |
+| ζ          | \(\zeta\)  |
+| η         | \(\eta\) |
+| θ          | \(\theta\)  |
+| ϑ         | \(\vartheta\) |
+| ι          | \(\iota\)  |
+| κ         | \(\kappa\) |
+| λ          | \(\lambda\)  |
+| μ         | \(\mu\) |
+| ν          | \(\nu\)  |
+| ξ          | \(\xi\)  |
+| π         | \(\pi\) |
+| ϖ         | \(\varpi\) |
+| ρ          | \(\rho\)  |
 | ϱ         | \(\varrho\) |
-| σ         | \(\sigma\)       |
-| ς          | \(\varsigma\)        |
-| τ          | \(\tau\)        |
-| υ          | \(\upsilon\)        |
-| ϕ         | \(\phi\)       |
-| φ         | \(\varphi\)       |
-| ψ         | \(\psi\)       |
-| ω         | \(\omega\)       |
-| Γ         | \(\Gamma\)       |
-| Δ         | \(\Delta\)       |
-| Θ         | \(\Theta\)       |
-| Λ         | \(\Lambda\)       |
-| Ξ         | \(\Xi\)       |
-| Π         | \(\Pi\)       |
-| Σ         | \(\Sigma\)       |
-| Υ         | \(\Upsilon\)       |
-| Φ         | \(\Phi\)       |
-| Ψ         | \(\Psi\)       |
-| Ω         | \(\Omega\)       |
-| א         | \(\aleph\)        |
-| ב         | \(\beth\)       |
+| σ         | \(\sigma\) |
+| ς          | \(\varsigma\)  |
+| τ          | \(\tau\)  |
+| υ          | \(\upsilon\)  |
+| ϕ         | \(\phi\) |
+| φ         | \(\varphi\) |
+| ψ         | \(\psi\) |
+| ω         | \(\omega\) |
+| Γ         | \(\Gamma\) |
+| Δ         | \(\Delta\) |
+| Θ         | \(\Theta\) |
+| Λ         | \(\Lambda\) |
+| Ξ         | \(\Xi\) |
+| Π         | \(\Pi\) |
+| Σ         | \(\Sigma\) |
+| Υ         | \(\Upsilon\) |
+| Φ         | \(\Phi\) |
+| Ψ         | \(\Psi\) |
+| Ω         | \(\Omega\) |
+| א         | \(\aleph\)  |
+| ב         | \(\beth\) |
 | ד         | \(\daleth\) |
-| ג          | \(\gimel\)        |
+| ג          | \(\gimel\)  |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions
@@ -12894,11 +13248,11 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | amsmath    | A near-essential maths package                        |
 | booktabs   | Nice horizontal lines in tables                       |
 | cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                               |
+| capt-of    | Captions outside floats                              |
 | caption    | Finer control over captions                           |
 | cleveref   | Easy cross-referencing                                |
 | embedall   | Embed files in the document                           |
-| float      | Floating environments                                 |
+| float     | Floating environments                                 |
 | fontenc    | Font encodings                                        |
 | fvextra    | Enhanced verbatim environments                        |
 | graphicx   | An extended graphics package                          |
@@ -12914,7 +13268,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | preview    | Needed for AUCTeX and ob-latex                        |
 | scrbase    | KOMA classes and more                                 |
 | siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                 |
+| soul       | Strikethrough and underline, flexibly                |
 | subcaption | Form subfigures and subcaptions                       |
 | svg        | Insert SVG images                                     |
 | tikz       | Generally handy, as a dependancy and for graphics     |
