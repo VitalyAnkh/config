@@ -614,6 +614,7 @@ perfbook:
   #!/usr/bin/env bash
   echo "==== pull perfbook ===="
   cd ~/projects/dev/book/perfbook
+  git clean -fdx
   git pull
   LANG=en_US.UTF8 make 1c
   chmod 0600 /home/vitalyr/nutstore_files/Books/计算机科学/计算机底层/perfbook-1c.pdf
