@@ -16,9 +16,9 @@
 #+startup: fold
 
 #+latex_class: book
-#+latex_header: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
-#+latex_header: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
-#+latex_header: \ihead{\upshape\scshape\leftmark} \chead{\ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
+#+latex_header_extra: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
+#+latex_header_extra: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
+#+latex_header_extra: \ihead{\upshape\scshape\leftmark} \chead{\Ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
 
 #+begin_export html
 <a href="https://github.com/tecosaur/emacs-config/"
@@ -351,7 +351,7 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 (setq native-comp-async-jobs-number 20)
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
-
+(setq org-element-use-cache nil)
 ;; debug vertico--exhibit error
 (defun force-debug (func &rest args)
   (condition-case e
@@ -1655,7 +1655,55 @@ anything to be run.
 #+begin_src emacs-lisp :noweb no-export :tangle no
 <<run-setup()>>
 #+end_src
+*** Grabbing source block content as a string
 
+In a few places in this configuration, it is desirable to grab a source block's
+content as a string. We can use a noweb =<<replacement>>= form, however that
+doesn't work with string escaping.
+
+We can get around this by using noweb execution and write an name (unexported)
+babel block that will grab the content of another named source block as a
+string. Note that this does not currently expand nested noweb references.
+
+#+name: grab
+#+begin_src emacs-lisp :var name="" :noweb-ref none
+(if-let ((block-pos (org-babel-find-named-block name))
+         (block (org-element-at-point block-pos)))
+    (format "%S" (string-trim (org-element-property :value block)))
+  ;; look for :noweb-ref matches
+  (let (block-contents)
+    (org-element-cache-map
+     (lambda (src)
+       (when (and (not (org-in-commented-heading-p nil src))
+                  (not (org-in-archived-heading-p nil src))
+                  (let* ((lang (org-element-property :language src))
+                         (params
+                          (apply
+                           #'org-babel-merge-params
+                           (append
+                            (org-with-point-at (org-element-property :begin src)
+                              (org-babel-params-from-properties lang t))
+                            (mapcar
+                             (lambda (h)
+                               (org-babel-parse-header-arguments h t))
+                             (cons (org-element-property :parameters src)
+                                   (org-element-property :header src))))))
+                         (ref (alist-get :noweb-ref params)))
+                    (equal ref name)))
+         (push (org-babel--normalize-body src)
+               block-contents)))
+     :granularity 'element
+     :restrict-elements '(src-block))
+    (and block-contents
+         (format "%S"
+                 (mapconcat
+                  #'identity
+                  (nreverse block-contents)
+                  "\n\n")))))
+#+end_src
+
+
+There we go, that's all it takes! This can be used via the form =<<grab("block-name")>>=.
 * Packages
 ** Loading instructions
 :PROPERTIES:
@@ -4186,8 +4234,8 @@ correct package statement needed.
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
-;;<<org-pkg-statement()>>
-;; (package! org :recipe
+<<org-pkg-statement()>>
+;;(package! org :recipe
 ;;   (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
 ;;          (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
 ;;          :files
@@ -4210,9 +4258,8 @@ correct package statement needed.
 ;;               (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
 ;;               "(provide 'org-version)\n"))))
 ;;   :pin "1d8db081266959dc9b42aecb0550c7d8ca7b0754")
-(package! org-mode :recipe (:host github :repo "emacs-straight/org-mode"))
-(unpin! org-mode)
-(unpin! org) ; there be bugs
+;; ;; (package! org-mode :recipe (:host github :repo "emacs-straight/org-mode"))
+;;(unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
@@ -4606,18 +4653,22 @@ Use =org-cite= to insert, update and generate citations.
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
-(use-package! citar
-  :when (modulep! :completion vertico)
-  :config
-  (setq citar-bibliography
-        (let ((libfile-search-names '("library.bib" "Library.bib" "library.json" "Library.json"))
+(after! citar
+  (setq org-cite-global-bibliography
+        (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
               (libfile-dir "~/Zotero")
               paths)
           (dolist (libfile libfile-search-names)
             (when (and (not paths)
                        (file-exists-p (expand-file-name libfile libfile-dir)))
               (setq paths (list (expand-file-name libfile libfile-dir)))))
-          paths)))
+          paths)
+        citar-bibliography org-cite-global-bibliography
+        citar-symbols
+        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+
 
 (use-package! citeproc
   :defer t)
@@ -6091,127 +6142,111 @@ passed, and so we can override the background as discussed above.
 (require 'org-src)
 (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 #+end_src
+***** Automatic previewing
 
-***** More eager rendering
-What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
-have this be performed automatically with =xenops=.
+It would be nice if fragments could automatically be previewed after being
+typed, and the overlays automatically showed and hidden when moving the point in
+and out of the LaTeX fragments.
 
-OK, let's customize the default inline rendering a bit.
+Thankfully, all we need to do to make this happen is use ~org-latex-preview-auto-mode~.
 
-#+begin_src emacs-lisp :tangle packages.el
-;;(package! org-fragtog)
+#+begin_src emacs-lisp
+;;(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+;;(setq org-preview-latex-default-process 'dvisvgm)
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
-(add-hook 'org-mode-hook 'org-fragtog-mode)
-#+end_src
 
-#+begin_src emacs-lisp :tangle yes
-(setq org-preview-latex-default-process 'dvisvgm)
-(setq org-preview-latex-process-alist
-      '((dvipng :programs
-         ("latex" "dvipng")
-         :description "dvi > png"
-         :message "you need to install the programs: latex and dvipng."
-         :image-input-type "dvi"
-         :image-output-type "png"
-         :image-size-adjust
-         (0.35 . 0.35)
-         :latex-compiler
-         ("latex -interaction nonstopmode -output-directory %o %f")
-         :image-converter
-         ("dvipng -D %D -T tight -o %O %f")
-         :transparent-image-converter
-         ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
-        (dvisvgm :programs
-                 ("latex" "dvisvgm")
-                 :description "dvi > svg"
-                 :message "you need to install the programs: latex and dvisvgm."
-                 :image-input-type "dvi"
-                 :image-output-type "svg"
-                 :image-size-adjust
-                 (0.45 . 0.45)
-                 :latex-compiler
-                 ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
-                 :image-converter
-                 ("dvisvgm %f -n -b min -c %S -o %O"))
-        (imagemagick :programs
-                     ("latex" "convert")
-                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                     (1.0 . 1.0)
-                     :latex-compiler
-                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
-                     :image-converter
-                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
-      )
+#+begin_src emacs-lisp
+;; (setq org-preview-latex-process-alist
+;;       '((dvipng :programs
+;;          ("latex" "dvipng")
+;;          :description "dvi > png"
+;;          :message "you need to install the programs: latex and dvipng."
+;;          :image-input-type "dvi"
+;;          :image-output-type "png"
+;;          :image-size-adjust
+;;          (0.35 . 0.35)
+;;          :latex-compiler
+;;          ("latex -interaction nonstopmode -output-directory %o %f")
+;;          :image-converter
+;;          ("dvipng -D %D -T tight -o %O %f")
+;;          :transparent-image-converter
+;;          ("dvipng -D %D -T tight -bg Transparent -o %O %f"))
+;;         (dvisvgm :programs
+;;                  ("latex" "dvisvgm")
+;;                  :description "dvi > svg"
+;;                  :message "you need to install the programs: latex and dvisvgm."
+;;                  :image-input-type "dvi"
+;;                  :image-output-type "svg"
+;;                  :image-size-adjust
+;;                  (0.45 . 0.45)
+;;                  :latex-compiler
+;;                  ("latex -interaction nonstopmode -output-format=dvi -output-directory %o %f")
+;;                  :image-converter
+;;                  ("dvisvgm %f -n -b min -c %S -o %O"))
+;;         (imagemagick :programs
+;;                      ("latex" "convert")
+;;                      :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+;;                      (1.0 . 1.0)
+;;                      :latex-compiler
+;;                      ("pdflatex -interaction nonstopmode -output-directory %o %f")
+;;                      :image-converter
+;;                      ("convert -density %D -trim -antialias %f -quality 100 %O")))
+;;       )
 #+end_src
 
 ***** Prettier rendering
+
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\).
-Let's start by adding a sans font. I'd also like to use some of the
-functionality from =bmc-maths=, so we'll load that too.
-#+begin_src emacs-lisp
-(setq org-format-latex-header "\\documentclass[utf8]{article}
-\\usepackage[usenames]{xcolor}
-\\usepackage[T1]{fontenc}
 
-% Chinese support, don't add this when not necessary
-%\\usepackage{ctex}
+The default snippet preamble basically just sets the margins and text size, with
+templates to be filled in by ~org-latex-default-packages-alist~ and
+=#+latex_header:= entries (but not =#+latex_header_extra:=).
 
-\\usepackage{booktabs}
-\\pagestyle{empty}             % do not remove
-% The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-")
+#+name: latex-default-snippet-preamble
+#+begin_src LaTeX
+\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\usepackage{xcolor}
 #+end_src
 
+To this, we make two additions:
++ Selection of a maths font that fits better with displayed text.
++ My collection [[*Maths notation conveniences][mathematical notation conveniences]].
+
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(setq org-latex-preview-header
+      (concat
+       <<grab("latex-default-snippet-preamble")>>
+       "\n% Custom font\n\\usepackage{arev}\n\n"
+       <<grab("latex-maths-conveniences")>>))
+#+end_src
 
 Since we can, instead of making the background colour match the =default= face,
 let's make it transparent.
-#+begin_src emacs-lisp :tangle no
-;; (setq org-format-latex-options
-;;      (plist-put org-format-latex-options :background "Transparent"))
-;; (with-eval-after-load 'font-latex
-;;   (set-face-attribute 'font-latex-math-face nil :background  (face-attribute 'default :background))
-;;   )
-;; (defun set-latex-background-same-with-default ()
-;;   "Set inline latex color correctly"
-;;   (interactive)
-;;   (set-face-attribute 'font-latex-sedate-face nil :inherit 'fixed-pitch)
-;;   (set-face-attribute 'font-latex-math-face nil :background (face-attribute 'default :background))
-;;   ;(set-face-attribute 'org-block nil :background (face-attribute 'default :background))
-;;   )
+
+#+begin_src emacs-lisp
+(plist-put org-format-latex-options :background "Transparent")
+(plist-put org-format-latex-options :zoom 0.93) ; Calibrated based on the TeX font and org-buffer font.
 #+end_src
 
 With the background taken care of, we just need to make sure we're using the
 theme-appropriate foreground.
 
-# TODO check that this is still needed.
-
-#+begin_src emacs-lisp :tangle yes
-(add-hook! 'doom-load-theme-hook
-  (setq org-preview-latex-image-directory
-        (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+#+begin_src emacs-lisp
+(defun +org-refresh-latex-images-previews-h ()
   (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
     (with-current-buffer buffer
       (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
-      (org-clear-latex-preview (point-min) (point-max))
-      (org--latex-preview-region (point-min) (point-max)))))
+      (unless (eq org-latex-preview-default-process 'dvisvgm)
+        (org-clear-latex-preview (point-min) (point-max))
+        (org--latex-preview-region (point-min) (point-max))))))
+
+(add-hook 'doom-load-theme-hook #'+org-refresh-latex-images-previews-h)
 #+end_src
+
 ***** Rendering speed tests
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
