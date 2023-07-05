@@ -5,19 +5,15 @@
  ;; If there is more than one, they won't work right.
  '(ignored-local-variable-values '((package-lint-main-file . "haskell-mode-pkg.el")))
  '(org-safe-remote-resources
-   '("\\`https://gitee\\.com/Vitaly/img/raw/master/images/habitica\\.png\\'" "\\`https://gitee\\.com/Vitaly/img/raw/master/anime\\.jpg\\'"))
+   '("\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/org-capture\\.png\\'"
+     "\\`https://gitee\\.com/Vitaly/img/raw/master/images/habitica\\.png\\'"
+     "\\`https://gitee\\.com/Vitaly/img/raw/master/anime\\.jpg\\'"))
  '(safe-local-variable-values
-   '((whitespace-line-column . 79)
-     (package-lint-main-file . "haskell-mode-pkg.el")
-     (diff-add-log-use-relative-names . t)
-     (vc-git-annotate-switches . "-w")
-     (eval ignore-errors
-      (require 'whitespace)
-      (whitespace-mode 1))
+   '((whitespace-line-column . 79) (package-lint-main-file . "haskell-mode-pkg.el")
+     (diff-add-log-use-relative-names . t) (vc-git-annotate-switches . "-w")
+     (eval ignore-errors (require 'whitespace) (whitespace-mode 1))
      (whitespace-style face indentation)
-     (eval progn
-      (c-set-offset 'case-label '0)
-      (c-set-offset 'innamespace '0)
+     (eval progn (c-set-offset 'case-label '0) (c-set-offset 'innamespace '0)
       (c-set-offset 'inline-open '0)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -42,4 +38,5 @@
  '(outline-5 ((t (:height 1.06))))
  '(outline-6 ((t (:height 1.03))))
  '(outline-8 ((t (:height 1.01))))
+ '(outline-9 ((t (:weight semi-bold))))
  '(ts-fold-replacement-face ((t (:foreground nil :box nil :inherit font-lock-comment-face :weight light)))))

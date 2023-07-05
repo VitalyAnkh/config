@@ -532,6 +532,7 @@ created earlier.
 ;;    + "none", do not do anything to load this configuration.
 ;;      This only makes sense when configuration is either being
 ;;      temporarily disabled or loaded indirectly/elsewhere.
+
 (when (or (string-empty-p needs)
           (cl-every #'executable-find (delq nil (split-string needs ","))))
   (let* ((name (if (string-empty-p name)
@@ -1351,6 +1352,7 @@ Test some packages.
 #+begin_src emacs-lisp :tangle packages.el
 (package! separate-inline :recipe
   (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! benchmark-init :recipe (:host github :repo "dholm/benchmark-init-el"))
 (package! org-pretty-tags)
 (package! yasnippet)
 (package! org-xlatex :recipe
@@ -1477,10 +1479,12 @@ changes Doom makes:
       server-raise-frame nil
       display-time-default-load-average nil)      ; I don't think I've ever found this useful
 
-(display-time-mode 1)                             ; Enable time in the mode-line
+(setq org-startup-with-latex-preview t)
 
-(unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-  (display-battery-mode 1))                       ; it's nice to know how much power you have
+;; (display-time-mode 1)                             ; Enable time in the mode-line
+
+;; (unless (string-match-p "^Power N/A" (battery))   ; On laptops...
+;;   (display-battery-mode 1))                       ; it's nice to know how much power you have
 
 (global-visual-line-mode 1)                       ; Wrap lines at window edge, not at 80th character: my screen is wide enough!
 
@@ -1505,7 +1509,7 @@ Then, for creating new frames within the same Emacs instance, we'll just set the
 default to be something roughly 80% of that size.
 
 #+begin_src emacs-lisp
-(push  '(alpha-background . 95) default-frame-alist)
+;; (push  '(alpha-background . 95) default-frame-alist)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 
@@ -1527,15 +1531,15 @@ the window. Let's make that happen.
 
 First, we'll enter the new window
 #+begin_src emacs-lisp
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
+;; (setq evil-vsplit-window-right t
+;;       evil-split-window-below t)
 #+end_src
 
 Then, we'll pull up a buffer prompt.
 #+begin_src emacs-lisp
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (consult-buffer))
+;; (defadvice! prompt-for-buffer (&rest _)
+;;   :after '(evil-window-split evil-window-vsplit)
+;;   (consult-buffer))
 #+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
@@ -1545,18 +1549,18 @@ by Tmux's use of =C-b SPC= to rotate windows.
 We could also do with adding the missing arrow-key variants of the window
 navigation/swapping commands.
 #+begin_src emacs-lisp
-(map! :map evil-window-map
-      "SPC" #'rotate-layout
-      ;; Navigation
-      "<left>"     #'evil-window-left
-      "<down>"     #'evil-window-down
-      "<up>"       #'evil-window-up
-      "<right>"    #'evil-window-right
-      ;; Swapping windows
-      "C-<left>"       #'+evil/window-move-left
-      "C-<down>"       #'+evil/window-move-down
-      "C-<up>"         #'+evil/window-move-up
-      "C-<right>"      #'+evil/window-move-right)
+;; (map! :map evil-window-map
+;;       "SPC" #'rotate-layout
+;;       ;; Navigation
+;;       "<left>"     #'evil-window-left
+;;       "<down>"     #'evil-window-down
+;;       "<up>"       #'evil-window-up
+;;       "<right>"    #'evil-window-right
+;;       ;; Swapping windows
+;;       "C-<left>"       #'+evil/window-move-left
+;;       "C-<down>"       #'+evil/window-move-down
+;;       "C-<up>"         #'+evil/window-move-up
+;;       "C-<right>"      #'+evil/window-move-right)
 #+end_src
 
 *** Buffer defaults
@@ -1930,6 +1934,7 @@ aspects are nice, but on others I prefer Fira.
       ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
+
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -1963,36 +1968,36 @@ if the system doesn't have any of those fonts.
 
 #+name: detect-missing-fonts
 #+begin_src emacs-lisp :tangle no
-(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
+;; (defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
 
-(defvar available-fonts
-  (delete-dups (or (font-family-list)
-                   (split-string (shell-command-to-string "fc-list : family")
-                                 "[,\n]"))))
+;; (defvar available-fonts
+;;   (delete-dups (or (font-family-list)
+;;                    (split-string (shell-command-to-string "fc-list : family")
+;;                                  "[,\n]"))))
 
-(defvar missing-fonts
-  (delq nil (mapcar
-             (lambda (font)
-               (unless (delq nil (mapcar (lambda (f)
-                                           (string-match-p (format "^%s$" font) f))
-                                         available-fonts))
-                 font))
-             required-fonts)))
+;; (defvar missing-fonts
+;;   (delq nil (mapcar
+;;              (lambda (font)
+;;                (unless (delq nil (mapcar (lambda (f)
+;;                                            (string-match-p (format "^%s$" font) f))
+;;                                          available-fonts))
+;;                  font))
+;;              required-fonts)))
 
-(if missing-fonts
-    (pp-to-string
-     `(unless noninteractive
-        (add-hook! 'doom-init-ui-hook
-          (run-at-time nil nil
-                       (lambda ()
-                         (message "%s missing the following fonts: %s"
-                                  (propertize "Warning!" 'face '(bold warning))
-                                  (mapconcat (lambda (font)
-                                               (propertize font 'face 'font-lock-variable-name-face))
-                                             ',missing-fonts
-                                             ", "))
-                         (sleep-for 0.5))))))
-  ";; No missing fonts detected")
+;; (if missing-fonts
+;;     (pp-to-string
+;;      `(unless noninteractive
+;;         (add-hook! 'doom-init-ui-hook
+;;           (run-at-time nil nil
+;;                        (lambda ()
+;;                          (message "%s missing the following fonts: %s"
+;;                                   (propertize "Warning!" 'face '(bold warning))
+;;                                   (mapconcat (lambda (font)
+;;                                                (propertize font 'face 'font-lock-variable-name-face))
+;;                                              ',missing-fonts
+;;                                              ", "))
+;;                          (sleep-for 0.5))))))
+;;   ";; No missing fonts detected")
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
@@ -8447,6 +8452,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el")))
+(unpin! org-contrib)
 #+end_src
 
 **** Visuals
@@ -8458,7 +8464,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
+(package! org-modern)
 #+end_src
 
 ...with a touch of configuration...
@@ -10127,57 +10133,57 @@ Surely this is what the clipboard was invented for? With that said, let's
 regurgitate the code, cross our fingers, and hope it works.
 
 #+begin_src emacs-lisp
-(defconst flycheck-org-lint-form
-  (flycheck-prepare-emacs-lisp-form
-    (require 'org)
-    (require 'org-attach)
-    (let ((source (car command-line-args-left))
-          (process-default-directory default-directory))
-      (with-temp-buffer
-        (insert-file-contents source 'visit)
-        (setq buffer-file-name source)
-        (setq default-directory process-default-directory)
-        (delay-mode-hooks (org-mode))
-        (setq delayed-mode-hooks nil)
-        (dolist (err (org-lint))
-          (let ((inf (cl-second err)))
-            (princ (elt inf 0))
-            (princ ": ")
-            (princ (elt inf 2))
-            (terpri)))))))
+;; (defconst flycheck-org-lint-form
+;;   (flycheck-prepare-emacs-lisp-form
+;;     (require 'org)
+;;     (require 'org-attach)
+;;     (let ((source (car command-line-args-left))
+;;           (process-default-directory default-directory))
+;;       (with-temp-buffer
+;;         (insert-file-contents source 'visit)
+;;         (setq buffer-file-name source)
+;;         (setq default-directory process-default-directory)
+;;         (delay-mode-hooks (org-mode))
+;;         (setq delayed-mode-hooks nil)
+;;         (dolist (err (org-lint))
+;;           (let ((inf (cl-second err)))
+;;             (princ (elt inf 0))
+;;             (princ ": ")
+;;             (princ (elt inf 2))
+;;             (terpri)))))))
 
-(defconst flycheck-org-lint-variables
-  '(org-directory
-    org-id-locations
-    org-id-locations-file
-    org-attach-id-dir
-    org-attach-use-inheritance
-    org-attach-id-to-path-function-list
-    org-link-parameters)
-  "Variables inherited by the org-lint subprocess.")
+;; (defconst flycheck-org-lint-variables
+;;   '(org-directory
+;;     org-id-locations
+;;     org-id-locations-file
+;;     org-attach-id-dir
+;;     org-attach-use-inheritance
+;;     org-attach-id-to-path-function-list
+;;     org-link-parameters)
+;;   "Variables inherited by the org-lint subprocess.")
 
-(defun flycheck-org-lint-variables-form ()
-  (require 'org-attach)  ; Needed to make variables available
-  `(progn
-     ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
-                (seq-filter #'boundp flycheck-org-lint-variables))))
+;; (defun flycheck-org-lint-variables-form ()
+;;   (require 'org-attach)  ; Needed to make variables available
+;;   `(progn
+;;      ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
+;;                 (seq-filter #'boundp flycheck-org-lint-variables))))
 
-(eval ; To preveant eager macro expansion form loading flycheck early.
- '(flycheck-define-checker org-lint
-   "Org buffer checker using `org-lint'."
-   :command ("emacs" (eval flycheck-emacs-args)
-             "--eval" (eval (concat "(add-to-list 'load-path \""
-                                    (file-name-directory (locate-library "org"))
-                                    "\")"))
-             "--eval" (eval (flycheck-sexp-to-string
-                             (flycheck-org-lint-variables-form)))
-             "--eval" (eval (flycheck-sexp-to-string
-                             (flycheck-org-lint-customisations-form)))
-             "--eval" (eval flycheck-org-lint-form)
-             "--" source)
-   :error-patterns
-   ((error line-start line ": " (message) line-end))
-   :modes org-mode))
+;; (eval ; To preveant eager macro expansion form loading flycheck early.
+;;  '(flycheck-define-checker org-lint
+;;    "Org buffer checker using `org-lint'."
+;;    :command ("emacs" (eval flycheck-emacs-args)
+;;              "--eval" (eval (concat "(add-to-list 'load-path \""
+;;                                     (file-name-directory (locate-library "org"))
+;;                                     "\")"))
+;;              "--eval" (eval (flycheck-sexp-to-string
+;;                              (flycheck-org-lint-variables-form)))
+;;              "--eval" (eval (flycheck-sexp-to-string
+;;                              (flycheck-org-lint-customisations-form)))
+;;              "--eval" (eval flycheck-org-lint-form)
+;;              "--" source)
+;;    :error-patterns
+;;    ((error line-start line ": " (message) line-end))
+;;    :modes org-mode))
 #+end_src
 
 Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
@@ -10190,7 +10196,7 @@ Try adding these syntax checkers to `flycheck-checkers'.
 
 Well that's very nice and helpful. We'll just do that 🙂.
 #+begin_src emacs-lisp
-(add-to-list 'flycheck-checkers 'org-lint)
+;; (add-to-list 'flycheck-checkers 'org-lint)
 #+end_src
 
 It was missing custom link types, but that's easily fixed just by adding
@@ -10203,13 +10209,13 @@ much.
 
 #+name: org-syntax-modifications
 #+begin_src emacs-lisp :tangle no
-(defun flycheck-org-lint-customisations-form ()
-  `(progn
-     (require 'ox)
-     (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
-                 (org-export-backend-options (org-export-get-backend 'latex)))
-     (cl-pushnew '(:latex-font-set nil "fontset" nil)
-                 (org-export-backend-options (org-export-get-backend 'latex)))))
+;; (defun flycheck-org-lint-customisations-form ()
+;;   `(progn
+;;      (require 'ox)
+;;      (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
+;;                  (org-export-backend-options (org-export-get-backend 'latex)))
+;;      (cl-pushnew '(:latex-font-set nil "fontset" nil)
+;;                  (org-export-backend-options (org-export-get-backend 'latex)))))
 #+end_src
 
 *** Visuals
