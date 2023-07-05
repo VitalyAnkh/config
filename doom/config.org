@@ -1882,7 +1882,7 @@ Doom has support for multiple configuration profiles. For general usage, this
 isn't a particularly useful feature, but for niche use cases it's fantastic.
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el :noweb-ref none
-((orgdev (env ("DOOMDIR" . "~/.config/doom.orgdev"))))
+((orgdev (env ("DOOMDIR" . "~/.config/org-dev"))))
 #+end_src
 
 **** Org development profile
@@ -1894,7 +1894,7 @@ For development purposes, it's handy to have a more minimal config without my
 many customisations and interacting packages. Let's go ahead and create a
 near-minimal new config:
 
-#+begin_src emacs-lisp :tangle ../doom.orgdev/init.el :mkdirp yes
+#+begin_src emacs-lisp :tangle ../org-dev/init.el :mkdirp yes
 ;;; init.el -*- lexical-binding: t; -*-
 (setq native-comp-deferred-compilation nil)
 ;; (after! (doom-packages straight)
@@ -1903,11 +1903,11 @@ near-minimal new config:
        :config (default +bindings))
 #+end_src
 
-#+begin_src emacs-lisp :tangle ../doom.orgdev/packages.el :noweb no-export
+#+begin_src emacs-lisp :tangle ../org-dev/packages.el :noweb no-export
 (unpin! org) ; there be bugs
 #+end_src
 
-#+begin_src emacs-lisp :tangle ../doom.orgdev/config.el
+#+begin_src emacs-lisp :tangle ../org-dev/config.el
 (require 'org)
 (load-theme 'modus-operandi t)
 #+end_src
