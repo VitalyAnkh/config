@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2020-2022 tecosaur <contact@tecosaur.net>
+# SPDX-FileCopyrightText: © 2020-2023 VitalyR <vr@vitalyr.com>
 # SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
@@ -1417,7 +1417,9 @@ Test some packages.
 
 (setq straight-repository-branch "develop")
 
-(setq native-comp-async-jobs-number 20)
+(setq package-native-compile t
+      ;; byte+native-compile t
+      )
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
 (setq org-element-use-cache nil)
@@ -1463,7 +1465,8 @@ changes Doom makes:
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
- x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+ ;; x-stretch-cursor t
+ )                              ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
@@ -1519,28 +1522,12 @@ By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
 #+begin_src emacs-lisp
-(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
+(setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
 
 *** Windows
-
-I find it rather handy to be asked which buffer I want to see after splitting
-the window. Let's make that happen.
-
-First, we'll enter the new window
-#+begin_src emacs-lisp
-;; (setq evil-vsplit-window-right t
-;;       evil-split-window-below t)
-#+end_src
-
-Then, we'll pull up a buffer prompt.
-#+begin_src emacs-lisp
-;; (defadvice! prompt-for-buffer (&rest _)
-;;   :after '(evil-window-split evil-window-vsplit)
-;;   (consult-buffer))
-#+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
 /Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
@@ -1677,17 +1664,19 @@ doom-quit                    ; DOOM quit-message prompts when you quit Emacs
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
 ;;indent-guides              ; highlighted indent columns, notoriously slow
-(ligatures +extra)           ; ligatures and symbols to make your code pretty again
+(ligatures
+ ;;+extra
+ )           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
-nav-flash                    ; blink the current line after jumping
+;; nav-flash                    ; blink the current line after jumping
 ;;neotree                    ; a project drawer, like NERDTree for vim
 ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-;;(tabs                      ; an tab bar for Emacs
-;;  +centaur-tabs)           ; ... with prettier tabs
+(tabs                      ; an tab bar for Emacs
+ +centaur-tabs)           ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 (vc-gutter +pretty)          ; vcs diff in the fringe
@@ -1732,16 +1721,16 @@ vc                           ; version-control and Emacs, sitting in a tree
 
 #+name: doom-checkers
 #+begin_src emacs-lisp
-syntax                       ; tasing you for every semicolon you forget
-(:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
-grammar                      ; tasing grammar mistake every you make
+;; syntax                       ; tasing you for every semicolon you forget
+;; (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+;; grammar                      ; tasing grammar mistake every you make
 #+end_src
 
 #+name: doom-tools
 #+begin_src emacs-lisp
-ansible                      ; a crucible for infrastructure as code
+;; ansible                      ; a crucible for infrastructure as code
 biblio                       ; Writes a PhD for you (citation needed)
-;;debugger                   ; FIXME stepping through code, to help you add bugs
+debugger                   ; FIXME stepping through code, to help you add bugs
 direnv                     ; be direct about your environment
 ;; docker                       ; port everything to containers
 editorconfig               ; let someone else argue about tabs vs spaces
@@ -1749,7 +1738,7 @@ ein                        ; tame Jupyter notebooks with emacs
 (eval +overlay)              ; run code, run (also, repls)
 ;;gist                       ; interacting with github gists
 (lookup                      ; helps you navigate your code and documentation
- +dictionary                 ; dictionary/thesaurus is nice
+ ;; +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
 lsp                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
@@ -1780,7 +1769,7 @@ associated file.
 
 #+name: doom-lang
 #+begin_src emacs-lisp
-(agda +local)                       ; types of types of types of types...
+(agda +tree-sitter +local)                       ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
 (cc +lsp +tree-sitter)                  ; C > C++ == 1
 ;;clojure                    ; java with a lisp
@@ -1801,8 +1790,8 @@ ess                          ; emacs speaks statistics
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
 ;;gdscript                   ; the language you waited for
 (graphql +lsp)             ; Give queries a REST
-(go +lsp)                    ; the hipster dialect
-;;(haskell +lsp)             ; a language that's lazier than I am
+(go +lsp +tree-sitter)                    ; the hipster dialect
+(haskell +lsp +tree-sitter)             ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp)                     ;
 json                         ; At least it ain't XML
@@ -1907,6 +1896,9 @@ near-minimal new config:
 
 #+begin_src emacs-lisp :tangle ../doom.orgdev/init.el :mkdirp yes
 ;;; init.el -*- lexical-binding: t; -*-
+(setq native-comp-deferred-compilation nil)
+;; (after! (doom-packages straight)
+;;   (setq straight--native-comp-available t))
 (doom! :completion vertico
        :config (default +bindings))
 #+end_src
@@ -2010,6 +2002,12 @@ listing the missing fonts should appear for at least half a second.
 **** Theme
 
 #+begin_src emacs-lisp
+(setq
+ doom-themes-enable-bold nil ; if nil, bold is universally disabled
+ doom-themes-enable-italic t ; if nil, italics is universally disabled
+ doom-themes-padded-modeline t
+ doom-themes-treemacs-enable-variable-pitch nil)
+
 (setq doom-theme 'doom-one-light)
 #+end_src
 
@@ -2264,7 +2262,7 @@ splash screen to something more minimal I switched to just using the /E/.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-image-directory
-  (expand-file-name "misc/splash-images/" doom-private-dir)
+  (expand-file-name "misc/splash-images/" doom-user-dir)
   "Directory in which to look for splash image templates.")
 
 (defvar fancy-splash-image-template
@@ -2690,7 +2688,7 @@ Let's start off by setting the local folder to put the phrase source files in.
 
 #+begin_src emacs-lisp
 (defvar splash-phrase-source-folder
-  (expand-file-name "misc/splash-phrases" doom-private-dir)
+  (expand-file-name "misc/splash-phrases" doom-user-dir)
   "A folder of text files with a fun phrase on each line.")
 #+end_src
 
@@ -3217,7 +3215,7 @@ anything to be run.
 ;;           (defun +config-run-setup ()
 ;;             (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
 ;;                                        (propertize "Warning!" 'face '(bold warning))))
-;;               (find-file (expand-file-name "setup.sh" doom-private-dir))
+;;               (find-file (expand-file-name "setup.sh" doom-user-dir))
 ;;               (when (yes-or-no-p "Would you like to run this script?")
 ;;                 (async-shell-command "./setup.sh"))))
 ;;           (add-hook! 'doom-init-ui-hook
@@ -3462,7 +3460,7 @@ have the following.
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
             (setq-default abbrev-mode t)
-            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-user-dir))))
 #+end_src
 *** ace-window
 #+call: confpkg("Ace-window")
@@ -3608,6 +3606,17 @@ moving to the next chunk.
 
 Unfortunately, since evil-search doesn't have an analogue to
 ~isearch-wrap-function~, we can't easily add support to it.
+*** Straight
+#+call: confpkg("!Pkg Straight")
+
+Let =straight= use our own =org=.
+#+begin_src emacs-lisp
+(use-package straight
+  :defer t
+  :config
+  (add-to-list 'straight-built-in-pseudo-packages 'org)
+  )
+#+end_src
 
 *** Eros
 
@@ -4150,7 +4159,7 @@ let's improve that memory.
     markdown-mode
     gfm-mode)
   '(:seperate
-    company-ispell
+    ;; company-ispell
     company-files
     company-yasnippet))
 #+end_src
@@ -4233,7 +4242,7 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary
-      (expand-file-name "misc/ispell_personal" doom-private-dir))
+      (expand-file-name "misc/ispell_personal" doom-user-dir))
 #+end_src
 
 *** TRAMP
@@ -4333,7 +4342,7 @@ investigation.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! etrace :recipe (:host github :repo "aspiers/etrace")
-  :pin "2291ccf2f2ccc80a6aac4664e8ede736ceb672b7")
+  )
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4621,7 +4630,7 @@ feels a bit comfier if we give it a bit more space. I find =45= adds roughly a
 third of the line height as padding above and below.
 
 #+begin_src emacs-lisp
-(setq doom-modeline-height 45)
+(setq doom-modeline-height 25)
 #+end_src
 
 **** File encoding
@@ -5045,13 +5054,14 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+begin_src emacs-lisp
 (after! centaur-tabs
   (centaur-tabs-mode -1)
-  (setq centaur-tabs-height 36
+  (setq centaur-tabs-height 27
         centaur-tabs-set-icons t
-        centaur-tabs-modified-marker "o"
-        centaur-tabs-close-button "×"
-        centaur-tabs-set-bar 'above
+        centaur-tabs-set-bar 'nil
         centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "P22 Underground Book" 160))
+  (keymap-global-set "C-<"  'centaur-tabs-backward)
+  (keymap-global-set "C->" 'centaur-tabs-forward)  
+  )
+
 ;; (setq x-underline-at-descent-line t)
 #+end_src
 
@@ -5287,7 +5297,7 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
 
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! xkcd :pin "80011da2e7def8f65233d4e0d790ca60d287081d")
+(package! xkcd)
 #+end_src
 
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
@@ -5581,7 +5591,7 @@ SQL can be either the emacsql vector representation, or a string."
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+begin_src emacs-lisp :tangle packages.el
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
+(package! selectric-mode)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5611,7 +5621,7 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
+(package! spray)
 #+end_src
 
 It would be nice if Spray's default speed suited me better, and the keybindings
@@ -5667,12 +5677,12 @@ about it?
 
 For editing systemd unit files
 #+begin_src emacs-lisp :tangle packages.el
-(package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
+;; (package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! systemd
-  :defer t)
+;; (use-package! systemd
+;;   :defer t)
 #+end_src
 
 * Applications
@@ -5776,7 +5786,7 @@ something through Emacs?
 (use-package! calibredb
   :commands calibredb
   :config
-  (setq calibredb-root-dir "~/Desktop/TEC/Other/Ebooks"
+  (setq calibredb-root-dir "~/nutstore_files/Books"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
   (map! :map calibredb-show-mode-map
         :ne "?" #'calibredb-entry-dispatch
@@ -5933,8 +5943,7 @@ opportunity which is taken advantage of in the CalcTeX package.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor"))
-  :pin "67a2e76847a9ea9eff1f8e4eb37607f84b380ebb")
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor")))
 #+end_src
 
 #+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
@@ -8559,8 +8568,7 @@ While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits whic
 occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
+(package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8582,8 +8590,7 @@ sacrificing visual amenities with the =org-appear= package.
 Speaking of headlines, a nice package for viewing and managing the heading
 structure has come to my attention.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
-  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree"))
 #+end_src
 
 We'll bind this to =O= on the org-mode localleader, and manually apply a [[https://github.com/Townk/org-ol-tree/pull/13][PR
@@ -8636,7 +8643,7 @@ recognising the pgtk window system]].
 
 I like the idea of being able to make HTTP requests with Babel.
 #+begin_src emacs-lisp :tangle packages.el
-(package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
+(package! ob-http)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8667,7 +8674,7 @@ There's a really cool package in development to /transclude/ Org document conten
 
 Came across this and ... it's cool
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
 #+end_src
 
 ***** Cooking recipes
@@ -8799,7 +8806,7 @@ It's nice to be able to link to music
 **** Tweaking defaults
 
 #+begin_src emacs-lisp
-(setq org-directory (expand-file-name "org" (xdg-data-home)) ; Let's put files here.
+(setq org-directory "~/org" ; Let's put files here.
       org-agenda-files (list org-directory)                  ; Seems like the obvious place.
       org-use-property-inheritance t                         ; It's convenient to have properties inherited.
       org-log-done 'time                                     ; Having the time a item is done sounds convenient.
@@ -8915,7 +8922,7 @@ further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate"))
 #+end_src
 
 In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
@@ -9210,7 +9217,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
+  )
 #+end_src
 
 #+begin_src emacs-lisp
@@ -9244,7 +9251,7 @@ set up org-capture.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (defvar +org-capture-recipies  "~/org/recipies.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -9510,14 +9517,14 @@ I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
 
 #+begin_src emacs-lisp
-(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
+(setq org-roam-directory "~/org")
 #+end_src
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
 Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
+#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
 
@@ -10523,8 +10530,8 @@ theme-appropriate foreground.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|------------+----------------|
-| 135 \pm 2 ms | 215 \pm 3 ms     |
+|------------+---------------|
+| 135 \pm 2 ms | 215 \pm 3 ms    |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~.
@@ -10535,10 +10542,10 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain          | Total time | Resulting file size |
-|---------------------+------------+---------------------|
-| ~latex~ + ~dvipng~      | 226 \pm 2 ms | 7 KiB               |
-| ~latex~ + ~dvisvgm~     | 392 \pm 4 ms | 8 KiB               |
+| Tool chain         | Total time | Resulting file size |
+|--------------------+------------+---------------------|
+| ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
+| ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
@@ -11017,11 +11024,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 (defun org-html-reload-fancy-style ()
   (interactive)
   (setq org-html-style-fancy
-        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
+        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-user-dir))
                 "<script>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.js" doom-user-dir))
                 "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-user-dir))
                 "</style>"))
   (when org-fancy-html-export-mode
     (setq org-html-style-default org-html-style-fancy)))
@@ -13254,11 +13261,11 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | amsmath    | A near-essential maths package                        |
 | booktabs   | Nice horizontal lines in tables                       |
 | cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                              |
+| capt-of    | Captions outside floats                               |
 | caption    | Finer control over captions                           |
 | cleveref   | Easy cross-referencing                                |
 | embedall   | Embed files in the document                           |
-| float     | Floating environments                                 |
+| float      | Floating environments                                 |
 | fontenc    | Font encodings                                        |
 | fvextra    | Enhanced verbatim environments                        |
 | graphicx   | An extended graphics package                          |
@@ -13274,7 +13281,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | preview    | Needed for AUCTeX and ob-latex                        |
 | scrbase    | KOMA classes and more                                 |
 | siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                |
+| soul       | Strikethrough and underline, flexibly                 |
 | subcaption | Form subfigures and subcaptions                       |
 | svg        | Insert SVG images                                     |
 | tikz       | Generally handy, as a dependancy and for graphics     |
@@ -13511,7 +13518,7 @@ elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all t
 features that GitHub has.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-gfm :pin "46faa67dbb3fb0cd7a76c3fe518f16e4195c22c7")
+(package! ox-gfm)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -14227,7 +14234,7 @@ magic command for it to be used in =Data.toml= files.
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "46afe4825b4a3a5d1a1ac65ec7f585051f756b78")
+(package! graphviz-dot-mode)
 #+end_src
 
 #+begin_src emacs-lisp

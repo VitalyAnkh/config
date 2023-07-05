@@ -4,8 +4,21 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ignored-local-variable-values '((package-lint-main-file . "haskell-mode-pkg.el")))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-safe-remote-resources
-   '("\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/org-capture\\.png\\'"
+   '("\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/font-face\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/splash-screen\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/whichkey-evil\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/screenshot\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/info-colours\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/info-coloured\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/keycast\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/writeroom-and-org\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/nov\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/calc-with-calctex\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/elfeed\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/lexic\\.png\\'"
+     "\\`https://tecosaur\\.com/lfs/emacs-config/screenshots/org-capture\\.png\\'"
      "\\`https://gitee\\.com/Vitaly/img/raw/master/images/habitica\\.png\\'"
      "\\`https://gitee\\.com/Vitaly/img/raw/master/anime\\.jpg\\'"))
  '(safe-local-variable-values
