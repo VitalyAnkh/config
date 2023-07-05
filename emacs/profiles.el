@@ -1,1 +1,1 @@
-((orgdev (env ("DOOMDIR" . "~/.config/org-dev"))))
+((org-dev (env ("DOOMDIR" . "~/.config/org-dev"))))

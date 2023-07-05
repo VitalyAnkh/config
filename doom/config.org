@@ -1882,7 +1882,7 @@ Doom has support for multiple configuration profiles. For general usage, this
 isn't a particularly useful feature, but for niche use cases it's fantastic.
 
 #+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el :noweb-ref none
-((orgdev (env ("DOOMDIR" . "~/.config/org-dev"))))
+((org-dev (env ("DOOMDIR" . "~/.config/org-dev"))))
 #+end_src
 
 **** Org development profile
