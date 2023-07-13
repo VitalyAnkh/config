@@ -50,7 +50,7 @@ export MOZ_WEBRENDER=1
 export SAL_USE_VCLPLUGIN=gtk3
 
 # For Qt5
-# export QT_QPA_PLATFORM=wayland
+export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
 #export QT_SCREEN_SCALE_FACTOR=1

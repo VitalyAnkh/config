@@ -1350,6 +1350,24 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 Test some packages.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! separate-inline :recipe
+  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
+(package! benchmark-init :recipe (:host github :repo "dholm/benchmark-init-el"))
+(package! org-pretty-tags)
+(package! yasnippet)
+(package! org-xlatex :recipe
+  (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
+(unpin! haskell-mode)
+(unpin! treemacs)
+(unpin! lsp-haskell)
+(unpin! lsp-java)
+(unpin! lsp-mode)
+(unpin! dap-mode)
+(unpin! yaml)
+(unpin! lsp-treemacs)
+(package! magit :recipe (:branch "main"))
+(package! ghub :recipe (:branch "main"))
+(unpin! forge)
 (unpin! yasnippet)
 (unpin! auto-yasnippet)
 (unpin! emacsql)
@@ -1372,29 +1390,9 @@ Test some packages.
 (unpin! centaur-tabs)
 (unpin! lsp-metals)
 (unpin! elisp-tree-sitter)
+(package! multiple-cursors :disable t)
 (unpin! all-the-icons)
 (unpin! git-gutter)
-(unpin! code-review)
-(unpin! haskell-mode)
-(unpin! treemacs)
-(unpin! lsp-haskell)
-(unpin! lsp-java)
-(unpin! ox-hugo)
-(unpin! lsp-mode)
-(unpin! dap-mode)
-(package! multiple-cursors :disable t)
-(package! separate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
-(package! benchmark-init :recipe (:host github :repo "dholm/benchmark-init-el"))
-(package! org-pretty-tags)
-(package! yasnippet)
-(package! org-xlatex :recipe
-  (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
-(unpin! yaml)
-(unpin! lsp-treemacs)
-(package! magit :recipe (:branch "main"))
-(package! ghub :recipe (:branch "main"))
-(package! multiple-cursors :disable t)
 ;;(package! consult-recoll)
 ;; (package! emacs-nerd-icons
 ;;   :recipe (:type git
@@ -1407,14 +1405,9 @@ Test some packages.
 #+begin_src emacs-lisp :tangle config.el
 (setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
 
-;; TODO
-(setq org-latex-logfiles-extensions (quote ("lof" "lot" "tex~" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl")))
-
 ;; I like line numbers
 (use-package! global-display-line-numbers-mode
-  :hook (prog-mode . global-display-line-numbers-mode)
-  :hook (fundamental-mode . global-display-line-numbers-mode)
-  )
+  :hook (prog-mode . global-display-line-numbers-mode))
 
 (defadvice copilot--complete-post-command (around intercept activate)
   (condition-case err
@@ -1492,6 +1485,8 @@ changes Doom makes:
       mouse-1-click-follows-link nil
       server-raise-frame nil
       display-time-default-load-average nil)      ; I don't think I've ever found this useful
+
+(setq org-startup-with-latex-preview t)
 
 ;; (display-time-mode 1)                             ; Enable time in the mode-line
 
@@ -1700,25 +1695,20 @@ zen                          ; distraction-free coding or writing
 ;; (evil +everywhere)           ; come to the dark side, we have cookies
 file-templates               ; auto-snippets for empty files
 fold                         ; (nigh) universal code folding
-(format
- +onsave
- )                     ; automated prettiness
+(format)                     ; automated prettiness
 ;;god                        ; run Emacs commands without modifier keys
 ;;lispy                      ; vim for lisp, for people who don't like vim
-;; multiple-cursors             ; editing in many places at once
+multiple-cursors             ; editing in many places at once
 ;;objed                      ; text object editing for the innocent
 ;;parinfer                   ; turn lisp into python, sort of
 rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
-word-wrap                  ; soft wrapping with language-aware indent
+;;word-wrap                  ; soft wrapping with language-aware indent
 #+end_src
 
 #+name: doom-emacs
 #+begin_src emacs-lisp
-(dired
- +dirvish
- ;;+icons
- )               ; making dired pretty [functional]
+(dired +icons)               ; making dired pretty [functional]
 electric                     ; smarter, keyword-based electric-indent
 (ibuffer +icons)             ; interactive buffer management
 undo                         ; persistent, smarter undo for your inevitable mistakes
@@ -1757,15 +1747,14 @@ ein                        ; tame Jupyter notebooks with emacs
 lsp                          ; Language Server Protocol
 ;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
- ;;+forge
- )                     ; interface with git forges
+ +forge)                     ; interface with git forges
 make                         ; run make tasks from Emacs
 ;;pass                       ; password manager for nerds
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
 rgb                          ; creating color strings
-taskrunner                 ; taskrunner for all your projects
-terraform                  ; infrastructure as code
+;;taskrunner                 ; taskrunner for all your projects
+;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 tree-sitter                ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
@@ -1787,18 +1776,18 @@ associated file.
 (agda +tree-sitter +local)                       ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
 (cc +lsp +tree-sitter)                  ; C > C++ == 1
-(clojure +lsp +tree-sitter)                    ; java with a lisp
+;;clojure                    ; java with a lisp
 common-lisp                ; if you've seen one lisp, you've seen them all
 coq                        ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
 ;;csharp                     ; unity, .NET, and mono shenanigans
 data                         ; config/data formats
-(dart +flutter)            ; paint ui and not much else
+;;(dart +flutter)            ; paint ui and not much else
 ;;dhall                      ; JSON with FP sprinkles
-elixir                     ; erlang done right
-elm                        ; care for a cup of TEA?
+;;elixir                     ; erlang done right
+;;elm                        ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
-erlang                     ; an elegant language for a more civilized age
+;;erlang                     ; an elegant language for a more civilized age
 ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
@@ -1808,25 +1797,24 @@ ess                          ; emacs speaks statistics
 (go +lsp +tree-sitter)                    ; the hipster dialect
 (haskell +lsp +tree-sitter)             ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
-(idris +lsp +tree-sitter)                     ;
+(idris +lsp)                     ;
 json                         ; At least it ain't XML
 ;;(java +lsp)                ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
-(julia +lsp +tree-sitter)                 ; Python, R, and MATLAB in a blender
+(julia +lsp)                 ; Python, R, and MATLAB in a blender
 ;;kotlin                     ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
- +lsp
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
  +fold)                      ; fold the clutter away nicities
-;; (lean +lsp)                       ; proof that mathematicians need help
+(lean +lsp)                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
-(nix +lsp)                          ; I hereby declare "nix geht mehr!"
-(ocaml +lsp +tree-sitter)                      ; an objective camel
+nix                          ; I hereby declare "nix geht mehr!"
+;;ocaml                      ; an objective camel
 (org                         ; organize your plain life in plain text
  +dragndrop                  ; drag & drop files/images into org buffers
  +hugo                     ; use Emacs for hugo blogging
@@ -1838,28 +1826,26 @@ markdown                     ; writing docs for people to ignore
  +present                    ; using org-mode for presentations
  +roam2)                     ; wander around notes
 ;;php                        ; perl's insecure younger brother
-;; plantuml                   ; diagrams for confusing people more
+;;plantuml                   ; diagrams for confusing people more
 ;;purescript                 ; javascript, but functional
 (python +lsp +pyright)       ; beautiful is better than ugly
 ;;qt                         ; the 'cutest' gui framework ever
-(racket +lsp +tree-sitter)                    ; a DSL for DSLs
-(raku +lsp +tree-sitter)                      ; the artist formerly known as perl6
-rest                       ; Emacs as a REST client
+(racket +lsp)                    ; a DSL for DSLs
+(raku +lsp)                      ; the artist formerly known as perl6
+;;rest                       ; Emacs as a REST client
 ;;rst                        ; ReST in peace
-(ruby +rails +tree-sitter)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-(rust +lsp +tree-sitter)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-(scala +lsp +tree-sitter)                      ; java, but good
+;; (ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+(rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+scala                      ; java, but good
 scheme                       ; a fully conniving family of lisps
 sh                           ; she sells {ba,z,fi}sh shells on the C xor
-(sml
- +lsp
- +tree-sitter)                          ; no, the /other/ ML
+;;sml                        ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 yaml                         ; JSON, but readable
-(zig +lsp +tree-sitter)                        ; C, but simpler
+(zig +lsp)                        ; C, but simpler
 #+end_src
 
 **** Input
@@ -1879,7 +1865,7 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
 #+begin_src emacs-lisp
-;; (:if (executable-find "mu") (mu4e +org))
+(:if (executable-find "mu") (mu4e +org))
 ;;notmuch
 ;;(wanderlust +gmail)
 #+end_src
@@ -1888,9 +1874,9 @@ I couldn't resist the Email and Feed modules.
 #+begin_src emacs-lisp
 ;;calendar                   ; A dated approach to timetabling
 ;;emms                       ; Multimedia in Emacs is music to my ears
-;; everywhere                   ; *leave* Emacs!? You must be joking.
-;; irc                          ; how neckbeards socialize
-;; (rss +org)                   ; emacs as an RSS reader
+everywhere                   ; *leave* Emacs!? You must be joking.
+irc                          ; how neckbeards socialize
+(rss +org)                   ; emacs as an RSS reader
 ;;twitter                    ; twitter client https://twitter.com/vnought
 #+end_src
 
@@ -2021,7 +2007,7 @@ listing the missing fonts should appear for at least half a second.
 
 #+begin_src emacs-lisp
 (setq
- doom-themes-enable-bold nil ; if nil, bold is universally disabled
+ doom-themes-enable-bold t ; if nil, bold is universally disabled
  doom-themes-enable-italic t ; if nil, italics is universally disabled
  doom-themes-padded-modeline t
  doom-themes-treemacs-enable-variable-pitch nil)
@@ -3395,26 +3381,12 @@ Now let's just have this included when an ErgoDox is found via =dmesg=.
 #+end_src
 
 *** Rotate (window management)
-#+call: confpkg("!Pkg Rotate")
 
 The =rotate= package just adds the ability to rotate window layouts, but that
 sounds nice to me.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! rotate)
-#+end_src
-
-#+begin_src emacs-lisp :tangle config.el
-(use-package rotate
-  :defer t
-  :init
-  (keymap-set window-prefix-map "SPC" 'rotate-layout)
-  (keymap-set window-prefix-map "r" 'rotate-window)
-  (keymap-set window-prefix-map "m v" 'rotate:main-vertical)
-  (keymap-set window-prefix-map "m h" 'rotate:main-horizontal)
-  (keymap-set window-prefix-map "e v" 'rotate:even-vertical)
-  (keymap-set window-prefix-map "e h" 'rotate:even-horizontal)
-  )
 #+end_src
 
 *** Emacs Everywhere
@@ -4850,7 +4822,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! keycast)
+(package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
 #+end_src
 
 Let's just make sure this is lazy-loaded appropriately.
@@ -4881,7 +4853,7 @@ Let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
-(package! gif-screencast)
+(package! gif-screencast :pin "adec408e6adab2e8e057fe0ad828749f473bfb83")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -5122,7 +5094,8 @@ In some files, =^L= appears as a page break character. This isn't that visually
 appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
 #+begin_src emacs-lisp :tangle packages.el
-(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
+  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5801,12 +5774,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb)
+(package! calibredb :pin "2f2cfc38f2d1c705134b692127c3008ac1382482")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov)
+(package! nov :pin "cb5f45cbcfbcf263cdeb2d263eb15edefc8b07cb")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -8445,49 +8418,49 @@ correct package statement needed.
 
 #+name: org-pkg-statement
 #+begin_src emacs-lisp :noweb-ref none
-;; (or (require 'doom (expand-file-name "lisp/doom.el"
-;;                                      (or (bound-and-true-p doom-emacs-dir)
-;;                                          user-emacs-directory)))
-;;     (setq doom-local-dir
-;;           (expand-file-name ".local/" (or (bound-and-true-p doom-emacs-dir)
-;;                                           user-emacs-directory))))
-;; (let ((dev-key-p (and (file-exists-p "~/.ssh/id_ed25519.pub")
-;;                       (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
-;;       (recipe-common '(:files (:defaults "etc")
-;;                        :build t
-;;                        :pre-build
-;;                        (with-temp-file "org-version.el"
-;;                          (require 'lisp-mnt)
-;;                          (let ((version ;; (lm-version "lisp/org.el")
-;;                                 (with-temp-buffer
-;;                                   (insert-file-contents "lisp/org.el")
-;;                                   (lm-header "version")))
-;;                                (git-version (string-trim
-;;                                              (with-temp-buffer
-;;                                                (call-process "git" nil t nil
-;;                                                              "rev-parse" "--short" "HEAD")
-;;                                                (buffer-string)))))
-;;                            (insert (format "(defun org-release () \"The release version of Org.\" %S)\n"
-;;                                            version)
-;;                                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"
-;;                                            git-version)
-;;                                    "(provide 'org-version)\n"))))))
-;;   (with-temp-buffer
-;;     (insert
-;;      (pp `(package! org
-;;             :recipe (,@(if dev-key-p
-;;                            (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
-;;                                  :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
-;;                          (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
-;;                                :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
-;;                      ,@recipe-common)
-;;             :pin nil)))
-;;     (untabify (point-min) (point-max))
-;; (buffer-string)))
+(or (require 'doom (expand-file-name "lisp/doom.el"
+                                     (or (bound-and-true-p doom-emacs-dir)
+                                         user-emacs-directory)))
+    (setq doom-local-dir
+          (expand-file-name ".local/" (or (bound-and-true-p doom-emacs-dir)
+                                          user-emacs-directory))))
+(let ((dev-key-p (and (file-exists-p "~/.ssh/id_ed25519.pub")
+                      (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
+      (recipe-common '(:files (:defaults "etc")
+                       :build t
+                       :pre-build
+                       (with-temp-file "org-version.el"
+                         (require 'lisp-mnt)
+                         (let ((version ;; (lm-version "lisp/org.el")
+                                (with-temp-buffer
+                                  (insert-file-contents "lisp/org.el")
+                                  (lm-header "version")))
+                               (git-version (string-trim
+                                             (with-temp-buffer
+                                               (call-process "git" nil t nil
+                                                             "rev-parse" "--short" "HEAD")
+                                               (buffer-string)))))
+                           (insert (format "(defun org-release () \"The release version of Org.\" %S)\n"
+                                           version)
+                                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"
+                                           git-version)
+                                   "(provide 'org-version)\n"))))))
+  (with-temp-buffer
+    (insert
+     (pp `(package! org
+            :recipe (,@(if dev-key-p
+                           (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
+                                 :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
+                         (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
+                               :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
+                     ,@recipe-common)
+            :pin nil)))
+    (untabify (point-min) (point-max))
+    (buffer-string)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el :noweb no-export
-;;<<org-pkg-statement()>>
+<<org-pkg-statement()>>
 (unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
@@ -8513,7 +8486,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :config
-  (setq org-modern-star '("◉" "✜" "✿" "✤" "◆" "▶" "✸" "○")
+  (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
         org-modern-table-vertical 1
         org-modern-table-horizontal 0.2
         org-modern-list '((43 . "➤")
@@ -8715,7 +8688,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-chef)
+(package! org-chef :pin "6a786e77e67a715b3cd4f5128b59d501614928af")
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
@@ -9155,7 +9128,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda)
+(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -9548,13 +9521,7 @@ I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
 
 #+begin_src emacs-lisp
-(use-package org-roam
-  :defer t
-  :config
-  (setq org-roam-directory org-directory
-        org-roam-dailies-directory "journals/"
-        org-roam-dailies-capture-templates '(("d" "default" entry "* %?" :target
-                                             (file+head "%<%Y_%m_%d>.org" "#+title: %<%Y-%m-%d>\n")))))
+(setq org-roam-directory "~/org")
 #+end_src
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
@@ -9562,8 +9529,7 @@ Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/org") "no" "packages.el")
-(package! org-roam)
-(unpin! org-roam)
+(package! org-roam :disable t)
 #+end_src
 
 ***** Modeline file name
@@ -9601,7 +9567,7 @@ with it.
 (use-package! org-roam-ui
   :after org-roam
   :commands org-roam-ui-open
-  ;; :hook (org-roam . org-roam-ui-mode)
+  :hook (org-roam . org-roam-ui-mode)
   :config
   (require 'org-roam) ; in case autoloaded
   (defun org-roam-ui-open ()
@@ -10507,7 +10473,7 @@ and out of the LaTeX fragments.
 Thankfully, all we need to do to make this happen is use ~org-latex-preview-auto-mode~.
 
 #+begin_src emacs-lisp
-;; (add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 #+end_src
 
 ***** Prettier rendering
@@ -10544,7 +10510,7 @@ let's make it transparent.
 
 #+begin_src emacs-lisp
 (plist-put org-format-latex-options :background "Transparent")
-;; (plist-put org-format-latex-options :zoom 0.95) ; Calibrated based on the TeX font and org-buffer font.
+(plist-put org-format-latex-options :zoom 0.95) ; Calibrated based on the TeX font and org-buffer font.
 #+end_src
 
 With the background taken care of, we just need to make sure we're using the
@@ -11560,8 +11526,7 @@ simply superior combination.
 
 #+begin_src emacs-lisp
 ;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
-(setq org-latex-compiler "lualatex")
-(setq org-latex-pdf-process '("LC_ALL=zh_CN.UTF-8 latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
+(setq org-latex-pdf-process '("LC_ALL=en_US.UTF-8 latexmk -f -pdf -%latex -shell-escape -interaction=nonstopmode -output-directory=%o %f"))
 #+end_src
 
 While ~org-latex-pdf-process~ does support a function, and we could use that
@@ -11969,7 +11934,7 @@ this to be able to use as much state information as possible, so the feature
 tests should be very versatile.
 
 #+begin_src emacs-lisp
-(defvar org-latex-embed-files nil
+(defvar org-latex-embed-files t
   "Embed the source .org, .tex, and any tangled files.")
 (defvar org-latex-use-microtype t
   "Use the microtype pakage.")
@@ -11986,7 +11951,7 @@ tests should be very versatile.
 Then we provide a way to generate the preamble that provides those features. In
 addition to the features named in ~org-latex-conditional-features~ we'll also
 create /meta-features/, which can be required by other features (with =:requires=).
-For further control, some features may only be used when certain other features
+For further control I some features may only be used when certain other features
 are active (with =:when=), and masked by other features (with =:prevents=). I will
 use the convention of starting meta-features with =.=, to make their nature more
 readily apparent.
@@ -12024,18 +11989,17 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
   (microtype
    :condition org-latex-use-microtype
    :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n"
-   ;; :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"
    :order 0.1)
   (embed-files
    :condition org-latex-embed-files
    :snippet org-latex-embed-files-preamble
    :order -2)
-  ;; (embed-tangled
-  ;;  :condition (and org-latex-embed-files
-  ;;                  "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")
-  ;;  :requires embed-files
-  ;;  :snippet org-latex-embed-extra-files
-  ;;  :order -1)
+  (embed-tangled
+   :condition (and org-latex-embed-files
+                   "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")
+   :requires embed-files
+   :snippet org-latex-embed-extra-files
+   :order -1)
   (acronym
    :condition "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]"
    :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}"
