@@ -129,3 +129,6 @@ export JAVA_HOME=$HOME/.jdks/temurin-19.0.2
 export PATH="/usr/local/bin:$PATH"
 
 export PATH="$JAVA_HOME/bin:$PATH"
+
+# use clangd from AUR clangd-opt
+# export PATH="/opt/clangd/bin:$PATH"

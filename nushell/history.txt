@@ -1565,3 +1565,24 @@ pqp emacs-pgtk-git
 pqp cataclysm
 CC=gcc-12 CXX=g++-12 proxychains -q paru cataclysm
 zi config
+$env.XDG_CONFIG_HOME
+$env
+$env.PATH
+$nu.config-path
+zi nushell
+git st
+git diff
+ls
+git st
+git diff env.nu
+ec config.nu
+zi config
+ec config.nu
+ls
+cd nushell
+ls
+ec config.nu
+git st
+ec config.nu
+btm
+pacman -Qo /usr/bin/clangd

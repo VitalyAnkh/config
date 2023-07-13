@@ -194,6 +194,17 @@ config_cuda_play:
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
   echo "==== config CUDA play done ===="
 
+harfbuzz:
+  #!/usr/bin/env bash
+  echo "==== config harfbuzz ===="
+  cd $HOME/projects/dev/cpp/harfbuzz
+  trash-put build
+  mkdir -p build
+  cd build
+  meson setup build -D graphite=enabled -D webassembly=enabled
+  meson test -C build
+  echo "==== config harfbuzz done ===="
+
 install_local_llvm:
   #!/usr/bin/env bash
   echo "==== build local llvm ===="
