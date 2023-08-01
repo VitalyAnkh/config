@@ -110,10 +110,10 @@ config_latest_llvm:
     # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@17/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@17/bin/clang \
+    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@18/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@18/bin/clang \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@17 \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@18 \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
@@ -135,7 +135,7 @@ install_latest_llvm:
   cd $HOME/projects/dev/cpp/llvm-project/build
   cmake --build . -j8
   sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
-  sudo ln -s /usr/local/opt/llvm@17 /usr/local/opt/llvm
+  sudo ln -s /usr/local/opt/llvm@18 /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
 
 config_llvm_for_triton:
@@ -148,8 +148,8 @@ config_llvm_for_triton:
     # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@17/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@17/bin/clang \
+    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@18/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@18/bin/clang \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -179,6 +179,12 @@ install_llvm_for_triton:
 config_and_install_llvm_for_triton: config_llvm_for_triton install_llvm_for_triton
 
 config_and_install_latest_llvm: config_latest_llvm install_latest_llvm
+
+package_emacs:
+  #!/usr/bin/env bash
+  cd ~
+  zip -r emacs.d.zip .emacs.d -x .emacs.d/.local/cache/eln/\* .emacs.d/.local/straight/build-30.0.50/\* .emacs.d/.local/straight/build.30.0.50.el .emacs.d/.local/cache/projectile.cache .emacs.d/.local/cache/projectile.projects .emacs.d/.local/cache/recentf .emacs.d/.local/cache/savehist .emacs.d/eln-cache/\*
+  mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
 
 config_cuda_play:
   #!/usr/bin/env bash
@@ -267,6 +273,39 @@ trash_emacs_cache:
   trash-put $HOME/.config/.emacs.d/eln-cache
   trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
+
+build_emacs_packages:
+  #!/usr/bin/env bash
+  trash-put $HOME/.config/.emacs.d/.local/straight/build-*
+  trash-put $HOME/.config/.emacs.d/.local/autoloads*
+  trash-put $HOME/.config/.emacs.d/eln-cache
+  trash-put $HOME/.config/.emacs.d/.local/cache/eln
+  trash-put $HOME/.config/.emacs.d/.local/etc/@
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
+  $HOME/.config/.emacs.d/bin/doom sync
+
+pull:
+  #!/usr/bin/env bash
+  cd $HOME/projects/dev/rust-projects/Ambient
+  git pull
+  cd $HOME/projects/dev/bevy
+  git pull
+  cd $HOME/projects/dev/rust-projects/naga
+  git pull
+  cd $HOME/projects/dev/rust-projects/naga_oil
+  git pull
+  cd $HOME/projects/dev/rust-projects/burn
+  git pull
+  cd $HOME/projects/dev/rust-projects/wasmer
+  git pull
+  cd $HOME/projects/dev/rust-projects/wasmtime
+  git pull
+  cd $HOME/projects/dev/rust-projects/iced
+  git pull
+  cd $HOME/projects/dev/rust-projects/servo
+  git pull
+  cd $HOME/projects/dev/rust-projects/rune
+  git pull
 
 yosys:
   #!/usr/bin/env bash

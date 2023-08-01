@@ -1586,3 +1586,8 @@ git st
 ec config.nu
 btm
 pacman -Qo /usr/bin/clangd
+zi egui
+git pull
+paru
+alacritty
+kill tilix

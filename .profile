@@ -121,14 +121,14 @@ export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
-export PATH="/usr/local/opt/llvm@17/bin:$PATH"
+export PATH="/usr/local/opt/llvm@18/bin:$PATH"
 
-export JAVA_HOME=$HOME/.jdks/temurin-19.0.2
+export JAVA_HOME=/lib/jvm/default/
 
 # for local tools
 export PATH="/usr/local/bin:$PATH"
 
-export PATH="$JAVA_HOME/bin:$PATH"
+# export PATH="$JAVA_HOME/bin:$PATH"
 
 # use clangd from AUR clangd-opt
 # export PATH="/opt/clangd/bin:$PATH"

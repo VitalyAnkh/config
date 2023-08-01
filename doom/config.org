@@ -1351,6 +1351,8 @@ Test some packages.
 
 #+begin_src emacs-lisp :tangle packages.el
 (unpin! yasnippet)
+(unpin! citar)
+(unpin! citar-org-roam)
 (unpin! auto-yasnippet)
 (unpin! emacsql)
 (unpin! magit-gitflow)
@@ -1429,7 +1431,7 @@ Test some packages.
       )
 ;; TODO to make eglot show function's signature within one line
 (setq eldoc-echo-area-use-multiline-p nil)
-(setq org-element-use-cache nil)
+
 ;; debug vertico--exhibit error
 (defun force-debug (func &rest args)
   (condition-case e
@@ -1476,8 +1478,8 @@ changes Doom makes:
  )                              ; Stretch cursor to the glyph width
 
 ;; To be tested
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
@@ -1765,7 +1767,7 @@ pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
 rgb                          ; creating color strings
 taskrunner                 ; taskrunner for all your projects
-terraform                  ; infrastructure as code
+;; terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 tree-sitter                ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
@@ -3881,37 +3883,31 @@ Modal editing on wish! Use =moew= for modal life.
 
 GitHub Copilot is awesome!
 #+begin_src emacs-lisp :tangle packages.el
-(package! copilot :recipe (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el")))
+(package! copilot :recipe (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el" "copilot-balancer.el")))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
-(customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
-(defun my-tab ()
-  (interactive)
-  (or (copilot-accept-completion)
-      (company-indent-or-complete-common nil)))
+;; (customize-set-variable 'copilot-enable-predicates '((lambda () (eq (meow--current-state) 'insert))))
+;; (defun my-tab ()
+;;   (interactive)
+;;   (or (copilot-accept-completion)
+;;       (company-indent-or-complete-common nil)))
 ;; complete by copilot first, then company-mode
-(use-package! copilot
-  :after company
-  :hook (prog-mode . copilot-mode)
-  :hook (text-mode . copilot-mode)
-  :bind (("C-TAB" . 'copilot-accept-completion-by-word)
-         ("C-<tab>" . 'copilot-accept-completion-by-word)
-         :map company-active-map
-         ("<tab>" . 'my-tab)
-         ("TAB" . 'my-tab)
-         :map company-mode-map
-         ("<tab>" . 'my-tab)
-         ("TAB" . 'my-tab)))
+
+;; disabled for now
 ;; (use-package! copilot
-;;   :after corfu
+;;   :after company
 ;;   :hook (prog-mode . copilot-mode)
 ;;   :hook (text-mode . copilot-mode)
 ;;   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
 ;;          ("C-<tab>" . 'copilot-accept-completion-by-word)
-;;          :map corfu-map
+;;          :map company-active-map
+;;          ("<tab>" . 'my-tab)
+;;          ("TAB" . 'my-tab)
+;;          :map company-mode-map
 ;;          ("<tab>" . 'my-tab)
 ;;          ("TAB" . 'my-tab)))
+
 #+end_src
 *** Consult
 
@@ -4607,7 +4603,7 @@ table
 
 Now, it would be good to have a minor mode which allowed you to type ascii/gh
 emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
   "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
   (if (or (not emoticon-to-emoji) (= 1 (length text)))
@@ -4662,7 +4658,7 @@ feels a bit comfier if we give it a bit more space. I find =45= adds roughly a
 third of the line height as padding above and below.
 
 #+begin_src emacs-lisp
-(setq doom-modeline-height 25)
+;; (setq doom-modeline-height 25)
 #+end_src
 
 **** File encoding
@@ -8089,6 +8085,7 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
             cpp-mode  ; use clang-format+ for C/C++
             c++-mode
             c-mode
+            f90-mode
             org-msg-edit-mode)) ; doesn't need a formatter
 #+end_src
 ** CUDA
@@ -8487,7 +8484,7 @@ correct package statement needed.
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el :noweb no-export
-;;<<org-pkg-statement()>>
+<<org-pkg-statement()>>
 (unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
@@ -10567,8 +10564,8 @@ theme-appropriate foreground.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|------------+---------------|
-| 135 \pm 2 ms | 215 \pm 3 ms    |
+|------------+----------------|
+| 135 \pm 2 ms | 215 \pm 3 ms     |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~.
@@ -10579,10 +10576,10 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time | Resulting file size |
-|--------------------+------------+---------------------|
-| ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
-| ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
+| Tool chain          | Total time | Resulting file size |
+|---------------------+------------+---------------------|
+| ~latex~ + ~dvipng~      | 226 \pm 2 ms | 7 KiB               |
+| ~latex~ + ~dvisvgm~     | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
@@ -13324,11 +13321,11 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | amsmath    | A near-essential maths package                        |
 | booktabs   | Nice horizontal lines in tables                       |
 | cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                               |
+| capt-of    | Captions outside floats                              |
 | caption    | Finer control over captions                           |
 | cleveref   | Easy cross-referencing                                |
 | embedall   | Embed files in the document                           |
-| float      | Floating environments                                 |
+| float     | Floating environments                                 |
 | fontenc    | Font encodings                                        |
 | fvextra    | Enhanced verbatim environments                        |
 | graphicx   | An extended graphics package                          |
@@ -13344,7 +13341,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | preview    | Needed for AUCTeX and ob-latex                        |
 | scrbase    | KOMA classes and more                                 |
 | siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                 |
+| soul       | Strikethrough and underline, flexibly                |
 | subcaption | Form subfigures and subcaptions                       |
 | svg        | Insert SVG images                                     |
 | tikz       | Generally handy, as a dependancy and for graphics     |

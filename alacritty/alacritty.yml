@@ -11,8 +11,6 @@ font:
   italic:
     family: JetBrains Mono
   size: 14
-# 背景不透明度
-#background_opacity: 0.8
 
 # colors:
 #   # Default colors
