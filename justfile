@@ -288,6 +288,12 @@ pull:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
+  cd $HOME/projects/dev/rust-projects/wgpu
+  git pull
+  cd $HOME/projects/dev/rust-projects/rust-analyzer
+  git pull
+  cd $HOME/projects/dev/rust-projects/rust
+  git pull --recursive-submodules
   cd $HOME/projects/dev/bevy
   git pull
   cd $HOME/projects/dev/rust-projects/naga
@@ -306,6 +312,12 @@ pull:
   git pull
   cd $HOME/projects/dev/rust-projects/rune
   git pull
+  cd $HOME/projects/dev/rust-projects/winit
+  git pull
+  cd $HOME/projects/dev/cpp/llvm-project
+  git pull
+  cd $HOME/projects/dev/rust-projects/redox
+  make pull
 
 yosys:
   #!/usr/bin/env bash
@@ -711,4 +723,12 @@ algoxy-book:
   cp algoxy-zh-cn.pdf ~/nutstore_files/Books/计算机科学/算法/
   echo "==== pull algoxy-book done ===="
 
-book: perfbook chisel-book algoxy-book eoc
+the-art-of-hpc-book:
+  #!/usr/bin/env bash
+  echo "==== pull the art of hpc book ===="
+  cd ~/nutstore_files/Books/计算机科学/高性能计算/TheArtofHPC_pdfs
+  git pull
+  echo "==== pull the art of hpc book done ===="
+
+
+book: perfbook chisel-book algoxy-book eoc the-art-of-hpc-book

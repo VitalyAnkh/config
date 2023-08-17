@@ -1378,7 +1378,7 @@ Test some packages.
 (unpin! git-gutter)
 (unpin! code-review)
 (unpin! haskell-mode)
-(unpin! treemacs)
+(package! treemacs :pin "aa0944a29eee48302fd76b6c3a59c5aece114fa6")
 (unpin! lsp-haskell)
 (unpin! lsp-java)
 (unpin! ox-hugo)
@@ -1477,12 +1477,9 @@ changes Doom makes:
  ;; x-stretch-cursor t
  )                              ; Stretch cursor to the glyph width
 
-;; To be tested
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
-
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      ;; TODO: find an equivalent for Emacs?
+      ;; evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
@@ -1505,7 +1502,7 @@ changes Doom makes:
 (scroll-bar-mode)                                 ; I like scroll bars
 
 ;; Unset C-z which is bound to =suspend-frame= by default
-(global-unset-key (kbd "C-z"))
+(keymap-global-unset "C-z")
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+end_src
@@ -1827,7 +1824,7 @@ json                         ; At least it ain't XML
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
-(nix +lsp)                          ; I hereby declare "nix geht mehr!"
+;;(nix +lsp)                          ; I hereby declare "nix geht mehr!"
 (ocaml +lsp +tree-sitter)                      ; an objective camel
 (org                         ; organize your plain life in plain text
  +dragndrop                  ; drag & drop files/images into org buffers
@@ -5294,7 +5291,7 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
    treemacs-recenter-after-tag-follow t
    treemacs-text-scale -1.1
    treemacs-follow-mode t
-   treemacs-width 25
+   treemacs-width 35
    )
   (treemacs-follow-mode)
   ;;(set-popup-rule! "^ \\*Treemacs-Scoped-Buffer-* [^*]*\\*" :size 0.25 :side 'left :quit nil)
@@ -8063,6 +8060,18 @@ Doom Emacs doesn't auto load =agda-mode= for =.agda= and =.lagda.md= files. That
          ("\\.lagda.md\\'" . agda2-mode))
        auto-mode-alist))
 #+end_src
+** CUDA Fortran
+
+#+call: confpkg()
+
+Autoload =f90-mode= on =cuf= / =CUF= files.
+#+begin_src emacs-lisp
+(setq auto-mode-alist
+      (append
+       '(("\\.cuf\\'" . f90-mode)
+         ("\\.CUF\\'" . f90-mode))
+       auto-mode-alist))
+#+end_src
 ** C/C++
 #+call: confpkg("!Pkg clang-format")
 
@@ -8858,23 +8867,14 @@ default.
         (:comments . "link")))
 #+end_src
 
-By default, ~visual-line-mode~ is turned =on=, and ~auto-fill-mode~ =off= by a hook.
-However this messes with tables in Org-mode, and other plaintext files (e.g.
-markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
-specific modes as desired.
-#+begin_src emacs-lisp
-(remove-hook 'text-mode-hook #'visual-line-mode)
-(add-hook 'text-mode-hook #'auto-fill-mode)
-#+end_src
-
 There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
 #+begin_src emacs-lisp
-(map! :map evil-org-mode-map
-      :after evil-org
-      :n "g <up>" #'org-backward-heading-same-level
-      :n "g <down>" #'org-forward-heading-same-level
-      :n "g <left>" #'org-up-element
-      :n "g <right>" #'org-down-element)
+;; (map! :map evil-org-mode-map
+;;       :after evil-org
+;;       :n "g <up>" #'org-backward-heading-same-level
+;;       :n "g <down>" #'org-forward-heading-same-level
+;;       :n "g <left>" #'org-up-element
+;;       :n "g <right>" #'org-down-element)
 #+end_src
 
 **** Extra functionality
@@ -10564,8 +10564,8 @@ theme-appropriate foreground.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|------------+----------------|
-| 135 \pm 2 ms | 215 \pm 3 ms     |
+|------------+---------------|
+| 135 \pm 2 ms | 215 \pm 3 ms    |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~.
@@ -10576,10 +10576,10 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain          | Total time | Resulting file size |
-|---------------------+------------+---------------------|
-| ~latex~ + ~dvipng~      | 226 \pm 2 ms | 7 KiB               |
-| ~latex~ + ~dvisvgm~     | 392 \pm 4 ms | 8 KiB               |
+| Tool chain         | Total time | Resulting file size |
+|--------------------+------------+---------------------|
+| ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
+| ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
@@ -13321,11 +13321,11 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | amsmath    | A near-essential maths package                        |
 | booktabs   | Nice horizontal lines in tables                       |
 | cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                              |
+| capt-of    | Captions outside floats                               |
 | caption    | Finer control over captions                           |
 | cleveref   | Easy cross-referencing                                |
 | embedall   | Embed files in the document                           |
-| float     | Floating environments                                 |
+| float      | Floating environments                                 |
 | fontenc    | Font encodings                                        |
 | fvextra    | Enhanced verbatim environments                        |
 | graphicx   | An extended graphics package                          |
@@ -13341,7 +13341,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | preview    | Needed for AUCTeX and ob-latex                        |
 | scrbase    | KOMA classes and more                                 |
 | siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                |
+| soul       | Strikethrough and underline, flexibly                 |
 | subcaption | Form subfigures and subcaptions                       |
 | svg        | Insert SVG images                                     |
 | tikz       | Generally handy, as a dependancy and for graphics     |
