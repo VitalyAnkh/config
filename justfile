@@ -240,6 +240,17 @@ install_local_llvm:
   sudo cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build local llvm done ===="
 
+update:
+  #!/usr/bin/env bash
+  rustup update
+  elan update
+  cs update
+  opam update
+  opam upgrade
+  nix-channel --update
+  nix-env -u
+  cabal update
+
 triton:
   #!/usr/bin/env bash
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
