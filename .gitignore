@@ -27,8 +27,8 @@
 !containers/*
 !dconf/
 !dconf/*
-!doom
-!doom/*
+!doom-vitalyr
+!doom-vitalyr/*
 !emacs
 !emacs/*
 !etc
