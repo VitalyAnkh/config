@@ -29,9 +29,10 @@ config_lean:
   git config submodule.recurse true
   cd ~/projects/dev/lean/lean4
   git pull
-  mkdir -p build/release
-  cd build/release
-  LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../..
+  mkdir -p build
+  cd build
+  LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+  cp compile_commands.events.json compile_commands.json
 
 config_torch_mlir_with_external_project:
   #!/usr/bin/env bash
@@ -89,8 +90,8 @@ config_torch_mlir:
 lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
-  cd ~/projects/dev/lean/lean4/build/release
-  make -j10
+  cd ~/projects/dev/lean/lean4/build/
+  bear -- make -j10
 
 deploy_emacs:
   #!/usr/bin/env bash
