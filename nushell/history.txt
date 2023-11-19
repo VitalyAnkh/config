@@ -1591,3 +1591,4 @@ git pull
 paru
 alacritty
 kill tilix
+ls

@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
-#+author: tecosaur
-#+email: contact@tecosaur.net
+#+author: VitalyR
+#+email: vr@vitalyr.com
 #+date: @@html:<!--@@{{{git-rev}}}@@html:-->@@@@latex:\\\Large\bfseries@@ {{{modification-time(%Y-%m-%d, t)}}} @@latex:\\\normalsize\mdseries@@{{{modification-time(%H:%M, t)}}} @@latex:\acr{\lowercase{@@{{{timezone}}}@@latex:}}\iffalse@@, {{{git-rev}}}@@latex:\fi@@
 #+macro: timezone (eval (substring (shell-command-to-string "date +%Z") 0 -1))
 #+macro: git-rev (eval (format "@@html:<a href=\"https://git.tecosaur.net/tec/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://git.tecosaur.net/tec/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
@@ -743,7 +743,7 @@ are needed for each block of config.
       (setq buffer-file-name (plist-get confpkg :file))
       (insert-file-contents buffer-file-name)
       (goto-char (point-min))
-      (while (re-search-forward "^;;; Code:\n[[:space:]\n]*(\\(package!\\|unpin!\\)[[:space:]\n]+\\([^[:space:]]+\\)\\b" nil t)
+      (while (re-search-forward "(\\(package!\\|unpin!\\)[[:space:]\n]+\\([^[:space:]]*\\)" nil t)
         (plist-put confpkg :package-statements
                    (nconc (plist-get confpkg :package-statements)
                           (list (match-string 2))))
@@ -1347,9 +1347,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 This is a place I put workarounds. It should be empty in the best scenarios.
 
-Test some packages.
-
 #+begin_src emacs-lisp :tangle packages.el
+(package! separate-inline :recipe (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (unpin! yasnippet)
 (unpin! citar)
 (unpin! citar-org-roam)
@@ -1376,34 +1375,29 @@ Test some packages.
 (unpin! elisp-tree-sitter)
 (unpin! git-gutter)
 (unpin! code-review)
-(unpin! haskell-mode)
-(package! treemacs :pin "aa0944a29eee48302fd76b6c3a59c5aece114fa6")
 (unpin! lsp-haskell)
 (unpin! lsp-java)
 (unpin! ox-hugo)
 (unpin! lsp-mode)
 (unpin! dap-mode)
 (package! multiple-cursors :disable t)
-(package! separate-inline :recipe
-  (:host github :repo "ingtshan/separate-inline.el" :files ("*.el")))
 (package! benchmark-init :recipe (:host github :repo "dholm/benchmark-init-el"))
 (package! org-pretty-tags)
 (package! yasnippet)
 (package! org-xlatex :recipe
   (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
 (unpin! yaml)
-(unpin! lsp-treemacs)
 (package! magit :recipe (:branch "main"))
 (package! ghub :recipe (:branch "main"))
 (package! multiple-cursors :disable t)
+(unpin! lsp-treemacs)
+(unpin! haskell-mode)
+(unpin! treemacs)
+(package! treemacs-nerd-icons :disable t)
+;; (unpin! treemacs-nerd-icons)
+;; (unpin! dirvish)
 ;;(package! consult-recoll)
-;; (package! emacs-nerd-icons
-;;   :recipe (:type git
-;;            :host github
-;;            :repo "rainstormstudio/emacs-nerd-icons"
-;;            :files ("*.el" "data")))
 #+end_src
-
 
 #+begin_src emacs-lisp :tangle config.el
 (setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
@@ -1415,13 +1409,14 @@ Test some packages.
 (use-package! global-display-line-numbers-mode
   :hook (prog-mode . global-display-line-numbers-mode)
   :hook (fundamental-mode . global-display-line-numbers-mode)
+  :hook (text-mode . global-display-line-numbers-mode)
   )
 
-(defadvice copilot--complete-post-command (around intercept activate)
-  (condition-case err
-      ad-do-it
-    ;; Let the debugger run
-    ((debug error) (signal (car err) (cdr err)))))
+;; (defadvice copilot--complete-post-command (around intercept activate)
+;;   (condition-case err
+;;       ad-do-it
+;;     ;; Let the debugger run
+;;     ((debug error) (signal (car err) (cdr err)))))
 
 (setq straight-repository-branch "develop")
 
@@ -1451,13 +1446,6 @@ Test some packages.
   :hook (org-mode . org-xlatex-mode))
 #+end_src
 
-
-#+begin_src emacs-lisp :tangle config.el
-;; (use-package emacs-nerd-icons
-;;   :custom
-;;   (emacs-nerd-icons-font-family "FiraCode Nerd Font") ;; The Nerd Font you want to use in GUI
-;;   )
-#+end_src
 
 ** Better defaults
 
@@ -1489,12 +1477,11 @@ changes Doom makes:
       mouse-drag-and-drop-region-cross-program t
       mouse-1-click-follows-link nil
       server-raise-frame nil
-      display-time-default-load-average nil)      ; I don't think I've ever found this useful
+      display-time-default-load-average nil      ; I don't think I've ever found this useful
+      doom-theme 'doom-one-light)
+
 
 ;; (display-time-mode 1)                             ; Enable time in the mode-line
-
-;; (unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-;;   (display-battery-mode 1))                       ; it's nice to know how much power you have
 
 (global-visual-line-mode 1)                       ; Wrap lines at window edge, not at 80th character: my screen is wide enough!
 
@@ -1504,6 +1491,28 @@ changes Doom makes:
 (keymap-global-unset "C-z")
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
+#+end_src
+
+When using a device with a battery, it would be nice to display battery
+ information. We can check for a battery during tangle via noweb, and only call
+ ~display-battery-mode~ when relevant. From a look at the various status functions
+ in =battery.el=, it seems like the ~?L~ key is consistently =N/A= when there is no
+ battery, so we'll test on that.
+
+#+name: battery-status-setup
+#+begin_src emacs-lisp :noweb-ref none
+;; (require 'battery)
+;; (if (and battery-status-function
+;;          (not (equal (alist-get ?L (funcall battery-status-function))
+;;                      "N/A")))
+;;     (prin1-to-string `(display-battery-mode 1))
+;;   "")
+#+end_src
+
+Now with noweb we' use the result.
+
+#+begin_src emacs-lisp :noweb no-export 
+<<battery-status-setup()>>
 #+end_src
 
 *** Frame sizing
@@ -1666,7 +1675,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 ;; doom-quit                    ; DOOM quit-message prompts when you quit Emacs
-;; (emoji +unicode)             ; 🙂
+;; emoji                     ; 🙂
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -1823,7 +1832,7 @@ json                         ; At least it ain't XML
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
-;;(nix +lsp)                          ; I hereby declare "nix geht mehr!"
+(nix +lsp)                          ; I hereby declare "nix geht mehr!"
 (ocaml +lsp +tree-sitter)                      ; an objective camel
 (org                         ; organize your plain life in plain text
  +dragndrop                  ; drag & drop files/images into org buffers
@@ -1930,6 +1939,7 @@ near-minimal new config:
 
 *** Visual Settings
 **** Font Face
+***** Setting fonts
 
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
 fiddle with the font sizes a tad so that they visually match. Just for fun I'm
@@ -1937,9 +1947,14 @@ trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer Fira.
 
 #+begin_src emacs-lisp
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+;;       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
+;;       doom-unicode-font (font-spec :family "JuliaMono")
+;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-big-font (font-spec :family "JetBrains Mono" :size 28)
-      ;;doom-variable-pitch-font (font-spec :family "American Typewriter" :size 21)
+      ;; doom-symbol-font (font-spec :family "LXGW WenKai" :size 17)
       doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
       doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
 
@@ -1955,6 +1970,7 @@ aspects are nice, but on others I prefer Fira.
                              (set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
                              ;;(set-face-attribute 'default nil :font "Droid Sans Mono")
                              ;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
+                             ;; (set-fontset-font "fontset-default" 'unicode-bmp "LXGW WenKai" nil 'prepend)
                              (set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
                              (set-fontset-font "fontset-default" 'kana "LXGW WenKai" nil 'prepend)
                              (set-fontset-font "fontset-default" 'hangul "LXGW WenKai" nil 'prepend)
@@ -1970,6 +1986,87 @@ aspects are nice, but on others I prefer Fira.
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
 files.
+
+***** Emojis
+
+Lastly, it would be good to sort out emojis. All that's really needed here is to
+apply =doom-emoji-font=, which needs to be done here because it's not /actually/ a
+Doom font variable, but rather my own addition.
+
+#+begin_src emacs-lisp
+;; (add-hook! 'after-setting-font-hook
+;;   (defun +emoji-set-font ()
+;;     (set-fontset-font t 'emoji doom-emoji-font nil 'prepend)))
+#+end_src
+
+We might as well also construct a regexp to make identifying emojis if buffers
+more convenient.
+
+#+begin_src emacs-lisp
+(defvar +emoji-rx
+  (let (emojis)
+    (map-char-table
+     (lambda (char set)
+       (when (eq set 'emoji)
+         (push (copy-tree char) emojis)))
+     char-script-table)
+    (rx-to-string `(any ,@emojis)))
+  "A regexp to find all emoji-script characters.")
+#+end_src
+
+For the sake of convenient insertion, we'll also register some emoji aliases
+based on common usage.
+
+#+begin_src emacs-lisp
+(setq emoji-alternate-names
+      '(("🙂" ":)")
+        ("😄" ":D")
+        ("😉" ";)")
+        ("🙁" ":(")
+        ("😆" "laughing face" "xD")
+        ("🤣" "ROFL face")
+        ("😢" ":'(")
+        ("🥲" ":')")
+        ("😮" ":o")
+        ("😑" ":|")
+        ("😎" "cool face")
+        ("🤪" "goofy face")
+        ("🤥" "pinnochio face" "liar face")
+        ("😠" ">:(")
+        ("😡" "angry+ face")
+        ("🤬" "swearing face")
+        ("🤢" "sick face")
+        ("😈" "smiling imp")
+        ("👿" "frowning imp")
+        ("❤️" "<3")
+        ("🫡" "o7")
+        ("👍" "+1")
+        ("👎" "-1")
+        ("👈" "left")
+        ("👉" "right")
+        ("👆" "up")
+        ("💯" "100")
+        ("💸" "flying money")))
+#+end_src
+
+Lastly, when using Emacs 28+ it would be nice to open the nice emoji dispatch
+with the leader key as well as =C-x 8 e=. Since =SPC e= is unclaimed, let's just use
+that until we have a better use for it (we could also split up the insertion and
+querying commands in other parts of the map).
+
+#+begin_src emacs-lisp
+;; (when (>= emacs-major-version 29)
+;;   (map! :leader
+;;         (:prefix ("e" . "Emoji")
+;;          :desc "Search" "s" #'emoji-search
+;;          :desc "Recent" "r" #'emoji-recent
+;;          :desc "List" "l" #'emoji-list
+;;          :desc "Describe" "d" #'emoji-describe
+;;          :desc "Insert" "i" #'emoji-insert
+;;          :desc "Insert" "e" #'emoji-insert)))
+#+end_src
+
+***** Checking the system
 
 Because we care about how things look let's add a check to make sure we're told
 if the system doesn't have any of those fonts.
@@ -2017,14 +2114,48 @@ listing the missing fonts should appear for at least half a second.
 
 **** Theme
 
-#+begin_src emacs-lisp
+The ~doom-one~ theme is nice and all, but I find the ~vibrant~ variant nicer. With
+the light themes, I rather like ~doom-tomorrow-day~. I'd like to pick the default
+from them based on the system theme. We can detect this with a ~gdbus~ call, which
+is a Gnome CLI tool but often present on KDE systems for GTK support.
+
+#+name: default-theme
+#+begin_src emacs-lisp :noweb-ref none
+(let ((light-theme 'doom-one-light)
+      (dark-theme 'doom-one-light)
+       (system-light-p
+       (and
+        (executable-find "gdbus")
+        (string= "<<uint32 2>>"
+                 (with-temp-buffer
+                   (call-process "gdbus" nil t nil
+                                 "call" "--session"
+                                 "--timeout=1000"
+                                 "--dest=org.freedesktop.portal.Desktop"
+                                 "--object-path" "/org/freedesktop/portal/desktop"
+                                 "--method" "org.freedesktop.portal.Settings.Read"
+                                 "org.freedesktop.appearance" "color-scheme")
+                   (string-trim (buffer-string) "(" ",)\n"))))))
+  (if system-light-p light-theme dark-theme))
+#+end_src
+
+We'll use the appropriate theme as the default, but let's also accept the theme
+as an envvar for fun.
+
+#+begin_src emacs-lisp :noweb yes
+;; (setq doom-theme
+;;       (if (getenv "DOOM_THEME")
+;;           (intern (getenv "DOOM_THEME"))
+;;         '<<default-theme()>>))
+
+(setq doom-theme 'doom-one-light)
+
 (setq
  doom-themes-enable-bold nil ; if nil, bold is universally disabled
  doom-themes-enable-italic t ; if nil, italics is universally disabled
  doom-themes-padded-modeline t
  doom-themes-treemacs-enable-variable-pitch nil)
 
-(setq doom-theme 'doom-one-light)
 #+end_src
 
 Oh, and with the nice selection doom provides there's no reason for me to want
@@ -4555,78 +4686,6 @@ situations decently.
 ;;   (setq simple-comment-markup-set '(org markdown-code)))
 #+end_src
 
-*** Emojify
-
-#+call: confpkg("!Pkg emojify")
-
-#+begin_quote
-From the =:ui emoji= module.
-#+end_quote
-
-
-For starters, twitter's emojis look nicer than emoji-one.
-Other than that, this is pretty great OOTB 😀.
-
-#+begin_src emacs-lisp
-(setq emojify-emoji-set "twemoji-v2")
-#+end_src
-
-One minor annoyance is the use of emojis over the default character
-when the default is actually preferred. This occurs with overlay symbols I use
-in Org mode, such as checkbox state, and a few other miscellaneous cases.
-
-We can accommodate our preferences by deleting those entries from the emoji hash
-table
-
-#+begin_src emacs-lisp
-(defvar emojify-disabled-emojis
-  '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
-    ;; Terminal powerline
-    "✔"
-    ;; Box drawing
-    "▶" "◀"
-    ;; I just want to see this as text
-    "©" "™")
-  "Characters that should never be affected by `emojify-mode'.")
-
-(defadvice! emojify-delete-from-data ()
-  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
-  :after #'emojify-set-emoji-data
-  (dolist (emoji emojify-disabled-emojis)
-    (remhash emoji emojify-emojis)))
-#+end_src
-
-Now, it would be good to have a minor mode which allowed you to type ascii/gh
-emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp :tangle no
-(defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
-  "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
-  (if (or (not emoticon-to-emoji) (= 1 (length text)))
-      (funcall orig-fn emoji text buffer start end target)
-    (delete-region start end)
-    (insert (ht-get emoji "unicode"))))
-
-(define-minor-mode emoticon-to-emoji
-  "Write ascii/gh emojis, and have them converted to unicode live."
-  :global nil
-  :init-value nil
-  (if emoticon-to-emoji
-      (progn
-        (setq-local emojify-emoji-styles '(ascii github unicode))
-        (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
-        (unless emojify-mode
-          (emojify-turn-on-emojify-mode)))
-    (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
-    (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
-#+end_src
-
-This new minor mode of ours will be nice for messages, so let's hook it in for
-Email and IRC.
-#+begin_src emacs-lisp
-;; (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
-#+end_src
-
 *** Doom modeline
 
 #+call: confpkg("!Pkg Doom modeline", after="doom-modeline")
@@ -4799,12 +4858,12 @@ icon. Then we'll redefine two functions used to generate the modeline.
    (doom-modeline--buffer-name)))
 
 (doom-modeline-def-segment pdf-icon
-  "PDF icon from all-the-icons."
+  "PDF icon from nerd-icons."
   (concat
    doom-modeline-spc
-   (doom-modeline-icon 'octicon "file-pdf" nil nil
+   (doom-modeline-icon sucicon "nf-seti-pdf" nil nil
                        :face (if (doom-modeline--active)
-                                 'all-the-icons-red
+                                 'nerd-icons-red
                                'mode-line-inactive)
                        :v-adjust 0.02)))
 
@@ -5089,21 +5148,22 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 ;; (setq x-underline-at-descent-line t)
 #+end_src
 
-*** All the icons
+*** Nerd Icons
 
-#+call: confpkg("!Pkg All the Icons")
+#+call: confpkg("!Pkg Nerd Icons")
 
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
 
-=all-the-icons= does a generally great job giving file names icons. One minor
+=nerd-icons= does a generally great job giving file names icons. One minor
 niggle I have is that when /I/ open a =.m= file, it's much more likely to be Matlab
 than Objective-C. As such, it'll be switching the icon associated with =.m=.
+
 #+begin_src emacs-lisp
-(after! all-the-icons
-  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
-          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
+(after! nerd-icons
+  (setcdr (assoc "m" nerd-icons-extension-icon-alist)
+          (cdr (assoc "matlab" nerd-icons-extension-icon-alist))))
 #+end_src
 
 *** Prettier page breaks
@@ -5206,7 +5266,7 @@ tweaks. Namely:
 
 *** Treemacs
 
-#+call: confpkg("!Pkg treemacs")
+#+call: confpkg("!Pkg Treemacs")
 
 #+begin_quote
 From the =:ui treemacs= module.
@@ -5311,6 +5371,9 @@ Adjust the face of =treemacs=. The =variable-pitch= is too large for a file expl
 (after! (treemacs ace-window)
   (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers))
   )
+#+end_src
+*** Dirvish
+#+begin_src emacs-lisp
 #+end_src
 
 ** Frivolities
@@ -5735,8 +5798,8 @@ Start =wakatime= at when emacs launches:
 I can't use modal editing without my favorite input method: [[https://fcitx-im.org/][fcitx5]], especially
 within Emacs. Let's add =emacs-smart-input-source= to support smart input method switching.
 #+begin_src emacs-lisp :tangle packages.el
-(package! sis :recipe (:host github :repo "VitalyAnkh/emacs-smart-input-source"
-                           :files ("*.el" ) :branch "staging"))
+(package! sis :recipe (:host github :repo "laishulu/emacs-smart-input-source"
+                           :files ("*.el" )))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -6176,9 +6239,9 @@ configuration tweaks.
              "")))
   (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
 
-  (appendq! all-the-icons-mode-icon-alist
-            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
-              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
+  (appendq! nerd-icons-mode-icon-alist
+            '((circe-channel-mode nerd-icons-mdicon "nf-md-message" :face nerd-icons-lblue)
+              (circe-server-mode nerd-icons-mdicon "nf-md-chat_outline" :face nerd-icons-purple))))
 
 <<irc-authinfo-reader>>
 
@@ -7381,7 +7444,7 @@ There seem to be some advantages with using Gnus' article view (such as inline
 images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
 the future' for mu4e.
 
-There are some all-the-icons font related issues, so we need to redefine the
+There are some nerd-icons font related issues, so we need to redefine the
 fancy chars, and make sure they get the correct width.
 
 To account for the increase width of each flag character, and make perform a
@@ -7926,9 +7989,6 @@ moves the point with ~message-goto-<location>~.
 #+call: confpkg("!Pkg LSP")
 
 Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp client in Emacs has some nuisances. Let's tweak it.
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! lsp-mode)
-#+end_src
 
 #+begin_src emacs-lisp
 (use-package lsp-mode
@@ -8997,9 +9057,9 @@ with =citar=, and make the symbols a bit prettier.
           paths)
         citar-bibliography org-cite-global-bibliography
         citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+        `((file ,(nerd-icons-faicon "nf-fa-file_o" :face 'nerd-icons-green :v-adjust -0.1) . " ")
+          (note ,(nerd-icons-octicon "nf-oct-note" :face 'nerd-icons-blue :v-adjust -0.3) . " ")
+          (link ,(nerd-icons-octicon "nf-oct-link" :face 'nerd-icons-orange :v-adjust 0.01) . " "))))
 #+end_src
 
 We can also make the Zotero CSL styles available to use.
@@ -9259,8 +9319,8 @@ set up org-capture.
   (defun +doct-icon-declaration-to-icon (declaration)
     "Convert :icon declaration to icon"
     (let ((name (pop declaration))
-          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
-          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+          (set  (intern (concat "nerd-icons-" (plist-get declaration :set))))
+          (face (intern (concat "nerd-icons-" (plist-get declaration :color))))
           (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
       (apply set `(,name :face ,face :v-adjust ,v-adjust))))
 
@@ -9283,7 +9343,7 @@ set up org-capture.
   (defun set-org-capture-templates ()
     (setq org-capture-templates
           (doct `(("Personal todo" :keys "t"
-                   :icon ("checklist" :set "octicon" :color "green")
+                   :icon ("nf-oct-checklist" :set "octicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -9291,7 +9351,7 @@ set up org-capture.
                    :template ("* TODO %?"
                               "%i %a"))
                   ("Personal note" :keys "n"
-                   :icon ("sticky-note-o" :set "faicon" :color "green")
+                   :icon ("nf-fa-sticky_note_o" :set "faicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -9299,7 +9359,7 @@ set up org-capture.
                    :template ("* %?"
                               "%i %a"))
                   ("Email" :keys "e"
-                   :icon ("envelope" :set "faicon" :color "blue")
+                   :icon ("nf-fa-envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -9309,7 +9369,7 @@ set up org-capture.
                               "about %^{topic}"
                               "%U %i %a"))
                   ("Interesting" :keys "i"
-                   :icon ("eye" :set "faicon" :color "lcyan")
+                   :icon ("nf-fa-eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Interesting"
@@ -9317,28 +9377,28 @@ set up org-capture.
                    :template ("* [ ] %{desc}%? :%{i-type}:"
                               "%i %a")
                    :children (("Webpage" :keys "w"
-                               :icon ("globe" :set "faicon" :color "green")
+                               :icon ("nf-fa-globe" :set "faicon" :color "green")
                                :desc "%(org-cliplink-capture) "
                                :i-type "read:web")
                               ("Article" :keys "a"
-                               :icon ("file-text" :set "octicon" :color "yellow")
+                               :icon ("nf-fa-file_text_o" :set "faicon" :color "yellow")
                                :desc ""
                                :i-type "read:reaserch")
                               ("\tRecipie" :keys "r"
-                               :icon ("spoon" :set "faicon" :color "dorange")
+                               :icon ("nf-fa-spoon" :set "faicon" :color "dorange")
                                :file +org-capture-recipies
                                :headline "Unsorted"
                                :template "%(org-chef-get-recipe-from-url)")
                               ("Information" :keys "i"
-                               :icon ("info-circle" :set "faicon" :color "blue")
+                               :icon ("nf-fa-info_circle" :set "faicon" :color "blue")
                                :desc ""
                                :i-type "read:info")
                               ("Idea" :keys "I"
-                               :icon ("bubble_chart" :set "material" :color "silver")
+                               :icon ("nf-md-chart_bubble" :set "mdicon" :color "silver")
                                :desc ""
                                :i-type "idea")))
                   ("Tasks" :keys "k"
-                   :icon ("inbox" :set "octicon" :color "yellow")
+                   :icon ("nf-oct-inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Tasks"
@@ -9346,16 +9406,16 @@ set up org-capture.
                    :template ("* TODO %? %^G%{extra}"
                               "%i %a")
                    :children (("General Task" :keys "k"
-                               :icon ("inbox" :set "octicon" :color "yellow")
+                               :icon ("nf-oct-inbox" :set "octicon" :color "yellow")
                                :extra "")
                               ("Task with deadline" :keys "d"
-                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
+                               :icon ("nf-md-timer" :set "mdicon" :color "orange" :v-adjust -0.1)
                                :extra "\nDEADLINE: %^{Deadline:}t")
                               ("Scheduled Task" :keys "s"
-                               :icon ("calendar" :set "octicon" :color "orange")
+                               :icon ("nf-oct-calendar" :set "octicon" :color "orange")
                                :extra "\nSCHEDULED: %^{Start time:}t")))
                   ("Project" :keys "p"
-                   :icon ("repo" :set "octicon" :color "silver")
+                   :icon ("nf-oct-repo" :set "octicon" :color "silver")
                    :prepend t
                    :type entry
                    :headline "Inbox"
@@ -9365,15 +9425,15 @@ set up org-capture.
                    :file ""
                    :custom (:time-or-todo "")
                    :children (("Project-local todo" :keys "t"
-                               :icon ("checklist" :set "octicon" :color "green")
+                               :icon ("nf-oct-checklist" :set "octicon" :color "green")
                                :time-or-todo "TODO"
                                :file +org-capture-project-todo-file)
                               ("Project-local note" :keys "n"
-                               :icon ("sticky-note" :set "faicon" :color "yellow")
+                               :icon ("nf-fa-sticky_note" :set "faicon" :color "yellow")
                                :time-or-todo "%U"
                                :file +org-capture-project-notes-file)
                               ("Project-local changelog" :keys "c"
-                               :icon ("list" :set "faicon" :color "blue")
+                               :icon ("nf-fa-list" :set "faicon" :color "blue")
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
@@ -9428,7 +9488,7 @@ Lisp programs can force the template by setting KEYS to a string."
       (org-mks org-capture-templates
                "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
                "Template key: "
-               `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
+               `(("q" ,(concat (nerd-icons-octicon "nf-oct-stop" :face 'nerd-icons-red :v-adjust 0.01) "\tAbort")))))))
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
 (defun org-mks-pretty (table title &optional prompt specials)
@@ -9497,7 +9557,7 @@ is selected, only the bare key is returned."
                 (when specials
                   (insert "─────────────────────────\n")
                   (pcase-dolist (`(,key ,description) specials)
-                    (insert (format "%s   %s\n" (propertize key 'face '(bold all-the-icons-red)) description))
+                    (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
                     (push key allowed-keys)))
                 ;; Display UI and let user select an entry or
                 ;; a sub-level prefix.
@@ -10400,11 +10460,11 @@ and add an extra ~org-bullet~ to the default list of four.
       org-priority-highest ?A
       org-priority-lowest ?E
       org-priority-faces
-      '((?A . 'all-the-icons-red)
-        (?B . 'all-the-icons-orange)
-        (?C . 'all-the-icons-yellow)
-        (?D . 'all-the-icons-green)
-        (?E . 'all-the-icons-blue)))
+      '((?A . 'nerd-icons-red)
+        (?B . 'nerd-icons-orange)
+        (?C . 'nerd-icons-yellow)
+        (?D . 'nerd-icons-green)
+        (?E . 'nerd-icons-blue)))
 #+end_src
 
 It's also nice to make use of the =prettify-symbols-mode= for a few Org syntactic
@@ -10421,11 +10481,11 @@ other settings.
                 :arrow_lr      "↔"
                 :properties    "⚙"
                 :end           "∎"
-                :priority_a    #("⚑" 0 1 (face all-the-icons-red))
-                :priority_b    #("⬆" 0 1 (face all-the-icons-orange))
-                :priority_c    #("■" 0 1 (face all-the-icons-yellow))
-                :priority_d    #("⬇" 0 1 (face all-the-icons-green))
-                :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
+                :priority_a    #("⚑" 0 1 (face nerd-icons-red))
+                :priority_b    #("⬆" 0 1 (face nerd-icons-orange))
+                :priority_c    #("■" 0 1 (face nerd-icons-yellow))
+                :priority_d    #("⬇" 0 1 (face nerd-icons-green))
+                :priority_e    #("❓" 0 1 (face nerd-icons-blue))))
 
 (defadvice! +org-init-appearance-h--no-ligatures-a ()
   :after #'+org-init-appearance-h
@@ -13149,29 +13209,29 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Character | LaTeX |
 |-----------+-------|
 | ɑ         | \(\alpha\) |
-| β          | \(\beta\)  |
-| γ          | \(\gamma\)  |
-| δ          | \(\delta\)  |
-| ε          | \(\epsilon\)  |
-| ϵ          | \(\varepsilon\)  |
-| ζ          | \(\zeta\)  |
+| β         | \(\beta\) |
+| γ         | \(\gamma\) |
+| δ         | \(\delta\) |
+| ε         | \(\epsilon\) |
+| ϵ          | \(\varepsilon\) |
+| ζ         | \(\zeta\) |
 | η         | \(\eta\) |
-| θ          | \(\theta\)  |
+| θ         | \(\theta\) |
 | ϑ         | \(\vartheta\) |
-| ι          | \(\iota\)  |
+| ι         | \(\iota\) |
 | κ         | \(\kappa\) |
-| λ          | \(\lambda\)  |
+| λ         | \(\lambda\) |
 | μ         | \(\mu\) |
-| ν          | \(\nu\)  |
-| ξ          | \(\xi\)  |
+| ν         | \(\nu\) |
+| ξ         | \(\xi\) |
 | π         | \(\pi\) |
 | ϖ         | \(\varpi\) |
-| ρ          | \(\rho\)  |
+| ρ         | \(\rho\) |
 | ϱ         | \(\varrho\) |
 | σ         | \(\sigma\) |
-| ς          | \(\varsigma\)  |
-| τ          | \(\tau\)  |
-| υ          | \(\upsilon\)  |
+| ς         | \(\varsigma\) |
+| τ         | \(\tau\) |
+| υ         | \(\upsilon\) |
 | ϕ         | \(\phi\) |
 | φ         | \(\varphi\) |
 | ψ         | \(\psi\) |
@@ -13187,7 +13247,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Φ         | \(\Phi\) |
 | Ψ         | \(\Psi\) |
 | Ω         | \(\Omega\) |
-| א         | \(\aleph\)  |
+| א         | \(\aleph\) |
 | ב         | \(\beth\) |
 | ד         | \(\daleth\) |
 | ג          | \(\gimel\)  |
@@ -14355,11 +14415,11 @@ Of course, there's an Emacs mode for this.
 (use-package! beancount
   :mode ("\\.beancount\\'" . beancount-mode)
   :init
-  (after! all-the-icons
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.beancount\\'" all-the-icons-material "attach_money" :face all-the-icons-lblue))
-    (add-to-list 'all-the-icons-mode-icon-alist
-                 '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue)))
+  (after! nerd-icons
+    (add-to-list 'nerd-icons-extension-icon-alist
+                 '("beancount" nerd-icons-faicon "nf-fa-dollar" :face nerd-icons-lblue))
+    (add-to-list 'nerd-icons-mode-icon-alist
+                 '(beancount-mode nerd-icons-faicon "nf-fa-dollar" :face nerd-icons-lblue)))
   :config
   (setq beancount-electric-currency t)
   (defun beancount-bal ()

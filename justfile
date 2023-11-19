@@ -26,12 +26,13 @@ llvm:
 config_lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
-  git config submodule.recurse true
+  #git config submodule.recurse true
   cd ~/projects/dev/lean/lean4
   git pull
+  trash-put build
   mkdir -p build
   cd build
-  LD=mold cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
   cp compile_commands.events.json compile_commands.json
 
 config_torch_mlir_with_external_project:
@@ -344,8 +345,10 @@ build_local_emacs:
   make bootstrap-clean
   make clean
   cd $HOME/projects/aur/emacs-pgtk-git/
+  # edit commit in the PKGBUILD
   mksrcinfo
-  #makepkg -si
+  makepkg -si
+  # proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force
   #proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force
 
 test_local_emacs: trash_emacs_cache build_local_emacs
