@@ -301,6 +301,8 @@ pull:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
+  cd $HOME/projects/dev/rust-projects/candle
+  git pull
   cd $HOME/projects/dev/rust-projects/wgpu
   git pull
   cd $HOME/projects/dev/rust-projects/rust-analyzer
@@ -328,6 +330,8 @@ pull:
   cd $HOME/projects/dev/rust-projects/winit
   git pull
   cd $HOME/projects/dev/cpp/llvm-project
+  git pull
+  cd $HOME/projects/dev/cpp/mold
   git pull
   cd $HOME/projects/dev/rust-projects/redox
   make pull
@@ -746,4 +750,4 @@ the-art-of-hpc-book:
   echo "==== pull the art of hpc book done ===="
 
 
-book: perfbook chisel-book algoxy-book eoc the-art-of-hpc-book
+book: perfbook algoxy-book eoc the-art-of-hpc-book chisel-book

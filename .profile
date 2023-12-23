@@ -39,6 +39,11 @@ export WLR_NO_HARDWARE_CURSORS=1
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export GBM_BACKEND=nvidia-drm
 
+# for video hardware acceleration on nvidia
+export NVD_BACKEND=egl
+export VDPAU_DRIVER=nvidia
+export LIBVA_DRIVER_NAME=nvidia
+
 # Set variables to let programs run natively under wayland
 # for gtk3 applications
 #export GDK_BACKEND=wayland

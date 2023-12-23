@@ -1817,16 +1817,16 @@ ess                          ; emacs speaks statistics
 ;;hy                         ; readability of scheme w/ speed of python
 (idris +lsp +tree-sitter)                     ;
 json                         ; At least it ain't XML
-;;(java +lsp)                ; the poster child for carpal tunnel syndrome
-(javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
+(java +lsp +tree-sitter)                  ; the poster child for carpal tunnel syndrome
+(javascript +lsp +tree-sitter)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp +tree-sitter)                 ; Python, R, and MATLAB in a blender
-;;kotlin                     ; a better, slicker Java(Script)
+(kotlin +lsp +tree-sitter)                      ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
  +lsp
  +latexmk                    ; what else would you use?
  +cdlatex                    ; quick maths symbols
  +fold)                      ; fold the clutter away nicities
-;; (lean +lsp)                       ; proof that mathematicians need help
+;; (lean +lsp)               ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
 ;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
@@ -5275,7 +5275,7 @@ From the =:ui treemacs= module.
 Quite often there are superfluous files I'm not that interested in. There's no
 good reason for them to take up space. Let's add a mechanism to ignore them.
 #+begin_src emacs-lisp
-(after! treemacs
+(after! (treemacs dired)
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
   (defvar treemacs-file-ignore-globs '()
