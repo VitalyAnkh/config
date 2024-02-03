@@ -38,7 +38,7 @@
   { "info": "Adjust the volume of the music being played in the background.", "default": "Default: 100 - Min: 0, Max: 128", "name": "MUSIC_VOLUME", "value": "100" },
   { "info": "Adjust the volume of sound effects being played by the game.", "default": "Default: 100 - Min: 0, Max: 128", "name": "SOUND_EFFECT_VOLUME", "value": "100" },
   { "info": "Adjust the volume of ambient sounds being played by the game.", "default": "Default: 100 - Min: 0, Max: 128", "name": "AMBIENT_SOUND_VOLUME", "value": "100" },
-  { "info": "Switch language.  Each percentage is the fraction of strings translated for that language.", "default": "Default:  - Values: en", "name": "USE_LANG", "value": "en" },
+  { "info": "Switch language.  Each percentage is the fraction of strings translated for that language.", "default": "Default:  - Values: en, ar, cs, da, de, el, es_AR, es_ES, fr, hu, id, is, it_IT, ja, ko, nb, nl, pl, pt_BR, ru, sr, tr, uk_UA, zh_CN, zh_TW", "name": "USE_LANG", "value": "en" },
   { "info": "Switch between Fahrenheit, Celsius, and Kelvin.", "default": "Default: fahrenheit - Values: fahrenheit, celsius, kelvin", "name": "USE_CELSIUS", "value": "celsius" },
   { "info": "Switch between mph, km/h, and tiles/turn.", "default": "Default: mph - Values: mph, km/h, t/t", "name": "USE_METRIC_SPEEDS", "value": "km/h" },
   { "info": "Switch between lbs and kg.", "default": "Default: lbs - Values: lbs, kg", "name": "USE_METRIC_WEIGHTS", "value": "kg" },
