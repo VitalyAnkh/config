@@ -1,0 +1,4 @@
+---
+"workspace:activate_prev_tab": ctrl-shift-P
+"workspace:activate_next_tab": ctrl-shift-N
+"workspace:toggle_command_palette": alt-x

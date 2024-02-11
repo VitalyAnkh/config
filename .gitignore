@@ -70,6 +70,8 @@
 !sway/*
 !vim/
 !vim/*
+!warp/
+!warp/*
 !wofi/
 !wofi/*
 !zoxide/

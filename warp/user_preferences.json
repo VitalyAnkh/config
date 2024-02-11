@@ -1,0 +1,18 @@
+{
+  "prefs": {
+    "HasAutoOpenedWelcomeFolder": "true",
+    "Spacing": "\"Compact\"",
+    "WelcomeTipsFeaturesUsed": "[{\"Hint\":\"CreateBlock\"},{\"Action\":\"OpenWarpDrive\"},{\"Action\":\"CommandPalette\"},{\"Action\":\"ThemePicker\"}]",
+    "Shortcuts": "true",
+    "FontSize": "13.0",
+    "ReceivedReferralTheme": "\"Active\"",
+    "Theme": "\"Marble\"",
+    "ChangelogVersions": "{\"v0.2024.02.06.08.02.stable_01\":true}",
+    "AIAssistantRequestLimitInfo": "{\"limit\":100,\"num_requests_used_since_refresh\":0,\"next_refresh_time\":\"2024-02-12T12:57:40.980504525Z\"}",
+    "CursorBlink": "\"Disabled\"",
+    "ExperimentId": "38a35106-482e-4188-816c-72a88944d431",
+    "ShouldDimInactivePanes": "true",
+    "SystemTheme": "false",
+    "HasDismissedWarpDriveWelcome": "true"
+  }
+}
