@@ -45,6 +45,8 @@
 !gconf/*
 !go
 !go/*
+!godot
+!godot/*
 !hypr
 !hypr/*
 !input_method

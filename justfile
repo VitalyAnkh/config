@@ -297,7 +297,7 @@ build_emacs_packages:
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
   $HOME/.config/.emacs.d/bin/doom sync
 
-pull:
+pull: blender
   #!/usr/bin/env bash
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
@@ -330,6 +330,10 @@ pull:
   cd $HOME/projects/dev/rust-projects/winit
   git pull
   cd $HOME/projects/dev/cpp/llvm-project
+  git pull
+  cd $HOME/projects/dev/cpp/godot
+  git pull
+  cd $HOME/projects/dev/c-projects/mpv
   git pull
   cd $HOME/projects/dev/cpp/mold
   git pull

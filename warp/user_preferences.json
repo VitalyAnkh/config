@@ -1,18 +1,20 @@
 {
   "prefs": {
-    "HasAutoOpenedWelcomeFolder": "true",
-    "Spacing": "\"Compact\"",
-    "WelcomeTipsFeaturesUsed": "[{\"Hint\":\"CreateBlock\"},{\"Action\":\"OpenWarpDrive\"},{\"Action\":\"CommandPalette\"},{\"Action\":\"ThemePicker\"}]",
-    "Shortcuts": "true",
-    "FontSize": "13.0",
-    "ReceivedReferralTheme": "\"Active\"",
-    "Theme": "\"Marble\"",
-    "ChangelogVersions": "{\"v0.2024.02.06.08.02.stable_01\":true}",
-    "AIAssistantRequestLimitInfo": "{\"limit\":100,\"num_requests_used_since_refresh\":0,\"next_refresh_time\":\"2024-02-12T12:57:40.980504525Z\"}",
-    "CursorBlink": "\"Disabled\"",
-    "ExperimentId": "38a35106-482e-4188-816c-72a88944d431",
     "ShouldDimInactivePanes": "true",
     "SystemTheme": "false",
-    "HasDismissedWarpDriveWelcome": "true"
+    "Notifications": "{\"mode\":\"Enabled\",\"is_long_running_enabled\":true,\"long_running_threshold\":{\"secs\":30,\"nanos\":0},\"is_password_prompt_enabled\":true}",
+    "FontSize": "13.0",
+    "ExperimentId": "38a35106-482e-4188-816c-72a88944d431",
+    "ChangelogVersions": "{\"v0.2024.02.06.08.02.stable_01\":true}",
+    "Theme": "\"Marble\"",
+    "AIAssistantRequestLimitInfo": "{\"limit\":100,\"num_requests_used_since_refresh\":0,\"next_refresh_time\":\"2024-02-12T12:57:40.980504525Z\"}",
+    "Spacing": "\"Compact\"",
+    "HasDismissedWarpDriveWelcome": "true",
+    "WelcomeTipsFeaturesUsed": "[{\"Action\":\"OpenWarpDrive\"},{\"Action\":\"CommandPalette\"},{\"Hint\":\"CreateBlock\"},{\"Hint\":\"BlockAction\"},{\"Hint\":\"BlockSelect\"},{\"Action\":\"WarpAI\"},{\"Action\":\"ThemePicker\"}]",
+    "CursorBlink": "\"Disabled\"",
+    "AutosuggestionAcceptedCount": "2",
+    "ReceivedReferralTheme": "\"Active\"",
+    "Shortcuts": "true",
+    "HasAutoOpenedWelcomeFolder": "true"
   }
 }
