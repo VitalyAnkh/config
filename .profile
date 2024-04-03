@@ -126,7 +126,7 @@ export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
 
-export PATH="/usr/local/opt/llvm@18/bin:$PATH"
+export PATH="/usr/local/opt/llvm@latest/bin:$PATH"
 
 export JAVA_HOME=/lib/jvm/default/
 

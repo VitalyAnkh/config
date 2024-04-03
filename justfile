@@ -112,10 +112,10 @@ config_latest_llvm:
     # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@18/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@18/bin/clang \
+    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@latest/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@latest/bin/clang \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@18 \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
@@ -137,27 +137,31 @@ install_latest_llvm:
   cd $HOME/projects/dev/cpp/llvm-project/build
   cmake --build . -j8
   sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
-  sudo ln -s /usr/local/opt/llvm@18 /usr/local/opt/llvm
+  sudo ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
 
 config_llvm_for_triton:
   #!/usr/bin/env bash
-  echo "==== config llvm-project ===="
+  echo "==== config llvm-project for triton ===="
+  export TRITON_SRC_PATH=$HOME/projects/dev/cpp/triton
+  cd $TRITON_SRC_PATH
+  git pull
   cd $HOME/projects/dev/cpp/llvm-triton/
-  # git pull
-  git checkout 6607f62b89e4
+  git checkout main
+  git pull
+  git checkout $(cat $TRITON_SRC_PATH/cmake/llvm-hash.txt)
   trash-put build
     # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@18/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@18/bin/clang \
-    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@latest/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@latest/bin/clang \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb" \
+    -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
@@ -166,17 +170,17 @@ config_llvm_for_triton:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind"
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt"
         # -DLLVM_ENABLE_RTTI=ON \
-  echo "==== config llvm-project done ===="
+  echo "==== config llvm-project for triton done ===="
 
 install_llvm_for_triton:
   #!/usr/bin/env bash
-  echo "==== build newest llvm ===="
+  echo "==== build llvm for triton ===="
   cd $HOME/projects/dev/cpp/llvm-triton/build
-  cmake --build . -j8
-  sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
-  echo "==== build newest llvm done ===="
+  cmake --build . -j20
+  sudo cmake --install $HOME/projects/dev/cpp/llvm-triton/build
+  echo "==== build llvm for triton done ===="
 
 config_and_install_llvm_for_triton: config_llvm_for_triton install_llvm_for_triton
 
@@ -274,11 +278,12 @@ triton:
   -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
   -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
 
-  #cmake --build .
+  cmake --build .
   # test
   # pip install -e '.tests'
   # pytest -vs test/unit
 
+triton_and_llvm: config_and_install_llvm_for_triton triton
 trash_emacs_cache:
   #!/usr/bin/env bash
   trash-put $HOME/.config/.emacs.d/.local/straight/build-*
@@ -299,6 +304,8 @@ build_emacs_packages:
 
 pull: blender
   #!/usr/bin/env bash
+  cd $HOME/projects/dev/cpp/triton
+  git pull
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
   cd $HOME/projects/dev/rust-projects/candle
