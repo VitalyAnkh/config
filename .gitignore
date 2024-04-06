@@ -68,6 +68,8 @@
 !org-dev/*
 !paru/
 !paru/*
+!sccache/
+!sccache/*
 !sway/
 !sway/*
 !vim/

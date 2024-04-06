@@ -124,7 +124,11 @@ export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 
 export CUDA_INSTALL_PATH=/opt/cuda
-export PATH="$PATH:$HOME/.nix-profile/bin:/opt/anaconda/bin"
+export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
+
+export RUSTC_WRAPPER=/usr/bin/sccache
+export SCCACHE_DIR=$HOME/.cache/sccache
+export SCCACHE_CACHE_SIZE="50G"
 
 export PATH="/usr/local/opt/llvm@latest/bin:$PATH"
 

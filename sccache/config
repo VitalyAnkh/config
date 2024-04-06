@@ -1,0 +1,3 @@
+[cache.disk]
+dir = "/home/vitalyr/.cache/sccache"
+size = 50000000000

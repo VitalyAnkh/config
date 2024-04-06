@@ -112,8 +112,10 @@ config_latest_llvm:
     # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@latest/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@latest/bin/clang \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -124,6 +126,8 @@ config_latest_llvm:
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_BUILD_UTILS=ON \
+    -DLLVM_BUILD_TOOLS=ON \
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
@@ -154,23 +158,28 @@ config_llvm_for_triton:
     # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm@latest/bin/clang++ \
-    -DCMAKE_C_COMPILER=/usr/local/opt/llvm@latest/bin/clang \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
-    -DLLVM_ENABLE_PROJECTS="clang;llvm;mlir" \
+    -DLLVM_ENABLE_PROJECTS="mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
+    -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_BUILD_UTILS=ON \
+    -DLLVM_BUILD_TOOLS=ON \
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt"
+    -DCMAKE_CXX_STANDARD=17
+    # -DLLVM_ENABLE_RUNTIMES="compiler-rt"
         # -DLLVM_ENABLE_RTTI=ON \
   echo "==== config llvm-project for triton done ===="
 
@@ -231,8 +240,9 @@ install_local_llvm:
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
     -DLLVM_INSTALL_UTILS=ON \
-    -DMLIR_ENABLE_CUDA_RUNNER=ON \
-    -DLLVM_USE_LINKER=mold \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_INSTALL_UTILS=ON     \
+    -DLLVM_USE_LINKER=mold      \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_ENABLE_PROJECTS="clang;mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
@@ -260,23 +270,31 @@ update:
 triton:
   #!/usr/bin/env bash
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
+  export LLVM_BUILD_DIR=$HOME/projects/cpp/llvm-triton/build
+  export TRITON_BUILD_WITH_CCACHE=true
+  export LLVM_INCLUDE_DIRS=$LLVM_ROOT_DIR/include
+  export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
+  export LLVM_SYSPATH=$LLVM_ROOT_DIR
   cd $HOME/projects/dev/cpp/triton
+  rm -rf build
   mkdir -p build
   cd build
   export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
   export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
   cmake ../ -G Ninja \
   -DMLIR_DIR=$MLIR_DIR \
-  -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm-triton/bin/clang++ \
-  -DCMAKE_C_COMPILER=/usr/local/opt/llvm-triton/bin/clang \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
   -DLLVM_DIR=$LLVM_DIR \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DTRITON_BUILD_PYTHON_MODULE=ON \
+  -DLLVM_ENABLE_ASSERTIONS=ON        \
+  -DLLVM_EXTERNAL_LIT=/usr/bin/lit  \
+  -DTRITON_BUILD_PYTHON_MODULE=ON    \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DLLVM_ENABLE_ASSERTIONS=ON \
-  -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-  -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-  -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  -DLLVM_ENABLE_ASSERTIONS=ON        \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
 
   cmake --build .
   # test
