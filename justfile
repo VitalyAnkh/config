@@ -281,20 +281,22 @@ triton:
   cd build
   export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
   export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
+  #-DTRITON_PLUGIN_DIRS="../third_party/nvidia;../third_party/amd" \
   cmake ../ -G Ninja \
-  -DMLIR_DIR=$MLIR_DIR \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER=clang \
-  -DLLVM_DIR=$LLVM_DIR \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DLLVM_ENABLE_ASSERTIONS=ON        \
-  -DLLVM_EXTERNAL_LIT=/usr/bin/lit  \
-  -DTRITON_BUILD_PYTHON_MODULE=ON    \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DLLVM_ENABLE_ASSERTIONS=ON        \
-  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
-  -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
-  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
+    -DMLIR_DIR=$MLIR_DIR \
+    -DLLVM_DIR=$LLVM_DIR \
+    -DLLVM_EXTERNAL_LIT=/usr/bin/lit  \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DTRITON_CODEGEN_BACKENDS="nvidia;amd" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DLLVM_ENABLE_ASSERTIONS=ON        \
+    -DTRITON_BUILD_PYTHON_MODULE=ON    \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
 
   cmake --build .
   # test
@@ -453,6 +455,10 @@ config_circt:
   cmake -G Ninja .. \
   -DMLIR_DIR=../llvm/build/lib/cmake/mlir \
   -DLLVM_DIR=../llvm/build/lib/cmake/llvm \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
