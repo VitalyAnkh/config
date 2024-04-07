@@ -304,6 +304,24 @@ triton:
   # pytest -vs test/unit
 
 triton_and_llvm: config_and_install_llvm_for_triton triton
+
+build_triton_wheel:
+  #!/usr/bin/env bash
+  export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
+  export LLVM_BUILD_DIR=$HOME/projects/cpp/llvm-triton/build
+  export TRITON_BUILD_WITH_CCACHE=true
+  export LLVM_INCLUDE_DIRS=$LLVM_ROOT_DIR/include
+  export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
+  export LLVM_SYSPATH=$LLVM_ROOT_DIR
+  cd $HOME/projects/dev/cpp/triton
+  cd python
+  # use conda's py3.11 environment
+  # run conda activate py3.11 first
+  python setup.py bdist_wheel
+  pip install torch
+  pip install numpy
+  pip install python/dist/triton-3.0.0-cp311-cp311-linux_x86_64.whl
+
 trash_emacs_cache:
   #!/usr/bin/env bash
   trash-put $HOME/.config/.emacs.d/.local/straight/build-*
@@ -325,6 +343,8 @@ build_emacs_packages:
 pull: blender
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/triton
+  git pull
+  cd $HOME/projects/dev/cpp/pytorch
   git pull
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
