@@ -128,7 +128,7 @@ export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
 
 export RUSTC_WRAPPER=/usr/bin/sccache
 export SCCACHE_DIR=$HOME/.cache/sccache
-export SCCACHE_CACHE_SIZE="50G"
+export SCCACHE_CACHE_SIZE="30G"
 
 export PATH="/usr/local/opt/llvm@latest/bin:$PATH"
 

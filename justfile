@@ -88,6 +88,85 @@ config_torch_mlir:
   -DLLVM_TARGETS_TO_BUILD=host externals/llvm-project/llvm
   echo "==== config torch-mlir done ===="
 
+config_pytorch:
+  #!/usr/bin/env bash
+  export PYTORCH_SRC=$HOME/projects/dev/cpp/pytorch
+  cd $PYTORCH_SRC
+  # rm -rf build
+  rm build/CMakeCache.txt
+  git restore cmake/MiscCheck.cmake
+  git submodule update --init --recursive
+  git pull
+  # Fix building against glog 0.7
+  # patch -p1 -i "$XDG_CONFIG_HOME/patches/glog-0.7.patch"
+  patch -Np1 -i "$XDG_CONFIG_HOME/patches/87773.patch"
+  patch -Np1 -i "$XDG_CONFIG_HOME/patches/pytorch-missing-iostream.patch"
+  patch -Np1 -i "$XDG_CONFIG_HOME/patches/pytorch-remove-caffe2-binaries.patch"
+  # https://bugs.archlinux.org/task/64981
+  patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
+  export VERBOSE=1
+  export PYTORCH_BUILD_VERSION="2.4.0"
+  export PYTORCH_BUILD_NUMBER=1
+  # Check tools/setup_helpers/cmake.py, setup.py and CMakeLists.txt for a list of flags that can be set via env vars.
+  export ATEN_NO_TEST=ON  # do not build ATen tests
+  export USE_MKLDNN=ON
+  export BUILD_CUSTOM_PROTOBUF=OFF
+  # Caffe2 support was removed from pytorch with version 2.2.0
+  export BUILD_CAFFE2=OFF
+  export BUILD_CAFFE2_OPS=OFF
+  # export BUILD_SHARED_LIBS=OFF
+  export USE_FFMPEG=ON
+  export USE_GFLAGS=ON
+  export USE_GLOG=ON
+  export USE_VULKAN=ON
+  export BUILD_BINARY=ON
+  export USE_DISTRIBUTED=0
+  export USE_OBSERVERS=ON
+  export USE_OPENCV=ON
+  export USE_FBGEMM=1
+  # export USE_SYSTEM_LIBS=ON  # experimental, not all libs present in repos
+  export USE_SYSTEM_NCCL=ON
+  export NCCL_VERSION=$(pkg-config nccl --modversion)
+  export NCCL_VER_CODE=$(sed -n 's/^#define NCCL_VERSION_CODE\s*\(.*\).*/\1/p' /usr/include/nccl.h)
+  # export BUILD_SPLIT_CUDA=ON  # modern preferred build, but splits libs and symbols, ABI break
+  export USE_FAST_NVCC=ON  # parallel build with nvcc, spawns too many processes
+  export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
+  export TORCH_SHOW_CPP_STACKTRACES=1
+  export CC=gcc
+  export CXX=g++
+  export LD=mold
+  export BUILD_TEST=1
+  export CUDAHOSTCXX=/opt/cuda/bin/g++
+  export CUDA_HOST_COMPILER="${CUDAHOSTCXX}"
+  export CUDA_HOME=/opt/cuda
+  # hide build-time CUDA devices
+  export CUDA_VISIBLE_DEVICES=""
+  export CUDNN_LIB_DIR=/usr/lib
+  export CUDNN_INCLUDE_DIR=/usr/include
+  export TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
+  # CUDA arch 8.7 is not supported (needed by Jetson boards, etc.)
+  export TORCH_CUDA_ARCH_LIST="5.2;5.3;6.0;6.1;6.2;7.0;7.2;7.5;8.0;8.6;8.9;9.0;9.0+PTX"  #include latest PTX for future compat
+  export OVERRIDE_TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
+  export CMAKE_C_COMPILER_LAUNCHER=sccache
+  export CMAKE_CXX_COMPILER_LAUNCHER=sccache
+  export CMAKE_CUDA_COMPILER_LAUNCHER=sccache
+  export ROCM_PATH=/opt/rocm
+  export HIP_ROOT_DIR=/opt/rocm
+  export PYTORCH_ROCM_ARCH="gfx906;gfx908;gfx90a;gfx940;gfx941;gfx942;gfx1010;gfx1012;gfx1030;gfx1100;gfx1101;gfx1102"
+  # Compile source code for supported GPU archs in parallel
+  export HIPCC_COMPILE_FLAGS_APPEND="-parallel-jobs=$(nproc)"
+  export HIPCC_LINK_FLAGS_APPEND="-parallel-jobs=$(nproc)"
+  echo "Building pytorch with cuda and with non-x86-64 optimizations"
+  export USE_CUDA=1
+  export USE_CUDNN=1
+  export USE_ROCM=0
+  export MAGMA_HOME=/opt/cuda/targets/x86_64-linux
+  echo "add_definitions(-march=x86-64)" >> cmake/MiscCheck.cmake
+  # python setup.py develop --cmake
+  # same horrible hack as above
+  USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop
+  echo "Building pytorch with cuda done"
+
 lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
@@ -149,13 +228,14 @@ config_llvm_for_triton:
   echo "==== config llvm-project for triton ===="
   export TRITON_SRC_PATH=$HOME/projects/dev/cpp/triton
   cd $TRITON_SRC_PATH
+  git checkout main
   git pull
   cd $HOME/projects/dev/cpp/llvm-triton/
   git checkout main
   git pull
   git checkout $(cat $TRITON_SRC_PATH/cmake/llvm-hash.txt)
   trash-put build
-    # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+  # -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
@@ -166,9 +246,10 @@ config_llvm_for_triton:
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
-    -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
+    -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -317,10 +398,15 @@ build_triton_wheel:
   cd python
   # use conda's py3.11 environment
   # run conda activate py3.11 first
+  source /opt/miniconda3/etc/fish/conf.d/conda.fish
+  conda activate py3.11
   python setup.py bdist_wheel
-  pip install torch
+  # pip install torch
+  pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
   pip install numpy
-  pip install python/dist/triton-3.0.0-cp311-cp311-linux_x86_64.whl
+  pip install pytest
+  pip install tabulate
+  pip install dist/triton-3.0.0-cp311-cp311-linux_x86_64.whl --force-reinstall
 
 trash_emacs_cache:
   #!/usr/bin/env bash

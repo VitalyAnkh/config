@@ -68,6 +68,8 @@
 !org-dev/*
 !paru/
 !paru/*
+!patches
+!patches/*
 !sccache/
 !sccache/*
 !sway/
