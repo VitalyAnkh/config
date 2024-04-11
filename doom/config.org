@@ -1955,8 +1955,9 @@ aspects are nice, but on others I prefer Fira.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-big-font (font-spec :family "JetBrains Mono" :size 28)
       ;; doom-symbol-font (font-spec :family "LXGW WenKai" :size 17)
-      doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
-      doom-serif-font (font-spec :family "CMU Typewriter Text" :size 17))
+      doom-variable-pitch-font (font-spec :family "Linux Biolinum" :size 17)
+      ;; doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
+      doom-serif-font (font-spec :family "Linux Biolinum" :size 17))
 
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
@@ -13206,51 +13207,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX |
-|-----------+-------|
-| ɑ         | \(\alpha\) |
-| β         | \(\beta\) |
-| γ         | \(\gamma\) |
-| δ         | \(\delta\) |
-| ε         | \(\epsilon\) |
-| ϵ          | \(\varepsilon\) |
-| ζ         | \(\zeta\) |
-| η         | \(\eta\) |
-| θ         | \(\theta\) |
-| ϑ         | \(\vartheta\) |
-| ι         | \(\iota\) |
-| κ         | \(\kappa\) |
-| λ         | \(\lambda\) |
-| μ         | \(\mu\) |
-| ν         | \(\nu\) |
-| ξ         | \(\xi\) |
-| π         | \(\pi\) |
-| ϖ         | \(\varpi\) |
-| ρ         | \(\rho\) |
-| ϱ         | \(\varrho\) |
-| σ         | \(\sigma\) |
-| ς         | \(\varsigma\) |
-| τ         | \(\tau\) |
-| υ         | \(\upsilon\) |
+| Character | LaTeX  |
+|-----------+--------|
+| ɑ         | \(\alpha\)  |
+| β         | \(\beta\)  |
+| γ         | \(\gamma\)  |
+| δ         | \(\delta\)  |
+| ε         | \(\epsilon\)  |
+| ϵ         | \(\varepsilon\)  |
+| ζ         | \(\zeta\)  |
+| η         | \(\eta\)  |
+| θ         | \(\theta\)  |
+| ϑ        | \(\vartheta\) |
+| ι         | \(\iota\)  |
+| κ         | \(\kappa\)  |
+| λ         | \(\lambda\)  |
+| μ         | \(\mu\)  |
+| ν         | \(\nu\)  |
+| ξ         | \(\xi\)  |
+| π         | \(\pi\)  |
+| ϖ         | \(\varpi\)  |
+| ρ         | \(\rho\)  |
+| ϱ         | \(\varrho\)  |
+| σ         | \(\sigma\)  |
+| ς         | \(\varsigma\)  |
+| τ         | \(\tau\)  |
+| υ         | \(\upsilon\)  |
 | ϕ         | \(\phi\) |
-| φ         | \(\varphi\) |
-| ψ         | \(\psi\) |
-| ω         | \(\omega\) |
-| Γ         | \(\Gamma\) |
-| Δ         | \(\Delta\) |
-| Θ         | \(\Theta\) |
-| Λ         | \(\Lambda\) |
-| Ξ         | \(\Xi\) |
-| Π         | \(\Pi\) |
-| Σ         | \(\Sigma\) |
-| Υ         | \(\Upsilon\) |
-| Φ         | \(\Phi\) |
-| Ψ         | \(\Psi\) |
-| Ω         | \(\Omega\) |
-| א         | \(\aleph\) |
-| ב         | \(\beth\) |
+| φ         | \(\varphi\)  |
+| ψ         | \(\psi\)  |
+| ω         | \(\omega\)  |
+| Γ         | \(\Gamma\)  |
+| Δ         | \(\Delta\)  |
+| Θ         | \(\Theta\)  |
+| Λ         | \(\Lambda\)  |
+| Ξ         | \(\Xi\)  |
+| Π         | \(\Pi\)  |
+| Σ         | \(\Sigma\)  |
+| Υ         | \(\Upsilon\)  |
+| Φ         | \(\Phi\)  |
+| Ψ         | \(\Psi\)  |
+| Ω         | \(\Omega\)  |
+| א        | \(\aleph\) |
+| ב         | \(\beth\)  |
 | ד         | \(\daleth\) |
-| ג          | \(\gimel\)  |
+| ג         | \(\gimel\)  |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

@@ -102,6 +102,10 @@ config_pytorch:
   patch -Np1 -i "$XDG_CONFIG_HOME/patches/87773.patch"
   patch -Np1 -i "$XDG_CONFIG_HOME/patches/pytorch-missing-iostream.patch"
   patch -Np1 -i "$XDG_CONFIG_HOME/patches/pytorch-remove-caffe2-binaries.patch"
+  # Disable -Werror
+  patch -Np1 -d third_party/fbgemm -i "$XDG_CONFIG_HOME/patches/disable-werror1.patch"
+  patch -Np1 -d third_party/benchmark -i "$XDG_CONFIG_HOME/patches/disable-werror2.patch"
+  patch -Np1 -i "$XDG_CONFIG_HOME/patches/disable-werror4.patch"
   # https://bugs.archlinux.org/task/64981
   patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
   export VERBOSE=1
@@ -165,6 +169,16 @@ config_pytorch:
   # python setup.py develop --cmake
   # same horrible hack as above
   USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop
+  # do this hack when encountering issues like
+  # Traceback (most recent call last):
+  #   File "/home/vitalyr/projects/dev/cpp/triton/python/tutorials/01-vector-add.py", line 21, in <module>
+  #     import torch
+  #   File "/opt/miniconda3/envs/py3.11/lib/python3.11/site-packages/torch/__init__.py", line 237, in <module>
+  #     from torch._C import *  # noqa: F403
+  #     ^^^^^^^^^^^^^^^^^^^^^^
+  # ImportError: /opt/miniconda3/envs/py3.11/bin/../lib/libgcc_s.so.1: version `GCC_12.0.0' not found (required by /usr/lib/libQt6Test.so.6)
+  #
+  # cp /usr/lib/libgcc_s.so.1 /opt/miniconda3/envs/py3.11/lib/
   echo "Building pytorch with cuda done"
 
 lean:
@@ -186,7 +200,6 @@ config_latest_llvm:
   cd $HOME/projects/dev/cpp/llvm-project/
   git pull
   trash-put build
-    # -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     # -DCMAKE_CXX_COMPILER=clang++ \
     # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./llvm \
@@ -249,7 +262,6 @@ config_llvm_for_triton:
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
-    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_CCACHE_BUILD=ON \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -398,11 +410,11 @@ build_triton_wheel:
   cd python
   # use conda's py3.11 environment
   # run conda activate py3.11 first
-  source /opt/miniconda3/etc/fish/conf.d/conda.fish
-  conda activate py3.11
+  # source /opt/miniconda3/etc/fish/conf.d/conda.fish
+  # conda activate py3.11
   python setup.py bdist_wheel
   # pip install torch
-  pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
+  # pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
   pip install numpy
   pip install pytest
   pip install tabulate
@@ -721,7 +733,12 @@ blender:
   #CFLAGS="-fopenmp" CXXFLAGS="-fopenmp"
   cmake -G "Ninja" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DWITH_CLANG=ON \
   -DWITH_LINKER_MOLD=ON ../blender
   #ninja -j12
   #developer ccache
