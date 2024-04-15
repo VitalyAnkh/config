@@ -126,7 +126,7 @@ export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 export CUDA_INSTALL_PATH=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
 
-export RUSTC_WRAPPER=/usr/bin/sccache
+# export RUSTC_WRAPPER=/usr/bin/sccache
 export SCCACHE_DIR=$HOME/.cache/sccache
 export SCCACHE_CACHE_SIZE="30G"
 

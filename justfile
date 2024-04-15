@@ -168,7 +168,7 @@ config_pytorch:
   echo "add_definitions(-march=x86-64)" >> cmake/MiscCheck.cmake
   # python setup.py develop --cmake
   # same horrible hack as above
-  USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop
+  USE_PRECOMPILED_HEADERS=1 python setup.py develop || (USE_PRECOMPILED_HEADERS=1 python setup.py develop)
   # do this hack when encountering issues like
   # Traceback (most recent call last):
   #   File "/home/vitalyr/projects/dev/cpp/triton/python/tutorials/01-vector-add.py", line 21, in <module>
@@ -180,6 +180,26 @@ config_pytorch:
   #
   # cp /usr/lib/libgcc_s.so.1 /opt/miniconda3/envs/py3.11/lib/
   echo "Building pytorch with cuda done"
+
+llama:
+  #!/usr/bin/env bash
+  echo "==== config llama.cpp ===="
+  export LLAMA_CPP_SRC_PATH=$HOME/projects/dev/cpp/llama.cpp
+  cd $LLAMA_CPP_SRC_PATH
+  git checkout master
+  git pull
+  trash-put build
+    # -DCMAKE_CXX_COMPILER=clang++ \
+    # -DCMAKE_C_COMPILER=clang \
+  cmake -G Ninja -B build ./ \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH"
+  cd build
+  cmake --build . --config Release
+  echo "==== config llama.cpp ===="
 
 lean:
   #!/usr/bin/env bash
