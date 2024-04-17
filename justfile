@@ -109,7 +109,7 @@ config_pytorch:
   # https://bugs.archlinux.org/task/64981
   patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
   export VERBOSE=1
-  export PYTORCH_BUILD_VERSION="2.4.0"
+  export PYTORCH_BUILD_VERSION="2.5.0"
   export PYTORCH_BUILD_NUMBER=1
   # Check tools/setup_helpers/cmake.py, setup.py and CMakeLists.txt for a list of flags that can be set via env vars.
   export ATEN_NO_TEST=ON  # do not build ATen tests
@@ -133,7 +133,7 @@ config_pytorch:
   export NCCL_VERSION=$(pkg-config nccl --modversion)
   export NCCL_VER_CODE=$(sed -n 's/^#define NCCL_VERSION_CODE\s*\(.*\).*/\1/p' /usr/include/nccl.h)
   # export BUILD_SPLIT_CUDA=ON  # modern preferred build, but splits libs and symbols, ABI break
-  export USE_FAST_NVCC=ON  # parallel build with nvcc, spawns too many processes
+  export USE_FAST_NVCC=0  # parallel build with nvcc, spawns too many processes
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
   export CC=gcc
@@ -168,7 +168,8 @@ config_pytorch:
   echo "add_definitions(-march=x86-64)" >> cmake/MiscCheck.cmake
   # python setup.py develop --cmake
   # same horrible hack as above
-  USE_PRECOMPILED_HEADERS=1 python setup.py develop || (USE_PRECOMPILED_HEADERS=1 python setup.py develop)
+  pip uninstall torch -y
+  USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop
   # do this hack when encountering issues like
   # Traceback (most recent call last):
   #   File "/home/vitalyr/projects/dev/cpp/triton/python/tutorials/01-vector-add.py", line 21, in <module>

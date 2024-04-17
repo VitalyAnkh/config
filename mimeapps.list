@@ -205,7 +205,7 @@ x-scheme-handler/webcal=userapp-Daily-QJWA71.desktop;
 x-scheme-handler/webcals=userapp-Daily-QJWA71.desktop;
 
 [Default Applications]
-application/pdf=okularApplication_pdf.desktop
+application/pdf=org.gnome.Evince.desktop
 application/ppdf=FoxitReader.desktop
 application/rss+xml=userapp-Thunderbird-W7Q5T0.desktop
 application/uproject=com.epicgames.UnrealEngineEditor.desktop
@@ -416,7 +416,7 @@ x-scheme-handler/jetbrains=jetbrains-toolbox.desktop
 x-scheme-handler/jetbrains-gateway=jetbrains-gateway.desktop
 x-scheme-handler/logseq=logseq-desktop.desktop
 x-scheme-handler/magnet=Motrix.desktop
-x-scheme-handler/mailto=userapp-Thunderbird-VL74T0.desktop
+x-scheme-handler/mailto=microsoft-edge-dev.desktop
 x-scheme-handler/mid=userapp-Daily-KU0561.desktop
 x-scheme-handler/mo=Motrix.desktop
 x-scheme-handler/motrix=Motrix.desktop
