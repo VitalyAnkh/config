@@ -276,6 +276,7 @@ config_llvm_for_triton:
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
+    -DLLVM_ENABLE_TERMINFO=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -396,6 +397,8 @@ triton:
   export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
   export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
   #-DTRITON_PLUGIN_DIRS="../third_party/nvidia;../third_party/amd" \
+  # -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  # -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   cmake ../ -G Ninja \
     -DMLIR_DIR=$MLIR_DIR \
     -DLLVM_DIR=$LLVM_DIR \
@@ -427,6 +430,7 @@ build_triton_wheel:
   export LLVM_INCLUDE_DIRS=$LLVM_ROOT_DIR/include
   export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
   export LLVM_SYSPATH=$LLVM_ROOT_DIR
+  export TRITON_BUILD_PROTON=1
   cd $HOME/projects/dev/cpp/triton
   cd python
   # use conda's py3.11 environment
