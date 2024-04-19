@@ -220,15 +220,16 @@ config_latest_llvm:
   echo "==== config llvm-project ===="
   cd $HOME/projects/dev/cpp/llvm-project/
   git pull
-  trash-put build
-    # -DCMAKE_CXX_COMPILER=clang++ \
-    # -DCMAKE_C_COMPILER=clang \
+  # trash-put build
+  rm build/CMakeCache.txt
+  rm build/NATIVE/CMakeCache.txt
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
+    -DLLVM_CCACHE_BUILD=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
@@ -237,7 +238,6 @@ config_latest_llvm:
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
-    -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_BUILD_UTILS=ON \
     -DLLVM_BUILD_TOOLS=ON \
@@ -252,10 +252,22 @@ install_latest_llvm:
   #!/usr/bin/env bash
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-project/build
-  cmake --build . -j8
-  sudo cmake --install $HOME/projects/dev/cpp/llvm-project/build
-  sudo ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
+  cmake --build . -j10
+  cmake --install $HOME/projects/dev/cpp/llvm-project/build
+  ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
+
+xla:
+  #!/usr/bin/env bash
+  echo "==== config xla ===="
+  export XLA_SRC_PATH=$HOME/projects/dev/cpp/xla
+  cd $XLA_SRC_PATH
+  git checkout main
+  git pull
+  ./configure.py --backend=CPU --host_compiler=clang --nccl --clang_path=/usr/bin/clang
+  bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
+  bazel build --test_output=all //xla/... --experimental_repo_remote_exec
+  echo "==== config xla done ===="
 
 config_llvm_for_triton:
   #!/usr/bin/env bash
@@ -268,7 +280,8 @@ config_llvm_for_triton:
   git checkout main
   git pull
   git checkout $(cat $TRITON_SRC_PATH/cmake/llvm-hash.txt)
-  trash-put build
+  rm build/CMakeCache.txt
+  rm build/NATIVE/CMakeCache.txt
   # -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
@@ -276,6 +289,7 @@ config_llvm_for_triton:
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
+    -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_ENABLE_TERMINFO=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
@@ -285,7 +299,6 @@ config_llvm_for_triton:
     -DLLVM_ENABLE_PROJECTS="mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
-    -DLLVM_CCACHE_BUILD=ON \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_BUILD_UTILS=ON \
@@ -303,7 +316,7 @@ install_llvm_for_triton:
   echo "==== build llvm for triton ===="
   cd $HOME/projects/dev/cpp/llvm-triton/build
   cmake --build . -j20
-  sudo cmake --install $HOME/projects/dev/cpp/llvm-triton/build
+  cmake --install $HOME/projects/dev/cpp/llvm-triton/build
   echo "==== build llvm for triton done ===="
 
 config_and_install_llvm_for_triton: config_llvm_for_triton install_llvm_for_triton
@@ -368,7 +381,7 @@ install_local_llvm:
     -DLLVM_ENABLE_RUNTIMES="compiler-rt"
   cmake --build .
   # trash-put $HOME/sdk/lib/llvm/*
-  sudo cmake --install $HOME/projects/dev/cpp/llvm-vr/build
+  cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build local llvm done ===="
 
 update:

@@ -82,7 +82,7 @@ export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
 
-export PATH="$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin"
+export PATH="$HOME/bin:$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin"
 
 export SDK_DIR=$HOME/sdk
 
@@ -128,7 +128,7 @@ export CUDA_INSTALL_PATH=/opt/cuda
 export CUDA_ROOT=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
 
-export WARP_ENABLE_WAYLAND=1
+# export WARP_ENABLE_WAYLAND=1
 
 # export RUSTC_WRAPPER=/usr/bin/sccache
 export SCCACHE_DIR=$HOME/.cache/sccache
