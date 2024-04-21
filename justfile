@@ -269,6 +269,37 @@ xla:
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec
   echo "==== config xla done ===="
 
+iree:
+  #!/usr/bin/env bash
+  echo "==== config iree ===="
+  export IREE_SRC_PATH=$HOME/projects/dev/cpp/iree
+  cd $IREE_SRC_PATH
+  git checkout main
+  # git submodule update --init
+  git pull
+  rm build/CMakeCache.txt
+  rm build/NATIVE/CMakeCache.txt
+  # Recommended development options using clang and mold:
+  # Use conda environment before this command!
+  conda activate py3.11
+  proxychains -q pip install -r runtime/bindings/python/iree/runtime/build_requirements.txt
+  cmake -G Ninja -B build -S . \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DIREE_ENABLE_ASSERTIONS=ON \
+    -DIREE_ENABLE_SPLIT_DWARF=ON \
+    -DIREE_ENABLE_THIN_ARCHIVES=ON \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DIREE_BUILD_PYTHON_BINDINGS=ON  \
+    -DPython3_EXECUTABLE="$(which python)" \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold"
+  cmake --build build
+  echo "==== config iree done ===="
+
 config_llvm_for_triton:
   #!/usr/bin/env bash
   echo "==== config llvm-project for triton ===="
@@ -294,7 +325,6 @@ config_llvm_for_triton:
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm-triton \
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
-    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
@@ -307,8 +337,6 @@ config_llvm_for_triton:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
-    # -DLLVM_ENABLE_RUNTIMES="compiler-rt"
-        # -DLLVM_ENABLE_RTTI=ON \
   echo "==== config llvm-project for triton done ===="
 
 install_llvm_for_triton:
@@ -403,27 +431,27 @@ triton:
   export LLVM_INCLUDE_DIRS=$LLVM_ROOT_DIR/include
   export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
   export LLVM_SYSPATH=$LLVM_ROOT_DIR
-  cd $HOME/projects/dev/cpp/triton
+  export TRITON_SRC_PATH=$HOME/projects/dev/cpp/triton
+  cd $TRITON_SRC_PATH
   rm -rf build
   mkdir -p build
   cd build
   export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
   export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
-  #-DTRITON_PLUGIN_DIRS="../third_party/nvidia;../third_party/amd" \
-  # -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-  # -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  # -DTRITON_PLUGIN_DIRS="$TRITON_SRC_PATH/third_party/nvidia;$TRITON_SRC_PAH/third_party/amd" \
   cmake ../ -G Ninja \
     -DMLIR_DIR=$MLIR_DIR \
     -DLLVM_DIR=$LLVM_DIR \
     -DLLVM_EXTERNAL_LIT=/usr/bin/lit  \
+    -DCMAKE_BUILD_TYPE=TritonRelBuildWithAsserts \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DTRITON_CODEGEN_BACKENDS="nvidia;amd" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DLLVM_ENABLE_ASSERTIONS=ON        \
     -DTRITON_BUILD_PYTHON_MODULE=ON    \
+    -DLLVM_ENABLE_ASSERTIONS=ON        \
     -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
     -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
     -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
@@ -437,6 +465,7 @@ triton_and_llvm: config_and_install_llvm_for_triton triton
 
 build_triton_wheel:
   #!/usr/bin/env bash
+  # export TRITON_BUILD_WITH_CLANG_LLD=1
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
   export LLVM_BUILD_DIR=$HOME/projects/cpp/llvm-triton/build
   export TRITON_BUILD_WITH_CCACHE=true
