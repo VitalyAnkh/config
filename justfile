@@ -236,6 +236,7 @@ config_latest_llvm:
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb" \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
@@ -244,8 +245,8 @@ config_latest_llvm:
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind"
+    -DCMAKE_CXX_STANDARD=17
+  cp build/runtimes/runtimes-bins/compile_commands.json ./
   echo "==== config llvm-project done ===="
 
 install_latest_llvm:
@@ -253,6 +254,7 @@ install_latest_llvm:
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-project/build
   cmake --build . -j10
+  cp ./runtimes/runtimes-bins/compile_commands.json ../
   cmake --install $HOME/projects/dev/cpp/llvm-project/build
   ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
@@ -275,7 +277,7 @@ iree:
   export IREE_SRC_PATH=$HOME/projects/dev/cpp/iree
   cd $IREE_SRC_PATH
   git checkout main
-  # git submodule update --init
+  git submodule update --init
   git pull
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
@@ -423,6 +425,13 @@ update:
   nix-env -u
   cabal update
 
+duckdb:
+  #!/usr/bin/env bash
+  export DUCKDB_SRC_PATH=$HOME/projects/dev/cpp/triton
+  cd $DUCKDB_SRC_PATH
+  git pull
+  BUILD_PYTHON=1  GEN=ninja make relassert
+
 triton:
   #!/usr/bin/env bash
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
@@ -449,6 +458,7 @@ triton:
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DTRITON_CODEGEN_BACKENDS="nvidia;amd" \
+    -DCUPTI_INCLUDE_DIR="/opt/cuda/extras/CUPTI/include/" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DTRITON_BUILD_PYTHON_MODULE=ON    \
     -DLLVM_ENABLE_ASSERTIONS=ON        \
@@ -465,7 +475,7 @@ triton_and_llvm: config_and_install_llvm_for_triton triton
 
 build_triton_wheel:
   #!/usr/bin/env bash
-  # export TRITON_BUILD_WITH_CLANG_LLD=1
+  export TRITON_BUILD_WITH_CLANG_LLD=1
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
   export LLVM_BUILD_DIR=$HOME/projects/cpp/llvm-triton/build
   export TRITON_BUILD_WITH_CCACHE=true
@@ -473,7 +483,9 @@ build_triton_wheel:
   export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
   export LLVM_SYSPATH=$LLVM_ROOT_DIR
   export TRITON_BUILD_PROTON=1
+  # export DEBUG=1
   cd $HOME/projects/dev/cpp/triton
+  git pull
   cd python
   # use conda's py3.11 environment
   # run conda activate py3.11 first
@@ -502,7 +514,7 @@ build_emacs_packages:
   trash-put $HOME/.config/.emacs.d/eln-cache
   trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
+  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
@@ -685,7 +697,7 @@ ghc:
 # cd build
 # CC=clang CXX=clang++ cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON\
 #   -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_LINKER=mold -DLLVM_TARGETS_TO_BUILD="X86"\
-#   -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;libcxx;libcxxabi"\
+#   -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra"\
 #   -DLLVM_OPTIMIZED_TABLEGEN=ON ../llvm
 # echo "==== pull Unreal Engine done ===="
 
