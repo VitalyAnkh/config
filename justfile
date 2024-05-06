@@ -9,7 +9,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: servo mpv llvm mold taichi ghc blender godot rust bevy perfbook chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib eoc linux algoxy-book org verilator yosys egui
+all: linux servo mpv llvm mold taichi ghc blender godot rust bevy book chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib org verilator yosys egui
 
 llvm:
   #!/usr/bin/env bash
@@ -181,6 +181,29 @@ config_pytorch:
   #
   # cp /usr/lib/libgcc_s.so.1 /opt/miniconda3/envs/py3.11/lib/
   echo "Building pytorch with cuda done"
+
+zed:
+  #!/usr/bin/env bash
+  echo "==== config zed ===="
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  export CFLAGS+=' -ffat-lto-objects'
+  export CXXFLAGS+=' -ffat-lto-objects'
+  export ZED_SRC_PATH=$HOME/projects/dev/rust-projects/zed
+  cd $ZED_SRC_PATH
+  declare -gA _tags=([protocol]="8645a138fb2ea72c4dab13e739b1f3c9ea29ac84")
+  axel "https://github.com/livekit/protocol/archive/${_tags[protocol]}/protocol-${_tags[protocol]}.tar.gz")
+  rm -r crates/live_kit_server/protocol
+  ln -sT "protocol-${_tags[protocol]}" crates/live_kit_server/protocol
+  # cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+  gendesk -q -f -n \
+   --name 'Zed' \
+   --exec 'Zed' \
+   --pkgname 'zed-editor-git' \
+   --categories 'Office'
+  cargo build --release --all-features
+  cargo test --all-features
+  echo "==== config zed done ===="
 
 llama:
   #!/usr/bin/env bash
@@ -432,6 +455,13 @@ duckdb:
   git pull
   BUILD_PYTHON=1  GEN=ninja make relassert
 
+typst:
+  #!/usr/bin/env bash
+  export TYPST_SRC_PATH=$HOME/projects/dev/cpp/triton
+  cd $TYPST_SRC_PATH
+  git pull
+  BUILD_PYTHON=1  GEN=ninja make relassert
+
 triton:
   #!/usr/bin/env bash
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
@@ -515,6 +545,8 @@ build_emacs_packages:
   trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
   # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-30.0.50-cache.el
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-30.0.50
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
@@ -897,6 +929,7 @@ linux:
   cd ~/projects/dev/linux
   git pull
   make defconfig
+  ./scripts/clang-tools/gen_compile_commands.py
   bear -- make -j12
   echo "=== pull linux done ==="
 
@@ -905,6 +938,8 @@ ra:
   echo "==== pull rust-analyzer ===="
   cd ~/projects/dev/rust-projects/rust-analyzer
   git pull
+  cargo build --release
+  install -Dt /usr/local/bin target/release/rust-analyzer
   echo "==== pull rust-analyzer done ===="
 
 servo:
@@ -912,6 +947,7 @@ servo:
   echo "==== pull servo ===="
   cd ~/projects/dev/rust-projects/servo
   git pull
+  ./mach build -d
   echo "==== pull servo done ===="
 
 egui:

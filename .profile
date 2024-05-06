@@ -128,7 +128,7 @@ export CUDA_INSTALL_PATH=/opt/cuda
 export CUDA_ROOT=/opt/cuda
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
 
-# export WARP_ENABLE_WAYLAND=1
+export WARP_ENABLE_WAYLAND=1
 
 # export RUSTC_WRAPPER=/usr/bin/sccache
 export SCCACHE_DIR=$HOME/.cache/sccache
@@ -145,3 +145,5 @@ export PATH="/usr/local/bin:$PATH"
 
 # use clangd from AUR clangd-opt
 # export PATH="/opt/clangd/bin:$PATH"
+
+export OLLAMA_NUM_PARALLEL=4

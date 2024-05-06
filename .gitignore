@@ -80,6 +80,8 @@
 !warp/*
 !wofi/
 !wofi/*
+!zed/
+!zed/*
 !zoxide/
 !zoxide/*
 !bochsrc.disk
