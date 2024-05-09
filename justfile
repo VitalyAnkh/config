@@ -289,9 +289,9 @@ xla:
   cd $XLA_SRC_PATH
   git checkout main
   git pull
-  ./configure.py --backend=CPU --host_compiler=clang --nccl --clang_path=/usr/bin/clang
+  ./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/bin/clang
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
-  bazel build --test_output=all //xla/... --experimental_repo_remote_exec
+  bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
   echo "==== config xla done ===="
 
 iree:
@@ -461,6 +461,20 @@ typst:
   cd $TYPST_SRC_PATH
   git pull
   BUILD_PYTHON=1  GEN=ninja make relassert
+
+jax:
+  #!/usr/bin/env bash
+  export JAX_SRC_PATH=$HOME/projects/dev/cpp/jax
+  export XLA_SRC_PATH=$HOME/projects/dev/cpp/xla
+  cd $JAX_SRC_PATH
+  trash-put dist
+  git pull
+  bazel run @hedron_compile_commands//:refresh_all
+  #-- --config=cuda --config=cuda_plugin --config=nvcc_clang
+  python build/build.py --enable_cuda --build_gpu_plugin --gpu_plugin_cuda_version=12 --use_clang --clang_path /usr/bin/clang
+  #--bazel_options=--override_repository=xla=$XLA_SRC
+  pip install dist/*.whl --force-reinstall  # installs jaxlib (includes XLA)
+  pip install -e .  --force-reinstall # installs jax
 
 triton:
   #!/usr/bin/env bash
