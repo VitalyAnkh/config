@@ -9,7 +9,7 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: linux servo mpv llvm mold taichi ghc blender godot rust bevy book chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib org verilator yosys egui
+all: qemu linux servo mpv llvm mold taichi ghc blender godot rust bevy book chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib org verilator yosys egui
 
 llvm:
   #!/usr/bin/env bash
@@ -517,7 +517,7 @@ triton:
 
 triton_and_llvm: config_and_install_llvm_for_triton triton
 
-build_triton_wheel:
+triton_wheel:
   #!/usr/bin/env bash
   export TRITON_BUILD_WITH_CLANG_LLD=1
   export LLVM_ROOT_DIR=/usr/local/opt/llvm-triton
@@ -529,6 +529,8 @@ build_triton_wheel:
   export TRITON_BUILD_PROTON=1
   # export DEBUG=1
   cd $HOME/projects/dev/cpp/triton
+  # git clean -fdx
+  rm build/CMakeCache.txt
   git pull
   cd python
   # use conda's py3.11 environment
@@ -843,6 +845,18 @@ riscv-isa-sim:
   bear -- make -j12
   echo "==== pull riscv-isa-sim done ===="
 
+qemu:
+  #!/usr/bin/env bash
+  echo "==== pull qemu ===="
+  export QEMU_SRC_PATH=$HOME/projects/dev/c/qemu
+  cd $QEMU_SRC_PATH
+  git pull
+  # mkdir build
+  # cd build
+  # ../configure --prefix=$RISCV
+  # bear -- make -j12
+  echo "==== pull qemu ===="
+
 blender:
   #!/usr/bin/env bash
   echo "==== pull blender ===="
@@ -874,7 +888,7 @@ redox:
   #!/usr/bin/env bash
   echo "==== pull redox ===="
   cd ~/projects/dev/rust-projects/redox
-  make clean
+  # make clean
   make pull
   make all
   echo "==== pull redox done ===="
