@@ -258,8 +258,8 @@ config_latest_llvm:
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb" \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl" \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
@@ -374,7 +374,7 @@ install_llvm_for_triton:
 
 config_and_install_llvm_for_triton: config_llvm_for_triton install_llvm_for_triton
 
-config_and_install_latest_llvm: config_latest_llvm install_latest_llvm
+llvm_latest: config_latest_llvm install_latest_llvm
 
 package_emacs:
   #!/usr/bin/env bash
@@ -382,7 +382,7 @@ package_emacs:
   zip -r emacs.d.zip .emacs.d -x .emacs.d/.local/cache/eln/\* .emacs.d/.local/straight/build-30.0.50/\* .emacs.d/.local/straight/build.30.0.50.el .emacs.d/.local/cache/projectile.cache .emacs.d/.local/cache/projectile.projects .emacs.d/.local/cache/recentf .emacs.d/.local/cache/savehist .emacs.d/eln-cache/\*
   mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
 
-config_cuda_play:
+cuda_play:
   #!/usr/bin/env bash
   echo "==== config CUDA play ===="
   cd $HOME/projects/dev/cpp/cuda_play
