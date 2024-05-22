@@ -1,6 +1,15 @@
-[gd_resource type="EditorSettings" format=3]
+[gd_resource type="EditorSettings" load_steps=3 format=3]
+
+[sub_resource type="InputEventKey" id="InputEventKey_hny5n"]
+keycode = 4194336
+
+[sub_resource type="InputEventKey" id="InputEventKey_lu1s2"]
+device = -1
+ctrl_pressed = true
+physical_keycode = 82
 
 [resource]
+interface/editor/editor_language = "en"
 interface/editor/display_scale = 5
 interface/editor/show_update_spinner = false
 interface/editor/unfocused_low_processor_mode_sleep_usec = 50000
@@ -220,7 +229,11 @@ text_editor/theme/highlighting/comment_markers/notice_color = Color(0.24, 0.54, 
 text_editor/theme/highlighting/comment_markers/critical_list = "ALERT,ATTENTION,CAUTION,CRITICAL,DANGER,SECURITY"
 text_editor/theme/highlighting/comment_markers/warning_list = "BUG,DEPRECATED,FIXME,HACK,TASK,TBD,TODO,WARNING"
 text_editor/theme/highlighting/comment_markers/notice_list = "INFO,NOTE,NOTICE,TEST,TESTING"
+text_editor/help/sort_functions_alphabetically = true
 shortcuts = [{
 "name": "null",
 "shortcuts": []
+}, {
+"name": "editor/run_project",
+"shortcuts": [SubResource("InputEventKey_hny5n"), SubResource("InputEventKey_lu1s2")]
 }]

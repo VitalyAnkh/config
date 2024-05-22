@@ -133,11 +133,11 @@ config_pytorch:
   export NCCL_VERSION=$(pkg-config nccl --modversion)
   export NCCL_VER_CODE=$(sed -n 's/^#define NCCL_VERSION_CODE\s*\(.*\).*/\1/p' /usr/include/nccl.h)
   # export BUILD_SPLIT_CUDA=ON  # modern preferred build, but splits libs and symbols, ABI break
-  export USE_FAST_NVCC=0  # parallel build with nvcc, spawns too many processes
+  export USE_FAST_NVCC=1  # parallel build with nvcc, spawns too many processes
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
-  export CC=gcc
-  export CXX=g++
+  export CC=/usr/bin/clang
+  export CXX=/usr/bin/clang++
   export LD=mold
   export BUILD_TEST=1
   export CUDAHOSTCXX=/opt/cuda/bin/g++
@@ -394,6 +394,7 @@ cuda_play:
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_CXX_STANDARD=23 \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
+  time ninja all -j12
   echo "==== config CUDA play done ===="
 
 harfbuzz:
@@ -762,7 +763,8 @@ godot:
   echo "==== pull godot ===="
   cd ~/projects/dev/cpp/godot
   git pull
-  scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes
+  time scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_miniupnpc=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no
+  # use_llvm=yes
   #builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_miniupnpc=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no
   echo "==== pull godot done ===="
 

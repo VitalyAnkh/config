@@ -147,3 +147,5 @@ export PATH="/usr/local/bin:$PATH"
 # export PATH="/opt/clangd/bin:$PATH"
 
 export OLLAMA_NUM_PARALLEL=4
+
+export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
