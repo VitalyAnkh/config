@@ -133,14 +133,15 @@ config_pytorch:
   export NCCL_VERSION=$(pkg-config nccl --modversion)
   export NCCL_VER_CODE=$(sed -n 's/^#define NCCL_VERSION_CODE\s*\(.*\).*/\1/p' /usr/include/nccl.h)
   # export BUILD_SPLIT_CUDA=ON  # modern preferred build, but splits libs and symbols, ABI break
-  export USE_FAST_NVCC=1  # parallel build with nvcc, spawns too many processes
+  export USE_FAST_NVCC=0  # parallel build with nvcc, spawns too many processes
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
-  export CC=/usr/bin/clang
-  export CXX=/usr/bin/clang++
+  export CC=gcc
+  export CXX=g++
   export LD=mold
   export BUILD_TEST=1
-  export CUDAHOSTCXX=/opt/cuda/bin/g++
+  # export CUDAHOSTCXX=/opt/cuda/bin/g++
+  export CUDAHOSTCXX="${NVCC_CCBIN}"
   export CUDA_HOST_COMPILER="${CUDAHOSTCXX}"
   export CUDA_HOME=/opt/cuda
   # hide build-time CUDA devices
