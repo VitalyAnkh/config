@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+systemctl --user enable emacs.service
+
 go get -u gitlab.com/shackra/goimapnotify
 ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 

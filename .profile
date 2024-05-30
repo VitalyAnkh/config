@@ -150,3 +150,4 @@ export OLLAMA_NUM_PARALLEL=4
 
 export NVCC_CCBIN=g++-13
 export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
+. "$HOME/.cargo/env"

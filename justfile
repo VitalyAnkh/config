@@ -193,7 +193,7 @@ zed:
   export ZED_SRC_PATH=$HOME/projects/dev/rust-projects/zed
   cd $ZED_SRC_PATH
   declare -gA _tags=([protocol]="8645a138fb2ea72c4dab13e739b1f3c9ea29ac84")
-  axel "https://github.com/livekit/protocol/archive/${_tags[protocol]}/protocol-${_tags[protocol]}.tar.gz")
+  axel "https://github.com/livekit/protocol/archive/${_tags[protocol]}/protocol-${_tags[protocol]}.tar.gz"
   rm -r crates/live_kit_server/protocol
   ln -sT "protocol-${_tags[protocol]}" crates/live_kit_server/protocol
   # cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
@@ -260,7 +260,7 @@ config_latest_llvm:
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl" \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
+    -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \

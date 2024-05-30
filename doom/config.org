@@ -2023,6 +2023,7 @@ aspects are nice, but on others I prefer Fira.
       ;; doom-variable-pitch-font (font-spec :family "CMU Typewriter Text" :size 17)
       doom-serif-font (font-spec :family "Linux Biolinum" :size 17))
 
+
 (add-hook 'after-init-hook (lambda ()
                              ;; Emoji: 😄, 🤦, 🏴󠁧󠁢󠁳󠁣󠁴󠁿
                              (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
@@ -2043,6 +2044,31 @@ aspects are nice, but on others I prefer Fira.
                              ;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
                              (set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
                              ))
+
+;; There are bugs within Doom's font configurations.
+;; The code above onlys works with the following code present.
+(dolist (charset '(kana han cjk-misc bopomofo))
+                              (set-fontset-font "fontset-default" ;;(frame-parameter nil 'font)
+                                                charset (font-spec :family "LXGW WenKai" :weight 'medium )))
+
+(set-fontset-font "fontset-default" 'symbol "Apple Color Emoji" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Symbola" nil 'append)
+(set-fontset-font "fontset-default" 'symbol "Noto Color Emoji" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Liberation Mono" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Noto Sans Symbols2" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "Segoe UI Emoji" nil 'append)
+(set-fontset-font "fontset-default" 'symbol "Free Serif" nil 'prepend)
+(set-fontset-font "fontset-default" 'symbol "twemoji" nil 'prepend)
+;;(set-face-attribute 'default nil :font "Droid Sans Mono")
+;; East Asia: 你好, 早晨, こんにちは, 안녕하세요
+;; (set-fontset-font "fontset-default" 'unicode-bmp "LXGW WenKai" nil 'prepend)
+(set-fontset-font "fontset-default" 'han "LXGW WenKai" nil 'prepend)
+(set-fontset-font "fontset-default" 'kana "LXGW WenKai" nil 'prepend)
+(set-fontset-font "fontset-default" 'hangul "LXGW WenKai" nil 'prepend)
+(set-fontset-font "fontset-default" 'cjk-misc "Noto Serif CJK SC Regular" nil 'prepend)
+;; Cyrillic: Привет, Здравствуйте, Здраво, Здравейте
+(set-fontset-font "fontset-default" 'cyrillic "Noto Serif" nil 'prepend)
+
 #+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.

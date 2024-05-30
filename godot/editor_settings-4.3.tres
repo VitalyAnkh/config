@@ -237,3 +237,6 @@ shortcuts = [{
 "name": "editor/run_project",
 "shortcuts": [SubResource("InputEventKey_hny5n"), SubResource("InputEventKey_lu1s2")]
 }]
+metadata/script_setup_templates_dictionary = {
+"Sprite2D": "0ObjectEmpty"
+}

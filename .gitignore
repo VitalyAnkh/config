@@ -81,7 +81,8 @@
 !wofi/
 !wofi/*
 !zed/
-!zed/*
+!zed/keymap.json
+!zed/settings.json
 !zoxide/
 !zoxide/*
 !bochsrc.disk
