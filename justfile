@@ -95,8 +95,9 @@ config_pytorch:
   # rm -rf build
   rm build/CMakeCache.txt
   git restore cmake/MiscCheck.cmake
+  git restore CMakeLists.txt
   git submodule update --init --recursive
-  git pull
+  git pull --recurse-submodules
   # Fix building against glog 0.7
   # patch -p1 -i "$XDG_CONFIG_HOME/patches/glog-0.7.patch"
   patch -Np1 -i "$XDG_CONFIG_HOME/patches/87773.patch"
@@ -109,21 +110,21 @@ config_pytorch:
   # https://bugs.archlinux.org/task/64981
   patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
   export VERBOSE=1
-  export PYTORCH_BUILD_VERSION="2.5.0"
+  export PYTORCH_BUILD_VERSION="2.6.0"
   export PYTORCH_BUILD_NUMBER=1
   # Check tools/setup_helpers/cmake.py, setup.py and CMakeLists.txt for a list of flags that can be set via env vars.
   export ATEN_NO_TEST=ON  # do not build ATen tests
   export USE_MKLDNN=ON
   export BUILD_CUSTOM_PROTOBUF=OFF
   # Caffe2 support was removed from pytorch with version 2.2.0
-  export BUILD_CAFFE2=OFF
-  export BUILD_CAFFE2_OPS=OFF
+  export BUILD_CAFFE2=ON
+  export BUILD_CAFFE2_OPS=ON
   # export BUILD_SHARED_LIBS=OFF
   export USE_FFMPEG=ON
   export USE_GFLAGS=ON
   export USE_GLOG=ON
   export USE_VULKAN=ON
-  export BUILD_BINARY=ON
+  export BUILD_BINARY=OFF
   export USE_DISTRIBUTED=0
   export USE_OBSERVERS=ON
   export USE_OPENCV=ON
@@ -140,7 +141,6 @@ config_pytorch:
   export CXX=g++
   export LD=mold
   export BUILD_TEST=1
-  # export CUDAHOSTCXX=/opt/cuda/bin/g++
   export CUDAHOSTCXX="${NVCC_CCBIN}"
   export CUDA_HOST_COMPILER="${CUDAHOSTCXX}"
   export CUDA_HOME=/opt/cuda
@@ -169,8 +169,7 @@ config_pytorch:
   echo "add_definitions(-march=x86-64)" >> cmake/MiscCheck.cmake
   # python setup.py develop --cmake
   # same horrible hack as above
-  pip uninstall torch -y
-  USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop
+  (USE_PRECOMPILED_HEADERS=1 python setup.py develop || python setup.py develop) && pip uninstall torch -y && python setup.py develop
   # do this hack when encountering issues like
   # Traceback (most recent call last):
   #   File "/home/vitalyr/projects/dev/cpp/triton/python/tutorials/01-vector-add.py", line 21, in <module>
@@ -290,7 +289,8 @@ xla:
   cd $XLA_SRC_PATH
   git checkout main
   git pull
-  ./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/bin/clang
+  ./configure.py --backend=CUDA --host_compiler=gcc --nccl --clang_path=/usr/bin/clang
+  # --clang_path=/usr/bin/clang
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
   echo "==== config xla done ===="
@@ -452,10 +452,11 @@ update:
 
 duckdb:
   #!/usr/bin/env bash
-  export DUCKDB_SRC_PATH=$HOME/projects/dev/cpp/triton
+  export DUCKDB_SRC_PATH=$HOME/projects/dev/cpp/duckdb
   cd $DUCKDB_SRC_PATH
+  rm build/relassert/CMakeCache.txt
   git pull
-  BUILD_PYTHON=1  GEN=ninja make relassert
+  CC=/usr/bin/clang CXX=/usr/bin/clang++ BUILD_JDBC=1 BUILD_ODBC=1 BUILD_SHELL=1 BUILD_PYTHON=1  GEN=ninja make relassert
 
 typst:
   #!/usr/bin/env bash
@@ -541,7 +542,7 @@ triton_wheel:
   # conda activate py3.11
   python setup.py bdist_wheel
   # pip install torch
-  # pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
+  # pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu124
   pip install numpy
   pip install pytest
   pip install tabulate

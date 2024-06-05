@@ -1,4 +1,4 @@
-[gd_resource type="EditorSettings" load_steps=3 format=3]
+[gd_resource type="EditorSettings" load_steps=11 format=3]
 
 [sub_resource type="InputEventKey" id="InputEventKey_hny5n"]
 keycode = 4194336
@@ -7,6 +7,46 @@ keycode = 4194336
 device = -1
 ctrl_pressed = true
 physical_keycode = 82
+
+[sub_resource type="InputEventKey" id="InputEventKey_tox3x"]
+ctrl_pressed = true
+keycode = 4194332
+
+[sub_resource type="InputEventKey" id="InputEventKey_mc3jc"]
+device = -1
+alt_pressed = true
+physical_keycode = 49
+unicode = 49
+
+[sub_resource type="InputEventKey" id="InputEventKey_14nmu"]
+ctrl_pressed = true
+keycode = 4194333
+
+[sub_resource type="InputEventKey" id="InputEventKey_b4bjp"]
+device = -1
+alt_pressed = true
+physical_keycode = 50
+unicode = 50
+
+[sub_resource type="InputEventKey" id="InputEventKey_l2jsi"]
+ctrl_pressed = true
+keycode = 4194334
+
+[sub_resource type="InputEventKey" id="InputEventKey_ij6wl"]
+device = -1
+alt_pressed = true
+physical_keycode = 51
+unicode = 51
+
+[sub_resource type="InputEventKey" id="InputEventKey_rfnpn"]
+ctrl_pressed = true
+keycode = 4194335
+
+[sub_resource type="InputEventKey" id="InputEventKey_c1c15"]
+device = -1
+alt_pressed = true
+physical_keycode = 52
+unicode = 52
 
 [resource]
 interface/editor/editor_language = "en"
@@ -23,7 +63,41 @@ filesystem/directories/default_project_path = "/home/vitalyr/projects/dev/godot"
 filesystem/file_dialog/show_hidden_files = true
 docks/filesystem/textfile_extensions = "txt,md,cfg,ini,log,json,yml,yaml,toml"
 docks/property_editor/auto_refresh_interval = 0.3
-text_editor/theme/color_theme = "Adaptive"
+text_editor/theme/highlighting/symbol_color = Color(0, 0, 0.61, 1)
+text_editor/theme/highlighting/keyword_color = Color(0.9, 0.135, 0.51, 1)
+text_editor/theme/highlighting/control_flow_keyword_color = Color(0.743, 0.12, 0.8, 1)
+text_editor/theme/highlighting/base_type_color = Color(0, 0.6, 0.2, 1)
+text_editor/theme/highlighting/engine_type_color = Color(0.11, 0.55, 0.4, 1)
+text_editor/theme/highlighting/user_type_color = Color(0.18, 0.45, 0.4, 1)
+text_editor/theme/highlighting/comment_color = Color(0.08, 0.08, 0.08, 0.5)
+text_editor/theme/highlighting/doc_comment_color = Color(0.15, 0.15, 0.4, 0.7)
+text_editor/theme/highlighting/string_color = Color(0.6, 0.42, 0, 1)
+text_editor/theme/highlighting/background_color = Color(1, 1, 1, 1)
+text_editor/theme/highlighting/completion_background_color = Color(0.981, 0.981, 0.981, 1)
+text_editor/theme/highlighting/completion_selected_color = Color(0, 0, 0, 0.07)
+text_editor/theme/highlighting/completion_existing_color = Color(0, 0, 0, 0.14)
+text_editor/theme/highlighting/completion_scroll_color = Color(0, 0, 0, 0.29)
+text_editor/theme/highlighting/completion_scroll_hovered_color = Color(0, 0, 0, 0.4)
+text_editor/theme/highlighting/completion_font_color = Color(0.225, 0.225, 0.225, 1)
+text_editor/theme/highlighting/text_color = Color(0.225, 0.225, 0.225, 1)
+text_editor/theme/highlighting/line_number_color = Color(0.225, 0.225, 0.225, 0.5)
+text_editor/theme/highlighting/safe_line_number_color = Color(0, 0.4, 0, 0.75)
+text_editor/theme/highlighting/caret_color = Color(0, 0, 0, 1)
+text_editor/theme/highlighting/caret_background_color = Color(1, 1, 1, 1)
+text_editor/theme/highlighting/selection_color = Color(0.18, 0.5, 1, 0.4)
+text_editor/theme/highlighting/brace_mismatch_color = Color(1, 0.08, 0, 1)
+text_editor/theme/highlighting/current_line_color = Color(0, 0, 0, 0.07)
+text_editor/theme/highlighting/line_length_guideline_color = Color(0.981, 0.981, 0.981, 1)
+text_editor/theme/highlighting/word_highlighted_color = Color(0, 0, 0, 0.07)
+text_editor/theme/highlighting/number_color = Color(0, 0.55, 0.28, 1)
+text_editor/theme/highlighting/function_color = Color(0, 0.225, 0.9, 1)
+text_editor/theme/highlighting/member_variable_color = Color(0, 0.4, 0.68, 1)
+text_editor/theme/highlighting/mark_color = Color(0.8, 0.22, 0.22, 0.3)
+text_editor/theme/highlighting/breakpoint_color = Color(1, 0.27, 0.2, 1)
+text_editor/theme/highlighting/code_folding_color = Color(0, 0, 0, 0.27)
+text_editor/theme/highlighting/search_result_color = Color(0, 0, 0, 0.07)
+text_editor/theme/highlighting/search_result_border_color = Color(0, 0.4, 1, 0.38)
+text_editor/appearance/lines/word_wrap = 1
 editors/3d/primary_grid_steps = 10
 editors/3d/grid_division_level_min = -2
 editors/3d/default_z_far = 500.0
@@ -41,7 +115,6 @@ editors/2d/bone_ik_color = Color(0.9, 0.9, 0.45, 0.9)
 editors/2d/bone_outline_color = Color(0.35, 0.35, 0.35, 1)
 run/platforms/linuxbsd/prefer_wayland = true
 network/connection/network_mode = 1
-filesystem/import/fbx/fbx2gltf_path = ""
 interface/editor/dim_editor_on_dialog_popup = true
 interface/editor/hide_console_window = false
 interface/theme/highlight_tabs = false
@@ -102,7 +175,7 @@ text_editor/appearance/line_numbers_zero_padded = false
 text_editor/appearance/show_bookmark_gutter = true
 text_editor/appearance/show_info_gutter = true
 text_editor/appearance/code_folding = true
-text_editor/appearance/word_wrap = false
+text_editor/appearance/word_wrap = true
 text_editor/appearance/show_line_length_guidelines = true
 text_editor/appearance/line_length_guideline_soft_column = 80
 text_editor/appearance/line_length_guideline_hard_column = 100
@@ -230,12 +303,26 @@ text_editor/theme/highlighting/comment_markers/critical_list = "ALERT,ATTENTION,
 text_editor/theme/highlighting/comment_markers/warning_list = "BUG,DEPRECATED,FIXME,HACK,TASK,TBD,TODO,WARNING"
 text_editor/theme/highlighting/comment_markers/notice_list = "INFO,NOTE,NOTICE,TEST,TESTING"
 text_editor/help/sort_functions_alphabetically = true
+docks/property_editor/lines/word_wrap = 0
+docks/property_editor/word_wrap = false
 shortcuts = [{
 "name": "null",
 "shortcuts": []
 }, {
 "name": "editor/run_project",
 "shortcuts": [SubResource("InputEventKey_hny5n"), SubResource("InputEventKey_lu1s2")]
+}, {
+"name": "editor/editor_2d",
+"shortcuts": [SubResource("InputEventKey_tox3x"), SubResource("InputEventKey_mc3jc")]
+}, {
+"name": "editor/editor_3d",
+"shortcuts": [SubResource("InputEventKey_14nmu"), SubResource("InputEventKey_b4bjp")]
+}, {
+"name": "editor/editor_script",
+"shortcuts": [SubResource("InputEventKey_l2jsi"), SubResource("InputEventKey_ij6wl")]
+}, {
+"name": "editor/editor_assetlib",
+"shortcuts": [SubResource("InputEventKey_rfnpn"), SubResource("InputEventKey_c1c15")]
 }]
 metadata/script_setup_templates_dictionary = {
 "Sprite2D": "0ObjectEmpty"
