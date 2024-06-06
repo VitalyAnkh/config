@@ -191,6 +191,7 @@ zed:
   export CXXFLAGS+=' -ffat-lto-objects'
   export ZED_SRC_PATH=$HOME/projects/dev/rust-projects/zed
   cd $ZED_SRC_PATH
+  git pull --recurse-submodules
   declare -gA _tags=([protocol]="8645a138fb2ea72c4dab13e739b1f3c9ea29ac84")
   axel "https://github.com/livekit/protocol/archive/${_tags[protocol]}/protocol-${_tags[protocol]}.tar.gz"
   rm -r crates/live_kit_server/protocol
@@ -289,7 +290,7 @@ xla:
   cd $XLA_SRC_PATH
   git checkout main
   git pull
-  ./configure.py --backend=CUDA --host_compiler=gcc --nccl --clang_path=/usr/bin/clang
+  ./configure.py --backend=CUDA --host_compiler=gcc --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
   # --clang_path=/usr/bin/clang
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
