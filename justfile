@@ -980,6 +980,7 @@ servo:
   echo "==== pull servo ===="
   cd ~/projects/dev/rust-projects/servo
   git pull
+  ./mach bootstrap
   ./mach build -d
   echo "==== pull servo done ===="
 
