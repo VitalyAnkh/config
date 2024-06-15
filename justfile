@@ -459,6 +459,12 @@ duckdb:
   git pull
   CC=/usr/bin/clang CXX=/usr/bin/clang++ BUILD_JDBC=1 BUILD_ODBC=1 BUILD_SHELL=1 BUILD_PYTHON=1  GEN=ninja make relassert
 
+comfyui:
+  #!/usr/bin/env bash
+  export COMFYUI_SRC_PATH=$HOME/projects/dev/cpp/duckdb
+  cd $COMFYUI_SRC_PATH
+  git pull
+
 typst:
   #!/usr/bin/env bash
   export TYPST_SRC_PATH=$HOME/projects/dev/cpp/triton
@@ -685,27 +691,36 @@ build_circt:
   cd $HOME/projects/dev/cpp/circt/build
   time ninja
 
-config_circt:
+circt:
   #!/usr/bin/env bash
   mkdir -p $HOME/projects/dev/cpp/circt/llvm/build
   cd $HOME/projects/dev/cpp/circt/
   git pull
+  git submodule update --init
+  mkdir -p llvm/build
   cd $HOME/projects/dev/cpp/circt/llvm/build
+  git fetch --unshallow
   # config llvm
   cmake -G Ninja ../llvm \
   -DLLVM_ENABLE_PROJECTS="mlir" \
   -DLLVM_TARGETS_TO_BUILD="host" \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   -DLLVM_ENABLE_ASSERTIONS=ON \
-  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ninja -j12
+  ninja check-mlir
   # build circt
   mkdir -p $HOME/projects/dev/cpp/circt/build
   cd $HOME/projects/dev/cpp/circt/build
   cmake -G Ninja .. \
   -DMLIR_DIR=../llvm/build/lib/cmake/mlir \
   -DLLVM_DIR=../llvm/build/lib/cmake/llvm \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_C_COMPILER_LAUNCHER=sccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   -DLLVM_ENABLE_ASSERTIONS=ON \
