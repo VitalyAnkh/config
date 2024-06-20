@@ -117,8 +117,8 @@ config_pytorch:
   export USE_MKLDNN=ON
   export BUILD_CUSTOM_PROTOBUF=OFF
   # Caffe2 support was removed from pytorch with version 2.2.0
-  export BUILD_CAFFE2=ON
-  export BUILD_CAFFE2_OPS=ON
+  export BUILD_CAFFE2=OFF
+  export BUILD_CAFFE2_OPS=OFF
   # export BUILD_SHARED_LIBS=OFF
   export USE_FFMPEG=ON
   export USE_GFLAGS=ON
@@ -137,8 +137,9 @@ config_pytorch:
   export USE_FAST_NVCC=0  # parallel build with nvcc, spawns too many processes
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
-  export CC=gcc
-  export CXX=g++
+  export MAX_JOBS=12
+  export CC=/usr/bin/clang
+  export CXX=/usr/bin/clang++
   export LD=mold
   export BUILD_TEST=1
   export CUDAHOSTCXX="${NVCC_CCBIN}"
@@ -471,6 +472,14 @@ typst:
   cd $TYPST_SRC_PATH
   git pull
   BUILD_PYTHON=1  GEN=ninja make relassert
+
+cpython:
+  #!/usr/bin/env bash
+  export CPYTHON_SRC_PATH=$HOME/projects/dev/cpp/cpython
+  cd $CPYTHON_SRC_PATH
+  git pull
+  CC=clang CXX=clang++ ./configure --with-pydebug --disable-gil
+  make -j8
 
 jax:
   #!/usr/bin/env bash
