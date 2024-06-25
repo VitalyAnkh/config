@@ -580,8 +580,8 @@ build_emacs_packages:
   trash-put $HOME/.config/.emacs.d/.local/cache/eln
   trash-put $HOME/.config/.emacs.d/.local/etc/@
   # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-30.0.50-cache.el
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-30.0.50
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50-cache.el
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
@@ -711,12 +711,15 @@ circt:
   git fetch --unshallow
   # config llvm
   cmake -G Ninja ../llvm \
-  -DLLVM_ENABLE_PROJECTS="mlir" \
+  -DLLVM_ENABLE_PROJECTS="llvm;mlir" \
   -DLLVM_TARGETS_TO_BUILD="host" \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
   -DCMAKE_C_COMPILER_LAUNCHER=sccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -726,14 +729,17 @@ circt:
   mkdir -p $HOME/projects/dev/cpp/circt/build
   cd $HOME/projects/dev/cpp/circt/build
   cmake -G Ninja .. \
-  -DMLIR_DIR=../llvm/build/lib/cmake/mlir \
-  -DLLVM_DIR=../llvm/build/lib/cmake/llvm \
+  -DMLIR_DIR=$PWD/../llvm/build/lib/cmake/mlir \
+  -DLLVM_DIR=$PWD/../llvm/build/lib/cmake/llvm \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
   -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DCMAKE_C_COMPILER=/usr/bin/clang \
   -DCMAKE_C_COMPILER_LAUNCHER=sccache \
   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   -DLLVM_ENABLE_ASSERTIONS=ON \
-  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   ninja
   ninja check-circt
@@ -927,6 +933,7 @@ rust:
   echo "==== pull rust ===="
   cd ~/projects/dev/rust-projects/rust
   git pull
+  x build
   echo "==== pull rust done ===="
 
 wasmtime:
