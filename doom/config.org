@@ -1834,8 +1834,6 @@ make                         ; run make tasks from Emacs
 ;;pass                       ; password manager for nerds
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
-rgb                          ; creating color strings
-taskrunner                 ; taskrunner for all your projects
 ;; terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 tree-sitter                ; syntax and parsing, sitting in a tree...
@@ -6184,7 +6182,7 @@ good option.
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov)
+;; (package! nov)
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -6266,38 +6264,38 @@ Then, to actually read the ebooks we use =nov=.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/nov.png]]
 
 #+begin_src emacs-lisp
-(use-package! nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map! :map nov-mode-map
-        :n "RET" #'nov-scroll-up)
+;; (use-package! nov
+;;   :mode ("\\.epub\\'" . nov-mode)
+;;   :config
+;;   (map! :map nov-mode-map
+;;         :n "RET" #'nov-scroll-up)
 
-  (advice-add 'nov-render-title :override #'ignore)
+;;   (advice-add 'nov-render-title :override #'ignore)
 
-  (defun +nov-mode-setup ()
-    "Tweak nov-mode to our liking."
-    (face-remap-add-relative 'variable-pitch
-                             :family "Merriweather"
-                             :height 1.4
-                             :width 'semi-expanded)
-    (face-remap-add-relative 'default :height 1.3)
-    (variable-pitch-mode 1)
-    (setq-local line-spacing 0.2
-                next-screen-context-lines 4
-                shr-use-colors nil)
-    (when (require 'visual-fill-column nil t)
-      (setq-local visual-fill-column-center-text t
-                  visual-fill-column-width 64
-                  nov-text-width 106)
-      (visual-fill-column-mode 1))
-    (when (featurep 'hl-line-mode)
-      (hl-line-mode -1))
-    ;; Re-render with new display settings
-    (nov-render-document)
-    ;; Look up words with the dictionary.
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition))
+;;   (defun +nov-mode-setup ()
+;;     "Tweak nov-mode to our liking."
+;;     (face-remap-add-relative 'variable-pitch
+;;                              :family "Merriweather"
+;;                              :height 1.4
+;;                              :width 'semi-expanded)
+;;     (face-remap-add-relative 'default :height 1.3)
+;;     (variable-pitch-mode 1)
+;;     (setq-local line-spacing 0.2
+;;                 next-screen-context-lines 4
+;;                 shr-use-colors nil)
+;;     (when (require 'visual-fill-column nil t)
+;;       (setq-local visual-fill-column-center-text t
+;;                   visual-fill-column-width 64
+;;                   nov-text-width 106)
+;;       (visual-fill-column-mode 1))
+;;     (when (featurep 'hl-line-mode)
+;;       (hl-line-mode -1))
+;;     ;; Re-render with new display settings
+;;     (nov-render-document)
+;;     ;; Look up words with the dictionary.
+;;     (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition))
 
-  (add-hook 'nov-mode-hook #'+nov-mode-setup))
+;;   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
 
 To enhance the reading experience, we can create a nice minimal modeline, with
@@ -6305,34 +6303,34 @@ just the basic bare minimum, information about the book/chapter, and possibly
 currently playing media.
 
 #+begin_src emacs-lisp
-(after! doom-modeline
-  (defvar doom-modeline-nov-title-max-length 40)
-  (doom-modeline-def-segment nov-author
-    (propertize
-     (cdr (assoc 'creator nov-metadata))
-     'face 'doom-modeline-project-parent-dir))
-  (doom-modeline-def-segment nov-title
-    (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
-      (if (<= (length title) doom-modeline-nov-title-max-length)
-          (concat " " title)
-        (propertize
-         (concat " " (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
-         'help-echo title))))
-  (doom-modeline-def-segment nov-current-page
-    (let ((words (count-words (point-min) (point-max))))
-      (propertize
-       (format " %d/%d"
-               (1+ nov-documents-index)
-               (length nov-documents))
-       'face 'doom-modeline-info
-       'help-echo (if (= words 1) "1 word in this chapter"
-                    (format "%s words in this chapter" words)))))
+;; (after! doom-modeline
+;;   (defvar doom-modeline-nov-title-max-length 40)
+;;   (doom-modeline-def-segment nov-author
+;;     (propertize
+;;      (cdr (assoc 'creator nov-metadata))
+;;      'face 'doom-modeline-project-parent-dir))
+;;   (doom-modeline-def-segment nov-title
+;;     (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
+;;       (if (<= (length title) doom-modeline-nov-title-max-length)
+;;           (concat " " title)
+;;         (propertize
+;;          (concat " " (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
+;;          'help-echo title))))
+;;   (doom-modeline-def-segment nov-current-page
+;;     (let ((words (count-words (point-min) (point-max))))
+;;       (propertize
+;;        (format " %d/%d"
+;;                (1+ nov-documents-index)
+;;                (length nov-documents))
+;;        'face 'doom-modeline-info
+;;        'help-echo (if (= words 1) "1 word in this chapter"
+;;                     (format "%s words in this chapter" words)))))
 
-  (doom-modeline-def-modeline 'nov
-    '(workspace-name window-number nov-author nov-title nov-current-page)
-    '(media-player misc-info major-mode time))
+;;   (doom-modeline-def-modeline 'nov
+;;     '(workspace-name window-number nov-author nov-title nov-current-page)
+;;     '(media-player misc-info major-mode time))
 
-  (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
+;;   (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
 #+end_src
 
 ** Calculator
@@ -13488,51 +13486,51 @@ Now, there are some symbols that aren't included in =inputenc=, but we should be
 able to handle anyway. For them we define a table of LaTeX translations
 
 #+name: latex-non-ascii-char-substitutions
-| Character | LaTeX  |
-|-----------+--------|
-| ɑ         | \(\alpha\)  |
-| β         | \(\beta\)  |
-| γ         | \(\gamma\)  |
-| δ         | \(\delta\)  |
-| ε         | \(\epsilon\)  |
-| ϵ         | \(\varepsilon\)  |
-| ζ         | \(\zeta\)  |
-| η         | \(\eta\)  |
-| θ         | \(\theta\)  |
-| ϑ        | \(\vartheta\) |
-| ι         | \(\iota\)  |
-| κ         | \(\kappa\)  |
-| λ         | \(\lambda\)  |
-| μ         | \(\mu\)  |
-| ν         | \(\nu\)  |
-| ξ         | \(\xi\)  |
-| π         | \(\pi\)  |
-| ϖ         | \(\varpi\)  |
-| ρ         | \(\rho\)  |
-| ϱ         | \(\varrho\)  |
-| σ         | \(\sigma\)  |
-| ς         | \(\varsigma\)  |
-| τ         | \(\tau\)  |
-| υ         | \(\upsilon\)  |
-| ϕ         | \(\phi\) |
-| φ         | \(\varphi\)  |
-| ψ         | \(\psi\)  |
-| ω         | \(\omega\)  |
-| Γ         | \(\Gamma\)  |
-| Δ         | \(\Delta\)  |
-| Θ         | \(\Theta\)  |
-| Λ         | \(\Lambda\)  |
-| Ξ         | \(\Xi\)  |
-| Π         | \(\Pi\)  |
-| Σ         | \(\Sigma\)  |
-| Υ         | \(\Upsilon\)  |
-| Φ         | \(\Phi\)  |
-| Ψ         | \(\Psi\)  |
-| Ω         | \(\Omega\)  |
-| א        | \(\aleph\) |
-| ב         | \(\beth\)  |
+| Character | LaTeX       |
+|-----------+-------------|
+| ɑ         | \(\alpha\)       |
+| β         | \(\beta\)       |
+| γ         | \(\gamma\)       |
+| δ         | \(\delta\)       |
+| ε         | \(\epsilon\)       |
+| ϵ         | \(\varepsilon\)       |
+| ζ         | \(\zeta\)       |
+| η         | \(\eta\)       |
+| θ         | \(\theta\)       |
+| ϑ        | \(\vartheta\)      |
+| ι         | \(\iota\)       |
+| κ         | \(\kappa\)       |
+| λ         | \(\lambda\)       |
+| μ         | \(\mu\)       |
+| ν         | \(\nu\)       |
+| ξ         | \(\xi\)       |
+| π         | \(\pi\)       |
+| ϖ         | \(\varpi\)       |
+| ρ         | \(\rho\)       |
+| ϱ         | \(\varrho\) |
+| σ         | \(\sigma\)       |
+| ς         | \(\varsigma\)       |
+| τ         | \(\tau\)       |
+| υ         | \(\upsilon\)       |
+| ϕ         | \(\phi\)      |
+| φ         | \(\varphi\)       |
+| ψ         | \(\psi\)       |
+| ω         | \(\omega\)       |
+| Γ         | \(\Gamma\)       |
+| Δ         | \(\Delta\)       |
+| Θ         | \(\Theta\)       |
+| Λ         | \(\Lambda\)       |
+| Ξ         | \(\Xi\)       |
+| Π         | \(\Pi\)       |
+| Σ         | \(\Sigma\)       |
+| Υ         | \(\Upsilon\)       |
+| Φ         | \(\Phi\)       |
+| Ψ         | \(\Psi\)       |
+| Ω         | \(\Omega\)       |
+| א        | \(\aleph\)      |
+| ב         | \(\beth\)       |
 | ד         | \(\daleth\) |
-| ג         | \(\gimel\)  |
+| ג         | \(\gimel\)       |
 
 #+name: gen-latex-non-ascii-char-substitutions
 #+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions

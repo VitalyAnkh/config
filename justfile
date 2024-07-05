@@ -110,7 +110,7 @@ config_pytorch:
   # https://bugs.archlinux.org/task/64981
   patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
   export VERBOSE=1
-  export PYTORCH_BUILD_VERSION="2.6.0"
+  export PYTORCH_BUILD_VERSION="5.0.0rc"
   export PYTORCH_BUILD_NUMBER=1
   # Check tools/setup_helpers/cmake.py, setup.py and CMakeLists.txt for a list of flags that can be set via env vars.
   export ATEN_NO_TEST=ON  # do not build ATen tests
@@ -291,7 +291,8 @@ xla:
   cd $XLA_SRC_PATH
   git checkout main
   git pull
-  ./configure.py --backend=CUDA --host_compiler=gcc --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
+  #./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
+  ./configure.py --backend=cpu --host_compiler=clang --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
   # --clang_path=/usr/bin/clang
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
