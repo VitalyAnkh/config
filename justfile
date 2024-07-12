@@ -23,17 +23,26 @@ llvm:
   git push
   echo "==== pull llvm-project done ===="
 
-config_lean:
+lean:
   #!/usr/bin/env bash
   #git clone https://github.com/leanprover/lean4 --recurse-submodules
   #git config submodule.recurse true
-  cd ~/projects/dev/lean/lean4
+  export LEAN_SRC_PATH=$HOME/projects/dev/lean/lean4
+  cd $LEAN_SRC_PATH
   git pull
   trash-put build
-  mkdir -p build
-  cd build
-  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
-  cp compile_commands.events.json compile_commands.json
+  cmake ./ -B build \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  make -C build -j$(nproc)
+  # cp compile_commands.events.json compile_commands.json
 
 config_torch_mlir_with_external_project:
   #!/usr/bin/env bash
@@ -138,8 +147,8 @@ config_pytorch:
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
   export MAX_JOBS=12
-  export CC=/usr/bin/clang
-  export CXX=/usr/bin/clang++
+  export CC=/usr/local/opt/llvm@17/bin/clang
+  export CXX=/usr/local/opt/llvm@17/bin/clang++
   export LD=mold
   export BUILD_TEST=1
   export CUDAHOSTCXX="${NVCC_CCBIN}"
@@ -227,12 +236,6 @@ llama:
   cmake --build . --config Release
   echo "==== config llama.cpp ===="
 
-lean:
-  #!/usr/bin/env bash
-  #git clone https://github.com/leanprover/lean4 --recurse-submodules
-  cd ~/projects/dev/lean/lean4/build/
-  bear -- make -j10
-
 deploy_emacs:
   #!/usr/bin/env bash
   cd ~/
@@ -260,7 +263,7 @@ config_latest_llvm:
     -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl;bolt" \
     -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
@@ -291,12 +294,45 @@ xla:
   cd $XLA_SRC_PATH
   git checkout main
   git pull
-  #./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
-  ./configure.py --backend=cpu --host_compiler=clang --nccl --clang_path=/usr/bin/clang --gcc_path=/usr/bin/gcc-13
-  # --clang_path=/usr/bin/clang
+  ./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/local/opt/llvm@17/bin/clang --gcc_path=/usr/bin/gcc
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
+  # bazel build --spawn_strategy=sandboxed //xla/...
   echo "==== config xla done ===="
+
+stablehlo:
+  #!/usr/bin/env bash
+  echo "==== config stablehlo ===="
+  export STABLEHLO_SRC_PATH=$HOME/projects/dev/cpp/stablehlo
+  cd $STABLEHLO_SRC_PATH
+  cd llvm-project && git fetch && git checkout $(cat ../build_tools/llvm_version.txt)
+  cd ..
+  pip install -r ./llvm-project/mlir/python/requirements.txt
+  MLIR_ENABLE_BINDINGS_PYTHON=ON build_tools/build_mlir.sh $PWD/llvm-project/ $PWD/llvm-build
+  mkdir -p build && cd build
+  cmake .. -G Ninja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/stablehlo \
+    -DSTABLEHLO_ENABLE_BINDINGS_PYTHON=OFF \
+    -DSTABLEHLO_ENABLE_SPLIT_DWARF=ON \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_C_COMPILER=clang \
+    -DLLVM_EXTERNAL_LIT=/usr/bin/lit \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DSTABLEHLO_ENABLE_SANITIZER=address \
+    -DMLIR_DIR=$PWD/../llvm-build/lib/cmake/mlir
+    # -DSTABLEHLO_ENABLE_LLD=ON \
+  cmake --build .
+  cmake --install $STABLEHLO_SRC_PATH/build
+  ninja check-stablehlo-tests
+  # cd ..
+  # STABLEHLO_ENABLE_BINDINGS_PYTHON=ON ./build_tools/github_actions/ci_build_cmake.sh $PWD/llvm-build $PWD/build
 
 iree:
   #!/usr/bin/env bash
@@ -422,17 +458,23 @@ install_local_llvm:
   cd build
   cmake ../llvm -G "Ninja" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@16 \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@17 \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_INSTALL_UTILS=ON     \
-    -DLLVM_USE_LINKER=mold      \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_ENABLE_PROJECTS="clang;mlir" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DLLVM_LIT_ARGS=-v \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
@@ -506,29 +548,30 @@ triton:
   export LLVM_SYSPATH=$LLVM_ROOT_DIR
   export TRITON_SRC_PATH=$HOME/projects/dev/cpp/triton
   cd $TRITON_SRC_PATH
-  rm -rf build
+  # rm -rf build
   mkdir -p build
   cd build
   export MLIR_DIR=$LLVM_ROOT_DIR/lib/cmake/mlir
   export LLVM_DIR=$LLVM_ROOT_DIR/lib/cmake/llvm
-  # -DTRITON_PLUGIN_DIRS="$TRITON_SRC_PATH/third_party/nvidia;$TRITON_SRC_PAH/third_party/amd" \
   cmake ../ -G Ninja \
     -DMLIR_DIR=$MLIR_DIR \
     -DLLVM_DIR=$LLVM_DIR \
     -DLLVM_EXTERNAL_LIT=/usr/bin/lit  \
     -DCMAKE_BUILD_TYPE=TritonRelBuildWithAsserts \
+    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DTRITON_CODEGEN_BACKENDS="nvidia;amd" \
-    -DCUPTI_INCLUDE_DIR="/opt/cuda/extras/CUPTI/include/" \
+    -DCUPTI_INCLUDE_DIR="$TRITON_SRC_PATH/third_party/nvidia/backend/include" \
+    -DROCTRACER_INCLUDE_DIR="$TRITON_SRC_PATH/third_party/amd/backend/include" \
+    -DJSON_INCLUDE_DIR:UNINITIALIZED="$HOME/.triton/json/include" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DTRITON_BUILD_PYTHON_MODULE=ON    \
-    -DLLVM_ENABLE_ASSERTIONS=ON        \
-    -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
-    -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
-    -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold"
+    -DLLVM_ENABLE_ASSERTIONS=ON
 
   cmake --build .
   # test
