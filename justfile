@@ -531,10 +531,9 @@ jax:
   cd $JAX_SRC_PATH
   trash-put dist
   git pull
-  bazel run @hedron_compile_commands//:refresh_all
+  # bazel run @hedron_compile_commands//:refresh_all
   #-- --config=cuda --config=cuda_plugin --config=nvcc_clang
-  python build/build.py --enable_cuda --build_gpu_plugin --gpu_plugin_cuda_version=12 --use_clang --clang_path /usr/bin/clang
-  #--bazel_options=--override_repository=xla=$XLA_SRC
+  python build/build.py --enable_cuda --build_gpu_plugin --gpu_plugin_cuda_version=12 --use_clang --clang_path /usr/local/opt/llvm@17/bin/clang --bazel_options=--override_repository=xla=$XLA_SRC_PATH
   pip install dist/*.whl --force-reinstall  # installs jaxlib (includes XLA)
   pip install -e .  --force-reinstall # installs jax
 
