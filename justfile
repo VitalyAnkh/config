@@ -266,7 +266,12 @@ config_latest_llvm:
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl;bolt" \
     -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+    -DMLIR_ENABLE_CUDA_RUNNER=ON \
+    -DMLIR_ENABLE_SYCL_RUNNER=ON \
+    -DMLIR_ENABLE_VULKAN_RUNNER=ON \
+    -DMLIR_ENABLE_SPIRV_CPU_RUNNER=ON \
     -DLLVM_LIT_ARGS=-v \
+    -DLLVM_HAS_NVPTX_TARGET=1 \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
     -DLLVM_BUILD_UTILS=ON \
     -DLLVM_BUILD_TOOLS=ON \
@@ -483,6 +488,30 @@ install_local_llvm:
   # trash-put $HOME/sdk/lib/llvm/*
   cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build local llvm done ===="
+
+zig:
+  #!/usr/bin/env bash
+  echo "==== build local zig ===="
+  cd ~/projects/dev/zig/zig
+  git pull
+  trash-put build
+  mkdir -p build
+  cd build
+  cmake ../ -G "Ninja" \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/zig \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang
+    # -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" \
+    # -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=lld" \
+    # -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld"
+  cmake --build .
+  # trash-put $HOME/sdk/lib/llvm/*
+  cmake --install $HOME/projects/dev/zig/zig/build
+  echo "==== build local zig done ===="
 
 update:
   #!/usr/bin/env bash

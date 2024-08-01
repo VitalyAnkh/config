@@ -330,7 +330,8 @@ few extras.
 *** Magit push in daemon
 
 Quite often trying to push to a remote in the Emacs daemon produces as error like this:
-#+begin_src fundamental
+
+#+begin_example
 128 git … push -v origin refs/heads/master\:refs/heads/master
 Pushing to git@github.com:tecosaur/emacs-config.git
 
@@ -338,7 +339,7 @@ fatal: Could not read from remote repository.
 
 Please make sure you have the correct access rights
 and the repository exists.
-#+end_src
+#+end_example
 
 *** Unread emails doesn't work across Emacs instances
 
@@ -4644,18 +4645,20 @@ the following configuration
 
 ***** Hunspell
 
-#+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-exists-p "~/.config/enchant/hunspell") "no" "setup.sh")
 cd /tmp
-curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
-unzip "hunspell-en-custom.zip"
+if [ ! -d hunspell-en-custom ]; then
+    curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
+    unzip "hunspell-en-custom.zip" -d hunspell-en-custom
+fi
 
-sudo chown root:root en-custom.*
+cd hunspell-en-custom
 DESTDIR1="$HOME/.local/share/hunspell"
 DESTDIR2="$HOME/.config/enchant/hunspell"
 mkdir -p "$DESTDIR1"
 mkdir -p "$DESTDIR2"
-sudo mv en-custom.{aff,dic} "$DESTDIR1"
-sudo mv en-custom.{aff,dic} "$DESTDIR2"
+cp en-custom.{aff,dic} "$DESTDIR1"
+cp en-custom.{aff,dic} "$DESTDIR2"
 #+end_src
 
 We will also add an accompanying =doctor= warning.
@@ -4669,10 +4672,12 @@ We will also add an accompanying =doctor= warning.
 
 ***** Aspell
 
-#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-expand-wildcards "~/.config/enchant/aspell/en-custom.multi") "no" "setup.sh")
 cd /tmp
-curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
-tar -xjf "aspell6-en-custom.tar.bz2"
+if [ ! -d aspell6-en-custom ]; then
+    curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
+    tar -xjf "aspell6-en-custom.tar.bz2"
+fi
 
 cd aspell6-en-custom
 DESTDIR="$HOME/.config/enchant/" ./configure
@@ -6303,34 +6308,40 @@ just the basic bare minimum, information about the book/chapter, and possibly
 currently playing media.
 
 #+begin_src emacs-lisp
-;; (after! doom-modeline
-;;   (defvar doom-modeline-nov-title-max-length 40)
-;;   (doom-modeline-def-segment nov-author
-;;     (propertize
-;;      (cdr (assoc 'creator nov-metadata))
-;;      'face 'doom-modeline-project-parent-dir))
-;;   (doom-modeline-def-segment nov-title
-;;     (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
-;;       (if (<= (length title) doom-modeline-nov-title-max-length)
-;;           (concat " " title)
-;;         (propertize
-;;          (concat " " (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
-;;          'help-echo title))))
-;;   (doom-modeline-def-segment nov-current-page
-;;     (let ((words (count-words (point-min) (point-max))))
-;;       (propertize
-;;        (format " %d/%d"
-;;                (1+ nov-documents-index)
-;;                (length nov-documents))
-;;        'face 'doom-modeline-info
-;;        'help-echo (if (= words 1) "1 word in this chapter"
-;;                     (format "%s words in this chapter" words)))))
+(after! doom-modeline
+  (defvar doom-modeline-nov-title-max-length 40)
+  (doom-modeline-def-segment nov-author
+    (propertize
+     (cdr (assoc 'creator nov-metadata))
+     'face (doom-modeline-face 'doom-modeline-project-parent-dir)))
+  (doom-modeline-def-segment nov-title
+    (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
+      (if (<= (length title) doom-modeline-nov-title-max-length)
+          (concat " " title)
+        (propertize
+         (concat " " (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
+         'help-echo title))))
+  (doom-modeline-def-segment nov-current-page
+    (let ((words (count-words (point-min) (point-max))))
+      (propertize
+       (format " %d/%d"
+               (1+ nov-documents-index)
+               (length nov-documents))
+       'face (doom-modeline-face 'doom-modeline-info)
+       'help-echo (if (= words 1) "1 word in this chapter"
+                    (format "%s words in this chapter" words)))))
+  (doom-modeline-def-segment scroll-percentage-subtle
+    (concat
+     (doom-modeline-spc)
+     (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
+                 'face (doom-modeline-face 'shadow)
+                 'help-echo "Buffer percentage")))
 
-;;   (doom-modeline-def-modeline 'nov
-;;     '(workspace-name window-number nov-author nov-title nov-current-page)
-;;     '(media-player misc-info major-mode time))
+  (doom-modeline-def-modeline 'nov
+    '(workspace-name window-number nov-author nov-title nov-current-page scroll-percentage-subtle)
+    '(media-player misc-info major-mode time))
 
-;;   (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
+  (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
 #+end_src
 
 ** Calculator
@@ -8449,6 +8460,12 @@ Oh, post-modern VM runs everything anywhere!
 (package! wat-mode :recipe (:host github :repo "devonsparks/wat-mode"))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package wat-mode
+  :config
+  )
+#+end_src
+
 ** Plaintext
 
 #+call: confpkg()
@@ -8623,7 +8640,7 @@ git diff chunk heading to something more useful than just the immediate line
 above the hunk --- like the parent heading.
 
 This can be achieved by first adding a new diff mode to git in =~/.config/git/attributes=
-#+begin_src fundamental
+#+begin_src gitattributes
 ,*.org   diff=org
 #+end_src
 
@@ -8752,36 +8769,36 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("title" . "𝙏")
           ("subtitle" . "𝙩")
           ("author" . "𝘼")
-          ("email" . #("" 0 1 (display (raise -0.14))))
+          ("email" . "")
           ("date" . "𝘿")
-          ("property" . "☸")
-          ("options" . "⌥")
+          ("property" . "󰠳")
+          ("options" . #("󰘵" 0 1 (display (height 0.75))))
           ("startup" . "⏻")
           ("macro" . "𝓜")
-          ("bind" . #("" 0 1 (display (raise -0.1))))
+          ("bind" . "󰌷")
           ("bibliography" . "")
-          ("print_bibliography" . #("" 0 1 (display (raise -0.1))))
+          ("print_bibliography" . "󰌱")
           ("cite_export" . "⮭")
-          ("print_glossary" . #("ᴬᶻ" 0 1 (display (raise -0.1))))
-          ("glossary_sources" . #("" 0 1 (display (raise -0.14))))
+          ("print_glossary" . "󰌱ᴬᶻ")
+          ("glossary_sources" . "󰒻")
           ("include" . "⇤")
           ("setupfile" . "⇚")
           ("html_head" . "🅷")
           ("html" . "🅗")
           ("latex_class" . "🄻")
-          ("latex_class_options" . #("🄻" 1 2 (display (raise -0.14))))
+          ("latex_class_options" . "🄻󰒓")
           ("latex_header" . "🅻")
           ("latex_header_extra" . "🅻⁺")
           ("latex" . "🅛")
           ("beamer_theme" . "🄱")
-          ("beamer_color_theme" . #("🄱" 1 2 (display (raise -0.12))))
+          ("beamer_color_theme" . "🄱󰏘")
           ("beamer_font_theme" . "🄱𝐀")
           ("beamer_header" . "🅱")
           ("beamer" . "🅑")
           ("attr_latex" . "🄛")
           ("attr_html" . "🄗")
           ("attr_org" . "⒪")
-          ("call" . #("" 0 1 (display (raise -0.15))))
+          ("call" . "󰜎")
           ("name" . "⁍")
           ("header" . "›")
           ("caption" . "☰")
@@ -10153,25 +10170,26 @@ Flycheck doesn't currently support Org, and there's aren't any packages to do so
 Surely this is what the clipboard was invented for? With that said, let's
 regurgitate the code, cross our fingers, and hope it works.
 
-#+begin_src emacs-lisp
-;; (defconst flycheck-org-lint-form
-;;   (flycheck-prepare-emacs-lisp-form
-;;     (require 'org)
-;;     (require 'org-attach)
-;;     (let ((source (car command-line-args-left))
-;;           (process-default-directory default-directory))
-;;       (with-temp-buffer
-;;         (insert-file-contents source 'visit)
-;;         (setq buffer-file-name source)
-;;         (setq default-directory process-default-directory)
-;;         (delay-mode-hooks (org-mode))
-;;         (setq delayed-mode-hooks nil)
-;;         (dolist (err (org-lint))
-;;           (let ((inf (cl-second err)))
-;;             (princ (elt inf 0))
-;;             (princ ": ")
-;;             (princ (elt inf 2))
-;;             (terpri)))))))
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(defconst flycheck-org-lint-form
+  (flycheck-prepare-emacs-lisp-form
+    (require 'org)
+    (require 'org-lint)
+    (require 'org-attach)
+    (let ((source (car command-line-args-left))
+          (process-default-directory default-directory))
+      (with-temp-buffer
+        (insert-file-contents source 'visit)
+        (setq buffer-file-name source)
+        (setq default-directory process-default-directory)
+        (delay-mode-hooks (org-mode))
+        (setq delayed-mode-hooks nil)
+        (dolist (err (org-lint))
+          (let ((inf (cl-second err)))
+            (princ (elt inf 0))
+            (princ ": ")
+            (princ (elt inf 2))
+            (terpri)))))))
 
 ;; (defconst flycheck-org-lint-variables
 ;;   '(org-directory
@@ -10183,28 +10201,42 @@ regurgitate the code, cross our fingers, and hope it works.
 ;;     org-link-parameters)
 ;;   "Variables inherited by the org-lint subprocess.")
 
-;; (defun flycheck-org-lint-variables-form ()
-;;   (require 'org-attach)  ; Needed to make variables available
-;;   `(progn
-;;      ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
-;;                 (seq-filter #'boundp flycheck-org-lint-variables))))
+(defconst flycheck-org-lint-babel-langs
+  '<<org-babel-list-langs()>>
+  "Languages that org-babel should know of.")
 
-;; (eval ; To preveant eager macro expansion form loading flycheck early.
-;;  '(flycheck-define-checker org-lint
-;;    "Org buffer checker using `org-lint'."
-;;    :command ("emacs" (eval flycheck-emacs-args)
-;;              "--eval" (eval (concat "(add-to-list 'load-path \""
-;;                                     (file-name-directory (locate-library "org"))
-;;                                     "\")"))
-;;              "--eval" (eval (flycheck-sexp-to-string
-;;                              (flycheck-org-lint-variables-form)))
-;;              "--eval" (eval (flycheck-sexp-to-string
-;;                              (flycheck-org-lint-customisations-form)))
-;;              "--eval" (eval flycheck-org-lint-form)
-;;              "--" source)
-;;    :error-patterns
-;;    ((error line-start line ": " (message) line-end))
-;;    :modes org-mode))
+(defun flycheck-org-lint-variables-form ()
+  (require 'org-attach)  ; Needed to make variables available
+  `(progn
+     ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
+                (seq-filter #'boundp flycheck-org-lint-variables))))
+
+(defun flycheck-org-lint-babel-langs-form ()
+  `(progn
+     ,@(mapcar
+        (lambda (lang)
+          `(defun ,(intern (format "org-babel-execute:%s" lang)) (_body _params)
+             "Stub for org-lint."))
+        flycheck-org-lint-babel-langs)))
+
+(eval ; To preveant eager macro expansion form loading flycheck early.
+ '(flycheck-define-checker org-lint
+   "Org buffer checker using `org-lint'."
+   :command ("emacs" (eval flycheck-emacs-args)
+             "--eval" (eval (concat "(add-to-list 'load-path \""
+                                    (file-name-directory (locate-library "org"))
+                                    "\")"))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-variables-form)))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-customisations-form)))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-babel-langs-form)))
+             "--eval" (eval flycheck-org-lint-form)
+             "--" source)
+   :error-patterns
+   ((error line-start line ": " (message) line-end))
+   :modes org-mode))
 #+end_src
 
 Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
@@ -10228,16 +10260,62 @@ added to Org as errors. So we need to tell ~org-lint~ about them without having 
 load my whole config. Code duplication isn't great, but at least this isn't
 much.
 
-#+name: org-syntax-modifications
-#+begin_src emacs-lisp :tangle no
-;; (defun flycheck-org-lint-customisations-form ()
-;;   `(progn
-;;      (require 'ox)
-;;      (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
-;;                  (org-export-backend-options (org-export-get-backend 'latex)))
-;;      (cl-pushnew '(:latex-font-set nil "fontset" nil)
-;;                  (org-export-backend-options (org-export-get-backend 'latex)))))
+#+begin_src emacs-lisp
+(defun flycheck-org-lint-customisations-form ()
+  `(progn
+     (require 'ox)
+     (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))
+     (cl-pushnew '(:latex-font-set nil "fontset" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))))
 #+end_src
+
+A larger annoyance is that org-lint doesn't actually know what languages
+org-babel should recognise, with Doom's lazy loading system. Since the list of
+languages should really only change when packages are added/removed, we might as
+well statically determine a list of all org-babel languages at configuration
+generation time.
+
+#+name: org-babel-list-langs
+#+begin_src emacs-lisp :noweb-ref none
+(let (langs)
+  (dolist (dir load-path)
+    (when (file-directory-p dir)
+      (dolist (file (directory-files dir t "\\.elc?$"))
+        (let ((basename (file-name-base file)))
+          (when (string-prefix-p "ob-" basename)
+            (ignore-errors
+              (require (intern basename) file t)))))))
+  (mapatoms
+   (lambda (symb)
+     (when (functionp symb)
+       (let ((name (symbol-name symb)))
+         (let ((fn (symbol-function symb)))
+           (when (symbolp fn)
+             (setq symb (symbol-function symb)
+                   fn (symbol-function symb)))
+           (when (and (string-suffix-p "-mode" name)
+                      (autoloadp fn))
+             (ignore-errors (autoload-do-load fn))))
+         (cond
+          ((string-prefix-p "org-babel-execute:" name)
+           (push (replace-regexp-in-string "^org-babel-execute:" "" name)
+                 langs))
+          ((and (string-suffix-p "-mode" name)
+                (provided-mode-derived-p
+                 symb 'prog-mode 'text-mode 'conf-mode))
+           (push (replace-regexp-in-string "-mode$" "" name)
+                 langs))))))
+   obarray)
+  (dolist (mode-mapping org-src-lang-modes)
+    (push (car mode-mapping) langs))
+  (mapcar #'intern
+          (sort (delete-dups langs) #'string<)))
+#+end_src
+
+This increases the tangle time by about 10--20%, but I think it's worth it to be
+extra thorough. If this really becomes a pain, we can always think about doing
+some sort of cache file based on the load-path/packages installed.
 
 *** Visuals
 
@@ -11979,27 +12057,71 @@ A LaTeX macro should make them trivial to create.
 #+name: org-latex-box-preamble
 #+begin_src LaTeX
 \ExplSyntaxOn
-\NewCoffin\Content
-\NewCoffin\SideRule
-\NewDocumentCommand{\defsimplebox}{O{\ding{117}} O{0.36em} m m m}{%
-  % #1 ding, #2 ding offset, #3 name, #4 colour, #5 default label
-  \definecolor{#3}{HTML}{#4}
-  \NewDocumentEnvironment{#3}{ O{#5} }
-  {\vcoffin_set:Nnw \Content { \linewidth }
-    \noindent \ignorespaces
-    \par\vspace{-0.7\baselineskip}%
-    \textcolor{#3}{#1}~\textcolor{#3}{\textbf{##1}}%
-    \vspace{-0.8\baselineskip}
-    \begin{addmargin}[1em]{1em}
-    }{%
-    \end{addmargin}
+\NewCoffin\SBXBaseline
+\NewCoffin\SBXHeader
+\NewCoffin\SBXContent
+\NewCoffin\SBXSideRule
+\newbox\SBXSplitBox
+\cs_new_protected:Nn \simplebox_start:nnn {
+  % #1 ding, #3 name, #4 label
+  \vcoffin_set:Nnn \SBXHeader { \linewidth - 1em } {
+  \noindent\textcolor{#2}{#1}~\textcolor{#2}{\textbf{#3}}}
+  \vcoffin_set:Nnw \SBXContent { \linewidth - 1.5em }
+}
+\cs_new_protected:Nn \simplebox_split_content:n {
+  % #1 name
+  \setbox\SBXSplitBox = \vbox:n { \vbox_unpack_drop:N \SBXContent }
+  \dim_set:Nn \l_tmpa_dim { \dim_eval:n { \dim_min:nn { \pagegoal } { \textheight } - \pagetotal - 2\baselineskip } }
+  \setbox0 = \vsplit\SBXSplitBox to \l_tmpa_dim
+  \vcoffin_set:Nnn \SBXContent { \CoffinWidth \SBXContent } { \box0 %
+    \vspace{-1.7\baselineskip}
+    \noindent\textcolor{#1}{\textbf{\ldots }}
+    \vspace*{-0.3\baselineskip}}
+}
+\cs_new_protected:Nn \simplebox_split_refill:nnnn {
+  % #1 ding, #2 ding offset, #3 name, #4 label
+  \simplebox_start:nnn {#1} {#3} {#4,\space{}\emph{continued}}
+  \vspace*{-0.2\baselineskip}
+  \vbox_unpack_drop:N \SBXSplitBox
+  \vcoffin_set_end:
+}
+\cs_new_protected:Nn \simplebox_typeset:nn {
+    % #1 name, #2 ding offset
+    \vcoffin_set:Nnn \SBXBaseline {0pt} {\vbox{}}
+    \SetHorizontalCoffin\SBXSideRule{\color{#1}\rule{1pt}{\dim_eval:n { \CoffinTotalHeight\SBXContent + \baselineskip }}}
+    \JoinCoffins*\SBXContent[l,t]\SBXSideRule[l,t](\dim_eval:n {#2 - 1em}, \dim_eval:n{\baselineskip - 0.5em})
+    \JoinCoffins*\SBXContent[l,t]\SBXHeader[l,B](-1em, 0.5\baselineskip)
+    \JoinCoffins*\SBXBaseline[l,T]\SBXContent[l,T]
     \vspace{-0.5\baselineskip}
+    \noindent\TypesetCoffin\SBXBaseline(\dim_eval:n { 1em - #2 + 1pt }, 0pt)
+    \vspace*{\CoffinTotalHeight\SBXContent}
+    \vspace{-0.08em} % Why on earth is this needed for baseline alignment!?
+}
+\cs_new_protected:Nn \simplebox_typeset_breakable:nnnn {
+    % #1 ding, #2 ding offset, #3 name, #4 label
+    \dim_set:Nn \l_tmpa_dim {\dim_eval:n { \CoffinTotalHeight\SBXContent + \baselineskip }}
+    \dim_set:Nn \l_tmpb_dim { \dim_eval:n { \dim_min:nn { \pagegoal } { \textheight } - \pagetotal - \baselineskip } }
+    \dim_compare:nNnTF {\l_tmpa_dim} > {\l_tmpb_dim} {
+      \simplebox_split_content:n {#3}
+      \simplebox_typeset:nn {#3} {#2}
+      \newpage
+      \simplebox_split_refill:nnnn {#1} {#2} {#3} {#4}
+      \simplebox_typeset_breakable:nnnn {#1} {#2} {#3} {#4}
+    }{
+      \simplebox_typeset:nn {#3} {#2}
+    }
+}
+\NewDocumentCommand{\defsimplebox}{O{\ding{117}} O{0.35em} O{#1} O{#2} m m m}{
+  % #1 ding, #2 ding offset, #3 alt-ding, #4 alt-ding offset,
+  % #5 name, #6 colour, #7 default label
+  \definecolor{#5}{HTML}{#6}
+  \NewDocumentEnvironment{#5}{ O{#7} }{
+    \simplebox_start:nnn {#1} {#5} {##1}
+  }{
     \vcoffin_set_end:
-    \SetHorizontalCoffin\SideRule{\color{#3}\rule{1pt}{\CoffinTotalHeight\Content}}
-    \JoinCoffins*\Content[l,t]\SideRule[l,t](#2,-0.7em)
-    \noindent\TypesetCoffin\Content
-    \vspace*{\CoffinTotalHeight\Content}\bigskip
-    \vspace{-2\baselineskip}}}
+    \simplebox_typeset_breakable:nnnn {#3} {#4} {#5} {##1}
+  }
+}
 \ExplSyntaxOff
 #+end_src
 
@@ -12233,7 +12355,17 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :order 0.2)
   (cleveref
    :condition "cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]"
-   :snippet "\\usepackage[capitalize]{cleveref}"
+   :snippet "\\usepackage[capitalize]{cleveref}
+% Fix for cleveref in order to work with long range of pages
+% See https://tex.stackexchange.com/a/620066
+\\makeatletter
+\\newcommand*{\\@setcpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{cref}{#3}}
+\\newcommand*{\\@setCpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{Cref}{#3}}
+\\newcommand*{\\@setlabelcpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{labelcref}{#3}}
+\\makeatother"
    :order 1)
   (caption
    :snippet org-latex-caption-preamble
@@ -13493,11 +13625,11 @@ able to handle anyway. For them we define a table of LaTeX translations
 | γ         | \(\gamma\)       |
 | δ         | \(\delta\)       |
 | ε         | \(\epsilon\)       |
-| ϵ         | \(\varepsilon\)       |
+| ϵ          | \(\varepsilon\)       |
 | ζ         | \(\zeta\)       |
 | η         | \(\eta\)       |
 | θ         | \(\theta\)       |
-| ϑ        | \(\vartheta\)      |
+| ϑ         | \(\vartheta\)       |
 | ι         | \(\iota\)       |
 | κ         | \(\kappa\)       |
 | λ         | \(\lambda\)       |
@@ -13512,7 +13644,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 | ς         | \(\varsigma\)       |
 | τ         | \(\tau\)       |
 | υ         | \(\upsilon\)       |
-| ϕ         | \(\phi\)      |
+| ϕ         | \(\phi\)       |
 | φ         | \(\varphi\)       |
 | ψ         | \(\psi\)       |
 | ω         | \(\omega\)       |
@@ -13527,7 +13659,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 | Φ         | \(\Phi\)       |
 | Ψ         | \(\Psi\)       |
 | Ω         | \(\Omega\)       |
-| א        | \(\aleph\)      |
+| א         | \(\aleph\)       |
 | ב         | \(\beth\)       |
 | ד         | \(\daleth\) |
 | ג         | \(\gimel\)       |
@@ -14647,9 +14779,6 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
   (after! org
     (setcdr (assoc "dot" org-src-lang-modes)
             'graphviz-dot)))
-
-(use-package! company-graphviz-dot
-  :after graphviz-dot-mode)
 #+end_src
 
 ** Markdown

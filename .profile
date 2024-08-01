@@ -136,6 +136,8 @@ export SCCACHE_CACHE_SIZE="30G"
 
 export PATH="/usr/local/opt/llvm@latest/bin:$PATH"
 
+export PATH="/usr/local/opt/zig/bin:$PATH"
+
 export JAVA_HOME=/lib/jvm/default/
 
 # for local tools
@@ -151,3 +153,5 @@ export OLLAMA_NUM_PARALLEL=4
 export NVCC_CCBIN=g++-13
 export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
 . "$HOME/.cargo/env"
+
+export PATH="/home/vitalyr/.local/share/solana/install/active_release/bin:$PATH"
