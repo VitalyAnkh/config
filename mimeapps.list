@@ -203,6 +203,7 @@ x-scheme-handler/tel=org.gnome.Shell.Extensions.GSConnect.desktop;
 x-scheme-handler/tg=userapp-Telegram Desktop-UUV3V0.desktop;userapp-Telegram Desktop-P2M6V1.desktop;org.telegram.desktop.desktop;
 x-scheme-handler/webcal=userapp-Daily-QJWA71.desktop;
 x-scheme-handler/webcals=userapp-Daily-QJWA71.desktop;
+x-scheme-handler/tonsite=org.telegram.desktop.desktop;
 
 [Default Applications]
 application/pdf=okularApplication_pdf.desktop
@@ -429,3 +430,4 @@ x-scheme-handler/thunder=Motrix.desktop
 x-scheme-handler/unknown=microsoft-edge-dev.desktop
 x-scheme-handler/webcal=userapp-Daily-QJWA71.desktop
 x-scheme-handler/webcals=userapp-Daily-QJWA71.desktop
+x-scheme-handler/tonsite=org.telegram.desktop.desktop

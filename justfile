@@ -292,6 +292,58 @@ install_latest_llvm:
   ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
 
+config_llvm_19:
+  #!/usr/bin/env bash
+  echo "==== config llvm-project ===="
+  cd $HOME/projects/dev/cpp/llvm-vr
+  git co -b release-19.x origin/release/19.x
+  git co release-19.x
+  git pull
+  # trash-put build
+  rm build/CMakeCache.txt
+  rm build/NATIVE/CMakeCache.txt
+  cmake -G Ninja -B build ./llvm \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DLLVM_CCACHE_BUILD=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@19 \
+    -DMLIR_ENABLE_CUDA_RUNNER=ON \
+    -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
+    -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl;bolt" \
+    -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
+    -DMLIR_ENABLE_BINDINGS_PYTHON="ON" \
+    -DMLIR_ENABLE_CUDA_RUNNER=1 \
+    -DMLIR_ENABLE_SYCL_RUNNER=1 \
+    -DMLIR_ENABLE_VULKAN_RUNNER=1 \
+    -DMLIR_ENABLE_SPIRV_CPU_RUNNER=1 \
+    -DLLVM_LIT_ARGS=-v \
+    -DLLVM_HAS_NVPTX_TARGET=1 \
+    -DLLVM_OPTIMIZED_TABLEGEN=ON \
+    -DLLVM_BUILD_UTILS=ON \
+    -DLLVM_BUILD_TOOLS=ON \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_USE_LINKER=mold \
+    -DCMAKE_CXX_STANDARD=17
+  cp build/runtimes/runtimes-bins/compile_commands.json ./
+  echo "==== config llvm-project done ===="
+
+install_llvm_19:
+  #!/usr/bin/env bash
+  echo "==== build llvm 19 ===="
+  cd $HOME/projects/dev/cpp/llvm-vr/build
+  cmake --build . -j10
+  cp ./runtimes/runtimes-bins/compile_commands.json ../
+  cmake --install $HOME/projects/dev/cpp/llvm-vr/build
+  echo "==== build llvm 19 done ===="
+
+llvm_19: config_llvm_19 install_llvm_19
+
 xla:
   #!/usr/bin/env bash
   echo "==== config xla ===="
