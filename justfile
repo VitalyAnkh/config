@@ -9,18 +9,19 @@ set shell := ["fish", "-c"]
 
 export JUST_LOG := log
 
-all: qemu linux servo mpv llvm mold taichi ghc blender godot rust bevy book chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib org verilator yosys egui
+all: qemu linux servo mpv llvm-emacs-tools mold taichi ghc blender godot rust bevy book chisel-book rocm ra wgpu wasmtime wlroots mutter riscv-gnu riscv-isa-sim emacs agda agda-stdlib org verilator yosys egui
 
-llvm:
+llvm-emacs-tools:
   #!/usr/bin/env bash
   echo "==== pull llvm-project ===="
   cd ~/projects/dev/cpp/llvm-project
   git pull
   cd ~/projects/dev/emacs-projects/llvm-tools
   cp ~/projects/dev/cpp/llvm-project/llvm/utils/emacs/*.el ./
+  cp ~/projects/dev/cpp/llvm-project/mlir/utils/emacs/*.el ./
   git add -A
-  git commit -m "up"
-  git push
+  # git commit -m "up"
+  # git push
   echo "==== pull llvm-project done ===="
 
 lean:
@@ -147,8 +148,8 @@ config_pytorch:
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
   export MAX_JOBS=12
-  export CC=/usr/local/opt/llvm@17/bin/clang
-  export CXX=/usr/local/opt/llvm@17/bin/clang++
+  export CC=clang
+  export CXX=clang++
   export LD=mold
   export BUILD_TEST=1
   export CUDAHOSTCXX="${NVCC_CCBIN}"
@@ -271,6 +272,9 @@ config_latest_llvm:
     -DMLIR_ENABLE_VULKAN_RUNNER=1 \
     -DMLIR_ENABLE_SPIRV_CPU_RUNNER=1 \
     -DMLIR_INCLUDE_INTEGRATION_TESTS=1 \
+    -DMLIR_ENABLE_CUDA_CUSPARSE=1 \
+    -DMLIR_RUN_CUDA_TENSOR_CORE_TESTS=1 \
+    -DRUN_NVPTX_TESTS=1 \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_HAS_NVPTX_TARGET=1 \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
@@ -280,6 +284,7 @@ config_latest_llvm:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
+    # -DMLIR_ENABLE_CUDA_CUSPARSELT=1 \
   cp build/runtimes/runtimes-bins/compile_commands.json ./
   echo "==== config llvm-project done ===="
 
@@ -717,6 +722,8 @@ pull: blender
   git pull
   cd $HOME/projects/dev/rust-projects/Ambient
   git pull
+  cd $HOME/projects/dev/rust-projects/avian
+  git pull
   cd $HOME/projects/dev/rust-projects/candle
   git pull
   cd $HOME/projects/dev/rust-projects/wgpu
@@ -921,9 +928,8 @@ godot:
   echo "==== pull godot ===="
   cd ~/projects/dev/cpp/godot
   git pull
-  time scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_miniupnpc=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no
-  # use_llvm=yes
-  #builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_miniupnpc=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no
+  time scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no use_llvm=yes use_static_cpp=no
+  #builtin_miniupnpc=no
   echo "==== pull godot done ===="
 
 v8:
