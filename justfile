@@ -249,7 +249,6 @@ config_latest_llvm:
   echo "==== config llvm-project ===="
   cd $HOME/projects/dev/cpp/llvm-project/
   git pull
-  # trash-put build
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
   cmake -G Ninja -B build ./llvm \
@@ -261,7 +260,6 @@ config_latest_llvm:
     -DLLVM_CCACHE_BUILD=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
-    -DMLIR_ENABLE_CUDA_RUNNER=ON \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
     -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl;bolt" \
@@ -274,7 +272,6 @@ config_latest_llvm:
     -DMLIR_INCLUDE_INTEGRATION_TESTS=1 \
     -DMLIR_ENABLE_CUDA_CUSPARSE=1 \
     -DMLIR_RUN_CUDA_TENSOR_CORE_TESTS=1 \
-    -DRUN_NVPTX_TESTS=1 \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_HAS_NVPTX_TARGET=1 \
     -DLLVM_OPTIMIZED_TABLEGEN=ON \
@@ -285,7 +282,6 @@ config_latest_llvm:
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
     # -DMLIR_ENABLE_CUDA_CUSPARSELT=1 \
-  cp build/runtimes/runtimes-bins/compile_commands.json ./
   echo "==== config llvm-project done ===="
 
 install_latest_llvm:
@@ -305,7 +301,6 @@ config_llvm_19:
   git co -b release-19.x origin/release/19.x
   git co release-19.x
   git pull
-  # trash-put build
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
   cmake -G Ninja -B build ./llvm \
@@ -336,7 +331,6 @@ config_llvm_19:
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
-  cp build/runtimes/runtimes-bins/compile_commands.json ./
   echo "==== config llvm-project done ===="
 
 install_llvm_19:
@@ -344,7 +338,6 @@ install_llvm_19:
   echo "==== build llvm 19 ===="
   cd $HOME/projects/dev/cpp/llvm-vr/build
   cmake --build . -j10
-  cp ./runtimes/runtimes-bins/compile_commands.json ../
   cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build llvm 19 done ===="
 
@@ -712,6 +705,9 @@ build_emacs_packages:
   # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50-cache.el
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/forge
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/with-editor
+  trash-put $HOME/.config/.emacs.d/.local/straight/repos/transient
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
