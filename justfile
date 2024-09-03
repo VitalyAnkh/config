@@ -148,9 +148,11 @@ config_pytorch:
   export USE_CUPTI_SO=ON  # make sure cupti.so is used as shared lib
   export TORCH_SHOW_CPP_STACKTRACES=1
   export MAX_JOBS=12
-  export CC=clang
-  export CXX=clang++
-  export LD=mold
+  export CC=/usr/bin/clang
+  export CXX=/usr/bin/clang++
+  # export LD=mold
+  export LD=ld.lld
+  export LDFLAGS=""
   export BUILD_TEST=1
   export CUDAHOSTCXX="${NVCC_CCBIN}"
   export CUDA_HOST_COMPILER="${CUDAHOSTCXX}"
@@ -255,8 +257,8 @@ config_latest_llvm:
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+    -DCMAKE_C_COMPILER=/usr/bin/clang \
     -DLLVM_CCACHE_BUILD=ON \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
@@ -289,7 +291,6 @@ install_latest_llvm:
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-project/build
   cmake --build . -j10
-  cp ./runtimes/runtimes-bins/compile_commands.json ../
   cmake --install $HOME/projects/dev/cpp/llvm-project/build
   ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
@@ -353,7 +354,6 @@ xla:
   ./configure.py --backend=CUDA --host_compiler=clang --nccl --clang_path=/usr/local/opt/llvm@17/bin/clang --gcc_path=/usr/bin/gcc
   bazel aquery "mnemonic(CppCompile, //xla/...)" --output=jsonproto | python3 build_tools/lint/generate_compile_commands.py
   bazel build --test_output=all //xla/... --experimental_repo_remote_exec --config=monolithic
-  # bazel build --spawn_strategy=sandboxed //xla/...
   echo "==== config xla done ===="
 
 stablehlo:
@@ -397,7 +397,7 @@ iree:
   cd $IREE_SRC_PATH
   git checkout main
   git submodule update --init
-  git pull
+  git pull --recurse-submodules
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
   # Recommended development options using clang and mold:
@@ -406,6 +406,7 @@ iree:
   proxychains -q pip install -r runtime/bindings/python/iree/runtime/build_requirements.txt
   cmake -G Ninja -B build -S . \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DIREE_ENABLE_WERROR_FLAG=OFF \
     -DIREE_ENABLE_ASSERTIONS=ON \
     -DIREE_ENABLE_SPLIT_DWARF=ON \
     -DIREE_ENABLE_THIN_ARCHIVES=ON \
@@ -434,7 +435,6 @@ config_llvm_for_triton:
   git checkout $(cat $TRITON_SRC_PATH/cmake/llvm-hash.txt)
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
-  # -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
@@ -583,18 +583,37 @@ duckdb:
   git pull
   CC=/usr/bin/clang CXX=/usr/bin/clang++ BUILD_JDBC=1 BUILD_ODBC=1 BUILD_SHELL=1 BUILD_PYTHON=1  GEN=ninja make relassert
 
+cutlass:
+  #!/usr/bin/env bash
+  export CUTLASS_SRC_PATH=$HOME/projects/dev/cpp/cutlass
+  cd $CUTLASS_SRC_PATH
+  git pull
+  mkdir -p build
+  rm build/CMakeCache.txt
+  cd build
+  # build for NVIDIA Ampere GPU Architecture
+  cmake ../ -G Ninja -DCUTLASS_NVCC_ARCHS=80 \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold"
+  cmake --build .
+  
 comfyui:
   #!/usr/bin/env bash
-  export COMFYUI_SRC_PATH=$HOME/projects/dev/cpp/duckdb
+  export COMFYUI_SRC_PATH=$HOME/projects/dev/ai/ComfyUI
   cd $COMFYUI_SRC_PATH
   git pull
 
 typst:
   #!/usr/bin/env bash
-  export TYPST_SRC_PATH=$HOME/projects/dev/cpp/triton
+  export TYPST_SRC_PATH=$HOME/projects/dev/rust-projects/typst
   cd $TYPST_SRC_PATH
   git pull
-  BUILD_PYTHON=1  GEN=ninja make relassert
 
 cpython:
   #!/usr/bin/env bash
@@ -602,7 +621,7 @@ cpython:
   cd $CPYTHON_SRC_PATH
   git pull
   CC=clang CXX=clang++ ./configure --with-pydebug --disable-gil
-  make -j8
+  make -j10
 
 jax:
   #!/usr/bin/env bash
@@ -613,7 +632,8 @@ jax:
   git pull
   # bazel run @hedron_compile_commands//:refresh_all
   #-- --config=cuda --config=cuda_plugin --config=nvcc_clang
-  python build/build.py --enable_cuda --build_gpu_plugin --gpu_plugin_cuda_version=12 --use_clang --clang_path /usr/local/opt/llvm@17/bin/clang --bazel_options=--override_repository=xla=$XLA_SRC_PATH
+  python build/build.py --enable_cuda --build_gpu_plugin --gpu_plugin_cuda_version=12 --use_clang --clang_path /usr/bin/clang
+  # --bazel_options=--override_repository=xla=$XLA_SRC_PATH
   pip install dist/*.whl --force-reinstall  # installs jaxlib (includes XLA)
   pip install -e .  --force-reinstall # installs jax
 
@@ -705,9 +725,9 @@ build_emacs_packages:
   # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50-cache.el
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/forge
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/with-editor
-  trash-put $HOME/.config/.emacs.d/.local/straight/repos/transient
+  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/forge
+  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/with-editor
+  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/transient
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
@@ -716,9 +736,11 @@ pull: blender
   git pull
   cd $HOME/projects/dev/cpp/pytorch
   git pull
-  cd $HOME/projects/dev/rust-projects/Ambient
-  git pull
+  # cd $HOME/projects/dev/rust-projects/Ambient
+  # git pull
   cd $HOME/projects/dev/rust-projects/avian
+  git pull
+  cd $HOME/projects/dev/rust-projects/typst
   git pull
   cd $HOME/projects/dev/rust-projects/candle
   git pull
@@ -1119,10 +1141,15 @@ linux:
   echo "=== pull linux ==="
   cd ~/projects/dev/linux
   git pull
-  make defconfig
+  make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+    OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \
+    READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \
+    HOSTLD=ld.lld
+    # defconfig
   ./scripts/clang-tools/gen_compile_commands.py
-  bear -- make -j12
-  echo "=== pull linux done ==="
+  # use virtme-ng
+  CC=clang HOSTCC=clang HOSTCXX=clang++ time vng --build --config .config
+  echo "=== pull and build linux done ==="
 
 ra:
   #!/usr/bin/env bash

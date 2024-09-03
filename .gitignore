@@ -5,8 +5,8 @@
 !albert/*
 !ardour6/
 !ardour6/*
-!aseprite/
-!aseprite/*
+# !aseprite/
+# !aseprite/*
 !autostart/
 !autostart/*
 !bleachbit/
@@ -105,6 +105,8 @@
 !.gitmodules
 !.pam_environment
 !.profile
+!.wine/
+!.wine/*
 !xiangshan_set_env.sh
 !xiangshan_unset_env.sh
 !yakuakerc

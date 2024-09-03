@@ -6,6 +6,8 @@ export XDG_DATA_HOME=$HOME/.local/share
 # for Doom Emacs
 export DOOMDIR=$XDG_CONFIG_HOME/doom
 
+export WINEPREFIX=$XDG_CONFIG_HOME/.wine
+
 # for fcitx5
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
@@ -81,7 +83,6 @@ export ANDROID_SDK_ROOT=/home/vitalyr/Android/Sdk
 export ANDROID_SDK_HOME=/home/vitalyr/Android/Sdk
 export ANDROID_AVD_HOME=$ANDROID_SDK_ROOT/avd
 
-
 export PATH="$PATH:/usr/bin:$HOME/sdk/lib/flutter/bin:$HOME/sdk/app/jetbrains:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.cabal/bin:$HOME/.ghcup/bin:$HOME/.local/share/coursier/bin"
 
 export SDK_DIR=$HOME/sdk
@@ -150,7 +151,8 @@ export PATH="/usr/local/bin:$PATH"
 
 export OLLAMA_NUM_PARALLEL=4
 
-export NVCC_CCBIN=g++-13
+export NVCC_CCBIN=/usr/bin/clang
+export CUDAHOSTCXX=$NVCC_CCBIN
 export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
 . "$HOME/.cargo/env"
 

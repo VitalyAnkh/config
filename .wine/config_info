@@ -1,0 +1,14 @@
+7.0-101
+/home/vitalyr/.local/share/Steam/steamapps/common/Proton - Experimental/files/share/fonts/
+/home/vitalyr/.local/share/Steam/steamapps/common/Proton - Experimental/files/lib/
+/home/vitalyr/.local/share/Steam/steamapps/common/Proton - Experimental/files/lib64/
+/home/vitalyr/.local/share/.steam/steam
+0
+0
+0
+/home/vitalyr/.local/share/Steam/steamapps/common/Proton - Experimental/files/share/default_pfx/
+1671653530.797182
+False
+True
+d3dcompiler_*.dll,d3dcsx*.dll,d3dx*.dll,x3daudio*.dll,xactengine*.dll,xapofx*.dll,xaudio*.dll,xinput*.dll,atl1*.dll,concrt1*.dll,msvcp1*.dll,msvcr1*.dll,vcamp1*.dll,vcomp1*.dll,vccorlib1*.dll,vcruntime1*.dll,ntdll.dll,vulkan-1.dll
+False
