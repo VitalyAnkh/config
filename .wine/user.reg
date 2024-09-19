@@ -1060,13 +1060,13 @@ WINE REGISTRY Version 2
 "OpenWithIcon"="81F5_winebrowser.0"
 "ProgID"="xmlfile"
 
-[Software\\Wine\\Fonts] 1724401988
-#time=1daf537153cdbce
+[Software\\Wine\\Fonts] 1725507651
+#time=1daff45678892de
 "Codepages"="936,936"
 "LogPixels"=dword:000000d8
 
-[Software\\Wine\\Fonts\\External Fonts] 1724401989
-#time=1daf537155786c2
+[Software\\Wine\\Fonts\\External Fonts] 1725507651
+#time=1daff45679fed26
 "@AdobeFangsongStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeFangsongStd.otf"
 "@AdobeHeitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeHeitiStd.otf"
 "@AdobeKaitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeKaitiStd.otf"

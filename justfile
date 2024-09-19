@@ -120,7 +120,7 @@ config_pytorch:
   # https://bugs.archlinux.org/task/64981
   patch -N torch/utils/cpp_extension.py "$XDG_CONFIG_HOME/patches/fix_include_system.patch"
   export VERBOSE=1
-  export PYTORCH_BUILD_VERSION="5.0.0rc"
+  export PYTORCH_BUILD_VERSION="5.0.0rc14"
   export PYTORCH_BUILD_NUMBER=1
   # Check tools/setup_helpers/cmake.py, setup.py and CMakeLists.txt for a list of flags that can be set via env vars.
   export ATEN_NO_TEST=ON  # do not build ATen tests
@@ -129,7 +129,7 @@ config_pytorch:
   # Caffe2 support was removed from pytorch with version 2.2.0
   export BUILD_CAFFE2=OFF
   export BUILD_CAFFE2_OPS=OFF
-  # export BUILD_SHARED_LIBS=OFF
+  export BUILD_SHARED_LIBS=OFF
   export USE_FFMPEG=ON
   export USE_GFLAGS=ON
   export USE_GLOG=ON
@@ -150,10 +150,13 @@ config_pytorch:
   export MAX_JOBS=12
   export CC=/usr/bin/clang
   export CXX=/usr/bin/clang++
-  # export LD=mold
-  export LD=ld.lld
-  export LDFLAGS=""
+  export CFLAGS+=" -fuse-ld=mold"
+  export CXXFLAGS+=" -fuse-ld=mold"
+  export LD=mold
+  # export CAFFE2_STATIC_LINK_CUDA=1
+  export LDFLAGS="-Wl,--as-needed"
   export BUILD_TEST=1
+  export NVCC_CCBIN=/usr/bin/clang++
   export CUDAHOSTCXX="${NVCC_CCBIN}"
   export CUDA_HOST_COMPILER="${CUDAHOSTCXX}"
   export CUDA_HOME=/opt/cuda
@@ -245,7 +248,6 @@ deploy_emacs:
   zip -r emacs.d.zip .emacs.d
   mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
 
-
 config_latest_llvm:
   #!/usr/bin/env bash
   echo "==== config llvm-project ===="
@@ -259,7 +261,11 @@ config_latest_llvm:
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DLLVM_CCACHE_BUILD=ON \
+    -DLLVM_USE_LINKER=mold \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
@@ -281,7 +287,6 @@ config_latest_llvm:
     -DLLVM_BUILD_TOOLS=ON \
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
     # -DMLIR_ENABLE_CUDA_CUSPARSELT=1 \
   echo "==== config llvm-project done ===="
@@ -441,6 +446,7 @@ config_llvm_for_triton:
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER=clang \
+    -DLLVM_USE_LINKER=mold \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_ENABLE_TERMINFO=OFF \
     -DCMAKE_BUILD_TYPE=Release \
@@ -456,7 +462,6 @@ config_llvm_for_triton:
     -DLLVM_BUILD_TOOLS=ON \
     -DLLVM_INSTALL_UTILS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DLLVM_USE_LINKER=mold \
     -DCMAKE_CXX_STANDARD=17
   echo "==== config llvm-project for triton done ===="
 
@@ -583,6 +588,22 @@ duckdb:
   git pull
   CC=/usr/bin/clang CXX=/usr/bin/clang++ BUILD_JDBC=1 BUILD_ODBC=1 BUILD_SHELL=1 BUILD_PYTHON=1  GEN=ninja make relassert
 
+kvrocks:
+  #!/usr/bin/env bash
+  export KVROCKS_SRC_PATH=$HOME/projects/dev/cpp/kvrocks
+  cd $KVROCKS_SRC_PATH
+  git pull
+  mkdir -p build
+  rm build/CMakeCache.txt
+  ./x.py build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -j12 \
+      -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+      -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+      -DCMAKE_CXX_COMPILER=clang++ \
+      -DCMAKE_C_COMPILER=clang \
+      -DCMAKE_EXE_LINKER_FLAGS_INIT="-latomic_ops -fuse-ld=mold" \
+      -DCMAKE_MODULE_LINKER_FLAGS_INIT="-latomic_ops -fuse-ld=mold" \
+      -DCMAKE_SHARED_LINKER_FLAGS_INIT="-latomic_ops -fuse-ld=mold"
+  
 cutlass:
   #!/usr/bin/env bash
   export CUTLASS_SRC_PATH=$HOME/projects/dev/cpp/cutlass
@@ -689,6 +710,7 @@ triton_wheel:
   export LLVM_LIBRARY_DIR=$LLVM_ROOT_DIR/lib
   export LLVM_SYSPATH=$LLVM_ROOT_DIR
   export TRITON_BUILD_PROTON=1
+  export LD=mold
   # export DEBUG=1
   cd $HOME/projects/dev/cpp/triton
   # git clean -fdx
@@ -725,9 +747,6 @@ build_emacs_packages:
   # trash-put $HOME/.config/.emacs.d/.local/straight/repos/org
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50-cache.el
   trash-put $HOME/.config/.emacs.d/.local/straight/repos/build-31.0.50
-  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/forge
-  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/with-editor
-  # trash-put $HOME/.config/.emacs.d/.local/straight/repos/transient
   $HOME/.config/.emacs.d/bin/doom sync
 
 pull: blender
@@ -749,7 +768,7 @@ pull: blender
   cd $HOME/projects/dev/rust-projects/rust-analyzer
   git pull
   cd $HOME/projects/dev/rust-projects/rust
-  git pull --recursive-submodules
+  git pull --recurse-submodules
   cd $HOME/projects/dev/bevy
   git pull
   cd $HOME/projects/dev/rust-projects/naga
@@ -798,7 +817,6 @@ build_local_emacs:
   mksrcinfo
   makepkg -si
   # proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force
-  #proxychains -q $HOME/.config/.emacs.d/bin/doom upgrade --force
 
 test_local_emacs: trash_emacs_cache build_local_emacs
 
@@ -831,16 +849,22 @@ mold:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/mold
   git pull
-
-config_mold:
-  #!/usr/bin/env bash
-  cd $HOME/projects/dev/cpp/mold
-  mkdir build
+  git submodule update --init --recursive
+  mkdir -p build
+  # rm build/CMakeCache.txt
   cd build
-  CXXFLAGS="-fuse-ld=mold" CC=clang CXX=clang++ cmake -G "Ninja" \
+  cmake -G "Ninja" \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=mold" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DCMAKE_BUILD_TYPE=Debug ../
-
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
+  time cmake --build . -j10
+ 
 build_circt:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/circt/llvm/build

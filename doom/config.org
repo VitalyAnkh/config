@@ -1747,7 +1747,7 @@ hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;indent-guides              ; highlighted indent columns, notoriously slow
 (ligatures
  ;;+extra
- )           ; ligatures and symbols to make your code pretty again
+)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
 ;; nav-flash                    ; blink the current line after jumping
@@ -1756,8 +1756,8 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-(tabs                      ; an tab bar for Emacs
- +centaur-tabs)           ; ... with prettier tabs
+(tabs                        ; an tab bar for Emacs
+ +centaur-tabs)              ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 (vc-gutter +pretty)          ; vcs diff in the fringe
@@ -1789,7 +1789,7 @@ word-wrap                  ; soft wrapping with language-aware indent
 #+begin_src emacs-lisp
 (dired
  +dirvish
- ;;+icons
+ +icons
  )               ; making dired pretty [functional]
 electric                     ; smarter, keyword-based electric-indent
 (ibuffer +icons)             ; interactive buffer management
@@ -1802,7 +1802,7 @@ vc                           ; version-control and Emacs, sitting in a tree
 ;;eshell                     ; the elisp shell that works everywhere
 ;;shell                      ; simple shell REPL for Emacs
 ;;term                       ; basic terminal emulator for Emacs
-;; vterm                        ; the best terminal emulation in Emacs
+;;vterm                        ; the best terminal emulation in Emacs
 #+end_src
 
 #+name: doom-checkers
@@ -1816,8 +1816,9 @@ vc                           ; version-control and Emacs, sitting in a tree
 #+begin_src emacs-lisp
 ;; ansible                      ; a crucible for infrastructure as code
 biblio                       ; Writes a PhD for you (citation needed)
-debugger                   ; FIXME stepping through code, to help you add bugs
-;; direnv                     ; be direct about your environment
+;;collab                     ; buffers with friends
+debugger                     ; FIXME stepping through code, to help you add bugs
+;;direnv                     ; be direct about your environment
 docker                       ; port everything to containers
 editorconfig               ; let someone else argue about tabs vs spaces
 ein                        ; tame Jupyter notebooks with emacs
@@ -1827,7 +1828,6 @@ ein                        ; tame Jupyter notebooks with emacs
  ;; +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
 lsp                          ; Language Server Protocol
-;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  ;;+forge
  )                     ; interface with git forges
@@ -1835,14 +1835,17 @@ make                         ; run make tasks from Emacs
 ;;pass                       ; password manager for nerds
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
-;; terraform                  ; infrastructure as code
-;;tmux                       ; an API for interacting with tmux
-tree-sitter                ; syntax and parsing, sitting in a tree...
+;;rgb                          ; creating color strings
+;;taskrunner                 ; taskrunner for all your projects
+;;terraform                  ; infrastructure as code
+tmux                         ; an API for interacting with tmux
+tree-sitter                  ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
 #+name: doom-os
 #+begin_src emacs-lisp
+(:if (featurep :system 'macos) macos) ; improve compatibility with macOS
 tty                          ; improve the terminal Emacs experience
 #+end_src
 
@@ -1861,7 +1864,7 @@ associated file.
 common-lisp                ; if you've seen one lisp, you've seen them all
 coq                        ; proofs-as-programs
 ;;crystal                    ; ruby at the speed of c
-;;csharp                     ; unity, .NET, and mono shenanigans
+(csharp +lsp +tree-sitter)                     ; unity, .NET, and mono shenanigans
 data                         ; config/data formats
 (dart +flutter)            ; paint ui and not much else
 ;;dhall                      ; JSON with FP sprinkles
@@ -1873,7 +1876,7 @@ ess                          ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
-;;gdscript                   ; the language you waited for
+(gdscript +lsp +tree-sistter)                   ; the language you waited for
 (graphql +lsp)             ; Give queries a REST
 (go +lsp +tree-sitter)                    ; the hipster dialect
 (haskell +lsp +tree-sitter)             ; a language that's lazier than I am
@@ -1916,7 +1919,7 @@ markdown                     ; writing docs for people to ignore
 (raku +lsp +tree-sitter)                      ; the artist formerly known as perl6
 rest                       ; Emacs as a REST client
 rst                        ; ReST in peace
-(ruby +rails +tree-sitter)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+;; (ruby +rails +tree-sitter)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
 (rust +lsp +tree-sitter)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
 (scala +lsp +tree-sitter)                      ; java, but good
 scheme                       ; a fully conniving family of lisps
@@ -3647,6 +3650,20 @@ Now let's just have this included when an ErgoDox is found via =dmesg=.
 <<avy-detect-colemak()>>
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package avy
+  :config
+  (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a))
+  (keymap-global-set "M-n"  'avy-goto-char-2)
+  ;; unbind org-cycle-agenda-files from org-mode-map
+  (map! :after org
+      :map org-mode-map
+      "M-n" #'avy-goto-char-2)
+  (map! :after consult
+      "M-n" #'avy-goto-char-2)
+)
+#+end_src
+
 *** Rotate (window management)
 #+call: confpkg("!Pkg Rotate")
 
@@ -3776,6 +3793,10 @@ like to locate in my Doom config folder.
 (use-package embark
   :config
   (keymap-global-set "C-," 'embark-act)
+  ;; unbind org-cycle-agenda-files from org-mode-map
+  (map! :after org
+        :map org-mode-map
+        "C-," #'embark-act)
   ;; TODO: this doesn't work
   ;; file one wayland to open a file with external programs
   ;; (map minibuffer-local-map
@@ -10534,7 +10555,7 @@ While we're at it we may as well make tags prettier as well 🙂
 
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
-(setq org-highlight-latex-and-related '(native script entities))
+(setq org-highlight-latex-and-related '(latex script entities))
 #+end_src
 
 However, by using =native= highlighting the =org-block= face is added, and that
@@ -10605,8 +10626,8 @@ let's make it transparent.
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
-|------------+---------------|
-| 135 \pm 2 ms | 215 \pm 3 ms    |
+|------------+----------------|
+| 135 \pm 2 ms | 215 \pm 3 ms     |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~.
@@ -10617,10 +10638,10 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time | Resulting file size |
-|--------------------+------------+---------------------|
-| ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
-| ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
+| Tool chain          | Total time | Resulting file size |
+|---------------------+------------+---------------------|
+| ~latex~ + ~dvipng~      | 226 \pm 2 ms | 7 KiB               |
+| ~latex~ + ~dvisvgm~     | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
@@ -13791,11 +13812,11 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | amsmath    | A near-essential maths package                        |
 | booktabs   | Nice horizontal lines in tables                       |
 | cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                               |
+| capt-of    | Captions outside floats                              |
 | caption    | Finer control over captions                           |
 | cleveref   | Easy cross-referencing                                |
 | embedall   | Embed files in the document                           |
-| float      | Floating environments                                 |
+| float     | Floating environments                                 |
 | fontenc    | Font encodings                                        |
 | fvextra    | Enhanced verbatim environments                        |
 | graphicx   | An extended graphics package                          |
@@ -13811,7 +13832,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 | preview    | Needed for AUCTeX and ob-latex                        |
 | scrbase    | KOMA classes and more                                 |
 | siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                 |
+| soul       | Strikethrough and underline, flexibly                |
 | subcaption | Form subfigures and subcaptions                       |
 | svg        | Insert SVG images                                     |
 | tikz       | Generally handy, as a dependancy and for graphics     |
@@ -14618,6 +14639,14 @@ In case of Emacs28:
 #+begin_src emacs-lisp
 (when (>= emacs-major-version 28)
   (add-hook 'latex-mode-hook #'TeX-latex-mode))
+#+end_src
+
+With Emacs 29.4
+
+#+begin_src emacs-lisp
+(when (and (= emacs-major-version 29) (= emacs-minor-version 4))
+  (after! auctex ; See <https://github.com/minad/vertico/discussions/475>
+    (fmakunbound 'ConTeXt-mode)))
 #+end_src
 
 ** Python
