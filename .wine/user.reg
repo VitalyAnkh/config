@@ -924,9 +924,21 @@ WINE REGISTRY Version 2
 "d3d9"="native"
 "dxgi"="native"
 
-[Software\\Wine\\Drivers] 1724401834
-#time=1daf536b9088d3a
+[Software\\Wine\\Drivers] 1727174253
+#time=1db0e6dc39c3e0e
 "Graphics"="x11,wayland"
+
+[Software\\Wine\\Drivers\\winepulse.drv\\devices\\0,alsa_output.pci-0000_00_1f.3.analog-stereo] 1727174253
+#time=1db0e6dc39c3f9e
+"guid"=hex:32,f3,01,55,61,22,0b,49,ae,13,f9,c4,40,56,91,95
+
+[Software\\Wine\\Drivers\\winepulse.drv\\devices\\1,alsa_input.pci-0000_00_1f.3.analog-stereo] 1727174253
+#time=1db0e6dc39c6dde
+"guid"=hex:db,69,c2,ef,71,10,8f,4a,94,0b,09,00,17,8e,25,ec
+
+[Software\\Wine\\Drivers\\winepulse.drv\\devices\\1,alsa_output.pci-0000_00_1f.3.analog-stereo.monitor] 1727174253
+#time=1db0e6dc39c5dbc
+"guid"=hex:33,47,f3,08,25,99,22,46,ba,cc,05,f0,7b,13,84,1e
 
 [Software\\Wine\\FileOpenAssociations] 1628395427
 #time=1d78c0a631139ec
@@ -1060,13 +1072,13 @@ WINE REGISTRY Version 2
 "OpenWithIcon"="81F5_winebrowser.0"
 "ProgID"="xmlfile"
 
-[Software\\Wine\\Fonts] 1725507651
-#time=1daff45678892de
+[Software\\Wine\\Fonts] 1728381035
+#time=1db19678598717c
 "Codepages"="936,936"
 "LogPixels"=dword:000000d8
 
-[Software\\Wine\\Fonts\\External Fonts] 1725507651
-#time=1daff45679fed26
+[Software\\Wine\\Fonts\\External Fonts] 1728381035
+#time=1db196785c49a5e
 "@AdobeFangsongStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeFangsongStd.otf"
 "@AdobeHeitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeHeitiStd.otf"
 "@AdobeKaitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeKaitiStd.otf"

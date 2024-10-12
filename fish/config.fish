@@ -30,7 +30,7 @@ abbr -a -- ll 'lsd -l'
 abbr -a -- xtg set\ http_proxy\ http://127.0.0.1:1080\;\ set\ https_proxy\ http_proxy\;\ echo\ \"HTTP\ Proxy\ on\"\;\ env\ QT_QPA_PLATFORM=\'\'\ telegram-desktop
 abbr -a -- e LANG=en_US.UTF8
 abbr -a -- pqp 'proxychains -q paru'
-abbr -a -- sp 'set socks_proxy socks5://127.0.0.1:1080; set http_proxy http://127.0.0.1:8118; set https_proxy $http_proxy; echo "Socks5 Proxy on";'
+abbr -a -- sp 'set socks_proxy socks5://127.0.0.1:8765; set http_proxy http://127.0.0.1:8765; set https_proxy $http_proxy; echo "Socks5 Proxy on";'
 abbr -a -- doom '$HOME/.config/.emacs.d/bin/doom'
 abbr -a -- pqd 'proxychains -q $HOME/.config/.emacs.d/bin/doom'
 abbr -a -- pdc 'http_proxy=socks5://127.0.0.1:1080 https_proxy=socks5://127.0.0.1:1080 discord --proxy-server="socks5://127.0.0.1:1080"'
@@ -44,7 +44,6 @@ abbr -a -- eman 'LANG=en_US.UTF8 man'
 abbr -a -- hp 'http_proxy=socks5://127.0.0.1:1080 https_proxy=socks5://127.0.0.1:1080'
 abbr -a -- rm 'echo "This is not the command you are looking for."; false'
 abbr -a -- pzl 'http_proxy=socks5://127.0.0.1:1080 https_proxy=socks5://127.0.0.1:1080 zulip --proxy-server="socks5://127.0.0.1:1080"'
-abbr -a -- setproxy 'set socks_proxy socks5://127.0.0.1:1080; echo "Socks5 Proxy on";'
 abbr -a -- tg telegram-desktop
 abbr -a -- usp 'set -e socks_proxy; echo "Socks Proxy off";'
 abbr -a -- rm_llvm_env 'set PATH (string match -v /home/vitalyr/projects/dev/cpp/llvm-project/build/bin $PATH)'

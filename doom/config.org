@@ -1373,31 +1373,29 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 (unpin! straight)
 (unpin! embark)
 (unpin! centaur-tabs)
-(unpin! lsp-metals)
 (unpin! elisp-tree-sitter)
 (unpin! git-gutter)
 (unpin! code-review)
-(unpin! lsp-haskell)
-(unpin! lsp-java)
 (unpin! ox-hugo)
-(unpin! lsp-mode)
 (unpin! dap-mode)
 (package! multiple-cursors :disable t)
 (package! benchmark-init :recipe (:host github :repo "dholm/benchmark-init-el"))
 (package! org-pretty-tags)
-(package! yasnippet)
-(package! org-xlatex :recipe
-  (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
 (unpin! yaml)
+(unpin! haskell-mode)
 (package! magit :recipe (:branch "main"))
 (package! ghub :recipe (:branch "main"))
-(package! multiple-cursors :disable t)
-(unpin! lsp-treemacs)
-(unpin! haskell-mode)
-(unpin! treemacs)
+(unpin! lsp-metals)
+(unpin! lsp-haskell)
+(unpin! lsp-java)
+(unpin! lsp-mode)
+(unpin! dirvish)
 (package! treemacs-nerd-icons :disable t)
-;; (unpin! treemacs-nerd-icons)
-;; (unpin! dirvish)
+(unpin! treemacs)
+(unpin! lsp-treemacs)
+(unpin! treemacs-nerd-icons)
+;; (package! org-xlatex :recipe
+;;   (:host github :repo "ksqsf/org-xlatex" :files ("*.el" "*.html")))
 ;;(package! consult-recoll)
 #+end_src
 
@@ -1443,9 +1441,9 @@ This is a place I put workarounds. It should be empty in the best scenarios.
 ;;     (overlay-put ov 'display (cons 'image new-img))))
 ;; (advice-add 'org--make-preview-overlay
 ;;             :after #'my-org-latex-preview-advice)
-(use-package org-xlatex
-  :after (org)
-  :hook (org-mode . org-xlatex-mode))
+;; (use-package org-xlatex
+;;   :after (org)
+;;   :hook (org-mode . org-xlatex-mode))
 #+end_src
 
 
@@ -8154,14 +8152,17 @@ Programming in Emacs relys on =LSP=: Language Server Protocol. But the lsp clien
 
 #+begin_src emacs-lisp
 (use-package lsp-mode
-  :custom
-  (map! :leader
+  :config
+  (after! lsp-treemacs
+      (map! :leader
         (:prefix "t"
          :desc "lsp treemacs symbols" "s" #'lsp-treemacs-symbols))
+  )
+  :custom
   (lsp-enable-file-watchers nil)
   (lsp-treemacs-sync-mode)
   (lsp-ui-doc-position "Bottom")
-  (lsp-keep-workspace-alive nil)
+  (lsp-keep-workspace-alive t)
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-enable nil)
   (lsp-enable-symbol-highlighting nil)
@@ -8317,7 +8318,8 @@ Autoload =f90-mode= on =cuf= / =CUF= files.
             c-mode
             f90-mode
             javascript-mode
-            org-msg-edit-mode)) ; doesn't need a formatter
+            org-msg-edit-mode ; doesn't need a formatter
+            sh-mode))
 #+end_src
 ** CUDA
 

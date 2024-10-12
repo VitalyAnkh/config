@@ -43,7 +43,6 @@ lean:
     -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo
   make -C build -j$(nproc)
-  # cp compile_commands.events.json compile_commands.json
 
 config_torch_mlir_with_external_project:
   #!/usr/bin/env bash
@@ -751,6 +750,8 @@ build_emacs_packages:
 
 pull: blender
   #!/usr/bin/env bash
+  cd $HOME/projects/dev/rust-projects/egui
+  git pull
   cd $HOME/projects/dev/cpp/triton
   git pull
   cd $HOME/projects/dev/cpp/pytorch
