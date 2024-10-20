@@ -149,8 +149,8 @@ config_pytorch:
   export MAX_JOBS=12
   export CC=/usr/bin/clang
   export CXX=/usr/bin/clang++
-  export CFLAGS+=" -fuse-ld=mold"
-  export CXXFLAGS+=" -fuse-ld=mold"
+  # export CFLAGS+=" -fuse-ld=mold"
+  # export CXXFLAGS+=" -fuse-ld=mold"
   export LD=mold
   # export CAFFE2_STATIC_LINK_CUDA=1
   export LDFLAGS="-Wl,--as-needed"
@@ -759,6 +759,8 @@ pull: blender
   # cd $HOME/projects/dev/rust-projects/Ambient
   # git pull
   cd $HOME/projects/dev/rust-projects/avian
+  git pull
+  cd $HOME/projects/dev/rust-projects/bevy_editor_prototypes
   git pull
   cd $HOME/projects/dev/rust-projects/typst
   git pull
