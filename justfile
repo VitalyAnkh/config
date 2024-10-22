@@ -571,7 +571,7 @@ zig:
 update:
   #!/usr/bin/env bash
   rustup update
-  elan update
+  elan toolchain install nightly
   cs update
   opam update
   opam upgrade
