@@ -413,7 +413,12 @@ iree:
     -DIREE_ENABLE_WERROR_FLAG=OFF \
     -DIREE_ENABLE_ASSERTIONS=ON \
     -DIREE_ENABLE_SPLIT_DWARF=ON \
+    -DIREE_ENABLE_RUNTIME_TRACING=ON \
     -DIREE_ENABLE_THIN_ARCHIVES=ON \
+    -DIREE_HAL_DRIVER_CUDA=ON \
+    -DIREE_HAL_DRIVER_VULKAN=ON \
+    -DIREE_TARGET_BACKEND_DEFAULTS=ON \
+    -DIREE_INPUT_STABLEHLO=ON \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
@@ -424,6 +429,8 @@ iree:
     -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold"
   cmake --build build
+  cmake --build build --target iree-test-deps
+  ctest -R build/tests/e2e/linalg/conv2d.mlir
   echo "==== config iree done ===="
 
 config_llvm_for_triton:
