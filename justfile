@@ -229,12 +229,12 @@ llama:
   git checkout master
   git pull
   trash-put build
-    # -DCMAKE_CXX_COMPILER=clang++ \
-    # -DCMAKE_C_COMPILER=clang \
   cmake -G Ninja -B build ./ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_C_COMPILER=clang \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH"
   cd build

@@ -70,6 +70,8 @@
 !paru/*
 !patches
 !patches/*
+!rio/
+!rio/*
 !sccache/
 !sccache/*
 !sway/
