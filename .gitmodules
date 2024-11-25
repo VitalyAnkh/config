@@ -19,3 +19,6 @@
 [submodule "emacs/profiles/ksqsf"]
 	path = emacs/profiles/ksqsf
 	url = git@github.com:ksqsf/emacs-config.git
+[submodule "doom"]
+	path = doom
+	url = git@github.com:VitalyAnkh/doom.git
