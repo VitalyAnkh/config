@@ -431,3 +431,5 @@ x-scheme-handler/unknown=microsoft-edge-dev.desktop
 x-scheme-handler/webcal=userapp-Daily-QJWA71.desktop
 x-scheme-handler/webcals=userapp-Daily-QJWA71.desktop
 x-scheme-handler/tonsite=org.telegram.desktop.desktop
+clash=clash-verge-handler.desktop
+clash-verge=clash-verge-handler.desktop
