@@ -156,4 +156,6 @@ export CUDAHOSTCXX=$NVCC_CCBIN
 export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
 . "$HOME/.cargo/env"
 
+export JAX_DUMP_IR_TO=$XDG_CACHE_HOME/jax
+
 export PATH="/home/vitalyr/.local/share/solana/install/active_release/bin:$PATH"

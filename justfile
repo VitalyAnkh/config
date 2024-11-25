@@ -294,7 +294,7 @@ install_latest_llvm:
   #!/usr/bin/env bash
   echo "==== build newest llvm ===="
   cd $HOME/projects/dev/cpp/llvm-project/build
-  cmake --build . -j10
+  cmake --build . -j$(nproc)
   cmake --install $HOME/projects/dev/cpp/llvm-project/build
   ln -s /usr/local/opt/llvm@latest /usr/local/opt/llvm
   echo "==== build newest llvm done ===="
@@ -342,7 +342,7 @@ install_llvm_19:
   #!/usr/bin/env bash
   echo "==== build llvm 19 ===="
   cd $HOME/projects/dev/cpp/llvm-vr/build
-  cmake --build . -j10
+  cmake --build . -j$(nproc)
   cmake --install $HOME/projects/dev/cpp/llvm-vr/build
   echo "==== build llvm 19 done ===="
 
@@ -475,7 +475,7 @@ install_llvm_for_triton:
   #!/usr/bin/env bash
   echo "==== build llvm for triton ===="
   cd $HOME/projects/dev/cpp/llvm-triton/build
-  cmake --build . -j20
+  cmake --build . -j$(nproc)
   cmake --install $HOME/projects/dev/cpp/llvm-triton/build
   echo "==== build llvm for triton done ===="
 
@@ -501,7 +501,7 @@ cuda_play:
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_CXX_STANDARD=23 \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" ../
-  time ninja all -j12
+  time ninja all -j$(nproc)
   echo "==== config CUDA play done ===="
 
 harfbuzz:
@@ -601,7 +601,7 @@ kvrocks:
   git pull
   mkdir -p build
   rm build/CMakeCache.txt
-  ./x.py build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -j12 \
+  ./x.py build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -j$(nproc) \
       -DCMAKE_C_COMPILER_LAUNCHER=sccache \
       -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
       -DCMAKE_CXX_COMPILER=clang++ \
@@ -648,7 +648,7 @@ cpython:
   cd $CPYTHON_SRC_PATH
   git pull
   CC=clang CXX=clang++ ./configure --with-pydebug --disable-gil
-  make -j10
+  make -j$(nproc)
 
 jax:
   #!/usr/bin/env bash
@@ -814,7 +814,7 @@ yosys:
   #!/usr/bin/env bash
   cd $HOME/projects/dev/cpp/yosys
   git pull
-  bear -- make -j12
+  bear -- make -j$(nproc)
 
 build_local_emacs:
   #!/usr/bin/env bash
@@ -873,7 +873,7 @@ mold:
   -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
-  time cmake --build . -j10
+  time cmake --build . -j$(nproc)
  
 build_circt:
   #!/usr/bin/env bash
@@ -907,7 +907,7 @@ circt:
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-  ninja -j12
+  ninja all
   ninja check-mlir
   # build circt
   mkdir -p $HOME/projects/dev/cpp/circt/build
@@ -953,8 +953,8 @@ ghc:
   git pull --recurse-submodules
   ./boot
   ./configure
-  bear -- make -j20
-  make install -j20
+  bear -- make -j$(nproc)
+  make install -j$(nproc)
   echo "==== pull ghc done ===="
 
 # echo "==== pull Unreal Engine ===="
@@ -980,7 +980,7 @@ godot:
   echo "==== pull godot ===="
   cd ~/projects/dev/cpp/godot
   git pull
-  time scons platform=linuxbsd -j 12 target=editor compiledb=true linker=mold debug_symbols=yes builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no use_llvm=yes use_static_cpp=no
+  time scons platform=linuxbsd -j $(nproc) target=editor compiledb=true linker=mold debug_symbols=yes builtin_embree=no builtin_enet=no builtin_freetype=no builtin_graphite=no builtin_harfbuzz=no builtin_libogg=no builtin_libpng=no builtin_libtheora=no builtin_libvorbis=no builtin_libwebp=no builtin_mbedtls=no builtin_pcre2=no builtin_zlib=no builtin_zstd=no use_llvm=yes use_static_cpp=no
   #builtin_miniupnpc=no
   echo "==== pull godot done ===="
 
@@ -1060,7 +1060,7 @@ riscv-isa-sim:
   mkdir build
   cd build
   ../configure --prefix=$RISCV
-  bear -- make -j12
+  bear -- make -j$(nproc)
   echo "==== pull riscv-isa-sim done ===="
 
 qemu:
@@ -1072,7 +1072,7 @@ qemu:
   # mkdir build
   # cd build
   # ../configure --prefix=$RISCV
-  # bear -- make -j12
+  # bear -- make -j$(nproc)
   echo "==== pull qemu ===="
 
 blender:
@@ -1097,7 +1097,7 @@ blender:
   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
   -DWITH_CLANG=ON \
   -DWITH_LINKER_MOLD=ON ../blender
-  #ninja -j12
+  #ninja -j$(nproc)
   #developer ccache
   cp ./compile_commands.json ../blender
   echo "==== pull blender done ===="
@@ -1132,7 +1132,7 @@ riscv-gnu:
   cd ~/projects/dev/c/riscv-gnu-toolchain
   git pull --recurse-submodules
   ./configure --prefix=/opt/riscv
-  make linux -j12
+  make linux -j$(nproc)
   echo "==== pull riscv-gnu-toolchain done ===="
 
 deno:
@@ -1167,7 +1167,7 @@ emacs:
   --with-json \
   --with-pgtk \
   --with-xwidgets
-  bear -- make DESTDIR=./build -j20
+  bear -- make DESTDIR=./build -j$(nproc)
   echo "=== pull emacs done ==="
 
 linux:
@@ -1245,7 +1245,7 @@ verilator:
   git pull
   autoconf
   ./configure
-  bear -- make -j12 objdir=./build
+  bear -- make -j$(nproc) objdir=./build
   echo "==== pull verilator done ===="
 
 chisel-book:
