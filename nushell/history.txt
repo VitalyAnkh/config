@@ -1592,3 +1592,5 @@ paru
 alacritty
 kill tilix
 ls
+just fmt
+git st

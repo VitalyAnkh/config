@@ -6,6 +6,8 @@ export XDG_DATA_HOME=$HOME/.local/share
 # for Doom Emacs
 export DOOMDIR=$XDG_CONFIG_HOME/doom
 
+export LSP_USE_PLISTS=true
+
 export WINEPREFIX=$XDG_CONFIG_HOME/.wine
 
 # for fcitx5
