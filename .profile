@@ -97,7 +97,7 @@ export WGPU_BACKEND=vulkan
 export GUAKE_ENABLE_WAYLAND=1
 
 # use ccache
-export PATH="/usr/lib/ccache/bin:$PATH"
+#export PATH="/usr/lib/ccache/bin:$PATH"
 
 export PATH="$PATH:/opt/cuda/bin"
 
@@ -115,7 +115,7 @@ export PATH="$PATH:$HOME/sdk/app/depot_tools"
 export MOZ_DISABLE_RDD_SANDBOX=1
 
 # for lean
-export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
+#export PATH="$PATH:$HOME/.elan/toolchains/leanprover--lean4---nightly/bin"
 
 # for intel oneapi
 # export PATH="$PATH:/opt/intel/oneapi/compiler/latest/linux/bin:/opt/Xilinx/Vivado/2022.2/bin/"

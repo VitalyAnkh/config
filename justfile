@@ -254,6 +254,7 @@ config_latest_llvm:
   git pull
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
+  # -DMLIR_ENABLE_SYCL_RUNNER=1 \
   cmake -G Ninja -B build ./llvm \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
@@ -273,7 +274,6 @@ config_latest_llvm:
     -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DMLIR_ENABLE_CUDA_RUNNER=1 \
-    -DMLIR_ENABLE_SYCL_RUNNER=1 \
     -DMLIR_ENABLE_VULKAN_RUNNER=1 \
     -DMLIR_ENABLE_SPIRV_CPU_RUNNER=1 \
     -DMLIR_INCLUDE_INTEGRATION_TESTS=1 \
@@ -486,8 +486,10 @@ llvm_latest: config_latest_llvm install_latest_llvm
 package_emacs:
   #!/usr/bin/env bash
   cd ~
-  zip -r emacs.d.zip .emacs.d -x .emacs.d/.local/cache/eln/\* .emacs.d/.local/straight/build-30.0.50/\* .emacs.d/.local/straight/build.30.0.50.el .emacs.d/.local/cache/projectile.cache .emacs.d/.local/cache/projectile.projects .emacs.d/.local/cache/recentf .emacs.d/.local/cache/savehist .emacs.d/eln-cache/\*
+  zip -r emacs.d.zip .emacs.d -x .emacs.d/.local/cache/eln/\* .emacs.d/.local/straight/build-31.0.50/\* .emacs.d/.local/straight/build.31.0.50.el .emacs.d/.local/cache/projectile.cache .emacs.d/.local/cache/projectile.projects .emacs.d/.local/cache/recentf .emacs.d/.local/cache/savehist .emacs.d/eln-cache/\*
   mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
+  zip -r doom.zip ~/.config/doom
+  mv ~/doom.zip ~/nutstore_files/Work/doom.zip
 
 cuda_play:
   #!/usr/bin/env bash
