@@ -127,8 +127,11 @@ export PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin:/usr/bin/vendor_perl/"
 # for the rust crate mlir-sys
 export MLIR_SYS_160_PREFIX=/usr/local/opt/llvm@16
 
-export CUDA_INSTALL_PATH=/opt/cuda
-export CUDA_ROOT=/opt/cuda
+export CUDA_PATH=/opt/cuda
+export CUDA_INSTALL_PATH=$CUDA_PATH
+export CUDA_ROOT=$CUDA_PATH
+export PATH="$PATH:$CUDA_PATH/nsight_compute"
+
 export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
 
 export WARP_ENABLE_WAYLAND=1
@@ -153,7 +156,7 @@ export PATH="/usr/local/bin:$PATH"
 
 export OLLAMA_NUM_PARALLEL=4
 
-export NVCC_CCBIN=/usr/bin/clang
+export NVCC_CCBIN=/usr/bin/g++-13
 export CUDAHOSTCXX=$NVCC_CCBIN
 export DEBUGINFOD_URLS="https://debuginfod.archlinux.org"
 . "$HOME/.cargo/env"

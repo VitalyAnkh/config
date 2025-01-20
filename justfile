@@ -255,18 +255,21 @@ config_latest_llvm:
   rm build/CMakeCache.txt
   rm build/NATIVE/CMakeCache.txt
   # -DMLIR_ENABLE_SYCL_RUNNER=1 \
+  # -DMLIR_ENABLE_CUDA_CUSPARSE=1 \
+  # plugin-api.h locates in /usr/include, to build LLVMgold.so plugin
   cmake -G Ninja -B build ./llvm \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
     -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DCMAKE_C_COMPILER=/usr/bin/clang \
+    -DLLVM_BINUTILS_INCDIR=/usr/include \
     -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold" \
     -DLLVM_CCACHE_BUILD=ON \
     -DLLVM_USE_LINKER=mold \
-    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
@@ -277,7 +280,6 @@ config_latest_llvm:
     -DMLIR_ENABLE_VULKAN_RUNNER=1 \
     -DMLIR_ENABLE_SPIRV_CPU_RUNNER=1 \
     -DMLIR_INCLUDE_INTEGRATION_TESTS=1 \
-    -DMLIR_ENABLE_CUDA_CUSPARSE=1 \
     -DMLIR_RUN_CUDA_TENSOR_CORE_TESTS=1 \
     -DLLVM_LIT_ARGS=-v \
     -DLLVM_HAS_NVPTX_TARGET=1 \
@@ -399,6 +401,13 @@ iree:
   echo "==== config iree ===="
   export IREE_SRC_PATH=$HOME/projects/dev/cpp/iree
   cd $IREE_SRC_PATH
+  export IREE_HAL_DRIVER_CUDA=ON
+  export IREE_HAL_DRIVER_HIP=ON
+  export IREE_TARGET_BACKEND_CUDA=ON
+  export IREE_TARGET_BACKEND_ROCM=ON
+  export IREE_TARGET_BACKEND_WEBGPU_SPIRV=ON
+  export CMAKE_BUILD_TYPE=RelWithDebInfo
+  export IREE_ENABLE_ASSERTIONS=ON
   git checkout main
   git submodule update --init
   git pull --recurse-submodules
@@ -408,27 +417,29 @@ iree:
   # Use conda environment before this command!
   conda activate py3.11
   proxychains -q pip install -r runtime/bindings/python/iree/runtime/build_requirements.txt
-  cmake -G Ninja -B build -S . \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DIREE_ENABLE_WERROR_FLAG=OFF \
-    -DIREE_ENABLE_ASSERTIONS=ON \
-    -DIREE_ENABLE_SPLIT_DWARF=ON \
-    -DIREE_ENABLE_RUNTIME_TRACING=ON \
-    -DIREE_ENABLE_THIN_ARCHIVES=ON \
-    -DIREE_HAL_DRIVER_CUDA=ON \
-    -DIREE_HAL_DRIVER_VULKAN=ON \
-    -DIREE_TARGET_BACKEND_DEFAULTS=ON \
-    -DIREE_INPUT_STABLEHLO=ON \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-    -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
-    -DIREE_BUILD_PYTHON_BINDINGS=ON  \
-    -DPython3_EXECUTABLE="$(which python)" \
-    -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-    -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
-    -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold"
-  cmake --build build
+  bash build_tools/cmake/build_all.sh
+  # cmake -G Ninja -B build -S . \
+  #   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  #   -DIREE_ENABLE_WERROR_FLAG=OFF \
+  #   -DIREE_ENABLE_ASSERTIONS=ON \
+  #   -DIREE_ENABLE_SPLIT_DWARF=ON \
+  #   -DIREE_ENABLE_RUNTIME_TRACING=ON \
+  #   -DIREE_ENABLE_THIN_ARCHIVES=ON \
+  #   -DIREE_HAL_DRIVER_CUDA=ON \
+  #   -DIREE_HAL_DRIVER_VULKAN=ON \
+  #   -DIREE_TARGET_BACKEND_DEFAULTS=ON \
+  #   -DIREE_TARGET_BACKEND_WEBGPU_SPIRV=ON \
+  #   -DIREE_INPUT_STABLEHLO=ON \
+  #   -DCMAKE_C_COMPILER=clang \
+  #   -DCMAKE_CXX_COMPILER=clang++ \
+  #   -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+  #   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
+  #   -DIREE_BUILD_PYTHON_BINDINGS=ON  \
+  #   -DPython3_EXECUTABLE="$(which python)" \
+  #   -DCMAKE_EXE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  #   -DCMAKE_MODULE_LINKER_FLAGS_INIT="-fuse-ld=mold" \
+  #   -DCMAKE_SHARED_LINKER_FLAGS_INIT="-fuse-ld=mold"
+  # cmake --build build
   cmake --build build --target iree-test-deps
   ctest -R build/tests/e2e/linalg/conv2d.mlir
   echo "==== config iree done ===="
@@ -488,7 +499,7 @@ package_emacs:
   cd ~
   zip -r emacs.d.zip .emacs.d -x .emacs.d/.local/cache/eln/\* .emacs.d/.local/straight/build-31.0.50/\* .emacs.d/.local/straight/build.31.0.50.el .emacs.d/.local/cache/projectile.cache .emacs.d/.local/cache/projectile.projects .emacs.d/.local/cache/recentf .emacs.d/.local/cache/savehist .emacs.d/eln-cache/\*
   mv ~/emacs.d.zip ~/nutstore_files/Work/emacs.d.zip
-  zip -r doom.zip ~/.config/doom
+  zip -r doom.zip doom
   mv ~/doom.zip ~/nutstore_files/Work/doom.zip
 
 cuda_play:
@@ -1192,6 +1203,11 @@ ra:
   echo "==== pull rust-analyzer ===="
   cd ~/projects/dev/rust-projects/rust-analyzer
   git pull
+  export CARGO_TARGET_DIR=target
+  export CFLAGS+=' -ffat-lto-objects'
+  export CXXFLAGS+=' -ffat-lto-objects'
+  export RUSTFLAGS=' -C target-cpu=native -C lto=true -C embed-bitcode=yes -Zdylib-lto '
+  export RUSTFLAGS+=" --remap-path-prefix $PWD=/"
   cargo build --release
   install -Dt /usr/local/bin target/release/rust-analyzer
   echo "==== pull rust-analyzer done ===="
