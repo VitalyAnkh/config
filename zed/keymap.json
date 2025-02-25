@@ -84,8 +84,6 @@
       "ctrl-c n": "editor::GoToHunk",
       "ctrl-c p": "editor::GoToPrevHunk",
       "ctrl-c ctrl-d": "editor::Hover",
-      "ctrl-c d": "editor::DuplicateLine",
-      "ctrl-c o": "editor::RevealInFinder",
       "ctrl-cmd-\\": "editor::Format",
       "ctrl-shift-cmd-l": "editor::SplitSelectionIntoLines",
       "ctrl-shift-cmd-p": "editor::AddSelectionAbove",

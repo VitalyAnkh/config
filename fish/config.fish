@@ -64,6 +64,6 @@ abbr -a -- pfio "platformio"
 abbr -a -- gst "git status"
 abbr -a -- grv "git remote -v"
 abbr -a -- gtp "git pull"
-abbr -a -- sconda "source /opt/miniconda3/etc/fish/conf.d/conda.fish"
+abbr -a -- sconda "source /opt/miniforge/etc/fish/conf.d/conda.fish"
 abbr -a -- j "just -f $XDG_CONFIG_HOME/justfile"
 set -x LD_LIBRARY_PATH /home/vitalyr/.local/lib/arch-mojo $LD_LIBRARY_PATH

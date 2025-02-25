@@ -121,3 +121,5 @@
 **/eln-cache/**
 *.log
 *.dump
+
+!.global-gitignore

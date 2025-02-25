@@ -527,6 +527,9 @@ WINE REGISTRY Version 2
 [Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced] 1724384809
 #time=1daf50f15378462
 
+[Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts] 1739860940
+#time=1db81d042484c36
+
 [Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders] 1600640696
 #time=1d68f9cdeb65142
 "Administrative Tools"="C:\\users\\vitalyr\\Start Menu\\Programs\\Administrative Tools"
@@ -1072,13 +1075,13 @@ WINE REGISTRY Version 2
 "OpenWithIcon"="81F5_winebrowser.0"
 "ProgID"="xmlfile"
 
-[Software\\Wine\\Fonts] 1735284761
-#time=1db5831836e0a66
+[Software\\Wine\\Fonts] 1739860981
+#time=1db81d05ad65356
 "Codepages"="936,936"
 "LogPixels"=dword:000000d8
 
-[Software\\Wine\\Fonts\\External Fonts] 1735284762
-#time=1db58318385a086
+[Software\\Wine\\Fonts\\External Fonts] 1739860981
+#time=1db81d05b000be2
 "@AdobeFangsongStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeFangsongStd.otf"
 "@AdobeHeitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeHeitiStd.otf"
 "@AdobeKaitiStd-Regular (TrueType)"="Z:\\usr\\share\\fonts\\Adobe\\AdobeKaitiStd.otf"

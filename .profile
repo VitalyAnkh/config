@@ -132,7 +132,7 @@ export CUDA_INSTALL_PATH=$CUDA_PATH
 export CUDA_ROOT=$CUDA_PATH
 export PATH="$PATH:$CUDA_PATH/nsight_compute"
 
-export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniconda3/bin"
+export PATH="$PATH:$HOME/.nix-profile/bin:/opt/miniforge/bin"
 
 export WARP_ENABLE_WAYLAND=1
 

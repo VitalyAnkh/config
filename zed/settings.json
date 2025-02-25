@@ -8,17 +8,18 @@
 // from the command palette or from `Zed` application menu.
 {
   "features": {
-    "inline_completion_provider": "copilot"
+    "edit_prediction_provider": "copilot"
   },
   "assistant": {
     "default_model": {
       "provider": "copilot_chat",
-      "model": "claude-3-5-sonnet"
+      "model": "o3-mini"
     },
     "version": "2"
   },
   "theme": "Atelier Cave Light",
   "ui_font_size": 13,
   "buffer_font_size": 13,
+  "ui_font_family": "JetBrainsMono Nerd Font",
   "cursor_blink": false
 }
