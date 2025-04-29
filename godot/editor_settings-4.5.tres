@@ -1,0 +1,241 @@
+[gd_resource type="EditorSettings" load_steps=13 format=3]
+
+[sub_resource type="InputEventKey" id="InputEventKey_hny5n"]
+keycode = 4194336
+
+[sub_resource type="InputEventKey" id="InputEventKey_lu1s2"]
+device = -1
+ctrl_pressed = true
+physical_keycode = 82
+
+[sub_resource type="InputEventKey" id="InputEventKey_tox3x"]
+ctrl_pressed = true
+keycode = 4194332
+
+[sub_resource type="InputEventKey" id="InputEventKey_mc3jc"]
+device = -1
+alt_pressed = true
+physical_keycode = 49
+unicode = 49
+
+[sub_resource type="InputEventKey" id="InputEventKey_14nmu"]
+ctrl_pressed = true
+keycode = 4194333
+
+[sub_resource type="InputEventKey" id="InputEventKey_b4bjp"]
+device = -1
+alt_pressed = true
+physical_keycode = 50
+unicode = 50
+
+[sub_resource type="InputEventKey" id="InputEventKey_l2jsi"]
+ctrl_pressed = true
+keycode = 4194334
+
+[sub_resource type="InputEventKey" id="InputEventKey_ij6wl"]
+device = -1
+alt_pressed = true
+physical_keycode = 51
+unicode = 51
+
+[sub_resource type="InputEventKey" id="InputEventKey_rfnpn"]
+ctrl_pressed = true
+keycode = 4194335
+
+[sub_resource type="InputEventKey" id="InputEventKey_c1c15"]
+device = -1
+alt_pressed = true
+physical_keycode = 52
+unicode = 52
+
+[sub_resource type="InputEventKey" id="InputEventKey_6f0yx"]
+keycode = 4194326
+
+[sub_resource type="InputEventKey" id="InputEventKey_fajp3"]
+physical_keycode = 81
+unicode = 81
+
+[resource]
+interface/editor/editor_language = "en"
+interface/editor/display_scale = 5
+interface/editor/show_update_spinner = false
+interface/editor/unfocused_low_processor_mode_sleep_usec = 50000
+interface/theme/follow_system_theme = true
+interface/theme/preset = "Light"
+interface/theme/base_color = Color(0.9, 0.9, 0.9, 1)
+interface/theme/accent_color = Color(0.18, 0.5, 1, 1)
+interface/theme/contrast = -0.06
+interface/theme/border_size = 1
+filesystem/directories/default_project_path = "/home/vitalyr/projects/dev/godot"
+filesystem/file_dialog/show_hidden_files = true
+docks/filesystem/textfile_extensions = "txt,md,cfg,ini,log,json,yml,yaml,toml"
+docks/property_editor/auto_refresh_interval = 0.3
+text_editor/appearance/lines/word_wrap = 1
+text_editor/behavior/files/open_dominant_script_on_scene_change = true
+text_editor/completion/idle_parse_delay = 2.0
+editors/3d_gizmos/gizmo_settings/bone_axis_length = 0.1
+editors/3d/primary_grid_steps = 10
+editors/3d/grid_division_level_min = -2
+editors/3d/default_z_far = 500.0
+editors/3d/navigation/emulate_numpad = false
+editors/3d/navigation_feel/orbit_sensitivity = 0.4
+editors/3d/navigation_feel/orbit_inertia = 0.05
+editors/3d/navigation_feel/translation_inertia = 0.15
+editors/3d/navigation_feel/zoom_inertia = 0.075
+editors/3d/freelook/freelook_navigation_scheme = false
+editors/3d/freelook/freelook_sensitivity = 0.4
+editors/3d/freelook/freelook_inertia = 0.1
+editors/2d/bone_color1 = Color(1, 1, 1, 0.9)
+editors/2d/bone_color2 = Color(0.6, 0.6, 0.6, 0.9)
+editors/2d/bone_selected_color = Color(0.9, 0.45, 0.45, 0.9)
+editors/2d/bone_ik_color = Color(0.9, 0.9, 0.45, 0.9)
+editors/2d/bone_outline_color = Color(0.35, 0.35, 0.35, 1)
+editors/animation/default_animation_step = 0.0333333
+run/platforms/linuxbsd/prefer_wayland = true
+network/connection/network_mode = 1
+network/http_proxy/host = "127.0.0.1"
+network/http_proxy/port = 8765
+editors/grid_map/editor_side = 1
+interface/editor/debug/enable_pseudolocalization = false
+interface/editor/dim_editor_on_dialog_popup = true
+interface/editor/hide_console_window = false
+interface/theme/highlight_tabs = false
+interface/theme/use_graph_node_headers = false
+interface/scene_tabs/show_extension = false
+interface/scene_tabs/resize_if_many_tabs = true
+interface/scene_tabs/minimum_width = 50
+text_editor/highlighting/symbol_color = Color(0.67, 0.785, 1, 1)
+text_editor/highlighting/keyword_color = Color(1, 0.44, 0.52, 1)
+text_editor/highlighting/base_type_color = Color(0.26, 1, 0.76, 1)
+text_editor/highlighting/engine_type_color = Color(0.556, 1, 0.856, 1)
+text_editor/highlighting/user_type_color = Color(0.778, 1, 0.928, 1)
+text_editor/highlighting/comment_color = Color(0.8, 0.8075, 0.8275, 0.5)
+text_editor/highlighting/string_color = Color(1, 0.925, 0.63, 1)
+text_editor/highlighting/background_color = Color(0.125, 0.14375, 0.19375, 1)
+text_editor/highlighting/completion_background_color = Color(0.2, 0.23, 0.31, 1)
+text_editor/highlighting/completion_selected_color = Color(1, 1, 1, 0.07)
+text_editor/highlighting/completion_existing_color = Color(1, 1, 1, 0.14)
+text_editor/highlighting/completion_scroll_color = Color(1, 1, 1, 0.07)
+text_editor/highlighting/completion_font_color = Color(0.8, 0.8075, 0.8275, 1)
+text_editor/highlighting/text_color = Color(0.8, 0.8075, 0.8275, 1)
+text_editor/highlighting/line_number_color = Color(0.8, 0.8075, 0.8275, 0.5)
+text_editor/highlighting/safe_line_number_color = Color(0.8, 0.969, 0.8275, 0.75)
+text_editor/highlighting/caret_color = Color(1, 1, 1, 1)
+text_editor/highlighting/caret_background_color = Color(0, 0, 0, 1)
+text_editor/highlighting/text_selected_color = Color(0.1, 0.115, 0.155, 1)
+text_editor/highlighting/selection_color = Color(0.41, 0.61, 0.91, 0.4)
+text_editor/highlighting/brace_mismatch_color = Color(1, 0.47, 0.42, 1)
+text_editor/highlighting/current_line_color = Color(1, 1, 1, 0.07)
+text_editor/highlighting/line_length_guideline_color = Color(0.2, 0.23, 0.31, 1)
+text_editor/highlighting/word_highlighted_color = Color(1, 1, 1, 0.07)
+text_editor/highlighting/number_color = Color(0.63, 1, 0.88, 1)
+text_editor/highlighting/function_color = Color(0.34, 0.7, 1, 1)
+text_editor/highlighting/member_variable_color = Color(0.736, 0.88, 1, 1)
+text_editor/highlighting/mark_color = Color(1, 0.47, 0.42, 0.3)
+text_editor/highlighting/bookmark_color = Color(0.08, 0.49, 0.98, 1)
+text_editor/highlighting/breakpoint_color = Color(1, 0.47, 0.42, 1)
+text_editor/highlighting/executing_line_color = Color(0.98, 0.89, 0.27, 1)
+text_editor/highlighting/code_folding_color = Color(1, 1, 1, 0.7)
+text_editor/highlighting/search_result_color = Color(1, 1, 1, 0.07)
+text_editor/highlighting/search_result_border_color = Color(0.41, 0.61, 0.91, 0.38)
+text_editor/highlighting/highlight_all_occurrences = true
+text_editor/highlighting/highlight_current_line = true
+text_editor/highlighting/highlight_type_safe_lines = true
+text_editor/indent/type = 0
+text_editor/indent/size = 4
+text_editor/indent/auto_indent = true
+text_editor/indent/convert_indent_on_save = true
+text_editor/indent/draw_tabs = true
+text_editor/indent/draw_spaces = false
+text_editor/navigation/smooth_scrolling = true
+text_editor/navigation/v_scroll_speed = 80
+text_editor/navigation/show_minimap = true
+text_editor/navigation/minimap_width = 80
+text_editor/appearance/show_line_numbers = true
+text_editor/appearance/line_numbers_zero_padded = false
+text_editor/appearance/show_bookmark_gutter = true
+text_editor/appearance/show_info_gutter = true
+text_editor/appearance/code_folding = true
+text_editor/appearance/word_wrap = true
+text_editor/appearance/show_line_length_guidelines = true
+text_editor/appearance/line_length_guideline_soft_column = 80
+text_editor/appearance/line_length_guideline_hard_column = 100
+text_editor/files/trim_trailing_whitespace_on_save = false
+text_editor/files/autosave_interval_secs = 0
+text_editor/files/restore_scripts_on_load = true
+text_editor/tools/create_signal_callbacks = true
+text_editor/tools/sort_members_outline_alphabetically = false
+text_editor/cursor/scroll_past_end_of_file = false
+text_editor/cursor/block_caret = false
+text_editor/cursor/caret_blink = true
+text_editor/cursor/caret_blink_speed = 0.5
+text_editor/cursor/right_click_moves_caret = true
+text_editor/completion/callhint_tooltip_offset = Vector2(0, 0)
+editors/3d/navigation_feel/manipulation_orbit_inertia = 0.075
+editors/3d/navigation_feel/manipulation_translation_inertia = 0.075
+editors/2d/warped_mouse_panning = true
+editors/2d/simple_panning = false
+editors/2d/scroll_to_pan = false
+editors/2d/pan_speed = 20
+editors/poly_editor/point_grab_radius = 8
+editors/poly_editor/show_previous_outline = true
+interface/editor/quit_confirmation = true
+filesystem/import/pvrtc_texture_tool = ""
+filesystem/import/pvrtc_fast_conversion = false
+asset_library/available_urls = {
+"godotengine.org": "https://godotengine.org/asset-library/api",
+"localhost": "http://127.0.0.1/asset-library/api"
+}
+export/android/android_sdk_path = ""
+export/android/debug_keystore = "/home/vitalyr/.local/share/godot/keystores/debug.keystore"
+export/android/debug_keystore_pass = "android"
+export/macos/rcodesign = ""
+export/web/http_port = 8060
+export/web/tls_key = ""
+export/web/tls_certificate = ""
+export/windows/rcedit = ""
+export/windows/osslsigncode = ""
+export/windows/wine = ""
+_default_feature_profile = ""
+_use_favorites_root_selection = false
+editors/3d_gizmos/gizmo_colors/path = Color(0.5, 0.5, 1, 0.8)
+export/android/java_sdk_path = "/lib/jvm/default/"
+docks/property_editor/lines/word_wrap = 0
+docks/property_editor/word_wrap = false
+_editor_settings_advanced_mode = true
+_export_template_download_directory = ""
+_script_setup_templates_dictionary = {}
+_script_setup_use_script_templates = false
+_project_settings_advanced_mode = false
+shortcuts = [{
+"name": "null",
+"shortcuts": []
+}, {
+"name": "editor/run_project",
+"shortcuts": [SubResource("InputEventKey_hny5n"), SubResource("InputEventKey_lu1s2")]
+}, {
+"name": "editor/editor_2d",
+"shortcuts": [SubResource("InputEventKey_tox3x"), SubResource("InputEventKey_mc3jc")]
+}, {
+"name": "editor/editor_3d",
+"shortcuts": [SubResource("InputEventKey_14nmu"), SubResource("InputEventKey_b4bjp")]
+}, {
+"name": "editor/editor_script",
+"shortcuts": [SubResource("InputEventKey_l2jsi"), SubResource("InputEventKey_ij6wl")]
+}, {
+"name": "editor/editor_assetlib",
+"shortcuts": [SubResource("InputEventKey_rfnpn"), SubResource("InputEventKey_c1c15")]
+}, {
+"name": "spatial_editor/viewport_zoom_modifier_1",
+"shortcuts": [SubResource("InputEventKey_6f0yx")]
+}, {
+"name": "spatial_editor/viewport_zoom_modifier_2",
+"shortcuts": []
+}, {
+"name": "spatial_editor/tool_select",
+"shortcuts": [SubResource("InputEventKey_fajp3")]
+}]
+metadata/script_setup_templates_dictionary = {
+"Area2D": "0NodeDefault",
+"Sprite2D": "0ObjectEmpty"
+}

@@ -273,7 +273,7 @@ config_latest_llvm:
     -DCMAKE_INSTALL_PREFIX=/usr/local/opt/llvm@latest \
     -DCMAKE_CXX_LINK_FLAGS="-Wl,-rpath,$LD_LIBRARY_PATH" \
     -DLLVM_TARGETS_TO_BUILD="X86;NVPTX;RISCV;AMDGPU" \
-    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;clang-tools-extra;lldb;pstl;bolt" \
+    -DLLVM_ENABLE_PROJECTS="clang;flang;llvm;mlir;lld;clang-tools-extra;lldb;pstl;bolt" \
     -DLLVM_ENABLE_RUNTIMES="openmp;compiler-rt;libcxx;libc;libcxxabi;libunwind;offload" \
     -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
     -DMLIR_ENABLE_CUDA_RUNNER=1 \

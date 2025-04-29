@@ -1,6 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR __fish_initialized:3400
+SETUVAR __fish_initialized:3800
 SETUVAR _fish_abbr_am:ambient
 SETUVAR _fish_abbr_chez:chez\x2dscheme
 SETUVAR _fish_abbr_doom:\x24HOME/\x2econfig/\x2eemacs\x2ed/bin/doom
@@ -72,7 +72,7 @@ SETUVAR fish_color_operator:6699cc
 SETUVAR fish_color_param:d3d0c8
 SETUVAR fish_color_quote:ffcc66
 SETUVAR fish_color_redirection:d3d0c8
-SETUVAR fish_color_search_match:bryellow\x1e\x2d\x2dbackground\x3dbrblack
+SETUVAR fish_color_search_match:white\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
